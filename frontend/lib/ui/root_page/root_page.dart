@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/ui/home_page/home_page.dart';
 import 'package:frontend/ui/theme/theme.dart';
 
 class RampUpApp extends StatelessWidget {
@@ -10,7 +11,7 @@ class RampUpApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'RampUp',
       theme: rampUpTheme(),
-      home: Container(),
+      home: const HomepageView(),
     );
   }
 }
