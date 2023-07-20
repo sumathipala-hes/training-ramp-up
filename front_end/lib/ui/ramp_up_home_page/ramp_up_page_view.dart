@@ -6,7 +6,20 @@ class RampUpHomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: const Center(child: Text('Ramp Up Home Screen')),
+      appBar: AppBar(
+        backgroundColor: Colors.deepPurple[300],
+        elevation: 7,
+        centerTitle: true,
+        title: const Text('R A M P   U P'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.share),
+            onPressed: () {},
+          ),
+        ],
+      ),
+      body: Column(
+      ),
     );
   }
 }
