@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 
 class HomepageView extends StatelessWidget {
-  const HomepageView({super.key});
+  TextEditingController firstNameController = TextEditingController();
+  TextEditingController lastNameController = TextEditingController();
+
+  HomepageView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -20,14 +23,36 @@ class HomepageView extends StatelessWidget {
                     builder: (BuildContext context) {
                       return AlertDialog(
                         title: const Text('Add New Student'),
-                        content: const Text('Popup content goes here.'),
+                        content: Column(
+                          children: [
+                            TextField(
+                              controller: firstNameController,
+                              decoration: const InputDecoration(
+                                border: OutlineInputBorder(),
+                                labelText: 'First Name',
+                              ),
+                            ),
+                            TextField(
+                              controller: lastNameController,
+                              decoration: const InputDecoration(
+                                border: OutlineInputBorder(),
+                                labelText: 'Last Name',
+                              ),
+                            ),
+                          ],
+                        ),
                         actions: [
                           ElevatedButton(
                             onPressed: () {
-                              // Close the popup
                               Navigator.of(context).pop();
                             },
-                            child: const Text('OK'),
+                            child: const Text('Save'),
+                          ),
+                          ElevatedButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: const Text('CANCEL'),
                           ),
                         ],
                       );

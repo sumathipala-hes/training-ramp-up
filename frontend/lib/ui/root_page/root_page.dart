@@ -10,7 +10,7 @@ class RampUpApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'RampUp',
       theme: ThemeData(),
-      home: const HomepageView(),
+      home: HomepageView(),
     );
   }
 }
