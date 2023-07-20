@@ -19,6 +19,31 @@ class RampUpHomeScreen extends StatelessWidget {
         ],
       ),
       body: Column(
+        children: [
+          const SizedBox(height: 30),
+          Center(
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.blueGrey,
+                fixedSize: const Size(170, 40),
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(10),
+                  ),
+                ),
+              ),
+              onPressed: () {},
+              child: const Text(
+                'ADD NEW STUDENT',
+                style: TextStyle(
+                  fontSize: 15.0,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
