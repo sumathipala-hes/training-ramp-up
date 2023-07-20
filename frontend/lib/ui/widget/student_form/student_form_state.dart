@@ -1,17 +1,17 @@
-class StudentPageState {
+class StudentFormState {
   final String maleOrFemale;
 
-  const StudentPageState({
+  const StudentFormState({
     required this.maleOrFemale,
   });
 
-  static StudentPageState get initialState =>
-      const StudentPageState(maleOrFemale: 'Male');
+  static StudentFormState get initialState =>
+      const StudentFormState(maleOrFemale: 'Male');
 
-  StudentPageState clone({
+  StudentFormState clone({
     String? maleOrFemale,
   }) {
-    return StudentPageState(
+    return StudentFormState(
       maleOrFemale: maleOrFemale ?? this.maleOrFemale,
     );
   }
