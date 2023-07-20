@@ -6,7 +6,12 @@ class HomePageView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("HomePage")),
+      appBar: AppBar(
+        title: const Text(
+          "Manage Student",
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+      ),
     );
   }
 }
