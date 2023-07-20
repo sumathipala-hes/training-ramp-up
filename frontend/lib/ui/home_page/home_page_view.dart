@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 
 class HomepageView extends StatelessWidget {
-  TextEditingController firstNameController = TextEditingController();
-  TextEditingController lastNameController = TextEditingController();
-
-  HomepageView({super.key});
+  const HomepageView({super.key});
 
   @override
   Widget build(BuildContext context) {
+    TextEditingController nameController = TextEditingController();
+    TextEditingController addressController = TextEditingController();
+    TextEditingController mobileController = TextEditingController();
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Ramp Up'),
@@ -26,33 +27,48 @@ class HomepageView extends StatelessWidget {
                         content: Column(
                           children: [
                             TextField(
-                              controller: firstNameController,
+                              controller: nameController,
                               decoration: const InputDecoration(
                                 border: OutlineInputBorder(),
-                                labelText: 'First Name',
+                                labelText: 'Name',
+                                hintText: 'Enter First Name',
                               ),
                             ),
                             TextField(
-                              controller: lastNameController,
+                              controller: addressController,
                               decoration: const InputDecoration(
                                 border: OutlineInputBorder(),
-                                labelText: 'Last Name',
+                                labelText: 'Address',
+                                hintText: 'Enter Address',
                               ),
                             ),
+                            TextField(
+                              controller: mobileController,
+                              decoration: const InputDecoration(
+                                border: OutlineInputBorder(),
+                                labelText: 'Mobile',
+                                hintText: 'Enter Mobile',
+                              ),
+                            ),
+                            DatePickerDialog(
+                                initialDate: DateTime.now(),
+                                firstDate: DateTime.now(),
+                                lastDate: DateTime.now())
                           ],
                         ),
                         actions: [
                           ElevatedButton(
                             onPressed: () {
+                              print(nameController.text);
                               Navigator.of(context).pop();
                             },
-                            child: const Text('Save'),
+                            child: const Text('CANCEL'),
                           ),
                           ElevatedButton(
                             onPressed: () {
                               Navigator.of(context).pop();
                             },
-                            child: const Text('CANCEL'),
+                            child: const Text('SAVE'),
                           ),
                         ],
                       );
