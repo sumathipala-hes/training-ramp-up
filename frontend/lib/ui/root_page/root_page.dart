@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/ui/home_page/home_page_view.dart';
+import 'package:frontend/ui/home_page/home_page_provider.dart';
 
 class RampUpApp extends StatelessWidget {
   const RampUpApp({super.key});
@@ -12,7 +12,7 @@ class RampUpApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.deepPurple,
       ),
-      home: const HomepageView(),
+      home: const HomePageProvider(),
     );
   }
 }

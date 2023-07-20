@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/ui/widget/student_form/student_form_provider.dart';
 
-class HomepageView extends StatelessWidget {
-  const HomepageView({super.key});
+class HomePageView extends StatelessWidget {
+  const HomePageView({super.key});
 
   @override
   Widget build(BuildContext context) {

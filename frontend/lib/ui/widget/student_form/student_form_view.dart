@@ -62,7 +62,7 @@ class StudentFormView extends StatelessWidget {
               decoration: const InputDecoration(
                   border: OutlineInputBorder(),
                   suffixIcon: Icon(Icons.calendar_today),
-                  labelText: "Enter Date"),
+                  labelText: "Date of Birth"),
               readOnly: true,
               onTap: () async {
                 DateTime? date = await showDatePicker(
@@ -75,39 +75,48 @@ class StudentFormView extends StatelessWidget {
                     : DateTime(2000).toString().substring(0, 10);
               },
             ),
+            const SizedBox(
+              height: 20,
+            ),
             BlocBuilder<StudentFormBloc, StudentFormState>(
               buildWhen: (previous, current) =>
                   current.maleOrFemale != previous.maleOrFemale,
               builder: (context, state) {
                 return Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    Radio(
-                      value: 'Male',
-                      groupValue: bloc.state.maleOrFemale,
-                      onChanged: (value) {
-                        bloc.add(
-                          SetRadioButtons(
-                            maleOrFemale: value.toString(),
-                          ),
-                        );
-                      },
+                    Row(
+                      children: [
+                        Radio(
+                          value: 'Male',
+                          groupValue: bloc.state.maleOrFemale,
+                          onChanged: (value) {
+                            bloc.add(
+                              SetRadioButtons(
+                                maleOrFemale: value.toString(),
+                              ),
+                            );
+                          },
+                        ),
+                        const Text('Male'),
+                      ],
                     ),
-                    const Text('Male'),
-                    const SizedBox(
-                      width: 20,
+                    Row(
+                      children: [
+                        Radio(
+                          value: 'Female',
+                          groupValue: bloc.state.maleOrFemale,
+                          onChanged: (value) {
+                            bloc.add(
+                              SetRadioButtons(
+                                maleOrFemale: value.toString(),
+                              ),
+                            );
+                          },
+                        ),
+                        const Text('Female'),
+                      ],
                     ),
-                    Radio(
-                      value: 'Female',
-                      groupValue: bloc.state.maleOrFemale,
-                      onChanged: (value) {
-                        bloc.add(
-                          SetRadioButtons(
-                            maleOrFemale: value.toString(),
-                          ),
-                        );
-                      },
-                    ),
-                    const Text('Female'),
                   ],
                 );
               },
@@ -116,25 +125,29 @@ class StudentFormView extends StatelessWidget {
         ),
       ),
       actions: [
-        SizedBox(
-          width: MediaQuery.of(context).size.width * 0.25,
-          child: ElevatedButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-            child: const Text('CANCEL'),
-          ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            SizedBox(
+              width: MediaQuery.of(context).size.width * 0.25,
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text('CANCEL'),
+              ),
+            ),
+            SizedBox(
+              width: MediaQuery.of(context).size.width * 0.25,
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text('SAVE'),
+              ),
+            ),
+          ],
         ),
-        SizedBox(
-          width: MediaQuery.of(context).size.width * 0.25,
-          child: ElevatedButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-            child: const Text('SAVE'),
-          ),
-        ),
-        const SizedBox(width: 8)
       ],
     );
   }
