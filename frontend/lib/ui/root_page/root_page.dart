@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/ui/home_page/home_page.dart';
-import 'package:frontend/ui/theme/theme.dart';
 
 class RampUpApp extends StatelessWidget {
   const RampUpApp({super.key});
@@ -10,7 +9,7 @@ class RampUpApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'RampUp',
-      theme: rampUpTheme(),
+      theme: ThemeData(),
       home: const HomepageView(),
     );
   }

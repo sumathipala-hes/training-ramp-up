@@ -9,8 +9,20 @@ class HomepageView extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Ramp Up'),
       ),
-      body: const Center(
-        child: Text('Hello World'),
+      body: Container(
+        alignment: Alignment.center,
+        child: Column(
+          children: [
+            ElevatedButton(
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (context) => const Text('Hello World'),
+                  );
+                },
+                child: const Text('ADD NEW STUDENT')),
+          ],
+        ),
       ),
     );
   }
