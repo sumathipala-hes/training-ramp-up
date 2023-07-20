@@ -2,27 +2,27 @@ import 'package:flutter/material.dart';
 import 'package:ramp_up/util/studentDTO.dart';
 
 @immutable
-class HomeState {
+class HomePageState {
   final bool isVisible;
-  final List<Student> student;
+  final List<Student> students;
 
-  const HomeState({
+  const HomePageState({
     required this.isVisible,
-    required this.student,
+    required this.students,
   });
 
-  static HomeState get initials => const HomeState(
+  static HomePageState get initialState => const HomePageState(
         isVisible: false,
-        student: [],
+        students: [],
       );
 
-  HomeState clone({
+  HomePageState clone({
     bool? isVisible,
-    List<Student>? student,
+    List<Student>? students,
   }) {
-    return HomeState(
+    return HomePageState(
       isVisible: isVisible ?? this.isVisible,
-      student: student ?? this.student,
+      students: students ?? this.students,
     );
   }
 }

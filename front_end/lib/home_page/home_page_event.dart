@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 
 @immutable
-abstract class HomeEvent {}
+abstract class HomePageEvent {}
 
-class IsVisible extends HomeEvent {
+class IsVisible extends HomePageEvent {
   IsVisible();
+}
+
+class GetAllStudent extends HomePageEvent {
+  GetAllStudent();
 }
