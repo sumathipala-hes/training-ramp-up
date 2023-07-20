@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ramp_up/home_page/home_page.dart';
+import 'package:ramp_up/home_page/home_page_view.dart';
 
 class RampUpApp extends StatelessWidget {
   const RampUpApp({super.key});
@@ -14,7 +14,7 @@ class RampUpApp extends StatelessWidget {
         useMaterial3: true,
       ),
       debugShowCheckedModeBanner: false,
-      home: const HomePage(),
+      home: const HomePageView(),
     );
   }
 }
