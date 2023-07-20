@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:ramp_up/home_page/home_page_bloc.dart';
-import 'package:ramp_up/home_page/home_page_view.dart';
+import 'package:ramp_up/ui/home_page/home_page_bloc.dart';
+import 'package:ramp_up/ui/home_page/home_page_view.dart';
 
 class HomePageProvider extends BlocProvider<HomePageBloc> {
   HomePageProvider({

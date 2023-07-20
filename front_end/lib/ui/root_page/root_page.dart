@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:ramp_up/home_page/home_page_view.dart';
+import 'package:ramp_up/ui/home_page/home_page_view.dart';
 
-import '../theme/primary_theme.dart';
+import '../../theme/primary_theme.dart';
 
 class RampUpApp extends StatelessWidget {
   const RampUpApp({super.key});
