@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/ui/widget/student_form/student_form_view.dart';
+import 'package:frontend/ui/widget/student_form/student_form_provider.dart';
 
 class HomepageView extends StatelessWidget {
   const HomepageView({super.key});
@@ -19,7 +19,7 @@ class HomepageView extends StatelessWidget {
                 onPressed: () {
                   showDialog(
                       context: context,
-                      builder: (context) => const StudentFormView());
+                      builder: (context) => const StudentFormProvider());
                 },
                 child: const Text("Add Student")),
           ],

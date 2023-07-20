@@ -1,4 +1,4 @@
-import 'package:bloc/bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/ui/widget/student_form/student_form_event.dart';
 import 'package:frontend/ui/widget/student_form/student_form_state.dart';
 

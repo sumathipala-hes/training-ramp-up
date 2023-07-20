@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:frontend/ui/widget/student_form/student_form_bloc.dart';
+import 'package:frontend/ui/widget/student_form/student_form_event.dart';
+import 'package:frontend/ui/widget/student_form/student_form_state.dart';
 
 class StudentFormView extends StatelessWidget {
   const StudentFormView({super.key});
@@ -9,7 +13,8 @@ class StudentFormView extends StatelessWidget {
     TextEditingController addressController = TextEditingController();
     TextEditingController mobileController = TextEditingController();
     TextEditingController dateController = TextEditingController();
-    String maleOrFemale = 'Male';
+
+    StudentFormBloc bloc = BlocProvider.of<StudentFormBloc>(context);
 
     return AlertDialog(
       title: const Text('Add New Student', textAlign: TextAlign.center),
@@ -53,44 +58,59 @@ class StudentFormView extends StatelessWidget {
               height: 20,
             ),
             TextField(
-                controller: dateController,
-                decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    suffixIcon: Icon(Icons.calendar_today),
-                    labelText: "Enter Date"),
-                readOnly: true,
-                onTap: () async {
-                  DateTime? date = await showDatePicker(
-                      context: context,
-                      initialDate: DateTime.now(),
-                      firstDate: DateTime(2000),
-                      lastDate: DateTime(2025));
-                  dateController.text = date.toString().length > 10
-                      ? date.toString().substring(0, 10)
-                      : DateTime(2000).toString().substring(0, 10);
-                }),
-            Row(
-              children: [
-                Radio(
-                  value: 'Male',
-                  groupValue: maleOrFemale,
-                  onChanged: (value) {
-                    maleOrFemale = 'Male';
-                  },
-                ),
-                const Text('Male'),
-                const SizedBox(
-                  width: 20,
-                ),
-                Radio(
-                  value: 'Female',
-                  groupValue: maleOrFemale,
-                  onChanged: (value) {
-                    maleOrFemale = 'Female';
-                  },
-                ),
-                const Text('Female'),
-              ],
+              controller: dateController,
+              decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  suffixIcon: Icon(Icons.calendar_today),
+                  labelText: "Enter Date"),
+              readOnly: true,
+              onTap: () async {
+                DateTime? date = await showDatePicker(
+                    context: context,
+                    initialDate: DateTime.now(),
+                    firstDate: DateTime(2000),
+                    lastDate: DateTime(2025));
+                dateController.text = date.toString().length > 10
+                    ? date.toString().substring(0, 10)
+                    : DateTime(2000).toString().substring(0, 10);
+              },
+            ),
+            BlocBuilder<StudentFormBloc, StudentFormState>(
+              buildWhen: (previous, current) =>
+                  current.maleOrFemale != previous.maleOrFemale,
+              builder: (context, state) {
+                return Row(
+                  children: [
+                    Radio(
+                      value: 'Male',
+                      groupValue: bloc.state.maleOrFemale,
+                      onChanged: (value) {
+                        bloc.add(
+                          SetRadioButtons(
+                            maleOrFemale: value.toString(),
+                          ),
+                        );
+                      },
+                    ),
+                    const Text('Male'),
+                    const SizedBox(
+                      width: 20,
+                    ),
+                    Radio(
+                      value: 'Female',
+                      groupValue: bloc.state.maleOrFemale,
+                      onChanged: (value) {
+                        bloc.add(
+                          SetRadioButtons(
+                            maleOrFemale: value.toString(),
+                          ),
+                        );
+                      },
+                    ),
+                    const Text('Female'),
+                  ],
+                );
+              },
             )
           ],
         ),
@@ -100,7 +120,6 @@ class StudentFormView extends StatelessWidget {
           width: MediaQuery.of(context).size.width * 0.25,
           child: ElevatedButton(
             onPressed: () {
-              print(nameController.text);
               Navigator.of(context).pop();
             },
             child: const Text('CANCEL'),
