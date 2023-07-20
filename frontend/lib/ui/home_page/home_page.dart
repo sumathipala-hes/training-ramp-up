@@ -17,7 +17,21 @@ class HomepageView extends StatelessWidget {
                 onPressed: () {
                   showDialog(
                     context: context,
-                    builder: (context) => const Text('Hello World'),
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: const Text('Add New Student'),
+                        content: const Text('Popup content goes here.'),
+                        actions: [
+                          ElevatedButton(
+                            onPressed: () {
+                              // Close the popup
+                              Navigator.of(context).pop();
+                            },
+                            child: const Text('OK'),
+                          ),
+                        ],
+                      );
+                    },
                   );
                 },
                 child: const Text('ADD NEW STUDENT')),
