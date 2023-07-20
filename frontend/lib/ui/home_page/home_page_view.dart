@@ -22,7 +22,14 @@ class HomePageView extends StatelessWidget {
               onPressed: () {
                 showDialog(
                     context: context,
-                    builder: (context) => const StudentFormProvider());
+                    builder: (context) {
+                      return Dialog(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: const StudentFormProvider(),
+                      );
+                    });
               },
               child: const Padding(
                 padding: EdgeInsetsDirectional.fromSTEB(20, 10, 20, 10),

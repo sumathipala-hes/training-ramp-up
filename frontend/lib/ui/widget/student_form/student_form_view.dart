@@ -16,14 +16,18 @@ class StudentFormView extends StatelessWidget {
 
     StudentFormBloc bloc = BlocProvider.of<StudentFormBloc>(context);
 
-    return AlertDialog(
-      title: const Text('Add New Student', textAlign: TextAlign.center),
-      content: SizedBox(
-        width: MediaQuery.of(context).size.width * 1,
+    return Card(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10.0),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
+            const Text('Add New Student', textAlign: TextAlign.center),
+            const SizedBox(height: 20),
             TextField(
               controller: nameController,
               decoration: const InputDecoration(
@@ -66,10 +70,11 @@ class StudentFormView extends StatelessWidget {
               readOnly: true,
               onTap: () async {
                 DateTime? date = await showDatePicker(
-                    context: context,
-                    initialDate: DateTime.now(),
-                    firstDate: DateTime(2000),
-                    lastDate: DateTime(2025));
+                  context: context,
+                  initialDate: DateTime.now(),
+                  firstDate: DateTime(2000),
+                  lastDate: DateTime(2025),
+                );
                 dateController.text = date.toString().length > 10
                     ? date.toString().substring(0, 10)
                     : DateTime(2000).toString().substring(0, 10);
@@ -120,35 +125,33 @@ class StudentFormView extends StatelessWidget {
                   ],
                 );
               },
-            )
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.25,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text('CANCEL'),
+                  ),
+                ),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.25,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text('SAVE'),
+                  ),
+                ),
+              ],
+            ),
           ],
         ),
       ),
-      actions: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            SizedBox(
-              width: MediaQuery.of(context).size.width * 0.25,
-              child: ElevatedButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: const Text('CANCEL'),
-              ),
-            ),
-            SizedBox(
-              width: MediaQuery.of(context).size.width * 0.25,
-              child: ElevatedButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: const Text('SAVE'),
-              ),
-            ),
-          ],
-        ),
-      ],
     );
   }
 }
