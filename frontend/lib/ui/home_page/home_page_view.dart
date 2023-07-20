@@ -14,7 +14,6 @@ class HomePageView extends StatelessWidget {
         backgroundColor: Colors.black87,
       ),
       body: Container(
-        // color: Colors.black12,
         width: double.infinity,
         alignment: Alignment.center,
         decoration: const BoxDecoration(
@@ -37,15 +36,16 @@ class HomePageView extends StatelessWidget {
                 ),
                 onPressed: () {
                   showDialog(
-                      context: context,
-                      builder: (context) {
-                        return Dialog(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: const StudentFormProvider(),
-                        );
-                      });
+                    context: context,
+                    builder: (context) {
+                      return Dialog(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: const StudentFormProvider(),
+                      );
+                    },
+                  );
                 },
                 child: const Padding(
                   padding: EdgeInsetsDirectional.fromSTEB(20, 10, 20, 10),
@@ -62,12 +62,19 @@ class HomePageView extends StatelessWidget {
             const SizedBox(
               height: 50,
             ),
-            const SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Column(
-                children: [
-                  StudentCard(),
-                ],
+            SizedBox(
+              height: MediaQuery.of(context).size.height * 0.65,
+              child: const SingleChildScrollView(
+                child: Column(
+                  children: [
+                    StudentCard(),
+                    StudentCard(),
+                    StudentCard(),
+                    StudentCard(),
+                    StudentCard(),
+                    StudentCard(),
+                  ],
+                ),
               ),
             ),
           ],

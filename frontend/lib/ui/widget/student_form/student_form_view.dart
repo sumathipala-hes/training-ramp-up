@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:frontend/ui/theme/colors.dart';
 import 'package:frontend/ui/widget/student_form/student_form_bloc.dart';
 import 'package:frontend/ui/widget/student_form/student_form_event.dart';
 import 'package:frontend/ui/widget/student_form/student_form_state.dart';
@@ -26,7 +27,14 @@ class StudentFormView extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            const Text('Add New Student', textAlign: TextAlign.center),
+            const Text(
+              'Add New Student',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                  fontSize: 26,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.cardColor),
+            ),
             const SizedBox(height: 20),
             TextField(
               controller: nameController,
