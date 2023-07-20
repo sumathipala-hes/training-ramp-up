@@ -25,7 +25,13 @@ class _StudentCardState extends State<StudentCard> {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('1'),
+              Text(
+                '1',
+                style: TextStyle(
+                  fontSize: 20,
+                  color: Colors.white,
+                ),
+              ),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -33,13 +39,16 @@ class _StudentCardState extends State<StudentCard> {
                     'Dasun Shanaka',
                     style: TextStyle(
                       fontSize: 20,
-                      color: Color.fromARGB(255, 46, 46, 46),
+                      color: Colors.white70,
                     ),
                   ),
                   SizedBox(
                     height: 10,
                   ),
-                  Text('MON JULY 16 2001')
+                  Text(
+                    'MON JULY 16 2001',
+                    style: TextStyle(color: Colors.white60),
+                  ),
                 ],
               ),
             ],

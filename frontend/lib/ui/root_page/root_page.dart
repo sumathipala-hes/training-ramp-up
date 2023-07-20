@@ -10,7 +10,7 @@ class RampUpApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'RampUp',
       theme: ThemeData(
-        primarySwatch: Colors.deepPurple,
+        primarySwatch: Colors.blue,
       ),
       home: const HomePageProvider(),
     );

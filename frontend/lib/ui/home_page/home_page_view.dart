@@ -11,33 +11,50 @@ class HomePageView extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Ramp Up'),
         toolbarHeight: MediaQuery.of(context).size.height * 0.1,
+        backgroundColor: Colors.black87,
       ),
       body: Container(
+        // color: Colors.black12,
         width: double.infinity,
         alignment: Alignment.center,
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/images/background.jpg'),
+            fit: BoxFit.cover,
+          ),
+        ),
         padding: const EdgeInsetsDirectional.fromSTEB(10, 20, 10, 20),
         child: Column(
           children: [
-            ElevatedButton(
-              onPressed: () {
-                showDialog(
-                    context: context,
-                    builder: (context) {
-                      return Dialog(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: const StudentFormProvider(),
-                      );
-                    });
-              },
-              child: const Padding(
-                padding: EdgeInsetsDirectional.fromSTEB(20, 10, 20, 10),
-                child: Text(
-                  "Add Student",
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.normal,
+            SizedBox(
+              width: MediaQuery.of(context).size.width * 0.9,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(40),
+                  ),
+                  backgroundColor: Colors.black87,
+                ),
+                onPressed: () {
+                  showDialog(
+                      context: context,
+                      builder: (context) {
+                        return Dialog(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: const StudentFormProvider(),
+                        );
+                      });
+                },
+                child: const Padding(
+                  padding: EdgeInsetsDirectional.fromSTEB(20, 10, 20, 10),
+                  child: Text(
+                    "Add Student",
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.normal,
+                    ),
                   ),
                 ),
               ),
