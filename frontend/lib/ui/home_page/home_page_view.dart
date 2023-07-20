@@ -8,6 +8,7 @@ class HomepageView extends StatelessWidget {
     TextEditingController nameController = TextEditingController();
     TextEditingController addressController = TextEditingController();
     TextEditingController mobileController = TextEditingController();
+    TextEditingController dateController = TextEditingController();
 
     return Scaffold(
       appBar: AppBar(
@@ -50,10 +51,25 @@ class HomepageView extends StatelessWidget {
                                 hintText: 'Enter Mobile',
                               ),
                             ),
-                            DatePickerDialog(
-                                initialDate: DateTime.now(),
-                                firstDate: DateTime.now(),
-                                lastDate: DateTime.now())
+                            TextField(
+                                controller: dateController,
+                                decoration: const InputDecoration(
+                                    icon: Icon(Icons.calendar_today),
+                                    labelText: "Enter Date"),
+                                readOnly: true,
+                                onTap: () async {
+                                  // DatePicker.showDatePicker(
+                                  //   context,
+                                  //   showTitleActions: true,
+                                  //   minTime: DateTime(2000),
+                                  //   maxTime: DateTime(2101),
+                                  //   onConfirm: (date) {
+                                  //     print('Selected date: $date');
+                                  //     // Handle the selected date here
+                                  //   },
+                                  //   currentTime: DateTime.now(),
+                                  // );
+                                })
                           ],
                         ),
                         actions: [
