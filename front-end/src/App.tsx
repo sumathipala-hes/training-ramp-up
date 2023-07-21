@@ -1,11 +1,9 @@
 import React from 'react';
+import DataTable from './containers/DataTable';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-      </header>
-    </div>
+    <DataTable/>
   );
 }
 
