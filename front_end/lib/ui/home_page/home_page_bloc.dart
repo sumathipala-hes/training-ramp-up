@@ -8,15 +8,11 @@ import '../../util/studentDTO.dart';
 
 class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
   HomePageBloc() : super(HomePageState.initialState) {
-    on<IsVisible>(_isVisible);
     on<GetAllStudent>(_getAllStudent);
   }
 
-  FutureOr<void> _isVisible(IsVisible event, Emitter<HomePageState> emit) {
-    emit(state.clone(isVisible: !state.isVisible));
-  }
-
-  FutureOr<void> _getAllStudent(GetAllStudent event, Emitter<HomePageState> emit) {
+  FutureOr<void> _getAllStudent(
+      GetAllStudent event, Emitter<HomePageState> emit) {
     List<Student> dummyStudents = [
       Student(
         id: '1',

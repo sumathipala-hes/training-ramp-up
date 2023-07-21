@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_logs/flutter_logs.dart';
+import 'package:intl/intl.dart';
 
 class PopupModel extends StatefulWidget {
   const PopupModel({super.key});
@@ -26,12 +27,9 @@ class _PopupModelState extends State<PopupModel> {
       lastDate: DateTime(2005),
     );
 
-    if (picked != null && picked != selectedDate) {
-      setState(() {
-        selectedDate = picked;
-        dateController.text = selectedDate.toString();
-      });
-    }
+    dateController.text = DateFormat('EEE MMM d yyyy').format(
+      picked ?? DateTime.now(),
+    );
   }
 
   @override
