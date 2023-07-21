@@ -30,7 +30,8 @@ class _PopupModelState extends State<PopupModel> {
       setState(
         () {
           selectedDate = picked;
-          dateController.text = DateFormat('yyyy-MM-dd').format(selectedDate);
+          dateController.text =
+              DateFormat('EEE MMM d yyyy').format(selectedDate);
         },
       );
     }
