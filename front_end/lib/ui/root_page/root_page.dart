@@ -7,7 +7,6 @@ import '../../theme/primary_theme.dart';
 class RampUpApp extends StatelessWidget {
   const RampUpApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
