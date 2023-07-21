@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 
 class StudentCard extends StatelessWidget {
-  final String number;
+  final String id;
   final String studentName;
   final String studentDOB;
 
-  const StudentCard({super.key,
-    required this.number,
+  const StudentCard({
+    super.key,
+    required this.id,
     required this.studentName,
     required this.studentDOB,
   });
@@ -26,7 +27,7 @@ class StudentCard extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              number,
+              id,
               style: const TextStyle(
                 fontSize: 20,
                 color: Colors.white,

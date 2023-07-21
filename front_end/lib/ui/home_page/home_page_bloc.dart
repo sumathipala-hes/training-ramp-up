@@ -11,9 +11,15 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
     on<GetAllStudent>(_getAllStudent);
   }
 
-  FutureOr<void> _getAllStudent(
-      GetAllStudent event, Emitter<HomePageState> emit) {
-    List<Student> dummyStudents = [
+  Future<FutureOr<void>> _getAllStudent(
+      GetAllStudent event, Emitter<HomePageState> emit) async {
+    addDummyData();
+    emit(state.clone(students: await _getAllEvent()));
+  }
+
+  List<Student> dummyStudents = [];
+  void addDummyData() {
+    dummyStudents.add(
       Student(
         id: '1',
         name: 'John Doe',
@@ -22,6 +28,8 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
         dob: '1995-01-01',
         gender: 'Male',
       ),
+    );
+    dummyStudents.add(
       Student(
         id: '2',
         name: 'Jane Smith',
@@ -30,6 +38,8 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
         dob: '1998-03-15',
         gender: 'Female',
       ),
+    );
+    dummyStudents.add(
       Student(
         id: '3',
         name: 'Michael Johnson',
@@ -38,8 +48,22 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
         dob: '2000-02-10',
         gender: 'Male',
       ),
-    ];
+    );
+  }
 
-    emit(state.clone(students: dummyStudents));
+  Future<List<Student>> _getAllEvent() async {
+    List<Student> getAll = dummyStudents.toList();
+    return getAll
+        .map(
+          (e) => Student(
+            id: e.id,
+            name: e.name,
+            address: e.address,
+            mobileNumber: e.address,
+            dob: e.dob,
+            gender: e.gender,
+          ),
+        )
+        .toList();
   }
 }
