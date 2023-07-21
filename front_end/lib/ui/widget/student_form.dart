@@ -120,6 +120,7 @@ class _PopupModelState extends State<PopupModel> {
             decoration: InputDecoration(
               labelText: "Date",
               labelStyle: labelText,
+              suffixIcon: const Icon(Icons.calendar_today),
               border: const OutlineInputBorder(
                 borderRadius: BorderRadius.all(
                   Radius.circular(
