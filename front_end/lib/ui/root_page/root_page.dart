@@ -11,13 +11,7 @@ class RampUpApp extends StatelessWidget {
       title: 'Ramp Up',
       theme: ThemeData(
         primarySwatch: Colors.deepPurple,
-        // useMaterial3: true,
       ),
-      // home: const Scaffold(
-      //   body: Center(
-      //     child: Text('Ramp Up'),
-      //   ),
-      // ),
       home: RampUpHomeScreenProvider(),
     );
   }
