@@ -25,51 +25,47 @@ class _StudentCardState extends State<StudentCard> {
           borderRadius: BorderRadius.circular(10),
         ),
         child: Padding(
-          padding: const EdgeInsets.all(15,),
+          padding: const EdgeInsets.all(15),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Expanded(
-                child: Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(
-                        left: 2.0,
-                        right: 70,
-                      ),
-                      child: Text(
-                        widget.student.studentId,
-                        style: const TextStyle(
-                          fontSize: 20,
-                          color: Colors.white,
-                        ),
-                      ),
+              Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      left: 22.0,
+                      right: 70,
                     ),
-                  ],
-                ),
-              ),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      widget.student.studentName,
+                    child: Text(
+                      widget.student.studentId,
                       style: const TextStyle(
                         fontSize: 20,
-                        fontWeight: FontWeight.w400,
-                        color: Colors.white70,
+                        color: Colors.white,
                       ),
                     ),
-                    const SizedBox(height: 10),
-                    Text(
-                      DateFormat('EEE MMM d yyyy')
-                          .format(widget.student.studentDob),
-                      style: const TextStyle(
-                        color: Colors.white70,
-                      ),
+                  ),
+                ],
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    widget.student.studentName,
+                    style: const TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w400,
+                      color: Colors.white70,
                     ),
-                  ],
-                ),
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    DateFormat('EEE MMM d yyyy')
+                        .format(widget.student.studentDob),
+                    style: const TextStyle(
+                      color: Colors.white70,
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
