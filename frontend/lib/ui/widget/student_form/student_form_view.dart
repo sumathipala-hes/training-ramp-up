@@ -20,7 +20,7 @@ class StudentFormView extends StatelessWidget {
 
     return Card(
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10.0),
+        borderRadius: BorderRadius.circular(20.0),
       ),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -141,6 +141,9 @@ class StudentFormView extends StatelessWidget {
                 SizedBox(
                   width: MediaQuery.of(context).size.width * 0.25,
                   child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.cardColor,
+                    ),
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
@@ -150,6 +153,9 @@ class StudentFormView extends StatelessWidget {
                 SizedBox(
                   width: MediaQuery.of(context).size.width * 0.25,
                   child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.cardColor,
+                    ),
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
