@@ -2,11 +2,19 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:ramp_up/ui/widget/card_details.dart';
 import 'package:ramp_up/ui/widget/student_form.dart';
 
-class HomePageView extends StatelessWidget {
-  const HomePageView({super.key});
+import '../../util/studentDTO.dart';
 
+class HomePageView extends StatefulWidget {
+  const HomePageView({Key? key}) : super(key: key);
+
+  @override
+  _HomePageViewState createState() => _HomePageViewState();
+}
+
+class _HomePageViewState extends State<HomePageView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,38 +37,55 @@ class HomePageView extends StatelessWidget {
           BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
             child: Container(
-              color:
-                  Colors.black.withOpacity(0.3), // Change the opacity as needed
+              color: Colors.black.withOpacity(0.3),
             ),
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Center(
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.all(16),
-                  backgroundColor: Colors.black,
-                  shadowColor: Colors.white,
-                  shape: const RoundedRectangleBorder(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const SizedBox(height: 40),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.all(16),
+                    backgroundColor: Colors.black,
+                    shadowColor: Colors.white,
+                    shape: const RoundedRectangleBorder(
                       borderRadius: BorderRadius.all(
-                    Radius.circular(15),
-                  )),
-                ),
-                onPressed: () {
-                  showDialog(
-                    context: context,
-                    builder: (context) => PopupModel(),
-                  );
-                },
-                child: Text(
-                  "ADD NEW STUDENT",
-                  style: GoogleFonts.ubuntu(
-                    fontSize: 17.0,
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
+                        Radius.circular(15),
+                      ),
+                    ),
+                  ),
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder: (context) =>
+                          const PopupModel(), // Replace with the actual implementation of PopupModel
+                    ).then((value) {
+                      if (value != null && value is Student) {
+                        setState(() {
+                          // students.add(value);
+                        });
+                      }
+                    });
+                  },
+                  child: Text(
+                    "ADD NEW STUDENT",
+                    style: GoogleFonts.ubuntu(
+                      fontSize: 17.0,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
-              ),
+                const SizedBox(height: 16),
+                const CustomCard(
+                  number: '1',
+                  studentName: 'Student Name',
+                  studentDOB: 'Student DOB',
+                )
+              ],
             ),
           ),
         ],
