@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/model/student.dart';
 import 'package:frontend/ui/theme/colors.dart';
+import 'package:intl/intl.dart';
 
 class StudentCard extends StatefulWidget {
   final Student student;
@@ -51,7 +52,7 @@ class _StudentCardState extends State<StudentCard> {
                     height: 10,
                   ),
                   Text(
-                    widget.student.dob.toString(),
+                    DateFormat('EEE MMM d yyyy').format(widget.student.dob),
                     style: const TextStyle(color: Colors.white60),
                   ),
                 ],

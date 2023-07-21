@@ -4,6 +4,7 @@ import 'package:frontend/ui/theme/colors.dart';
 import 'package:frontend/ui/widget/student_form/student_form_bloc.dart';
 import 'package:frontend/ui/widget/student_form/student_form_event.dart';
 import 'package:frontend/ui/widget/student_form/student_form_state.dart';
+import 'package:intl/intl.dart';
 
 class StudentFormView extends StatelessWidget {
   const StudentFormView({super.key});
@@ -83,9 +84,9 @@ class StudentFormView extends StatelessWidget {
                   firstDate: DateTime(2000),
                   lastDate: DateTime(2025),
                 );
-                dateController.text = date.toString().length > 10
-                    ? date.toString().substring(0, 10)
-                    : DateTime(2000).toString().substring(0, 10);
+                dateController.text = DateFormat('EEE MMM d yyyy').format(
+                  date ?? DateTime.now(),
+                );
               },
             ),
             const SizedBox(

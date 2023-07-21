@@ -69,11 +69,13 @@ class HomePageView extends StatelessWidget {
                 child: Column(
                   children: [
                     StudentCard(
-                        student: Student(
-                            name: 'John Doe',
-                            address: '123 Main St',
-                            mobile: '1234567890',
-                            dob: DateTime.now())),
+                      student: Student(
+                        name: 'John Doe',
+                        address: '123 Main St',
+                        mobile: '1234567890',
+                        dob: DateTime.now(),
+                      ),
+                    ),
                   ],
                 ),
               ),
