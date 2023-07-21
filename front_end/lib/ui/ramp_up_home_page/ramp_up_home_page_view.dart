@@ -14,12 +14,6 @@ class RampUpHomeScreen extends StatelessWidget {
         elevation: 7,
         centerTitle: true,
         title: const Text('R A M P   U P'),
-        titleTextStyle: const TextStyle(
-          fontSize: 25.0,
-          // fontWeight: FontWeight.bold,
-          // color: Colors.white,
-          fontFamily: ''
-        ),
         actions: [
           IconButton(
             icon: const Icon(Icons.share),
@@ -66,7 +60,7 @@ class RampUpHomeScreen extends StatelessWidget {
                 ),
               ),
             ),
-             const SizedBox(height: 30),
+            const SizedBox(height: 30),
             Expanded(
               child: SingleChildScrollView(
                 child: Column(
