@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_logs/flutter_logs.dart';
 import 'package:intl/intl.dart';
 
 class PopupModel extends StatefulWidget {
@@ -37,7 +38,25 @@ class _PopupModelState extends State<PopupModel> {
   }
 
   void _saveForm() {
-    Navigator.of(context).pop();
+    final name = nameController.text.trim();
+    final address = addressController.text.trim();
+    final mobileNo = mobileNumberController.text.trim();
+    final date = dateController.text.trim();
+    final gender = selectedGender;
+
+    if (name.isEmpty ||
+        address.isEmpty ||
+        mobileNo.isEmpty ||
+        date.isEmpty ||
+        gender.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Please fill all the fields"),
+        ),
+      );
+    } else {
+      Navigator.of(context).pop();
+    }
   }
 
   @override
