@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-class CustomCard extends StatelessWidget {
+class StudentCard extends StatelessWidget {
   final String number;
   final String studentName;
   final String studentDOB;
 
-  const CustomCard({super.key,
+  const StudentCard({super.key,
     required this.number,
     required this.studentName,
     required this.studentDOB,

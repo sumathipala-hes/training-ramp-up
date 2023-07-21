@@ -1,22 +1,21 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:ramp_up/ui/widget/card_details.dart';
 import 'package:ramp_up/ui/widget/student_form.dart';
 
-import '../../util/studentDTO.dart';
+import 'home_page_bloc.dart';
+import 'home_page_state.dart';
 
-class HomePageView extends StatefulWidget {
-  const HomePageView({Key? key}) : super(key: key);
+class HomePageView extends StatelessWidget {
+  const HomePageView({super.key});
 
-  @override
-  _HomePageViewState createState() => _HomePageViewState();
-}
-
-class _HomePageViewState extends State<HomePageView> {
   @override
   Widget build(BuildContext context) {
+    HomePageBloc bloc = BlocProvider.of<HomePageBloc>(context);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -62,13 +61,7 @@ class _HomePageViewState extends State<HomePageView> {
                       context: context,
                       builder: (context) =>
                           const PopupModel(), // Replace with the actual implementation of PopupModel
-                    ).then((value) {
-                      if (value != null && value is Student) {
-                        setState(() {
-                          // students.add(value);
-                        });
-                      }
-                    });
+                    );
                   },
                   child: Text(
                     "ADD NEW STUDENT",
@@ -80,10 +73,14 @@ class _HomePageViewState extends State<HomePageView> {
                   ),
                 ),
                 const SizedBox(height: 16),
-                const CustomCard(
-                  number: '1',
-                  studentName: 'Student Name',
-                  studentDOB: 'Student DOB',
+                BlocBuilder<HomePageBloc, HomePageState>(
+                  builder: (context, state) {
+                    return const StudentCard(
+                      number: '1',
+                      studentName: 'Student Name',
+                      studentDOB: 'Student DOB',
+                    );
+                  },
                 )
               ],
             ),
