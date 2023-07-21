@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/model/student.dart';
 import 'package:frontend/ui/widget/student_card.dart';
 import 'package:frontend/ui/widget/student_form/student_form_provider.dart';
 
@@ -64,15 +65,15 @@ class HomePageView extends StatelessWidget {
             ),
             SizedBox(
               height: MediaQuery.of(context).size.height * 0.65,
-              child: const SingleChildScrollView(
+              child: SingleChildScrollView(
                 child: Column(
                   children: [
-                    StudentCard(),
-                    StudentCard(),
-                    StudentCard(),
-                    StudentCard(),
-                    StudentCard(),
-                    StudentCard(),
+                    StudentCard(
+                        student: Student(
+                            name: 'John Doe',
+                            address: '123 Main St',
+                            mobile: '1234567890',
+                            dob: DateTime.now())),
                   ],
                 ),
               ),

@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/model/student.dart';
 import 'package:frontend/ui/theme/colors.dart';
 
 class StudentCard extends StatefulWidget {
-  const StudentCard({super.key});
+  final Student student;
+  const StudentCard({
+    Key? key,
+    required this.student,
+  }) : super(key: key);
 
   @override
   State<StudentCard> createState() => _StudentCardState();
@@ -19,13 +24,13 @@ class _StudentCardState extends State<StudentCard> {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),
         ),
-        child: const Padding(
-          padding: EdgeInsets.fromLTRB(40, 20, 40, 20),
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(40, 20, 40, 20),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
+              const Text(
                 '1',
                 style: TextStyle(
                   fontSize: 20,
@@ -36,18 +41,18 @@ class _StudentCardState extends State<StudentCard> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Dasun Shanaka',
-                    style: TextStyle(
+                    widget.student.name,
+                    style: const TextStyle(
                       fontSize: 20,
                       color: Colors.white70,
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 10,
                   ),
                   Text(
-                    'MON JULY 16 2001',
-                    style: TextStyle(color: Colors.white60),
+                    widget.student.dob.toString(),
+                    style: const TextStyle(color: Colors.white60),
                   ),
                 ],
               ),
