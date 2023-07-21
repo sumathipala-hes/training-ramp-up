@@ -25,7 +25,7 @@ class _StudentCardState extends State<StudentCard> {
           borderRadius: BorderRadius.circular(10),
         ),
         child: Padding(
-          padding: const EdgeInsets.all(15),
+          padding: const EdgeInsets.all(15,),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
@@ -34,7 +34,7 @@ class _StudentCardState extends State<StudentCard> {
                   children: [
                     Padding(
                       padding: const EdgeInsets.only(
-                        left: 22.0,
+                        left: 2.0,
                         right: 70,
                       ),
                       child: Text(
