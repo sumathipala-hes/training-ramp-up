@@ -70,6 +70,7 @@ class HomePageView extends StatelessWidget {
                   children: [
                     StudentCard(
                       student: Student(
+                        id: '1',
                         name: 'John Doe',
                         address: '123 Main St',
                         mobile: '1234567890',

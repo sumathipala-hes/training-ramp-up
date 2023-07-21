@@ -31,9 +31,9 @@ class _StudentCardState extends State<StudentCard> {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text(
-                '1',
-                style: TextStyle(
+              Text(
+                widget.student.id,
+                style: const TextStyle(
                   fontSize: 20,
                   color: Colors.white,
                 ),
