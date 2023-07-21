@@ -16,6 +16,25 @@ class _PopupModelState extends State<PopupModel> {
   final TextEditingController dateController = TextEditingController();
 
   String selectedGender = "Male";
+  DateTime selectedDate = DateTime.now();
+
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: selectedDate,
+      firstDate: DateTime(1995),
+      lastDate: DateTime.now(),
+    );
+
+    if (picked != null && picked != selectedDate) {
+      setState(
+        () {
+          selectedDate = picked;
+          dateController.text = DateFormat('yyyy-MM-dd').format(selectedDate);
+        },
+      );
+    }
+  }
 
   void _saveForm() {
     Navigator.of(context).pop();
@@ -68,6 +87,18 @@ class _PopupModelState extends State<PopupModel> {
                       Radius.circular(8.0),
                     ),
                   ),
+                ),
+              ),
+              TextFormField(
+                controller: dateController,
+                readOnly: true,
+                onTap: () => _selectDate(context),
+                decoration: const InputDecoration(
+                  labelText: "Date of Birth:",
+                  suffixIcon: Icon(Icons.calendar_today),
+                  border: InputBorder.none,
+                  contentPadding:
+                      EdgeInsets.symmetric(vertical: 12.0, horizontal: 14.0),
                 ),
               ),
               Row(
