@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:front_end/ui/widget/student_manage_form.dart';
 
 class RampUpHomeScreen extends StatelessWidget {
   const RampUpHomeScreen({Key? key}) : super(key: key);
@@ -41,7 +42,12 @@ class RampUpHomeScreen extends StatelessWidget {
                     ),
                   ),
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (context) => const PopupModel(),
+                  );
+                },
                 child: const Text(
                   'ADD NEW STUDENT',
                   style: TextStyle(
