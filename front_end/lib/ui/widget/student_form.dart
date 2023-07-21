@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_logs/flutter_logs.dart';
 import 'package:intl/intl.dart';
 
+import '../../theme/primary_theme.dart';
+
 class PopupModel extends StatefulWidget {
   const PopupModel({super.key});
 
@@ -35,65 +37,107 @@ class _PopupModelState extends State<PopupModel> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
-      title: const SizedBox(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15.0),
+      ),
+      title: SizedBox(
         width: 400,
         child: Center(
           child: Text(
             "ADD NEW STUDENT",
-            style: TextStyle(
-                fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blue),
+            style: headerText,
           ),
         ),
       ),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
+          const SizedBox(height: 10),
           TextField(
             controller: nameController,
-            decoration: const InputDecoration(
-              labelText: "Name :",
-              labelStyle: TextStyle(
-                  color: Colors.black,
-                  fontSize: 17,
-                  fontWeight: FontWeight.bold),
+            decoration: InputDecoration(
+              labelText: "Student Name",
+              labelStyle: labelText,
+              border: const OutlineInputBorder(
+                borderRadius: BorderRadius.all(
+                  Radius.circular(10),
+                ),
+              ),
+              filled: true,
+              fillColor: Colors.grey[200],
+              contentPadding: const EdgeInsets.symmetric(
+                vertical: 12.0,
+                horizontal: 16.0,
+              ),
             ),
           ),
+          const SizedBox(height: 10),
           TextField(
             controller: addressController,
-            decoration: const InputDecoration(
-              labelText: "Address :",
-              labelStyle: TextStyle(
-                  color: Colors.black,
-                  fontSize: 17,
-                  fontWeight: FontWeight.bold),
+            decoration: InputDecoration(
+              labelText: "Student Address",
+              labelStyle: labelText,
+              border: const OutlineInputBorder(
+                borderRadius: BorderRadius.all(
+                  Radius.circular(10),
+                ),
+              ),
+              filled: true,
+              fillColor: Colors.grey[200],
+              contentPadding: const EdgeInsets.symmetric(
+                vertical: 12.0,
+                horizontal: 16.0,
+              ),
             ),
           ),
+          const SizedBox(height: 10),
           TextField(
             controller: mobileNoController,
-            decoration: const InputDecoration(
-              labelText: "Mobile :",
-              labelStyle: TextStyle(
-                  color: Colors.black,
-                  fontSize: 17,
-                  fontWeight: FontWeight.bold),
+            decoration: InputDecoration(
+              labelText: "Mobile No",
+              labelStyle: labelText,
+              border: const OutlineInputBorder(
+                borderRadius: BorderRadius.all(
+                  Radius.circular(10),
+                ),
+              ),
+              filled: true,
+              fillColor: Colors.grey[200],
+              contentPadding: const EdgeInsets.symmetric(
+                vertical: 12.0,
+                horizontal: 16.0,
+              ),
             ),
+          ),
+          const SizedBox(
+            height: 10,
           ),
           TextFormField(
             controller: dateController,
             onTap: () {
               _selectDate(context);
             },
-            decoration: const InputDecoration(
-              labelText: "Date :",
-              labelStyle: TextStyle(
-                  color: Colors.black,
-                  fontSize: 17,
-                  fontWeight: FontWeight.bold),
-              suffixIcon: Icon(Icons.calendar_today),
+            decoration: InputDecoration(
+              labelText: "Date",
+              labelStyle: labelText,
+              border: const OutlineInputBorder(
+                borderRadius: BorderRadius.all(
+                  Radius.circular(
+                    10,
+                  ),
+                ),
+              ),
+              filled: true,
+              fillColor: Colors.grey[200],
+              contentPadding: const EdgeInsets.symmetric(
+                vertical: 12.0,
+                horizontal: 16.0,
+              ),
             ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(
+            height: 10,
+          ),
           Center(
             child: Row(
               children: [
@@ -108,13 +152,9 @@ class _PopupModelState extends State<PopupModel> {
                     );
                   },
                 ),
-                const Text(
+                Text(
                   "Male",
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                  ),
+                  style: textRedio,
                 ),
                 Radio(
                   value: "Female",
@@ -127,13 +167,9 @@ class _PopupModelState extends State<PopupModel> {
                     );
                   },
                 ),
-                const Text(
+                Text(
                   "Female",
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                  ),
+                  style: textRedio,
                 ),
               ],
             ),
@@ -141,7 +177,7 @@ class _PopupModelState extends State<PopupModel> {
         ],
       ),
       actions: [
-        TextButton(
+        ElevatedButton(
           onPressed: () {
             final name = nameController.text.trim();
             final address = addressController.text.trim();
@@ -162,20 +198,20 @@ class _PopupModelState extends State<PopupModel> {
 
             Navigator.of(context).pop();
           },
-          child: const Text(
+          style: saveButton,
+          child: Text(
             "SAVE",
-            style: TextStyle(
-                fontSize: 16, fontWeight: FontWeight.bold, color: Colors.blue),
+            style: textButton,
           ),
         ),
-        TextButton(
+        ElevatedButton(
           onPressed: () {
             Navigator.of(context).pop();
           },
-          child: const Text(
+          style: cancelButton,
+          child: Text(
             "CANCEL",
-            style: TextStyle(
-                fontSize: 16, fontWeight: FontWeight.bold, color: Colors.red),
+            style: textButton,
           ),
         ),
       ],

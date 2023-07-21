@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../../theme/primary_theme.dart';
+import '../../theme/styled_theme.dart';
+
 class StudentCard extends StatelessWidget {
   final String id;
   final String studentName;
@@ -16,7 +19,7 @@ class StudentCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       elevation: 4,
-      color: Colors.blueGrey[900],
+      color: AppColors.cardColor,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10),
       ),
@@ -28,25 +31,19 @@ class StudentCard extends StatelessWidget {
           children: [
             Text(
               id,
-              style: const TextStyle(
-                fontSize: 20,
-                color: Colors.white,
-              ),
+              style: cardText,
             ),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   studentName,
-                  style: const TextStyle(
-                    fontSize: 20,
-                    color: Colors.white70,
-                  ),
+                  style: cardText,
                 ),
                 const SizedBox(height: 10),
                 Text(
                   studentDOB,
-                  style: const TextStyle(color: Colors.white60),
+                  style: cardTextSub,
                 ),
               ],
             ),

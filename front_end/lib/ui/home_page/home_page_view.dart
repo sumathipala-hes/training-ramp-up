@@ -7,6 +7,7 @@ import 'package:ramp_up/ui/widget/card_details.dart';
 import 'package:ramp_up/ui/widget/student_form.dart';
 import 'package:ramp_up/util/studentDTO.dart';
 
+import '../../theme/primary_theme.dart';
 import 'home_page_bloc.dart';
 import 'home_page_event.dart';
 import 'home_page_state.dart';
@@ -25,13 +26,15 @@ class HomePageView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     HomePageBloc bloc = BlocProvider.of<HomePageBloc>(context);
-
     bloc.add(GetAllStudent());
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           "Manage Student",
-          style: TextStyle(fontWeight: FontWeight.bold),
+          style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontFamily: GoogleFonts.ubuntu().fontFamily),
         ),
       ),
       body: Stack(
@@ -55,18 +58,9 @@ class HomePageView extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const SizedBox(height: 40),
+                const SizedBox(height: 30),
                 ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.all(16),
-                    backgroundColor: Colors.black,
-                    shadowColor: Colors.white,
-                    shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(15),
-                      ),
-                    ),
-                  ),
+                  style: popButton,
                   onPressed: () {
                     showDialog(
                       context: context,
@@ -76,26 +70,26 @@ class HomePageView extends StatelessWidget {
                   },
                   child: Text(
                     "ADD NEW STUDENT",
-                    style: GoogleFonts.ubuntu(
-                      fontSize: 17.0,
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: textButton,
                   ),
                 ),
                 const SizedBox(height: 30),
-                BlocBuilder<HomePageBloc, HomePageState>(
-                  builder: (context, state) {
-                    return ListView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: state.students.length,
-                      itemBuilder: (context, index) {
-                        final student = state.students[index];
-                        return _buildStudentCardView(student);
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: BlocBuilder<HomePageBloc, HomePageState>(
+                      builder: (context, state) {
+                        return ListView.builder(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: state.students.length,
+                          itemBuilder: (context, index) {
+                            final student = state.students[index];
+                            return _buildStudentCardView(student);
+                          },
+                        );
                       },
-                    );
-                  },
+                    ),
+                  ),
                 ),
               ],
             ),

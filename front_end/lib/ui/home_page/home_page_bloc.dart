@@ -19,13 +19,14 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
 
   List<Student> dummyStudents = [];
   void addDummyData() {
+    dummyStudents.clear();
     dummyStudents.add(
       Student(
         id: '1',
         name: 'John Doe',
         address: '123 Main St',
         mobileNumber: '555-1234',
-        dob: '1995-01-01',
+        dob: 'sat July 24 2003',
         gender: 'Male',
       ),
     );
@@ -35,7 +36,7 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
         name: 'Jane Smith',
         address: '456 Oak Ave',
         mobileNumber: '555-5678',
-        dob: '1998-03-15',
+        dob: 'sat July 28 2004',
         gender: 'Female',
       ),
     );
@@ -45,7 +46,7 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
         name: 'Michael Johnson',
         address: '789 Broadway',
         mobileNumber: '+1 555-9876',
-        dob: '2000-02-10',
+        dob: 'sat July 24 2005',
         gender: 'Male',
       ),
     );
