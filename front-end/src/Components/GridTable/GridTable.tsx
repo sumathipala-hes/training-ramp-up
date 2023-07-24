@@ -20,21 +20,21 @@ const columns: GridColDef[] = [
     {
         field: 'address',
         headerName: 'Address',
-        width: 200,
+        width: 180,
         editable: true,
     },
     {
         field: 'mobileNumber',
         headerName: 'Mobile No',
         type: 'number',
-        width: 170,
+        width: 160,
         editable: true,
     },
     {
         field: 'dateOfBirth',
         headerName: 'Date of Birth',
         type: 'date',
-        width: 190,
+        width: 160,
         editable: true,
     },
     {
