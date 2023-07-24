@@ -13,7 +13,6 @@ import {
   DataGrid,
   GridColDef,
   GridToolbarContainer,
-  GridActionsCellItem,
 } from '@mui/x-data-grid';
 import { initialRows } from "../../util/Data";
 
@@ -112,46 +111,42 @@ function DataTable() {
 
         if (isInEditMode) {
           return [
-            <GridActionsCellItem
-              icon={<Button color="info" variant="contained" startIcon={<SaveIcon />}>
-                Save
-              </Button>}
-              label="Save"
-              sx={{
-                color: 'primary.main',
-              }}
+            <Button
+              color="info"
+              variant="contained"
+              startIcon={<SaveIcon />}
 
-            />,
-            <GridActionsCellItem
-              icon={<Button color="warning" variant="contained" startIcon={<CancelIcon />}>
-                Cencel
-              </Button>}
-              label="Cancel"
-              className="textPrimary"
+            >
+              Save
+            </Button>,
+            <Button
+              color="warning"
+              variant="contained"
+              startIcon={<CancelIcon />}
 
-              color="inherit"
-            />,
+            >
+              Cancel
+            </Button>,
           ];
         }
 
         return [
-          <GridActionsCellItem
-            icon={<Button color="info" variant="contained" startIcon={<EditIcon />}>
-              Edit
-            </Button>}
-            label="Edit"
-            className="textPrimary"
+          <Button
+            color="info"
+            variant="contained"
+            startIcon={<EditIcon />}
 
-            color="inherit"
-          />,
-          <GridActionsCellItem
-            icon={<Button color="error" variant="contained" startIcon={<DeleteIcon />}>
-              Delete
-            </Button>}
-            label="Delete"
+          >
+            Edit
+          </Button>,
+          <Button
+            color="error"
+            variant="contained"
+            startIcon={<DeleteIcon />}
 
-            color="inherit"
-          />,
+          >
+            Delete
+          </Button>,
         ];
       },
     },
