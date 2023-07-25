@@ -199,6 +199,7 @@ class _PopupModelState extends State<PopupModel> {
           ),
           Center(
             child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Radio(
                   value: "Male",
