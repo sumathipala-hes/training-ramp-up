@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
 import '../../theme/primary_theme.dart';
+import '../../util/alert.dart';
 import '../home_page/home_page_bloc.dart';
 import '../home_page/home_page_event.dart';
 
@@ -247,6 +248,7 @@ class _PopupModelState extends State<PopupModel> {
                     gender: selectedGender,
                   ));
                   clear();
+                  AlertTextField.showSaveAlert('Save User Successfully.');
                   Navigator.of(context).pop();
                 }
               : null,
