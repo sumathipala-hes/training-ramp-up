@@ -95,7 +95,7 @@ class _StudentFormState extends State<StudentForm> {
                     context: context,
                     initialDate: DateTime.parse('2000-01-01'),
                     firstDate: DateTime(2000),
-                    lastDate: DateTime(2025),
+                    lastDate: DateTime(DateTime.now().year - 18),
                   );
                   dateController.text = DateFormat('EEE MMM d yyyy').format(
                     date ?? DateTime.now(),
