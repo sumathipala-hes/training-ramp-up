@@ -1,6 +1,3 @@
-import 'package:flutter/material.dart';
-
-@immutable
 abstract class HomePageEvent {}
 
 class SaveStudentEvent extends HomePageEvent {
@@ -18,3 +15,5 @@ class SaveStudentEvent extends HomePageEvent {
     required this.gender,
   });
 }
+
+class GetAllStudents extends HomePageEvent {}

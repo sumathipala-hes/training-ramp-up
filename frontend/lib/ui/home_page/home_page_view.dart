@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:frontend/model/student.dart';
 import 'package:frontend/ui/home_page/home_page_bloc.dart';
 import 'package:frontend/ui/home_page/home_page_state.dart';
 import 'package:frontend/ui/widget/student_form.dart';
 import '../widget/student_card.dart';
+import 'home_page_event.dart';
 
 class HomePageView extends StatelessWidget {
   const HomePageView({
@@ -12,6 +14,8 @@ class HomePageView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    HomePageBloc homePageBloc = BlocProvider.of<HomePageBloc>(context);
+    homePageBloc.add(GetAllStudents());
     return Scaffold(
       appBar: AppBar(
         title: const Text('Ramp Up'),
@@ -78,24 +82,30 @@ class HomePageView extends StatelessWidget {
               height: 50,
             ),
             BlocBuilder<HomePageBloc, HomePageState>(
-              buildWhen: (previous, current) =>
-                  current.students != previous.students,
-              builder: (context, state) => state.students.isEmpty
-                  ? const SizedBox()
-                  : SizedBox(
-                      height: MediaQuery.of(context).size.height * 0.58,
-                      child: SingleChildScrollView(
-                        child: Column(
-                          children: state.students
-                              .map(
-                                (diary) => StudentCard(
-                                  student: diary,
-                                ),
-                              )
-                              .toList(),
+              // buildWhen: (previous, current) =>
+              //     current.students != previous.students,
+              builder: (context, state) {
+                final List<Student> studentList = state.students;
+                return SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.58,
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        ListView.builder(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: studentList.length,
+                          itemBuilder: (context, index) {
+                            return StudentCard(
+                              student: studentList[index],
+                            );
+                          },
                         ),
-                      ),
+                      ],
                     ),
+                  ),
+                );
+              },
             ),
           ],
         ),
