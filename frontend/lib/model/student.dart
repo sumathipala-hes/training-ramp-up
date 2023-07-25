@@ -4,6 +4,7 @@ class Student {
   String address;
   String mobile;
   DateTime dob;
+  String gender;
 
   Student({
     required this.id,
@@ -11,5 +12,6 @@ class Student {
     required this.address,
     required this.mobile,
     required this.dob,
+    required this.gender,
   });
 }

@@ -21,7 +21,7 @@ class _StudentCardState extends State<StudentCard> {
       width: MediaQuery.of(context).size.width * 0.9,
       child: Card(
         elevation: 4,
-        color: AppColors.cardColor,
+        color: AppColors.mainColor,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),
         ),

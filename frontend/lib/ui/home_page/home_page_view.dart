@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/model/student.dart';
-import 'package:frontend/ui/widget/student_card.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:frontend/ui/root_page/root_state.dart';
 import 'package:frontend/ui/widget/student_form/student_form_provider.dart';
+import '../root_page/root_bloc.dart';
+import '../widget/student_card.dart';
 
 class HomePageView extends StatelessWidget {
-  const HomePageView({super.key});
+  const HomePageView({
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -39,23 +43,33 @@ class HomePageView extends StatelessWidget {
                   showDialog(
                     context: context,
                     builder: (context) {
-                      return Dialog(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: const StudentFormProvider(),
+                      return const Dialog(
+                        backgroundColor: Colors.transparent,
+                        child: StudentFormProvider(),
                       );
                     },
                   );
                 },
                 child: const Padding(
                   padding: EdgeInsetsDirectional.fromSTEB(20, 10, 20, 10),
-                  child: Text(
-                    "Add Student",
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.normal,
-                    ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.add,
+                        color: Colors.white,
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      Text(
+                        "Add Student",
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.normal,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -63,23 +77,25 @@ class HomePageView extends StatelessWidget {
             const SizedBox(
               height: 50,
             ),
-            SizedBox(
-              height: MediaQuery.of(context).size.height * 0.65,
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    StudentCard(
-                      student: Student(
-                        id: '1',
-                        name: 'John Doe',
-                        address: '123 Main St',
-                        mobile: '1234567890',
-                        dob: DateTime.now(),
+            BlocBuilder<RootBloc, RootState>(
+              buildWhen: (previous, current) =>
+                  current.students != previous.students,
+              builder: (context, state) => state.students.isEmpty
+                  ? const SizedBox()
+                  : SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.58,
+                      child: SingleChildScrollView(
+                        child: Column(
+                          children: state.students
+                              .map(
+                                (diary) => StudentCard(
+                                  student: diary,
+                                ),
+                              )
+                              .toList(),
+                        ),
                       ),
                     ),
-                  ],
-                ),
-              ),
             ),
           ],
         ),
