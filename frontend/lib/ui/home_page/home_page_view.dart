@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:frontend/ui/root_page/root_state.dart';
-import 'package:frontend/ui/widget/student_form/student_form_provider.dart';
-import '../root_page/root_bloc.dart';
+import 'package:frontend/ui/home_page/home_page_bloc.dart';
+import 'package:frontend/ui/home_page/home_page_state.dart';
+import 'package:frontend/ui/widget/student_form.dart';
 import '../widget/student_card.dart';
 
 class HomePageView extends StatelessWidget {
@@ -45,7 +45,7 @@ class HomePageView extends StatelessWidget {
                     builder: (context) {
                       return const Dialog(
                         backgroundColor: Colors.transparent,
-                        child: StudentFormProvider(),
+                        child: StudentForm(),
                       );
                     },
                   );
@@ -77,7 +77,7 @@ class HomePageView extends StatelessWidget {
             const SizedBox(
               height: 50,
             ),
-            BlocBuilder<RootBloc, RootState>(
+            BlocBuilder<HomePageBloc, HomePageState>(
               buildWhen: (previous, current) =>
                   current.students != previous.students,
               builder: (context, state) => state.students.isEmpty
@@ -97,6 +97,67 @@ class HomePageView extends StatelessWidget {
                       ),
                     ),
             ),
+            // SizedBox(
+            // height: MediaQuery.of(context).size.height * 0.65,
+            // child: SingleChildScrollView(
+            //   child: Column(
+            //     children: [
+            //       rootBloc.state.students.map((e) =>  StudentCard(student: e,)).toList(),
+
+            // StudentCard(
+            //   student: Student(
+            //     id: '1',
+            //     name: 'John Doe',
+            //     address: '123 Main St',
+            //     mobile: '1234567890',
+            //     dob: DateTime.now(),
+            //   ),
+            // ),
+            // StudentCard(
+            //   student: Student(
+            //     id: '1',
+            //     name: 'John Doe',
+            //     address: '123 Main St',
+            //     mobile: '1234567890',
+            //     dob: DateTime.now(),
+            //   ),
+            // ),
+            // StudentCard(
+            //   student: Student(
+            //     id: '1',
+            //     name: 'John Doe',
+            //     address: '123 Main St',
+            //     mobile: '1234567890',
+            //     dob: DateTime.now(),
+            //   ),
+            // ),
+            // StudentCard(
+            //   student: Student(
+            //     id: '1',
+            //     name: 'John Doe',
+            //     address: '123 Main St',
+            //     mobile: '1234567890',
+            //     dob: DateTime.now(),
+            //   ),
+            // ),
+            // StudentCard(
+            //   student: Student(
+            //     id: '1',
+            //     name: 'John Doe',
+            //     address: '123 Main St',
+            //     mobile: '1234567890',
+            //     dob: DateTime.now(),
+            //   ),
+            // ),
+            // StudentCard(
+            //   student: Student(
+            //     id: '1',
+            //     name: 'John Doe',
+            //     address: '123 Main St',
+            //     mobile: '1234567890',
+            //     dob: DateTime.now(),
+            //   ),
+            // ),
           ],
         ),
       ),

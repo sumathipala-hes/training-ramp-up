@@ -1,18 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:frontend/ui/root_page/root_bloc.dart';
-import 'package:frontend/ui/root_page/root_event.dart';
+import 'package:frontend/ui/home_page/home_page_bloc.dart';
 import 'package:frontend/ui/theme/colors.dart';
-import 'package:frontend/ui/widget/student_form/student_form_bloc.dart';
-import 'package:frontend/ui/widget/student_form/student_form_event.dart';
-import 'package:frontend/ui/widget/student_form/student_form_state.dart';
 import 'package:intl/intl.dart';
 
-class StudentFormView extends StatelessWidget {
-  const StudentFormView({
+import '../home_page/home_page_event.dart';
+
+class StudentForm extends StatefulWidget {
+  const StudentForm({
     super.key,
   });
 
+  @override
+  State<StudentForm> createState() => _StudentFormState();
+}
+
+class _StudentFormState extends State<StudentForm> {
   @override
   Widget build(BuildContext context) {
     final TextEditingController nameController = TextEditingController();
@@ -20,9 +23,9 @@ class StudentFormView extends StatelessWidget {
     final TextEditingController mobileController = TextEditingController();
     final TextEditingController dateController = TextEditingController();
     DateTime dob = DateTime.now();
+    String gender = 'Male';
 
-    StudentFormBloc bloc = BlocProvider.of<StudentFormBloc>(context);
-    RootBloc rootBloc = BlocProvider.of<RootBloc>(context);
+    HomePageBloc homePageBloc = BlocProvider.of<HomePageBloc>(context);
 
     return SingleChildScrollView(
       child: Card(
@@ -104,54 +107,44 @@ class StudentFormView extends StatelessWidget {
               const SizedBox(
                 height: 20,
               ),
-              BlocBuilder<StudentFormBloc, StudentFormState>(
-                buildWhen: (previous, current) =>
-                    current.maleOrFemale != previous.maleOrFemale,
-                builder: (context, state) {
-                  return Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Row(
                     children: [
-                      Row(
-                        children: [
-                          Radio(
-                            value: 'Male',
-                            fillColor: MaterialStateColor.resolveWith(
-                              (states) => AppColors.mainColor,
-                            ),
-                            groupValue: bloc.state.maleOrFemale,
-                            onChanged: (value) {
-                              bloc.add(
-                                SetRadioButtons(
-                                  maleOrFemale: value.toString(),
-                                ),
-                              );
-                            },
-                          ),
-                          const Text('Male'),
-                        ],
+                      Radio(
+                        value: 'Male',
+                        fillColor: MaterialStateColor.resolveWith(
+                          (states) => AppColors.mainColor,
+                        ),
+                        groupValue: gender,
+                        onChanged: (value) {
+                          setState(() {
+                            gender = value.toString();
+                          });
+                        },
                       ),
-                      Row(
-                        children: [
-                          Radio(
-                            value: 'Female',
-                            fillColor: MaterialStateColor.resolveWith(
-                              (states) => AppColors.mainColor,
-                            ),
-                            groupValue: bloc.state.maleOrFemale,
-                            onChanged: (value) {
-                              bloc.add(
-                                SetRadioButtons(
-                                  maleOrFemale: value.toString(),
-                                ),
-                              );
-                            },
-                          ),
-                          const Text('Female'),
-                        ],
-                      ),
+                      const Text('Male'),
                     ],
-                  );
-                },
+                  ),
+                  Row(
+                    children: [
+                      Radio(
+                        value: 'Female',
+                        fillColor: MaterialStateColor.resolveWith(
+                          (states) => AppColors.mainColor,
+                        ),
+                        groupValue: gender,
+                        onChanged: (value) {
+                          setState(() {
+                            gender = value.toString();
+                          });
+                        },
+                      ),
+                      const Text('Female'),
+                    ],
+                  ),
+                ],
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -176,13 +169,13 @@ class StudentFormView extends StatelessWidget {
                       ),
                       onPressed: () {
                         Navigator.of(context).pop();
-                        rootBloc.add(
+                        homePageBloc.add(
                           SaveStudentEvent(
                             name: nameController.text,
                             address: addressController.text,
                             mobile: mobileController.text,
                             dob: dob,
-                            gender: bloc.state.maleOrFemale,
+                            gender: gender,
                           ),
                         );
                       },

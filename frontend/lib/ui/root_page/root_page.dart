@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:frontend/ui/home_page/home_page_bloc.dart';
 import 'package:frontend/ui/home_page/home_page_provider.dart';
-import 'package:frontend/ui/root_page/root_bloc.dart';
 
 class RampUpApp extends StatelessWidget {
   const RampUpApp({
@@ -20,9 +20,9 @@ class RampUpApp extends StatelessWidget {
     );
 
     return MultiBlocProvider(
-      providers: <BlocProvider>[
-        BlocProvider<RootBloc>(
-          create: (context) => RootBloc(context),
+      providers: [
+        BlocProvider<HomePageBloc>(
+          create: (context) => HomePageBloc(context),
         ),
       ],
       child: materialApp,
