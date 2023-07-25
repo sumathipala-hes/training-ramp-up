@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ramp_up/util/studentDTO.dart';
+import 'package:ramp_up/model/student_model.dart';
 
 @immutable
 class HomePageState {

@@ -33,7 +33,6 @@ class Student {
   }
 
   Map<String, dynamic> toJson() {
-    // Convert the Student object to a JSON representation.
     return {
       'id': id,
       'name': name,
@@ -44,7 +43,6 @@ class Student {
     };
   }
 
-  // You can also add a factory method to create a Student object from JSON data.
   factory Student.fromJson(Map<String, dynamic> json) {
     return Student(
       id: json['id'],

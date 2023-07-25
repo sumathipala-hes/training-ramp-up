@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ramp_up/ui/home_page/home_page_event.dart';
 import 'package:ramp_up/ui/home_page/home_page_state.dart';
 
-import '../../util/studentDTO.dart';
+import '../../model/student_model.dart';
 
 class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
   HomePageBloc() : super(HomePageState.initialState) {
