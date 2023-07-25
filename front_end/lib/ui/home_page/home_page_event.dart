@@ -12,7 +12,7 @@ class SaveStudent extends HomePageEvent {
   final String name;
   final String address;
   final String mobileNo;
-  final String date;
+  final DateTime date;
   final String gender;
 
   SaveStudent({

@@ -30,8 +30,8 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
         id: '1',
         name: 'John Doe',
         address: '123 Main St',
-        mobileNumber: '555-1234',
-        dob: 'sat July 24 2003',
+        mobileNumber: '0771234567',
+        dob: DateTime(2005 - 07 - 24),
         gender: 'Male',
       ),
     );
@@ -40,8 +40,8 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
         id: '2',
         name: 'Jane Smith',
         address: '456 Oak Ave',
-        mobileNumber: '555-5678',
-        dob: 'sat July 28 2004',
+        mobileNumber: '0725555678',
+        dob: DateTime(2005 - 07 - 24),
         gender: 'Female',
       ),
     );
@@ -50,8 +50,8 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
         id: '3',
         name: 'Michael Johnson',
         address: '789 Broadway',
-        mobileNumber: '+1 555-9876',
-        dob: 'sat July 24 2005',
+        mobileNumber: '0755559876',
+        dob: DateTime(2005 - 07 - 24),
         gender: 'Male',
       ),
     );
@@ -76,7 +76,7 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
   Future<FutureOr<void>> _saveStudent(
       SaveStudent event, Emitter<HomePageState> emit) async {
     final student = Student(
-      id: event.id,
+      id: (state.allStudents.length + 1).toString(),
       name: event.name,
       address: event.address,
       mobileNumber: event.mobileNo,

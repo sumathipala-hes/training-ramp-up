@@ -5,7 +5,7 @@ class HomePageState {
   final String nameText;
   final String addressText;
   final String mobileNoText;
-  final String dateText;
+  final DateTime dateText;
   final List<Student> allStudents;
 
   HomePageState({
@@ -22,7 +22,7 @@ class HomePageState {
         nameText: '',
         addressText: '',
         mobileNoText: '',
-        dateText: '',
+        dateText: DateTime.now(),
         allStudents: [],
       );
 
@@ -31,7 +31,7 @@ class HomePageState {
     String? nameText,
     String? addressText,
     String? mobileNoText,
-    String? dateText,
+    DateTime? dateText,
     List<Student>? allStudents,
   }) {
     return HomePageState(

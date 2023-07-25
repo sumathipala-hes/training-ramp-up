@@ -26,7 +26,7 @@ class _PopupModelState extends State<PopupModel> {
   static final RegExp _addressRegExp = RegExp(r'^[a-zA-Z0-9 ]+$');
 
   String selectedGender = "Male";
-  DateTime selectedDate = DateTime(2005, 1, 1);
+  DateTime dob = DateTime.now();
 
   void clear() {
     nameController.clear();
@@ -36,16 +36,17 @@ class _PopupModelState extends State<PopupModel> {
   }
 
   Future<void> _selectDate(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
+    final DateTime? date = await showDatePicker(
       context: context,
-      initialDate: selectedDate,
-      firstDate: DateTime(1995),
-      lastDate: DateTime(2005),
+      initialDate: DateTime(DateTime.now().year - 18),
+      firstDate: DateTime(DateTime.now().year - 28),
+      lastDate: DateTime(DateTime.now().year - 18),
     );
 
     dateController.text = DateFormat('EEE MMM d yyyy').format(
-      picked ?? DateTime.now(),
+      date ?? DateTime.now(),
     );
+    dob = date ?? DateTime.now();
   }
 
   bool isNumeric(String value) {
@@ -238,11 +239,11 @@ class _PopupModelState extends State<PopupModel> {
           onPressed: isSaveButtonEnabled
               ? () {
                   homePageBloc.add(SaveStudent(
-                    id: '100',
+                    id: '',
                     name: nameController.text.trim(),
                     address: addressController.text.trim(),
                     mobileNo: mobileNoController.text.trim(),
-                    date: dateController.text.trim(),
+                    date: dob,
                     gender: selectedGender,
                   ));
                   clear();
