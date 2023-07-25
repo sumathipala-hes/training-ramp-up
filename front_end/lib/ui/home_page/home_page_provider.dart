@@ -8,7 +8,7 @@ class RampUpHomeScreenProvider extends BlocProvider<RampUpHomeScreenBloc> {
     Key? key,
   }) : super(
           key: key,
-          create: (context) => RampUpHomeScreenBloc(),
+          create: (context) => RampUpHomeScreenBloc(context),
           child: const RampUpHomeScreen(),
         );
 }

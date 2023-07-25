@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:front_end/ui/home_page/home_page_bloc.dart';
+import 'package:front_end/ui/home_page/home_page_event.dart';
 import 'package:intl/intl.dart';
 
 class PopupModel extends StatefulWidget {
@@ -56,6 +59,19 @@ class _PopupModelState extends State<PopupModel> {
       );
     } else {
       Navigator.of(context).pop();
+      RampUpHomeScreenBloc bloc =
+          BlocProvider.of<RampUpHomeScreenBloc>(context);
+
+      bloc.add(
+        SaveButtonPressed(
+          studentId: "1",
+          studentName: nameController.text,
+          studentAddress: addressController.text,
+          studentMobile: mobileNumberController.text,
+          studentDob: selectedDate.toString(),
+          studentGender: selectedGender,
+        ),
+      );
     }
   }
 
@@ -173,7 +189,7 @@ class _PopupModelState extends State<PopupModel> {
             ),
             child: const Text("Cancel"),
           ),
-        )
+        ),
       ],
     );
   }

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:front_end/models/student.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:front_end/ui/home_page/home_page_bloc.dart';
+import 'package:front_end/ui/home_page/home_page_state.dart';
 import 'package:front_end/ui/widget/student_card.dart';
 import 'package:front_end/ui/widget/student_manage_form.dart';
 
@@ -63,18 +65,25 @@ class RampUpHomeScreen extends StatelessWidget {
             const SizedBox(height: 30),
             Expanded(
               child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    StudentCard(
-                      student: Student(
-                        studentId: '1',
-                        studentName: 'Gune',
-                        studentAddress: 'Galle Road, Colombo 03',
-                        studentMobile: '071 2588 963',
-                        studentDob: DateTime.now(),
-                      ),
-                    ),
-                  ],
+                child: BlocBuilder<RampUpHomeScreenBloc, RampUpHomeState>(
+                  buildWhen: (previous, current) =>
+                      previous.entries != current.entries,
+                  builder: (context, state) {
+                    return Column(
+                      children: state.entries.map(
+                        (entry) {
+                          print(entry.studentName);
+                          print(entry.studentAddress);
+                          print(entry.studentMobile);
+                          print(entry.studentDob);
+                          print(entry.studentGender);
+                          return StudentCard(
+                            student: entry,
+                          );
+                        },
+                      ).toList(),
+                    );
+                  },
                 ),
               ),
             ),
