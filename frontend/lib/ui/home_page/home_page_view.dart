@@ -97,67 +97,6 @@ class HomePageView extends StatelessWidget {
                       ),
                     ),
             ),
-            // SizedBox(
-            // height: MediaQuery.of(context).size.height * 0.65,
-            // child: SingleChildScrollView(
-            //   child: Column(
-            //     children: [
-            //       rootBloc.state.students.map((e) =>  StudentCard(student: e,)).toList(),
-
-            // StudentCard(
-            //   student: Student(
-            //     id: '1',
-            //     name: 'John Doe',
-            //     address: '123 Main St',
-            //     mobile: '1234567890',
-            //     dob: DateTime.now(),
-            //   ),
-            // ),
-            // StudentCard(
-            //   student: Student(
-            //     id: '1',
-            //     name: 'John Doe',
-            //     address: '123 Main St',
-            //     mobile: '1234567890',
-            //     dob: DateTime.now(),
-            //   ),
-            // ),
-            // StudentCard(
-            //   student: Student(
-            //     id: '1',
-            //     name: 'John Doe',
-            //     address: '123 Main St',
-            //     mobile: '1234567890',
-            //     dob: DateTime.now(),
-            //   ),
-            // ),
-            // StudentCard(
-            //   student: Student(
-            //     id: '1',
-            //     name: 'John Doe',
-            //     address: '123 Main St',
-            //     mobile: '1234567890',
-            //     dob: DateTime.now(),
-            //   ),
-            // ),
-            // StudentCard(
-            //   student: Student(
-            //     id: '1',
-            //     name: 'John Doe',
-            //     address: '123 Main St',
-            //     mobile: '1234567890',
-            //     dob: DateTime.now(),
-            //   ),
-            // ),
-            // StudentCard(
-            //   student: Student(
-            //     id: '1',
-            //     name: 'John Doe',
-            //     address: '123 Main St',
-            //     mobile: '1234567890',
-            //     dob: DateTime.now(),
-            //   ),
-            // ),
           ],
         ),
       ),
