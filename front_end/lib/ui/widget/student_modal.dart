@@ -17,6 +17,11 @@ class _PopupModelState extends State<PopupModel> {
   final TextEditingController addressController = TextEditingController();
   final TextEditingController mobileNoController = TextEditingController();
   final TextEditingController dateController = TextEditingController();
+  bool isSaveButtonEnabled = false;
+
+  static final RegExp _nameRegExp = RegExp(r'^[a-zA-Z ]+$');
+  static final RegExp _telNoRegExp = RegExp(r'^(07(0|1|2|4|5|6|7|8)[0-9]{7})$');
+  static final RegExp _addressRegExp = RegExp(r'^[a-zA-Z0-9 ]+$');
 
   String selectedGender = "Male";
   DateTime selectedDate = DateTime(2005, 1, 1);
@@ -34,8 +39,49 @@ class _PopupModelState extends State<PopupModel> {
     );
   }
 
+  bool isNumeric(String value) {
+    // ignore: unnecessary_null_comparison
+    if (value == null) {
+      return false;
+    }
+    return double.tryParse(value) != null;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    nameController.addListener(_updateSaveButton);
+    addressController.addListener(_updateSaveButton);
+    mobileNoController.addListener(_updateSaveButton);
+    dateController.addListener(_updateSaveButton);
+  }
+
+  void _updateSaveButton() {
+    final isAnyFieldEmpty = nameController.text.trim().isEmpty ||
+        addressController.text.trim().isEmpty ||
+        mobileNoController.text.trim().isEmpty ||
+        dateController.text.trim().isEmpty;
+
+    final isMobileNumberValid = isNumeric(mobileNoController.text.trim());
+
+    setState(() {
+      isSaveButtonEnabled = !isAnyFieldEmpty &&
+          isMobileNumberValid &&
+          _nameRegExp.hasMatch(
+            nameController.text.trim(),
+          ) &&
+          _addressRegExp.hasMatch(
+            addressController.text.trim(),
+          ) &&
+          _telNoRegExp.hasMatch(
+            mobileNoController.text.trim(),
+          );
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    // HomePageBloc bloc = BlocProvider.of<HomePageBloc>(context);
     return AlertDialog(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(15.0),
@@ -179,26 +225,11 @@ class _PopupModelState extends State<PopupModel> {
       ),
       actions: [
         ElevatedButton(
-          onPressed: () {
-            final name = nameController.text.trim();
-            final address = addressController.text.trim();
-            final mobileNo = mobileNoController.text.trim();
-            final date = dateController.text.trim();
-            final gender = selectedGender;
-
-            FlutterLogs.logInfo(
-              'Name : $name',
-              'Address : $address',
-              'Mobile NO : $mobileNo',
-            );
-            FlutterLogs.logInfo(
-              'Date : $date',
-              'Gender : $gender',
-              '',
-            );
-
-            Navigator.of(context).pop();
-          },
+          onPressed: isSaveButtonEnabled
+              ? () {
+                  Navigator.of(context).pop();
+                }
+              : null,
           style: saveButton,
           child: Text(
             "SAVE",
