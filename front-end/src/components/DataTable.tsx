@@ -4,10 +4,12 @@ import {
   GridColDef,
   GridRowId,
   GridRowModes,
-  GridRowModesModel,
   GridRowsProp,
 } from '@mui/x-data-grid';
 import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { addInitialRows, addStudent, setRowModesModel} from '../redux/slice';
+
 
 const usedIDs: number[] = [];
 
@@ -20,6 +22,17 @@ const generateID = () => {
   usedIDs.push(randomID);
   return randomID;
 };
+
+interface GridRowProps {
+  id: GridRowId;
+  name: string;
+  gender: string;
+  address: string;
+  mobile: string;
+  dateOfBirth: string;
+
+}
+
 
 const initialRows: GridRowsProp = [
   {
@@ -45,7 +58,6 @@ const initialRows: GridRowsProp = [
     address: 'toronto',
     mobile: '0767778988',
     dateOfBirth: '1992-01-01',
-    age: 26,
   },
   {
     id: generateID(),
@@ -65,19 +77,63 @@ const initialRows: GridRowsProp = [
   },
 ];
 
+
 export const DataTable = () => {
-  const [rows, setRows] = React.useState(initialRows);
-  const [rowModesModel, setRowModesModel] = React.useState<GridRowModesModel>(
-    {},
-  );
+  const dispatch = useDispatch();
+  const records = useSelector((state: { data: { records: GridRowProps[] } }) => state.data.records);
+  const rowModesModel = useSelector((state: any ) => state.data.rowModesModel);
 
+  React.useEffect(() => {
+    dispatch(addInitialRows(initialRows));
+  }, [dispatch]);
+
+  //ADD CLICK
+  const handleAddClick = () => {
+    const id = generateID();
+    const newRow: GridRowProps = {
+      id: id,
+      name: '',
+      gender: '',
+      address: '',
+      mobile: '',
+      dateOfBirth: ''
+    };
+    dispatch(addStudent([...records, newRow]));
+
+    const newMode = { id: { mode: GridRowModes.Edit, fieldToFocus: 'name' } };
+    dispatch(setRowModesModel(newMode));
+  };
+  
+  //EDIT CLICK
   const handleEditClick = (id: GridRowId) => () => {
-    setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
-  };
+    dispatch(setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } }));
+   };
+  //SAVE CLICK
+  const handleSaveClick = (id: GridRowId) => () => {
+    dispatch(setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } }));
+  }
 
-  const handleDeleteClick = (id: GridRowId) => () => {
-    setRows(rows.filter((row) => row.id !== id));
+  //DELETE CLICK
+   const handleDeleteClick = (id: GridRowId) => () => {
+    dispatch(addStudent(records.filter((student: { id: GridRowId; }) => student.id !== id)));
   };
+  //CANCEL CLICK
+  const handleCancelClick = (id: GridRowId) => () => {
+    dispatch(setRowModesModel({
+      ...rowModesModel,
+      [id]: { mode: GridRowModes.View, ignoreModifications: true },
+    }))
+  }
+
+
+  
+
+
+
+
+  const handleRowModesModelChange = (newRowModesModel: any) => {}
+
+  
 
   const columns: GridColDef[] = [
     { field: 'id', headerName: 'ID', width: 150 },
@@ -103,6 +159,32 @@ export const DataTable = () => {
       headerName: 'Actions',
       width: 200,
       getActions: ({ id }) => {
+
+        const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
+
+        if (isInEditMode) {
+          return [
+            <Button
+              aria-label="save"
+              variant="contained"
+              color="primary"
+              size="small"
+              onClick={handleSaveClick(id)}
+              >
+                Save
+              </Button>,
+              <Button
+              aria-label="cancel"
+              variant="contained"
+              color="primary"
+              size="small"
+              onClick={handleCancelClick(id)}
+              > 
+              Cancel
+              </Button>,
+          ];
+        }
+
         return [
           <Button
             aria-label="edit"
@@ -126,9 +208,17 @@ export const DataTable = () => {
       },
     },
   ];
+
   return (
     <Grid>
-      <DataGrid rows={rows} columns={columns}></DataGrid>
+      <Button color="primary" onClick={handleAddClick} sx={{ display: 'flex', justifyContent: 'flex-start' }}>Add New</Button>
+      <DataGrid 
+      rows={records} 
+      columns={columns}
+      editMode='row'
+      rowModesModel={{rowModesModel}}
+      onRowModesModelChange={handleRowModesModelChange}
+      ></DataGrid>
     </Grid>
   );
 };
