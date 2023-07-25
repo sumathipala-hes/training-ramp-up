@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 
 import '../../theme/primary_theme.dart';
 import '../home_page/home_page_bloc.dart';
+import '../home_page/home_page_event.dart';
 
 class PopupModel extends StatefulWidget {
   const PopupModel({super.key});
