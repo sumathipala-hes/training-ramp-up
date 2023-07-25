@@ -5,8 +5,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:ramp_up/ui/widget/card_details.dart';
 import 'package:ramp_up/ui/widget/student_modal.dart';
-import 'package:ramp_up/model/student_model.dart';
 
+import '../../model/student_model.dart';
 import '../../theme/primary_theme.dart';
 import 'home_page_bloc.dart';
 import 'home_page_event.dart';
@@ -78,12 +78,13 @@ class HomePageView extends StatelessWidget {
                   child: SingleChildScrollView(
                     child: BlocBuilder<HomePageBloc, HomePageState>(
                       builder: (context, state) {
+                        final List<Student> allStudents = state.allStudents;
                         return ListView.builder(
                           shrinkWrap: true,
                           physics: const NeverScrollableScrollPhysics(),
-                          itemCount: state.students.length,
+                          itemCount: allStudents.length,
                           itemBuilder: (context, index) {
-                            final student = state.students[index];
+                            final student = allStudents[index];
                             return _buildStudentCardView(student);
                           },
                         );
