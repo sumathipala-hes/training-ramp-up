@@ -7,7 +7,7 @@ import 'package:front_end/ui/widget/student_manage_form.dart';
 
 class RampUpHomeScreen extends StatelessWidget {
   const RampUpHomeScreen({Key? key}) : super(key: key);
-
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -72,11 +72,6 @@ class RampUpHomeScreen extends StatelessWidget {
                     return Column(
                       children: state.entries.map(
                         (entry) {
-                          print(entry.studentName);
-                          print(entry.studentAddress);
-                          print(entry.studentMobile);
-                          print(entry.studentDob);
-                          print(entry.studentGender);
                           return StudentCard(
                             student: entry,
                           );

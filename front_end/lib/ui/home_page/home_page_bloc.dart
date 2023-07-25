@@ -10,30 +10,44 @@ class RampUpHomeScreenBloc extends Bloc<RampUpHomePageEvent, RampUpHomeState> {
   RampUpHomeScreenBloc(BuildContext context)
       : super(RampUpHomeState.initialState) {
     on<SaveButtonPressed>(_onSaveButtonPressed);
+    on<GetAllStudents>(_onGetAllStudents);
+    add(
+      GetAllStudents(),
+    );
   }
 
   FutureOr<void> _onSaveButtonPressed(
-      SaveButtonPressed event, Emitter<RampUpHomeState> emit) {
+      SaveButtonPressed event, Emitter<RampUpHomeState> emit) async {
     final student = Student(
       studentId: event.studentId,
       studentName: event.studentName,
       studentAddress: event.studentAddress,
       studentMobile: event.studentMobile,
-      studentDob: DateTime.parse(event.studentDob),
+      studentDob: event.studentDob,
       studentGender: event.studentGender,
     );
-    // print(student.studentId);
-    // print(student.studentName);
-    // print(student.studentAddress);
-    // print(student.studentMobile);
-    // print(student.studentDob);
-    // print(student.studentGender);
 
     emit(
       state.clone(
         entries: [
           ...state.entries,
           student,
+        ],
+      ),
+    );
+    emit(
+      state.clone(entries: [
+        ...state.entries,
+      ]),
+    );
+  }
+
+  FutureOr<void> _onGetAllStudents(
+      GetAllStudents event, Emitter<RampUpHomeState> emit) {
+    emit(
+      state.clone(
+        entries: [
+          ...state.entries,
         ],
       ),
     );

@@ -68,7 +68,7 @@ class _PopupModelState extends State<PopupModel> {
           studentName: nameController.text,
           studentAddress: addressController.text,
           studentMobile: mobileNumberController.text,
-          studentDob: selectedDate.toString(),
+          studentDob: selectedDate,
           studentGender: selectedGender,
         ),
       );
