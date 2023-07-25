@@ -18,22 +18,31 @@ class StudentCard extends StatefulWidget {
 class _StudentCardState extends State<StudentCard> {
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
-      onPressed: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => StudentPageProvider(),
-          ),
-        );
-      },
-      child: SizedBox(
-        width: MediaQuery.of(context).size.width * 0.9,
-        child: Card(
-          elevation: 4,
-          color: AppColors.mainColor,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
+    return SizedBox(
+      width: MediaQuery.of(context).size.width * 0.9,
+      child: Card(
+        elevation: 4,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: ElevatedButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const StudentPageProvider(),
+              ),
+            );
+          },
+          style: ButtonStyle(
+            backgroundColor: MaterialStateProperty.all<Color>(
+              AppColors.mainColor,
+            ),
+            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+              RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
           ),
           child: Padding(
             padding: const EdgeInsets.fromLTRB(40, 20, 40, 20),
