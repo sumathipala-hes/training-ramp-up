@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:front_end/db/model/student.dart';
+import 'package:front_end/models/student.dart';
 import 'package:front_end/ui/widget/student_card.dart';
 import 'package:front_end/ui/widget/student_manage_form.dart';
 

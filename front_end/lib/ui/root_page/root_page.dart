@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:front_end/ui/ramp_up_home_page/ramp_up_home_page_provider.dart';
+import 'package:front_end/theme/primary_theme.dart';
+import 'package:front_end/ui/home_page/home_page_provider.dart';
 
 class RampUpApp extends StatelessWidget {
   const RampUpApp({super.key});
@@ -9,9 +10,7 @@ class RampUpApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Ramp Up',
-      theme: ThemeData(
-        primarySwatch: Colors.deepPurple,
-      ),
+      theme: PrimaryTheme.generateTheme(context),
       home: RampUpHomeScreenProvider(),
     );
   }
