@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_logs/flutter_logs.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
 import '../../theme/primary_theme.dart';
+import '../home_page/home_page_bloc.dart';
 
 class PopupModel extends StatefulWidget {
   const PopupModel({super.key});
@@ -25,6 +26,13 @@ class _PopupModelState extends State<PopupModel> {
 
   String selectedGender = "Male";
   DateTime selectedDate = DateTime(2005, 1, 1);
+
+  void clear() {
+    nameController.clear();
+    addressController.clear();
+    mobileNoController.clear();
+    dateController.clear();
+  }
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
@@ -81,7 +89,8 @@ class _PopupModelState extends State<PopupModel> {
 
   @override
   Widget build(BuildContext context) {
-    // HomePageBloc bloc = BlocProvider.of<HomePageBloc>(context);
+    HomePageBloc homePageBloc = BlocProvider.of<HomePageBloc>(context);
+
     return AlertDialog(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(15.0),
@@ -227,6 +236,15 @@ class _PopupModelState extends State<PopupModel> {
         ElevatedButton(
           onPressed: isSaveButtonEnabled
               ? () {
+                  homePageBloc.add(SaveStudent(
+                    id: '100',
+                    name: nameController.text.trim(),
+                    address: addressController.text.trim(),
+                    mobileNo: mobileNoController.text.trim(),
+                    date: dateController.text.trim(),
+                    gender: selectedGender,
+                  ));
+                  clear();
                   Navigator.of(context).pop();
                 }
               : null,
