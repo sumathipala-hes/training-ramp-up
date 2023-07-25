@@ -15,7 +15,7 @@ class RampUpHomeScreen extends StatelessWidget {
         backgroundColor: Colors.deepPurple[300],
         elevation: 7,
         centerTitle: true,
-        title: const Text('R A M P   U P'),
+        // title: const Text('R A M P   U P'),
         actions: [
           IconButton(
             icon: const Icon(Icons.share),
