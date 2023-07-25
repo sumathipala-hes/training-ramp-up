@@ -73,7 +73,7 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
         .toList();
   }
 
-  Future<FutureOr<void>> _saveStudent(
+  Future<void> _saveStudent(
       SaveStudent event, Emitter<HomePageState> emit) async {
     final student = Student(
       id: (state.allStudents.length + 1).toString(),
