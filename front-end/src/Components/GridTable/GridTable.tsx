@@ -1,7 +1,15 @@
 import * as React from 'react'
 import Box from '@mui/material/Box'
-import { DataGrid, GridColDef, GridValueGetterParams } from '@mui/x-data-grid'
+
+import {
+    DataGrid,
+    GridColDef,
+    GridRowsProp,
+    GridValueGetterParams,
+} from '@mui/x-data-grid'
 import { Button } from '@mui/material'
+import { useState } from 'react'
+import TextField from '@mui/material/TextField'
 
 const columns: GridColDef[] = [
     { field: 'id', headerName: 'ID', width: 90 },
@@ -26,8 +34,8 @@ const columns: GridColDef[] = [
     {
         field: 'mobileNumber',
         headerName: 'Mobile No',
-        type: 'number',
-        width: 160,
+        type: 'string',
+        width: 100,
         editable: true,
     },
     {
@@ -76,19 +84,95 @@ const columns: GridColDef[] = [
     },
 ]
 
-const rows = [
-    { id: 1, name: 'Snow', firstName: 'Jon', age: 35 },
-    { id: 2, name: 'Lannister', firstName: 'Cersei', age: 42 },
-    { id: 3, name: 'Lannister', firstName: 'Jaime', age: 45 },
-    { id: 4, name: 'Stark', firstName: 'Arya', age: 16 },
-    { id: 5, name: 'Targaryen', firstName: 'Daenerys', age: null },
-    { id: 6, name: 'Melisandre', firstName: null, age: 150 },
-    { id: 7, name: 'Clifford', firstName: 'Ferrara', age: 44 },
-    { id: 8, name: 'Frances', firstName: 'Rossini', age: 36 },
-    { id: 9, name: 'Roxie', firstName: 'Harvey', age: 65 },
+const rows: GridRowsProp = [
+    {
+        id: 1,
+        name: 'Snow',
+        gender: 'Male',
+        address: 'Colombo',
+        mobileNumber: '712345678',
+        firstName: 'Jon',
+        age: 35,
+    },
+    {
+        id: 2,
+        name: 'Lannister',
+        gender: 'Female',
+        address: 'Colombo',
+        mobileNumber: '712345678',
+        firstName: 'Cersei',
+        age: 42,
+    },
+    {
+        id: 3,
+        name: 'Lannister',
+        gender: 'Male',
+        address: 'Colombo',
+        mobileNumber: '712345678',
+        firstName: 'Jaime',
+        age: 45,
+    },
+    {
+        id: 4,
+        name: 'Stark',
+        gender: 'Female',
+        address: 'Colombo',
+        mobileNumber: '712345678',
+        firstName: 'Arya',
+        age: 16,
+    },
+    {
+        id: 5,
+        name: 'Targaryen',
+        gender: 'Male',
+        address: 'Colombo',
+        mobileNumber: '712345678',
+        firstName: 'Daenerys',
+        age: null,
+    },
+    {
+        id: 6,
+        name: 'Melisandre',
+        gender: 'Female',
+        address: 'Colombo',
+        mobileNumber: '712345678',
+        firstName: null,
+        age: 150,
+    },
+    {
+        id: 7,
+        name: 'Clifford',
+        gender: 'Female',
+        address: 'Colombo',
+        mobileNumber: '712345678',
+        firstName: 'Ferrara',
+        age: 44,
+    },
+    {
+        id: 8,
+        name: 'Frances',
+        gender: 'Female',
+        address: 'Colombo',
+        mobileNumber: '712345678',
+        firstName: 'Rossini',
+        age: 36,
+    },
+    {
+        id: 9,
+        name: 'Roxie',
+        gender: 'Male',
+        address: 'Colombo',
+        mobileNumber: '712345678',
+        firstName: 'Harvey',
+        age: 65,
+    },
 ]
 
 export default function DataGridDemo() {
+    const [editableRow, setEditableRow] = useState(false)
+    const handleClick = () => {
+        setEditableRow((prevState) => !prevState)
+    }
     return (
         <Box sx={{ height: 600, width: '100%' }}>
             <>
@@ -96,10 +180,12 @@ export default function DataGridDemo() {
                     variant="contained"
                     color="inherit"
                     sx={{ marginLeft: '10px', marginBottom: '10px' }}
+                    onClick={handleClick}
                 >
                     Add New
                 </Button>
             </>
+            {editableRow && <TextField>ABD</TextField>}
             <DataGrid
                 rows={rows}
                 columns={columns}
