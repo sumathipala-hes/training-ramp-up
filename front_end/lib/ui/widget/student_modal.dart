@@ -7,15 +7,15 @@ import '../../util/alert.dart';
 import '../home_page/home_page_bloc.dart';
 import '../home_page/home_page_event.dart';
 
-class PopupModel extends StatefulWidget {
-  const PopupModel({super.key});
+class PopupModal extends StatefulWidget {
+  const PopupModal({super.key});
 
   @override
   // ignore: library_private_types_in_public_api
-  _PopupModelState createState() => _PopupModelState();
+  _PopupModalState createState() => _PopupModalState();
 }
 
-class _PopupModelState extends State<PopupModel> {
+class _PopupModalState extends State<PopupModal> {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController addressController = TextEditingController();
   final TextEditingController mobileNoController = TextEditingController();

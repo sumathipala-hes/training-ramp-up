@@ -76,7 +76,7 @@ class HomePageView extends StatelessWidget {
                     showDialog(
                       context: context,
                       builder: (context) =>
-                          const PopupModel(), // Replace with the actual implementation of PopupModel
+                          const PopupModal(), // Replace with the actual implementation of PopupModel
                     );
                   },
                   child: Text(
