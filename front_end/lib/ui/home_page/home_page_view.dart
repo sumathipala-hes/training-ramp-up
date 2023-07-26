@@ -9,7 +9,6 @@ import 'package:ramp_up/ui/widget/student_modal.dart';
 import '../../model/student_model.dart';
 import '../../theme/primary_theme.dart';
 import 'home_page_bloc.dart';
-import 'home_page_event.dart';
 import 'home_page_state.dart';
 
 class HomePageView extends StatelessWidget {
