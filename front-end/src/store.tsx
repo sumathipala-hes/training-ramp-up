@@ -1,12 +1,11 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
+import gridReducer from './Components/GridTable/GridSlice'
 
-const rootReducer = combineReducers({})
-
+const rootReducer = combineReducers({
+    grid: gridReducer,
+})
 export const store = configureStore({
-    reducer: {
-        rootReducer,
-        // Add more slices here if needed
-    },
+    reducer: rootReducer,
 })
 
 // Infer the `RootState` and `AppDispatch` types from the store itself
