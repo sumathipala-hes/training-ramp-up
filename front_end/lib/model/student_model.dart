@@ -11,7 +11,7 @@ class Student {
     required this.name,
     required this.address,
     required this.mobileNumber,
-   required this.dob,
+    required this.dob,
     required this.gender,
   });
 
