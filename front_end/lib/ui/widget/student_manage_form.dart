@@ -89,6 +89,7 @@ class _PopupModelState extends State<PopupModel> {
         child: SingleChildScrollView(
           child: Column(
             children: [
+              const SizedBox(height: 10),
               TextField(
                 controller: nameController,
                 decoration: const InputDecoration(
