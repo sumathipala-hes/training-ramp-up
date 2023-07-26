@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_logs/flutter_logs.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
 import '../../theme/primary_theme.dart';
+import '../../util/alert.dart';
+import '../home_page/home_page_bloc.dart';
+import '../home_page/home_page_event.dart';
 
 class PopupModel extends StatefulWidget {
   const PopupModel({super.key});
@@ -17,25 +20,80 @@ class _PopupModelState extends State<PopupModel> {
   final TextEditingController addressController = TextEditingController();
   final TextEditingController mobileNoController = TextEditingController();
   final TextEditingController dateController = TextEditingController();
+  bool isSaveButtonEnabled = false;
+
+  static final RegExp _nameRegExp = RegExp(r'^[a-zA-Z ]+$');
+  static final RegExp _telNoRegExp = RegExp(r'^(07(0|1|2|4|5|6|7|8)[0-9]{7})$');
+  static final RegExp _addressRegExp = RegExp(r'^[a-zA-Z0-9 ]+$');
 
   String selectedGender = "Male";
-  DateTime selectedDate = DateTime(2005, 1, 1);
+  DateTime dob = DateTime.now();
+
+  void clear() {
+    nameController.clear();
+    addressController.clear();
+    mobileNoController.clear();
+    dateController.clear();
+  }
 
   Future<void> _selectDate(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
+    final DateTime? date = await showDatePicker(
       context: context,
-      initialDate: selectedDate,
-      firstDate: DateTime(1995),
-      lastDate: DateTime(2005),
+      initialDate: DateTime(DateTime.now().year - 18),
+      firstDate: DateTime(DateTime.now().year - 28),
+      lastDate: DateTime(DateTime.now().year - 18),
     );
 
     dateController.text = DateFormat('EEE MMM d yyyy').format(
-      picked ?? DateTime.now(),
+      date ?? DateTime.now(),
     );
+    dob = date ?? DateTime.now();
+  }
+
+  bool isNumeric(String value) {
+    // ignore: unnecessary_null_comparison
+    if (value == null) {
+      return false;
+    }
+    return double.tryParse(value) != null;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    nameController.addListener(_updateSaveButton);
+    addressController.addListener(_updateSaveButton);
+    mobileNoController.addListener(_updateSaveButton);
+    dateController.addListener(_updateSaveButton);
+  }
+
+  void _updateSaveButton() {
+    final isAnyFieldEmpty = nameController.text.trim().isEmpty ||
+        addressController.text.trim().isEmpty ||
+        mobileNoController.text.trim().isEmpty ||
+        dateController.text.trim().isEmpty;
+
+    final isMobileNumberValid = isNumeric(mobileNoController.text.trim());
+
+    setState(() {
+      isSaveButtonEnabled = !isAnyFieldEmpty &&
+          isMobileNumberValid &&
+          _nameRegExp.hasMatch(
+            nameController.text.trim(),
+          ) &&
+          _addressRegExp.hasMatch(
+            addressController.text.trim(),
+          ) &&
+          _telNoRegExp.hasMatch(
+            mobileNoController.text.trim(),
+          );
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    HomePageBloc homePageBloc = BlocProvider.of<HomePageBloc>(context);
+
     return AlertDialog(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(15.0),
@@ -141,6 +199,7 @@ class _PopupModelState extends State<PopupModel> {
           ),
           Center(
             child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Radio(
                   value: "Male",
@@ -179,26 +238,21 @@ class _PopupModelState extends State<PopupModel> {
       ),
       actions: [
         ElevatedButton(
-          onPressed: () {
-            final name = nameController.text.trim();
-            final address = addressController.text.trim();
-            final mobileNo = mobileNoController.text.trim();
-            final date = dateController.text.trim();
-            final gender = selectedGender;
-
-            FlutterLogs.logInfo(
-              'Name : $name',
-              'Address : $address',
-              'Mobile NO : $mobileNo',
-            );
-            FlutterLogs.logInfo(
-              'Date : $date',
-              'Gender : $gender',
-              '',
-            );
-
-            Navigator.of(context).pop();
-          },
+          onPressed: isSaveButtonEnabled
+              ? () {
+                  homePageBloc.add(SaveStudent(
+                    id: '',
+                    name: nameController.text.trim(),
+                    address: addressController.text.trim(),
+                    mobileNo: mobileNoController.text.trim(),
+                    date: dob,
+                    gender: selectedGender,
+                  ));
+                  clear();
+                  AlertTextField.showSaveAlert('Save User Successfully.');
+                  Navigator.of(context).pop();
+                }
+              : null,
           style: saveButton,
           child: Text(
             "SAVE",

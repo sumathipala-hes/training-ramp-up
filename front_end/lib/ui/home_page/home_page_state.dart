@@ -1,24 +1,46 @@
-import 'package:flutter/material.dart';
-import 'package:ramp_up/util/studentDTO.dart';
+import '../../model/student_model.dart';
 
-@immutable
 class HomePageState {
-  final List<Student> students;
+  final String idText;
+  final String nameText;
+  final String addressText;
+  final String mobileNoText;
+  final DateTime dateText;
+  final List<Student> allStudents;
 
-  const HomePageState({
-    required this.students,
+  HomePageState({
+    required this.idText,
+    required this.nameText,
+    required this.addressText,
+    required this.mobileNoText,
+    required this.dateText,
+    required this.allStudents,
   });
 
-  static HomePageState get initialState => const HomePageState(
-        students: [],
+  static HomePageState get initialState => HomePageState(
+        idText: '',
+        nameText: '',
+        addressText: '',
+        mobileNoText: '',
+        dateText: DateTime.now(),
+        allStudents: [],
       );
 
   HomePageState clone({
-    bool? isVisible,
-    List<Student>? students,
+    String? idText,
+    String? nameText,
+    String? addressText,
+    String? mobileNoText,
+    DateTime? dateText,
+    List<Student>? allStudents,
   }) {
     return HomePageState(
-      students: students ?? this.students,
+      idText: idText ?? this.idText,
+      nameText: nameText ?? this.nameText,
+      addressText: addressText ?? this.addressText,
+      mobileNoText: mobileNoText ?? this.mobileNoText,
+      dateText: dateText ?? this.dateText,
+      allStudents: allStudents ?? this.allStudents,
     );
   }
 }

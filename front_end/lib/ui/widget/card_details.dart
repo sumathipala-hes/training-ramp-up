@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import '../../theme/primary_theme.dart';
 import '../../theme/styled_theme.dart';
@@ -6,7 +7,7 @@ import '../../theme/styled_theme.dart';
 class StudentCard extends StatelessWidget {
   final String id;
   final String studentName;
-  final String studentDOB;
+  final DateTime studentDOB;
 
   const StudentCard({
     super.key,
@@ -42,7 +43,7 @@ class StudentCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 10),
                 Text(
-                  studentDOB,
+                  DateFormat('EEE MMM d yyyy').format(studentDOB),
                   style: cardTextSub,
                 ),
               ],
