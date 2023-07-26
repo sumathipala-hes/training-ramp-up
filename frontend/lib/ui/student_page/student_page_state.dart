@@ -1,39 +1,35 @@
 class StudentPageState {
-  String name;
-  String address;
-  String mobile;
-  String dob;
   String gender;
+  String nameError;
+  String addressError;
+  String mobileError;
 
   StudentPageState({
-    required this.name,
-    required this.address,
-    required this.mobile,
-    required this.dob,
     required this.gender,
+    required this.nameError,
+    required this.addressError,
+    required this.mobileError,
   });
 
   static StudentPageState get initialState => StudentPageState(
-        name: '',
-        address: '',
-        mobile: '',
-        dob: '',
         gender: '',
+        nameError: '',
+        addressError: '',
+        mobileError: '',
       );
 
   StudentPageState clone({
-    String? name,
-    String? address,
-    String? mobile,
-    String? dob,
     String? gender,
+    String? textFieldValue,
+    String? nameError,
+    String? addressError,
+    String? mobileError,
   }) {
     return StudentPageState(
-      name: name ?? this.name,
-      address: address ?? this.address,
-      mobile: mobile ?? this.mobile,
-      dob: dob ?? this.dob,
       gender: gender ?? this.gender,
+      nameError: nameError ?? this.nameError,
+      addressError: addressError ?? this.addressError,
+      mobileError: mobileError ?? this.mobileError,
     );
   }
 }

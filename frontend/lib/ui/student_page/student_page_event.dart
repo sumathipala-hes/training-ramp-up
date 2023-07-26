@@ -7,3 +7,15 @@ class SetRadioButtons extends StudentPageEvent {
     required this.gender,
   });
 }
+
+class SetValidations extends StudentPageEvent {
+  final String nameError;
+  final String addressError;
+  final String mobileError;
+
+  SetValidations({
+    required this.nameError,
+    required this.addressError,
+    required this.mobileError,
+  });
+}

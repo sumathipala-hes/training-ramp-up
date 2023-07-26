@@ -10,11 +10,13 @@ import 'package:frontend/util/validation_util.dart';
 import 'package:intl/intl.dart';
 import '../theme/colors.dart';
 
+// ignore: must_be_immutable
 class StudentPageView extends StatelessWidget {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController addressController = TextEditingController();
   final TextEditingController mobileController = TextEditingController();
   final TextEditingController dateController = TextEditingController();
+
   StudentPageView({
     super.key,
     required this.student,
@@ -32,7 +34,30 @@ class StudentPageView extends StatelessWidget {
     StudentPageBloc studentPageBloc = BlocProvider.of<StudentPageBloc>(context);
     HomePageBloc homePageBloc = BlocProvider.of<HomePageBloc>(context);
     DateTime dob = DateTime.now();
-    studentPageBloc.state.gender = student.gender;
+
+    void validateTextFields(bool isValid, String textField) {
+      String nameError = '';
+      String addressError = '';
+      String mobileError = '';
+      switch (textField) {
+        case 'name':
+          nameError = isValid ? '' : 'Invalid Name Ex. John Doe';
+          break;
+        case 'address':
+          addressError = isValid ? '' : 'Invalid Address Ex. 123, ABC';
+          break;
+        case 'mobile':
+          mobileError = isValid ? '' : 'Invalid Mobile Ex. 0745768944';
+          break;
+      }
+      studentPageBloc.add(
+        SetValidations(
+          nameError: nameError,
+          addressError: addressError,
+          mobileError: mobileError,
+        ),
+      );
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -76,8 +101,11 @@ class StudentPageView extends StatelessWidget {
                       color: AppColors.mainColor,
                     ),
                   ),
+                  const SizedBox(
+                    height: 4,
+                  ),
                   Text(
-                    (student.dob.year - DateTime.now().year).toString(),
+                    '${DateTime.now().year - student.dob.year} Years',
                     textAlign: TextAlign.center,
                     style: const TextStyle(
                       fontSize: 16,
@@ -85,18 +113,34 @@ class StudentPageView extends StatelessWidget {
                   ),
                   const SizedBox(height: 20),
                   TextField(
-                      controller: nameController,
-                      decoration: const InputDecoration(
-                        border: UnderlineInputBorder(),
-                        labelText: 'Name',
-                        hintText: 'Enter First Name',
-                      ),
-                      onChanged: (value) {
+                    controller: nameController,
+                    decoration: const InputDecoration(
+                      border: UnderlineInputBorder(),
+                      labelText: 'Name',
+                      hintText: 'Enter Your Name',
+                    ),
+                    onChanged: (value) {
+                      validateTextFields(
                         ValidationUtil.isValidExp(
                           ValidationUtil.nameRegExp,
                           value,
-                        );
-                      }),
+                        ),
+                        'name',
+                      );
+                    },
+                  ),
+                  BlocBuilder<StudentPageBloc, StudentPageState>(
+                    buildWhen: (previous, current) =>
+                        current.nameError != previous.nameError,
+                    builder: (context, state) {
+                      return Text(
+                        state.nameError,
+                        style: const TextStyle(
+                          color: AppColors.errorColor,
+                        ),
+                      );
+                    },
+                  ),
                   const SizedBox(
                     height: 20,
                   ),
@@ -107,7 +151,27 @@ class StudentPageView extends StatelessWidget {
                       labelText: 'Address',
                       hintText: 'Enter Address',
                     ),
+                    onChanged: (value) {
+                      validateTextFields(
+                        ValidationUtil.isValidExp(
+                          ValidationUtil.addressRegExp,
+                          value,
+                        ),
+                        'address',
+                      );
+                    },
                   ),
+                  BlocBuilder<StudentPageBloc, StudentPageState>(
+                      buildWhen: (previous, current) =>
+                          current.addressError != previous.addressError,
+                      builder: (context, state) {
+                        return Text(
+                          state.addressError,
+                          style: const TextStyle(
+                            color: AppColors.errorColor,
+                          ),
+                        );
+                      }),
                   const SizedBox(
                     height: 20,
                   ),
@@ -118,7 +182,27 @@ class StudentPageView extends StatelessWidget {
                       labelText: 'Mobile',
                       hintText: 'Enter Mobile',
                     ),
+                    onChanged: (value) {
+                      validateTextFields(
+                        ValidationUtil.isValidExp(
+                          ValidationUtil.mobileRegExp,
+                          value,
+                        ),
+                        'mobile',
+                      );
+                    },
                   ),
+                  BlocBuilder<StudentPageBloc, StudentPageState>(
+                      buildWhen: (previous, current) =>
+                          current.mobileError != previous.mobileError,
+                      builder: (context, state) {
+                        return Text(
+                          state.mobileError,
+                          style: const TextStyle(
+                            color: AppColors.errorColor,
+                          ),
+                        );
+                      }),
                   const SizedBox(
                     height: 20,
                   ),
@@ -152,6 +236,9 @@ class StudentPageView extends StatelessWidget {
                     buildWhen: (previous, current) =>
                         current.gender != previous.gender,
                     builder: (context, state) {
+                      if (studentPageBloc.state.gender == '') {
+                        studentPageBloc.state.gender = student.gender;
+                      }
                       return Center(
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -226,15 +313,30 @@ class StudentPageView extends StatelessWidget {
                             backgroundColor: AppColors.successColor,
                           ),
                           onPressed: () async {
-                            Navigator.of(context).pop();
-                            homePageBloc.add(
-                              UpdateStudentEvent(
-                                id: student.id,
-                                name: nameController.text,
-                                address: addressController.text,
-                                mobile: mobileController.text,
-                                dob: dob,
-                                gender: studentPageBloc.state.gender,
+                            if (studentPageBloc.state.nameError != '' &&
+                                studentPageBloc.state.addressError != '' &&
+                                studentPageBloc.state.mobileError != '') {
+                              Navigator.of(context).pop();
+                              homePageBloc.add(
+                                UpdateStudentEvent(
+                                  id: student.id,
+                                  name: nameController.text,
+                                  address: addressController.text,
+                                  mobile: mobileController.text,
+                                  dob: dob,
+                                  gender: studentPageBloc.state.gender,
+                                ),
+                              );
+                              return;
+                            }
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text(
+                                  'Please Check Details Again..!',
+                                  textAlign: TextAlign.center,
+                                ),
+                                backgroundColor:
+                                    Color.fromARGB(255, 192, 42, 42),
                               ),
                             );
                           },
