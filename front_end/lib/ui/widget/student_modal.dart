@@ -99,7 +99,7 @@ class _PopupModelState extends State<PopupModel> {
         borderRadius: BorderRadius.circular(15.0),
       ),
       title: SizedBox(
-        width: 400,
+        width: MediaQuery.of(context).size.width * 0.8,
         child: Center(
           child: Text(
             "ADD NEW STUDENT",
@@ -237,36 +237,44 @@ class _PopupModelState extends State<PopupModel> {
         ],
       ),
       actions: [
-        ElevatedButton(
-          onPressed: isSaveButtonEnabled
-              ? () {
-                  homePageBloc.add(SaveStudent(
-                    id: '',
-                    name: nameController.text.trim(),
-                    address: addressController.text.trim(),
-                    mobileNo: mobileNoController.text.trim(),
-                    date: dob,
-                    gender: selectedGender,
-                  ));
-                  clear();
-                  AlertTextField.showSaveAlert('Save User Successfully.');
-                  Navigator.of(context).pop();
-                }
-              : null,
-          style: saveButton,
-          child: Text(
-            "SAVE",
-            style: textButton,
+        SizedBox(
+          width: 120,
+          height: 40,
+          child: ElevatedButton(
+            onPressed: isSaveButtonEnabled
+                ? () {
+                    homePageBloc.add(SaveStudent(
+                      id: '',
+                      name: nameController.text.trim(),
+                      address: addressController.text.trim(),
+                      mobileNo: mobileNoController.text.trim(),
+                      date: dob,
+                      gender: selectedGender,
+                    ));
+                    clear();
+                    AlertTextField.showSaveAlert('Save User Successfully.');
+                    Navigator.of(context).pop();
+                  }
+                : null,
+            style: saveButton,
+            child: Text(
+              "SAVE",
+              style: textButton,
+            ),
           ),
         ),
-        ElevatedButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-          style: cancelButton,
-          child: Text(
-            "CANCEL",
-            style: textButton,
+        SizedBox(
+          width: 120,
+          height: 40,
+          child: ElevatedButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            style: cancelButton,
+            child: Text(
+              "CANCEL",
+              style: textButton,
+            ),
           ),
         ),
       ],
