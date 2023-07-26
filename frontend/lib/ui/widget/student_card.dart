@@ -60,7 +60,7 @@ class _StudentCardState extends State<StudentCard> {
                   ),
                 ),
                 Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     Text(
                       widget.student.name,

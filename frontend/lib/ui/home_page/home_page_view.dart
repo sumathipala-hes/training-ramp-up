@@ -47,10 +47,7 @@ class HomePageView extends StatelessWidget {
                   showDialog(
                     context: context,
                     builder: (context) {
-                      return const Dialog(
-                        backgroundColor: Colors.transparent,
-                        child: StudentForm(),
-                      );
+                      return const StudentForm();
                     },
                   );
                 },

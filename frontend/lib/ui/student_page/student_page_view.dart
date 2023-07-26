@@ -6,10 +6,10 @@ import 'package:frontend/ui/home_page/home_page_event.dart';
 import 'package:frontend/ui/student_page/student_page_bloc.dart';
 import 'package:frontend/ui/student_page/student_page_event.dart';
 import 'package:frontend/ui/student_page/student_page_state.dart';
+import 'package:frontend/util/validation_util.dart';
 import 'package:intl/intl.dart';
 import '../theme/colors.dart';
 
-// ignore: must_be_immutable
 class StudentPageView extends StatelessWidget {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController addressController = TextEditingController();
@@ -92,7 +92,10 @@ class StudentPageView extends StatelessWidget {
                         hintText: 'Enter First Name',
                       ),
                       onChanged: (value) {
-                        nameController.text = value;
+                        ValidationUtil.isValidExp(
+                          ValidationUtil.nameRegExp,
+                          value,
+                        );
                       }),
                   const SizedBox(
                     height: 20,
