@@ -12,6 +12,7 @@ class RampUpHomeScreenBloc extends Bloc<RampUpHomePageEvent, RampUpHomeState> {
     on<SaveButtonPressed>(_onSaveButtonPressed);
     on<GetAllStudents>(_onGetAllStudents);
     on<DeleteStudent>(_onDeleteStudent);
+    on<UpdateStudent>(_onUpdateStudent);
     add(
       GetAllStudents(),
     );
@@ -54,11 +55,33 @@ class RampUpHomeScreenBloc extends Bloc<RampUpHomePageEvent, RampUpHomeState> {
     );
   }
 
-  FutureOr<void> _onDeleteStudent(DeleteStudent event, Emitter<RampUpHomeState> emit) {
+  FutureOr<void> _onDeleteStudent(
+      DeleteStudent event, Emitter<RampUpHomeState> emit) {
     emit(
       state.clone(
         entries: [
           ...state.entries.where((element) => element.studentId != event.id),
+        ],
+      ),
+    );
+  }
+
+  FutureOr<void> _onUpdateStudent(
+      UpdateStudent event, Emitter<RampUpHomeState> emit) {
+    state.entries[state.entries
+            .indexWhere((element) => element.studentId == event.studentId)] =
+        Student(
+      studentId: event.studentId,
+      studentName: event.studentName,
+      studentAddress: event.studentAddress,
+      studentMobile: event.studentMobile,
+      studentDob: event.studentDob,
+      studentGender: event.studentGender,
+    );
+    emit(
+      state.clone(
+        entries: [
+          ...state.entries,
         ],
       ),
     );

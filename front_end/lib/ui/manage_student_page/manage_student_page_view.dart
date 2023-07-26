@@ -170,7 +170,22 @@ class ManageStudentScreen extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           ElevatedButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                              rampUpHomeScreenBloc.add(
+                                UpdateStudent(
+                                  studentId: student.studentId,
+                                  studentName: nameController.text.trim(),
+                                  studentAddress: addressController.text.trim(),
+                                  studentMobile:
+                                      mobileNumberController.text.trim(),
+                                  studentDob: student
+                                      .studentDob, /////////////////////////////
+                                  studentGender:
+                                      manageStudentScreenBloc.state.gender.trim(),
+                                ),
+                              );
+                            },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.green,
                               shape: RoundedRectangleBorder(
