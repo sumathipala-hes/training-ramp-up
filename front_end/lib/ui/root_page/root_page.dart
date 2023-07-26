@@ -1,18 +1,28 @@
 import 'package:flutter/material.dart';
-import 'package:front_end/ui/ramp_up_home_page/ramp_up_home_page_provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:front_end/theme/primary_theme.dart';
+import 'package:front_end/ui/home_page/home_page_bloc.dart';
+import 'package:front_end/ui/home_page/home_page_view.dart';
 
 class RampUpApp extends StatelessWidget {
   const RampUpApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    final materialApp = MaterialApp(
+      title: 'RampUp App',
+      theme: PrimaryTheme.generateTheme(context),
       debugShowCheckedModeBanner: false,
-      title: 'Ramp Up',
-      theme: ThemeData(
-        primarySwatch: Colors.deepPurple,
-      ),
-      home: RampUpHomeScreenProvider(),
+      home: const RampUpHomeScreen(),
+    );
+
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<RampUpHomeScreenBloc>(
+          create: (context) => RampUpHomeScreenBloc(context),
+        ),
+      ],
+      child: materialApp,
     );
   }
 }

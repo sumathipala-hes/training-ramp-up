@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:front_end/db/model/student.dart';
+import 'package:front_end/models/student.dart';
 import 'package:intl/intl.dart';
 
 class StudentCard extends StatefulWidget {
