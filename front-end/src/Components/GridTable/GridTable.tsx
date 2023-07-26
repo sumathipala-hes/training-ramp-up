@@ -21,6 +21,7 @@ import {
     GridRowModesModel,
     GridRowsProp,
     GridToolbarContainer,
+    GridValueGetterParams,
 } from '@mui/x-data-grid'
 import { addRow, updateRow, deleteRow } from './GridSlice' // Import the actions
 import { RootState } from '../../store'
@@ -182,6 +183,13 @@ export default function FullFeaturedCrudGrid() {
             type: 'date',
             width: 180,
             editable: true,
+            valueGetter: (params: GridValueGetterParams) => {
+                // Get the raw value of dateOfBirth
+                const rawDateOfBirth = params.value as Date
+                // Convert the rawDateOfBirth into a Date object
+                const dateOfBirth = new Date(rawDateOfBirth)
+                return dateOfBirth
+            },
         },
         {
             field: 'gender',
