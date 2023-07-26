@@ -37,157 +37,162 @@ class ManageStudentScreen extends StatelessWidget {
             fit: BoxFit.cover,
           ),
         ),
-        child: Padding(
-          padding: const EdgeInsets.all(35.0),
-          child: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(16.0),
-              color: Colors.white.withOpacity(0.5),
-            ),
+        child: Center(
+          child: SingleChildScrollView(
             child: Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    const Text(
-                      'Student Name',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 26,
-                        fontWeight: FontWeight.bold,
-                        color: Color.fromARGB(255, 137, 91, 215),
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 4,
-                    ),
-                    const Text(
-                      'Age',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.grey,
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    TextField(
-                      controller: nameController,
-                      decoration: const InputDecoration(
-                        labelText: "Name:",
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(8.0),
-                          ),
+              padding: const EdgeInsets.all(35.0),
+              child: Card(
+                color: Colors.white.withOpacity(0.8),
+                elevation: 5,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20.0),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Column(
+                    children: [
+                      const Text(
+                        'Student Name',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 26,
+                          fontWeight: FontWeight.bold,
+                          color: Color.fromARGB(255, 137, 91, 215),
                         ),
                       ),
-                    ),
-                    const SizedBox(height: 15),
-                    TextField(
-                      controller: addressController,
-                      decoration: const InputDecoration(
-                        labelText: "Address:",
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(8.0),
-                          ),
+                      const SizedBox(
+                        height: 4,
+                      ),
+                      const Text(
+                        'Age',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.grey,
                         ),
                       ),
-                    ),
-                    const SizedBox(height: 15),
-                    TextField(
-                      controller: mobileNumberController,
-                      decoration: const InputDecoration(
-                        labelText: "Mobile:",
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(8.0),
-                          ),
-                        ),
-                      ),
-                    ),
-                    TextFormField(
-                      controller: dateController,
-                      readOnly: true,
-                      // onTap: () => _selectDate(context),
-                      decoration: const InputDecoration(
-                        labelText: "Date of Birth:",
-                        suffixIcon: Icon(Icons.calendar_today),
-                        border: InputBorder.none,
-                        contentPadding: EdgeInsets.symmetric(
-                          vertical: 12.0,
-                          horizontal: 14.0,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 15),
-                    BlocBuilder<ManageStudentScreenBloc,
-                        ManageStudentScreenState>(
-                      buildWhen: (previous, current) =>
-                          current.gender != previous.gender,
-                      builder: (context, state) {
-                        return Row(
-                          children: [
-                            Radio(
-                              value: "Male",
-                              groupValue: manageStudentScreenBloc.state.gender,
-                              onChanged: (value) {
-                                manageStudentScreenBloc.add(
-                                  SelectGender(
-                                    gender: value.toString(),
-                                  ),
-                                );
-                              },
+                      const SizedBox(height: 20),
+                      TextField(
+                        controller: nameController,
+                        decoration: const InputDecoration(
+                          labelText: "Name:",
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(8.0),
                             ),
-                            const Text("Male"),
-                            Radio(
-                              value: "Female",
-                              groupValue: manageStudentScreenBloc.state.gender,
-                              onChanged: (value) {
-                                manageStudentScreenBloc.add(
-                                  SelectGender(
-                                    gender: value.toString(),
-                                  ),
-                                );
-                              },
-                            ),
-                            const Text("Female"),
-                          ],
-                        );
-                      },
-                    ),
-                    const SizedBox(height: 15),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        ElevatedButton(
-                          onPressed: () {},
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.green,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8.0),
-                            ),
-                            elevation: 4,
                           ),
-                          child: const Text("Update"),
                         ),
-                        const SizedBox(width: 10.0),
-                        ElevatedButton(
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.red[400],
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8.0),
+                      ),
+                      const SizedBox(height: 15),
+                      TextField(
+                        controller: addressController,
+                        decoration: const InputDecoration(
+                          labelText: "Address:",
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(8.0),
                             ),
-                            elevation: 4,
                           ),
-                          child: const Text("Delete"),
                         ),
-                      ],
-                    ),
-                  ],
+                      ),
+                      const SizedBox(height: 15),
+                      TextField(
+                        controller: mobileNumberController,
+                        decoration: const InputDecoration(
+                          labelText: "Mobile:",
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(8.0),
+                            ),
+                          ),
+                        ),
+                      ),
+                      TextFormField(
+                        controller: dateController,
+                        readOnly: true,
+                        // onTap: () => _selectDate(context),
+                        decoration: const InputDecoration(
+                          labelText: "Date of Birth:",
+                          suffixIcon: Icon(Icons.calendar_today),
+                          border: InputBorder.none,
+                          contentPadding: EdgeInsets.symmetric(
+                            vertical: 12.0,
+                            horizontal: 14.0,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 15),
+                      BlocBuilder<ManageStudentScreenBloc,
+                          ManageStudentScreenState>(
+                        buildWhen: (previous, current) =>
+                            current.gender != previous.gender,
+                        builder: (context, state) {
+                          return Row(
+                            children: [
+                              Radio(
+                                value: "Male",
+                                groupValue:
+                                    manageStudentScreenBloc.state.gender,
+                                onChanged: (value) {
+                                  manageStudentScreenBloc.add(
+                                    SelectGender(
+                                      gender: value.toString(),
+                                    ),
+                                  );
+                                },
+                              ),
+                              const Text("Male"),
+                              Radio(
+                                value: "Female",
+                                groupValue:
+                                    manageStudentScreenBloc.state.gender,
+                                onChanged: (value) {
+                                  manageStudentScreenBloc.add(
+                                    SelectGender(
+                                      gender: value.toString(),
+                                    ),
+                                  );
+                                },
+                              ),
+                              const Text("Female"),
+                            ],
+                          );
+                        },
+                      ),
+                      const SizedBox(height: 15),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          ElevatedButton(
+                            onPressed: () {},
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.green,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8.0),
+                              ),
+                              elevation: 4,
+                            ),
+                            child: const Text("Update"),
+                          ),
+                          const SizedBox(width: 10.0),
+                          ElevatedButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.red[400],
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8.0),
+                              ),
+                              elevation: 4,
+                            ),
+                            child: const Text("Delete"),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
