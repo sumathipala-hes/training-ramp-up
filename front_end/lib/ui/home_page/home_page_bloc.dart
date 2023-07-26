@@ -11,6 +11,7 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
   HomePageBloc(BuildContext context) : super(HomePageState.initialState) {
     on<GetAllStudent>(_getAllStudent);
     on<SaveStudent>(_saveStudent);
+    add(GetAllStudent());
   }
 
   Future<FutureOr<void>> _getAllStudent(

@@ -25,9 +25,6 @@ class HomePageView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    HomePageBloc bloc = BlocProvider.of<HomePageBloc>(context);
-    bloc.add(GetAllStudent());
-
     return Scaffold(
       appBar: AppBar(
         title: Text(
