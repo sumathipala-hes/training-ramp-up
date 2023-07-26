@@ -82,8 +82,8 @@ class HomePageView extends StatelessWidget {
               height: 50,
             ),
             BlocBuilder<HomePageBloc, HomePageState>(
-              // buildWhen: (previous, current) =>
-              //     current.students != previous.students,
+              buildWhen: (previous, current) =>
+                  current.students != previous.students,
               builder: (context, state) {
                 final List<Student> studentList = state.students;
                 return SizedBox(

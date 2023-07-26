@@ -112,15 +112,17 @@ class _StudentFormState extends State<StudentForm> {
                   Row(
                     children: [
                       Radio(
-                        value: 'Male',
+                        value: "Male",
                         fillColor: MaterialStateColor.resolveWith(
                           (states) => AppColors.mainColor,
                         ),
                         groupValue: gender,
                         onChanged: (value) {
-                          setState(() {
-                            gender = value.toString();
-                          });
+                          setState(
+                            () {
+                              gender = value.toString();
+                            },
+                          );
                         },
                       ),
                       const Text('Male'),
@@ -133,12 +135,14 @@ class _StudentFormState extends State<StudentForm> {
                         fillColor: MaterialStateColor.resolveWith(
                           (states) => AppColors.mainColor,
                         ),
-                        groupValue: gender,
                         onChanged: (value) {
-                          setState(() {
-                            gender = value.toString();
-                          });
+                          setState(
+                            () {
+                              gender = value.toString();
+                            },
+                          );
                         },
+                        groupValue: gender,
                       ),
                       const Text('Female'),
                     ],

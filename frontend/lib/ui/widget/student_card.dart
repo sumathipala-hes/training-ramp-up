@@ -30,7 +30,9 @@ class _StudentCardState extends State<StudentCard> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => const StudentPageProvider(),
+                builder: (context) => StudentPageProvider(
+                  student: widget.student,
+                ),
               ),
             );
           },
