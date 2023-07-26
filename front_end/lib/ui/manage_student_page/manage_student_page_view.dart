@@ -7,7 +7,7 @@ import 'package:front_end/ui/manage_student_page/manage_student_page_state.dart'
 import 'package:intl/intl.dart';
 
 class ManageStudentScreen extends StatelessWidget {
-  ManageStudentScreen({super.key, required Student student}) {
+  ManageStudentScreen({super.key, required this.student}) {
     nameController.text = student.studentName;
     addressController.text = student.studentAddress;
     mobileNumberController.text = student.studentMobile;
@@ -18,6 +18,7 @@ class ManageStudentScreen extends StatelessWidget {
   final TextEditingController addressController = TextEditingController();
   final TextEditingController mobileNumberController = TextEditingController();
   final TextEditingController dateController = TextEditingController();
+  final Student student;
 
   @override
   Widget build(BuildContext context) {
@@ -51,10 +52,10 @@ class ManageStudentScreen extends StatelessWidget {
                   padding: const EdgeInsets.all(20.0),
                   child: Column(
                     children: [
-                      const Text(
-                        'Student Name',
+                      Text(
+                        student.studentName.toUpperCase(),
                         textAlign: TextAlign.center,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 26,
                           fontWeight: FontWeight.bold,
                           color: Color.fromARGB(255, 137, 91, 215),
@@ -64,11 +65,11 @@ class ManageStudentScreen extends StatelessWidget {
                         height: 4,
                       ),
                       const Text(
-                        'Age',
+                        'YEARS',
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 16,
-                          fontWeight: FontWeight.bold,
+                          fontWeight: FontWeight.w600,
                           color: Colors.grey,
                         ),
                       ),
