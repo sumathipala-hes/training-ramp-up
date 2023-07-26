@@ -11,6 +11,7 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
   HomePageBloc(BuildContext context) : super(HomePageState.initialState) {
     on<GetAllStudent>(_getAllStudent);
     on<SaveStudent>(_saveStudent);
+    on<UpdateStudent>(_updateStudent);
     add(GetAllStudent());
   }
 
@@ -88,3 +89,23 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
     emit(state.clone(allStudents: await _getAllEvent()));
   }
 }
+
+ Future<void> _updateStudent(
+    UpdateStudent event,
+    Emitter<HomePageState> emit,
+  ) async {
+    List<Student> updatedStudents = state.allStudents.map((student) {
+      return student.id == event.id
+          ? Student(
+              name: event.name,
+              address: event.address,
+              mobileNumber: event.mobileNo,
+              dob: event.date,
+              gender: event.gender,
+              id: student.id,
+            )
+          : student;
+    }).toList();
+
+    emit(state.clone(allStudents: updatedStudents));
+  }
