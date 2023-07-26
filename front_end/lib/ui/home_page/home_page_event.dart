@@ -24,3 +24,11 @@ class SaveButtonPressed extends RampUpHomePageEvent {
 class GetAllStudents extends RampUpHomePageEvent {
   GetAllStudents();
 }
+
+class DeleteStudent extends RampUpHomePageEvent {
+  final String id;
+
+  DeleteStudent({
+    required this.id,
+  });
+}
