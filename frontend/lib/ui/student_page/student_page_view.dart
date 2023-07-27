@@ -33,7 +33,7 @@ class StudentPageView extends StatelessWidget {
   Widget build(BuildContext context) {
     StudentPageBloc studentPageBloc = BlocProvider.of<StudentPageBloc>(context);
     HomePageBloc homePageBloc = BlocProvider.of<HomePageBloc>(context);
-    DateTime dob = DateTime.now();
+    DateTime dob = student.dob;
 
     void validateTextFields(bool isValid, String textField) {
       String nameError = '';
@@ -111,7 +111,9 @@ class StudentPageView extends StatelessWidget {
                       fontSize: 16,
                     ),
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(
+                    height: 20,
+                  ),
                   TextField(
                     controller: nameController,
                     decoration: const InputDecoration(
@@ -162,16 +164,17 @@ class StudentPageView extends StatelessWidget {
                     },
                   ),
                   BlocBuilder<StudentPageBloc, StudentPageState>(
-                      buildWhen: (previous, current) =>
-                          current.addressError != previous.addressError,
-                      builder: (context, state) {
-                        return Text(
-                          state.addressError,
-                          style: const TextStyle(
-                            color: AppColors.errorColor,
-                          ),
-                        );
-                      }),
+                    buildWhen: (previous, current) =>
+                        current.addressError != previous.addressError,
+                    builder: (context, state) {
+                      return Text(
+                        state.addressError,
+                        style: const TextStyle(
+                          color: AppColors.errorColor,
+                        ),
+                      );
+                    },
+                  ),
                   const SizedBox(
                     height: 20,
                   ),
@@ -193,16 +196,17 @@ class StudentPageView extends StatelessWidget {
                     },
                   ),
                   BlocBuilder<StudentPageBloc, StudentPageState>(
-                      buildWhen: (previous, current) =>
-                          current.mobileError != previous.mobileError,
-                      builder: (context, state) {
-                        return Text(
-                          state.mobileError,
-                          style: const TextStyle(
-                            color: AppColors.errorColor,
-                          ),
-                        );
-                      }),
+                    buildWhen: (previous, current) =>
+                        current.mobileError != previous.mobileError,
+                    builder: (context, state) {
+                      return Text(
+                        state.mobileError,
+                        style: const TextStyle(
+                          color: AppColors.errorColor,
+                        ),
+                      );
+                    },
+                  ),
                   const SizedBox(
                     height: 20,
                   ),
@@ -313,9 +317,9 @@ class StudentPageView extends StatelessWidget {
                             backgroundColor: AppColors.successColor,
                           ),
                           onPressed: () async {
-                            if (studentPageBloc.state.nameError != '' &&
-                                studentPageBloc.state.addressError != '' &&
-                                studentPageBloc.state.mobileError != '') {
+                            if (studentPageBloc.state.nameError == '' &&
+                                studentPageBloc.state.addressError == '' &&
+                                studentPageBloc.state.mobileError == '') {
                               Navigator.of(context).pop();
                               homePageBloc.add(
                                 UpdateStudentEvent(

@@ -90,7 +90,6 @@ class HomePageView extends StatelessWidget {
                       children: [
                         ListView.builder(
                           shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
                           itemCount: studentList.length,
                           itemBuilder: (context, index) {
                             return StudentCard(

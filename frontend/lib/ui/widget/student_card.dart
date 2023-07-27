@@ -73,8 +73,14 @@ class _StudentCardState extends State<StudentCard> {
                       height: 10,
                     ),
                     Text(
-                      DateFormat('EEE MMM d yyyy').format(widget.student.dob),
-                      style: const TextStyle(color: Colors.white60),
+                      DateFormat(
+                        'EEE MMM d yyyy',
+                      ).format(
+                        widget.student.dob,
+                      ),
+                      style: const TextStyle(
+                        color: Colors.white60,
+                      ),
                     ),
                   ],
                 ),

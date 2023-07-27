@@ -84,7 +84,10 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
       GetAllStudents event, Emitter<HomePageState> emit) async {
     List<Student> dummyDataStudents =
         state.students.isNotEmpty ? [] : dummyData;
-    List<Student> studentList = [...state.students, ...dummyDataStudents];
+    List<Student> studentList = [
+      ...state.students,
+      ...dummyDataStudents,
+    ];
     emit(
       state.clone(
         students: studentList
