@@ -11,6 +11,11 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
   HomePageBloc(BuildContext context) : super(HomePageState.initialState) {
     on<GetAllStudent>(_getAllStudent);
     on<SaveStudent>(_saveStudent);
+    on<UpdateStudent>(_updateStudent);
+    on<DeleteStudent>(_deleteStudent);
+    add(
+      GetAllStudent(),
+    );
   }
 
   Future<FutureOr<void>> _getAllStudent(
@@ -31,7 +36,7 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
         name: 'John Doe',
         address: '123 Main St',
         mobileNumber: '0771234567',
-        dob: DateTime(2005 - 07 - 24),
+        dob: DateTime(2001, 07, 27),
         gender: 'Male',
       ),
     );
@@ -41,7 +46,7 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
         name: 'Jane Smith',
         address: '456 Oak Ave',
         mobileNumber: '0725555678',
-        dob: DateTime(2005 - 07 - 24),
+        dob: DateTime(2005, 07, 04),
         gender: 'Female',
       ),
     );
@@ -51,7 +56,7 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
         name: 'Michael Johnson',
         address: '789 Broadway',
         mobileNumber: '0755559876',
-        dob: DateTime(2005 - 07 - 24),
+        dob: DateTime(2005, 07, 24),
         gender: 'Male',
       ),
     );
@@ -85,5 +90,33 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
     );
     emit(state.clone(allStudents: [...state.allStudents, student]));
     emit(state.clone(allStudents: await _getAllEvent()));
+  }
+
+  Future<void> _updateStudent(
+    UpdateStudent event,
+    Emitter<HomePageState> emit,
+  ) async {
+    List<Student> updatedStudents = state.allStudents.map((student) {
+      return student.id == event.id
+          ? Student(
+              name: event.name,
+              address: event.address,
+              mobileNumber: event.mobileNo,
+              dob: event.date,
+              gender: event.gender,
+              id: student.id,
+            )
+          : student;
+    }).toList();
+
+    emit(state.clone(allStudents: updatedStudents));
+  }
+
+  Future<void> _deleteStudent(
+      DeleteStudent event, Emitter<HomePageState> emit) async {
+    final filteredStudents =
+        state.allStudents.where((student) => student.id != event.id).toList();
+
+    emit(state.clone(allStudents: filteredStudents));
   }
 }

@@ -8,26 +8,37 @@ import 'package:ramp_up/ui/widget/student_modal.dart';
 
 import '../../model/student_model.dart';
 import '../../theme/primary_theme.dart';
+import '../manage_student_page/manage_student_page_provider.dart';
 import 'home_page_bloc.dart';
-import 'home_page_event.dart';
 import 'home_page_state.dart';
 
 class HomePageView extends StatelessWidget {
   const HomePageView({super.key});
 
-  Widget _buildStudentCardView(Student student) {
-    return StudentCard(
-      id: student.id,
-      studentName: student.name,
-      studentDOB: student.dob,
+  Widget _buildStudentCardView(BuildContext context, Student student) {
+    return GestureDetector(
+      onTap: () {
+        navigateToAnotherUI(context, student);
+      },
+      child: StudentCard(
+        id: student.id,
+        studentName: student.name,
+        studentDOB: student.dob,
+      ),
+    );
+  }
+
+  void navigateToAnotherUI(BuildContext context, Student student) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => StudentMangeProvider(student: student),
+      ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    HomePageBloc bloc = BlocProvider.of<HomePageBloc>(context);
-    bloc.add(GetAllStudent());
-
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -65,7 +76,7 @@ class HomePageView extends StatelessWidget {
                     showDialog(
                       context: context,
                       builder: (context) =>
-                          const PopupModel(), // Replace with the actual implementation of PopupModel
+                          const PopupModal(),
                     );
                   },
                   child: Text(
@@ -85,7 +96,7 @@ class HomePageView extends StatelessWidget {
                           itemCount: allStudents.length,
                           itemBuilder: (context, index) {
                             final student = allStudents[index];
-                            return _buildStudentCardView(student);
+                            return _buildStudentCardView(context, student);
                           },
                         );
                       },

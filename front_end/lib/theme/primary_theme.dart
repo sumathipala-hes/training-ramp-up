@@ -25,19 +25,29 @@ final popButton = ElevatedButton.styleFrom(
 
 final cancelButton = ElevatedButton.styleFrom(
   backgroundColor: AppColors.cancelButton,
-  textStyle: GoogleFonts.ubuntu(
-    fontSize: 16,
-    fontWeight: FontWeight.bold,
-    color: Colors.white,
+  shape: RoundedRectangleBorder(
+    borderRadius: BorderRadius.circular(8.0),
   ),
 );
 
 final saveButton = ElevatedButton.styleFrom(
   backgroundColor: AppColors.saveButton,
-  textStyle: GoogleFonts.ubuntu(
-    fontSize: 16,
-    fontWeight: FontWeight.bold,
-    color: Colors.white,
+  shape: RoundedRectangleBorder(
+    borderRadius: BorderRadius.circular(8.0),
+  ),
+);
+
+final updateButton = ElevatedButton.styleFrom(
+  backgroundColor: AppColors.updateButton,
+  shape: RoundedRectangleBorder(
+    borderRadius: BorderRadius.circular(8.0),
+  ),
+);
+
+final deleteButton = ElevatedButton.styleFrom(
+  backgroundColor: AppColors.deleteButton,
+  shape: RoundedRectangleBorder(
+    borderRadius: BorderRadius.circular(8.0),
   ),
 );
 
@@ -74,4 +84,33 @@ final cardTextSub = GoogleFonts.ubuntu(
   fontSize: 16,
   fontWeight: FontWeight.w400,
   color: AppColors.textColor,
+);
+
+final headerText2 = GoogleFonts.ubuntu(
+  fontSize: 23,
+  fontWeight: FontWeight.bold,
+  color: Colors.blue,
+);
+
+final headerText3 = GoogleFonts.ubuntu(
+  fontSize: 18,
+  fontWeight: FontWeight.bold,
+  color: Colors.grey[700],
+);
+
+final labelText2 = GoogleFonts.ubuntu(
+  fontSize: 20,
+  fontWeight: FontWeight.bold,
+);
+
+final textButton2 = GoogleFonts.ubuntu(
+  fontSize: 19,
+  fontWeight: FontWeight.bold,
+  color: Colors.white,
+);
+
+final textRedio2 = GoogleFonts.ubuntu(
+  fontSize: 19,
+  fontWeight: FontWeight.bold,
+  color: Colors.black,
 );
