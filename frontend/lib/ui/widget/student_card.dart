@@ -30,7 +30,9 @@ class _StudentCardState extends State<StudentCard> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => const StudentPageProvider(),
+                builder: (context) => StudentPageProvider(
+                  student: widget.student,
+                ),
               ),
             );
           },
@@ -58,7 +60,7 @@ class _StudentCardState extends State<StudentCard> {
                   ),
                 ),
                 Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     Text(
                       widget.student.name,

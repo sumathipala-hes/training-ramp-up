@@ -10,6 +10,8 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
   HomePageBloc(BuildContext context) : super(HomePageState.initialState) {
     on<SaveStudentEvent>(_saveStudent);
     on<GetAllStudents>(_getAllStudents);
+    on<UpdateStudentEvent>(_updateStudent);
+    on<DeleteStudentEvent>(_deleteStudent);
     GetAllStudents();
   }
 
@@ -28,6 +30,51 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
         students: [
           ...state.students,
           student,
+        ],
+      ),
+    );
+  }
+
+  Future<FutureOr<void>> _updateStudent(
+      UpdateStudentEvent event, Emitter<HomePageState> emit) async {
+    Student student = Student(
+      id: event.id,
+      name: event.name,
+      address: event.address,
+      mobile: event.mobile,
+      dob: event.dob,
+      gender: event.gender,
+    );
+
+    List<Student> studentList = state.students;
+    for (var i = 0; i < studentList.length; i++) {
+      if (studentList[i].id == student.id) {
+        studentList[i] = student;
+        break;
+      }
+    }
+    emit(
+      state.clone(
+        students: [
+          ...studentList,
+        ],
+      ),
+    );
+  }
+
+  Future<FutureOr<void>> _deleteStudent(
+      DeleteStudentEvent event, Emitter<HomePageState> emit) async {
+    List<Student> studentList = state.students;
+    for (var i = 0; i < studentList.length; i++) {
+      if (studentList[i].id == event.id) {
+        studentList.removeAt(i);
+        break;
+      }
+    }
+    emit(
+      state.clone(
+        students: [
+          ...studentList,
         ],
       ),
     );

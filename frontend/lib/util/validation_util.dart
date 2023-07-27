@@ -1,4 +1,13 @@
-final RegExp nameRegExp = RegExp(r'^[A-Za-z ]+$');
-final RegExp addressRegExp = RegExp(r'^[A-Za-z0-9 ]+$');
-final RegExp mobileRegExp = RegExp(r'^[0-9]+$');
-final RegExp dobRegExp = RegExp(r'^[A-Za-z ]+$');
+class ValidationUtil {
+  static final RegExp nameRegExp = RegExp(r'^[A-z ]{5,20}$');
+  static final RegExp addressRegExp = RegExp(r'^[0-9/A-z. ,]{5,}$');
+  static final RegExp mobileRegExp = RegExp(r'^[0-9]+$');
+  static final RegExp dobRegExp = RegExp(r'^[A-Za-z ]+$');
+
+  static bool isValidExp(
+    RegExp exp,
+    String textFieldValue,
+  ) {
+    return exp.hasMatch(textFieldValue);
+  }
+}
