@@ -51,7 +51,7 @@ class ManageStudentScreen extends StatelessWidget {
         child: Center(
           child: SingleChildScrollView(
             child: Padding(
-              padding: const EdgeInsets.all(35.0),
+              padding: const EdgeInsets.all(20.0),
               child: Card(
                 color: Colors.white.withOpacity(0.8),
                 elevation: 5,
@@ -59,7 +59,7 @@ class ManageStudentScreen extends StatelessWidget {
                   borderRadius: BorderRadius.circular(20.0),
                 ),
                 child: Padding(
-                  padding: const EdgeInsets.all(20.0),
+                  padding: const EdgeInsets.all(10.0),
                   child: Column(
                     children: [
                       Text(
@@ -71,9 +71,7 @@ class ManageStudentScreen extends StatelessWidget {
                           color: Color.fromARGB(255, 137, 91, 215),
                         ),
                       ),
-                      const SizedBox(
-                        height: 4,
-                      ),
+                      const SizedBox(height: 4),
                       Text(
                         age == 0 ? "${calculateAge()} YEARS" : "$age YEARS",
                         textAlign: TextAlign.center,
@@ -83,7 +81,7 @@ class ManageStudentScreen extends StatelessWidget {
                           color: Colors.grey,
                         ),
                       ),
-                      const SizedBox(height: 20),
+                      const SizedBox(height: 30),
                       TextField(
                         controller: nameController,
                         decoration: const InputDecoration(
@@ -175,7 +173,7 @@ class ManageStudentScreen extends StatelessWidget {
                           );
                         },
                       ),
-                      const SizedBox(height: 35),
+                      const SizedBox(height: 15),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
