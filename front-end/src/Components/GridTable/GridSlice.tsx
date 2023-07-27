@@ -22,8 +22,8 @@ const initialState: GridState = {
         {
             id: randomId(),
             name: randomTraderName(),
-            age: 2023 - randomCreatedDate().getFullYear(),
-            dateOfBirth: randomCreatedDate(),
+            age: 28,
+            dateOfBirth: new Date(randomCreatedDate()),
             gender: randomRole(),
             mobileNumber: '012345678',
             address: 'Colombo',
@@ -32,7 +32,7 @@ const initialState: GridState = {
             id: randomId(),
             name: randomTraderName(),
             age: 36,
-            dateOfBirth: randomCreatedDate(),
+            dateOfBirth: new Date(randomCreatedDate()),
             gender: randomRole(),
             mobileNumber: '012345678',
             address: 'Colombo',
@@ -41,7 +41,7 @@ const initialState: GridState = {
             id: randomId(),
             name: randomTraderName(),
             age: 19,
-            dateOfBirth: randomCreatedDate(),
+            dateOfBirth: new Date(randomCreatedDate()),
             gender: randomRole(),
             mobileNumber: '012345678',
             address: 'Colombo',
@@ -50,14 +50,14 @@ const initialState: GridState = {
             id: randomId(),
             name: randomTraderName(),
             age: 28,
-            dateOfBirth: randomCreatedDate(),
+            dateOfBirth: new Date(randomCreatedDate()),
             gender: randomRole(),
             mobileNumber: '012345678',
             address: 'Colombo',
         },
         {
             id: randomId(),
-            name: randomTraderName(),
+            name: new Date(randomCreatedDate()),
             age: 23,
             dateOfBirth: randomCreatedDate(),
             gender: randomRole(),
@@ -73,7 +73,7 @@ const gridSlice = createSlice({
     initialState,
     reducers: {
         addRow(state, action: PayloadAction<GridRowModel>) {
-            state.rows.push(action.payload)
+            state.rows.unshift(action.payload)
         },
         updateRow(state, action: PayloadAction<GridRowModel>) {
             const { id } = action.payload
