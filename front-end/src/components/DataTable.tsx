@@ -14,7 +14,6 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import {  setRowModesModel, setRows } from '../redux/slice';
 import { useEffect } from 'react';
-import { randomCreatedDate } from '@mui/x-data-grid-generator';
 
 const usedIDs: number[] = [];
 
@@ -35,7 +34,7 @@ const initialRows: GridRowsProp = [
     gender: 'Male',
     address: 'toronto',
     mobile: '0767778984',
-    dateOfBirth: randomCreatedDate(),
+    dateOfBirth: new Date("1990-01-05"),
   },
   {
     id: generateID(),
@@ -43,7 +42,7 @@ const initialRows: GridRowsProp = [
     gender: 'Female',
     address: 'toronto',
     mobile: '0767778988',
-    dateOfBirth: randomCreatedDate(),
+    dateOfBirth: new Date("2000-07-25"),
   },
   {
     id: generateID(),
@@ -51,7 +50,7 @@ const initialRows: GridRowsProp = [
     gender: 'Male',
     address: 'Ohio',
     mobile: '0767778909',
-    dateOfBirth: randomCreatedDate(),
+    dateOfBirth: new Date("2002-03-02"),
   },
   {
     id: generateID(),
@@ -59,7 +58,7 @@ const initialRows: GridRowsProp = [
     gender: 'Female',
     address: 'toronto',
     mobile: '0767778899',
-    dateOfBirth: randomCreatedDate(),
+    dateOfBirth: new Date("1995-01-05"),
   },
 
 ];
