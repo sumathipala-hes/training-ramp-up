@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:front_end/models/student.dart';
 import 'package:front_end/ui/home_page/home_page_bloc.dart';
 import 'package:front_end/ui/home_page/home_page_event.dart';
@@ -194,6 +195,15 @@ class ManageStudentScreen extends StatelessWidget {
                                       .trim(),
                                 ),
                               );
+                              Fluttertoast.showToast(
+                                msg: "Successfully Updated..!",
+                                toastLength: Toast.LENGTH_SHORT,
+                                gravity: ToastGravity.BOTTOM,
+                                timeInSecForIosWeb: 1,
+                                backgroundColor: Colors.green,
+                                textColor: Colors.white,
+                                fontSize: 16.0,
+                              );
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.green,
@@ -212,6 +222,15 @@ class ManageStudentScreen extends StatelessWidget {
                                 DeleteStudent(
                                   id: student.studentId,
                                 ),
+                              );
+                              Fluttertoast.showToast(
+                                msg: "Successfully Deleted..!",
+                                toastLength: Toast.LENGTH_SHORT,
+                                gravity: ToastGravity.BOTTOM,
+                                timeInSecForIosWeb: 1,
+                                backgroundColor: Colors.red[400],
+                                textColor: Colors.white,
+                                fontSize: 16.0,
                               );
                             },
                             style: ElevatedButton.styleFrom(
