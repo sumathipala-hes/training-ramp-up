@@ -1,97 +1,27 @@
 import { createSlice} from '@reduxjs/toolkit';
+import { rows } from '../../utils';
 
 //create interface to accept values to states
-interface UserState {
+interface TableState {
     rows: rowData[];
+    id:number
 };
 
 interface rowData {
+  id:number,
   name: string,
   gender: string,
   address: string,
-  mobile: number
-  birthday: Date,
+  mobile: string,
+  birthday: string,
   age: number,
 }
 
-//demo row data
-const rows = [
-  {
-    name: "John",
-    gender: "male",
-    address: "Jon",
-    mobile: 715426257,
-    birthday: new Date("2023-06-29"),
-    age: 35,
-  },
-  {
-    name: "Alice",
-    gender: "female",
-    address: "Wonderland",
-    mobile: 715426257,
-    birthday: new Date("2023-07-19"),
-    age: 32,
-  },
-  {
-    name: "Michael",
-    gender: "male",
-    address: "New York",
-    mobile: 715426257,
-    birthday: new Date("2023-09-18"),
-    age: 38,
-  },
-  {
-    name: "Emma",
-    gender: "female",
-    address: "London",
-    mobile: 715426257,
-    birthday: new Date("2023-05-04"),
-    age: 27,
-  },
-  {
-    name: "Daniel",
-    gender: "male",
-    address: "Paris",
-    mobile: 715426257,
-    birthday: new Date("2023-03-04"),
-    age: 34,
-  },
-  {
-    name: "Olivia",
-    gender: "female",
-    address: "Los Angeles",
-    mobile: 715426257,
-    birthday: new Date("2023-12-14"),
-    age: 30,
-  },
-  {
-    name: "William",
-    gender: "male",
-    address: "Sydney",
-    mobile: 715426257,
-    birthday: new Date("2023-11-25"),
-    age: 41,
-  },
-  {
-    name: "Sophia",
-    gender: "female",
-    address: "Berlin",
-    mobile: 715426257,
-    birthday: new Date("2023-09-10"),
-    age: 24,
-  },
-  {
-    name: "Alexander",
-    gender: "male",
-    address: "Moscow",
-    mobile: 715426257,
-    birthday: new Date("2022-03-25"),
-    age: 36,
-  },
-];
+//max id value of the demo data
+const maxId = Math.max(...rows.map((row) => row.id));
 
 //set initial state  
-const initialState: UserState = { rows:rows };
+const initialState: TableState = { rows:rows, id:maxId };
 
 //create a slice to update table state
 const tableSlice = createSlice({
@@ -99,7 +29,20 @@ const tableSlice = createSlice({
   initialState,
   reducers: {
     addRow(state, action) {
-      state.rows.push(action.payload)
+      const newRow = action.payload;
+      const maxId = Math.max(...state.rows.map((row) => row.id));
+      newRow.id = maxId + 1;
+      state.rows.unshift(action.payload); 
+    },
+    removeRow(state, action) {
+      state.rows = state.rows.filter((row) => row.id !== action.payload);
+    },
+    updateRow(state, action){
+      const rowIndex = state.rows.findIndex((row) => row.id === action.payload.id);
+      state.id = state.id + 1;
+      if (rowIndex !== -1) {
+        state.rows[rowIndex] = action.payload;
+      }
     },
   },
 });
