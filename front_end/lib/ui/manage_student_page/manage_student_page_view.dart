@@ -23,6 +23,7 @@ class ManageStudentScreen extends StatelessWidget {
   final TextEditingController dateController = TextEditingController();
   final Student student;
   DateTime dob = DateTime.now();
+  int age = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -71,10 +72,10 @@ class ManageStudentScreen extends StatelessWidget {
                       const SizedBox(
                         height: 4,
                       ),
-                      const Text(
-                        'YEARS',
+                      Text(
+                        age == 0 ? "${calculateAge()} YEARS" : "$age YEARS",
                         textAlign: TextAlign.center,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
                           color: Colors.grey,
@@ -245,5 +246,17 @@ class ManageStudentScreen extends StatelessWidget {
       dateController.text = DateFormat('EEE MMM d yyyy').format(picked);
       dob = picked;
     }
+  }
+
+  calculateAge() {
+    DateTime date = DateTime.parse(student.studentDob.toString());
+    DateTime now = DateTime.now();
+    age = now.year - date.year;
+
+    if (now.month < date.month ||
+        (now.month == date.month && now.day < date.day)) {
+      return age--;
+    }
+    return age;
   }
 }
