@@ -16,6 +16,7 @@ class ManageStudentScreen extends StatelessWidget {
     mobileNumberController.text = student.studentMobile;
     dateController.text =
         DateFormat('EEE MMM d yyyy').format(student.studentDob);
+    dob = student.studentDob;
   }
   final TextEditingController nameController = TextEditingController();
   final TextEditingController addressController = TextEditingController();
