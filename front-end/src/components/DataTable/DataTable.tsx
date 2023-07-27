@@ -21,7 +21,7 @@ import {
 import generateRandomId from "../../util/generateRandomId";
 import { initialRows } from "../../util/Data";
 import { useDispatch} from "react-redux";
-import { setTodos } from "../../Redux/studentSlice";
+import { setStudent } from "../../redux/studentSlice";
 // import { RootState } from "../../Redux/store";
 
 // EditToolnarProps is interface its define its type and passing inside editToolBar function
@@ -80,7 +80,7 @@ function DataTable() {
     const newRows = rows.map((row) => {
       return { ...row, dof: row.dof?.toString() };
     });
-    dispatch(setTodos(newRows as Array<any>));
+    dispatch(setStudent(newRows as Array<any>));
     console.log(newRows);
   }, [rows, dispatch]);
 

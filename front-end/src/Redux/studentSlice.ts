@@ -1,10 +1,10 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 interface Row {
-    id: string,
-    name: string,
-    age: number,
-    dof: string,
+  id: string,
+  name: string,
+  age: number,
+  dof: string,
   gender: string,
   address: string,
   mobile: string,
@@ -23,17 +23,17 @@ const todoSlice = createSlice({
   name: 'row',
   initialState,
   reducers: {
-    addTodo: (state, action: PayloadAction<Row>) => {
+    addStudent: (state, action: PayloadAction<Row>) => {
       state.Rows.push(action.payload);
     },
-    setTodos: (state, action: PayloadAction<Row[]>) => {
+    setStudent: (state, action: PayloadAction<Row[]>) => {
       state.Rows = action.payload;
     },
-    fetchTodos: () => {},
+    fetchStudent: () => { },
   },
 });
 
-export const { addTodo, setTodos, fetchTodos } = todoSlice.actions;
+export const { addStudent, setStudent, fetchStudent } = todoSlice.actions;
 
 export default todoSlice.reducer;
 
