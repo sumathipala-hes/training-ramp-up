@@ -18,7 +18,7 @@ class RampUpHomeScreenBloc extends Bloc<RampUpHomePageEvent, RampUpHomeState> {
     );
   }
 
-  FutureOr<void> _onSaveButtonPressed(
+  Future<void> _onSaveButtonPressed(
       SaveButtonPressed event, Emitter<RampUpHomeState> emit) async {
     final student = Student(
       studentId: (state.entries.length + 1).toString(),
@@ -38,14 +38,16 @@ class RampUpHomeScreenBloc extends Bloc<RampUpHomePageEvent, RampUpHomeState> {
       ),
     );
     emit(
-      state.clone(entries: [
-        ...state.entries,
-      ]),
+      state.clone(
+        entries: [
+          ...state.entries,
+        ],
+      ),
     );
   }
 
-  FutureOr<void> _onGetAllStudents(
-      GetAllStudents event, Emitter<RampUpHomeState> emit) {
+  Future<void> _onGetAllStudents(
+      GetAllStudents event, Emitter<RampUpHomeState> emit) async {
     emit(
       state.clone(
         entries: [
@@ -55,8 +57,8 @@ class RampUpHomeScreenBloc extends Bloc<RampUpHomePageEvent, RampUpHomeState> {
     );
   }
 
-  FutureOr<void> _onDeleteStudent(
-      DeleteStudent event, Emitter<RampUpHomeState> emit) {
+  Future<void> _onDeleteStudent(
+      DeleteStudent event, Emitter<RampUpHomeState> emit) async {
     emit(
       state.clone(
         entries: [
@@ -66,8 +68,8 @@ class RampUpHomeScreenBloc extends Bloc<RampUpHomePageEvent, RampUpHomeState> {
     );
   }
 
-  FutureOr<void> _onUpdateStudent(
-      UpdateStudent event, Emitter<RampUpHomeState> emit) {
+  Future<void> _onUpdateStudent(
+      UpdateStudent event, Emitter<RampUpHomeState> emit) async {
     state.entries[state.entries
             .indexWhere((element) => element.studentId == event.studentId)] =
         Student(

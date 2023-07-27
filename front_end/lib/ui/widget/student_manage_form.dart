@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:front_end/ui/home_page/home_page_bloc.dart';
@@ -118,6 +119,11 @@ class _PopupModelState extends State<PopupModel> {
                       ),
                     ),
                   ),
+                  inputFormatters: [
+                    FilteringTextInputFormatter.allow(
+                      RegExp(r'[a-zA-Z ]'),
+                    ),
+                  ],
                 ),
                 const SizedBox(height: 15),
                 TextField(

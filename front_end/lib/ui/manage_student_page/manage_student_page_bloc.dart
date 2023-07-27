@@ -12,8 +12,8 @@ class ManageStudentScreenBloc
     on<SelectGender>(_onSelectGender);
   }
 
-  FutureOr<void> _onSelectGender(
-      SelectGender event, Emitter<ManageStudentScreenState> emit) {
+  Future<void> _onSelectGender(
+      SelectGender event, Emitter<ManageStudentScreenState> emit) async {
     emit(
       state.clone(
         gender: event.gender,
