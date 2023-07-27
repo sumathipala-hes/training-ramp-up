@@ -29,6 +29,7 @@ function DataTable() {
   const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({});
   const [isDisabled, setDisabled] = useState(true);
   const [isAddDisabled, setAddDisabeld] = useState(false);
+  const [isUpdating, setUpdate] = useState(false);
 
     //set columns
     const columns: GridColDef[] = [
@@ -128,7 +129,7 @@ function DataTable() {
           if (isInEditMode) {
             return [
               <Button size="small" disabled={isDisabled} variant="contained" sx={{ marginRight: "10px" }} onClick={() => handleSaveChanges({ row })}>
-                Add
+                {isUpdating? "Update" :"Add"}
               </Button>,
               <Button size="small" color="error" variant="contained" onClick={() => handleDiscardChanges({ row })}>
                 Discard Changes
@@ -137,10 +138,10 @@ function DataTable() {
           }
   
           return [
-            <Button size="small" variant="contained" sx={{ marginRight: "10px" }}>
+            <Button size="small" disabled={isUpdating} variant="contained" sx={{ marginRight: "10px" }}onClick={() => handleUpdates({ row })}>
               Edit
             </Button>,
-            <Button size="small" color="error" variant="contained" onClick={handleDiscardChanges}>
+            <Button size="small" color="error" variant="contained" onClick={() => handleRemove({ row })}>
               Remove
             </Button>
           ];
@@ -164,11 +165,30 @@ function DataTable() {
     setRowModesModel({ [rowId + 1]: { mode: GridRowModes.Edit } });
     setAddDisabeld(true);
   }
+  
+  //handle row updates
+  function handleUpdates(row:any) {
+    const id  = row.row.id;
+    setUpdate(true);
+    setRowModesModel({ [id]: { mode: GridRowModes.Edit } });
+    setAddDisabeld(true);
+  }
+
+  //handle row removes
+  function handleRemove(row:any){
+    const id  = row.row.id;
+    dispatch(tableActions.removeRow(id));
+  }
 
   //discard button event handler
   function handleDiscardChanges(row:any) {
     const id  = row.row.id;
-    dispatch(tableActions.removeRow(id))
+    if(!isUpdating){
+      dispatch(tableActions.removeRow(id));
+    }else{
+      setRowModesModel({ [id]: { mode: GridRowModes.View, ignoreModifications: true} });
+      setUpdate(false);
+    }
     setDisabled(true);
     setAddDisabeld(false);
   }
@@ -176,6 +196,11 @@ function DataTable() {
   //save button event handler
   function handleSaveChanges(row:any) {
     const id  = row.row.id;
+    if(!isUpdating){
+      dispatch(tableActions.updateId());
+    }else{
+      setUpdate(false);
+    }
     setRowModesModel({ [id]: { mode: GridRowModes.View} });
   }
 
@@ -194,7 +219,7 @@ function DataTable() {
       birthday: `${year}-${month}-${day}`,
       age: newRow.age,
     };
-    dispatch(tableActions.updateRow(newRows))
+    dispatch(tableActions.updateRow(newRows));
     setDisabled(true);
     setAddDisabeld(false);
     return newRow;
