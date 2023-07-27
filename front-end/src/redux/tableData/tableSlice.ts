@@ -30,8 +30,7 @@ const tableSlice = createSlice({
   reducers: {
     addRow(state, action) {
       const newRow = action.payload;
-      const maxId = Math.max(...state.rows.map((row) => row.id));
-      newRow.id = maxId + 1;
+      newRow.id = state.id + 1;
       state.rows.unshift(action.payload); 
     },
     removeRow(state, action) {
@@ -39,10 +38,12 @@ const tableSlice = createSlice({
     },
     updateRow(state, action){
       const rowIndex = state.rows.findIndex((row) => row.id === action.payload.id);
-      state.id = state.id + 1;
       if (rowIndex !== -1) {
         state.rows[rowIndex] = action.payload;
       }
+    },
+    updateId(state){
+      state.id = state.id + 1;
     },
   },
 });

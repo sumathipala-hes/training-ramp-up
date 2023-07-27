@@ -17,7 +17,7 @@ const rows = [
     name: "John",
     gender: "male",
     address: "Jon",
-    mobile: "715426257",
+    mobile: "0715426257",
     birthday: "1990-08-15",
     age: 35,
   },
@@ -26,7 +26,7 @@ const rows = [
     name: "Alice",
     gender: "female",
     address: "Wonderland",
-    mobile: "715426257",
+    mobile: "0715426257",
     birthday: "1991-03-25",
     age: 32,
   },
@@ -35,7 +35,7 @@ const rows = [
     name: "Michael",
     gender: "male",
     address: "New York",
-    mobile: "715426257",
+    mobile: "0715426257",
     birthday: "1988-11-02",
     age: 38,
   },
@@ -44,7 +44,7 @@ const rows = [
     name: "Emma",
     gender: "female",
     address: "London",
-    mobile: "715426257",
+    mobile: "0715426257",
     birthday: "1996-02-10",
     age: 27,
   },
@@ -53,7 +53,7 @@ const rows = [
     name: "Daniel",
     gender: "male",
     address: "Paris",
-    mobile: "715426257",
+    mobile: "0715426257",
     birthday: "1999-12-28",
     age: 34,
   },
@@ -62,7 +62,7 @@ const rows = [
     name: "Olivia",
     gender: "female",
     address: "Los Angeles",
-    mobile: "715426257",
+    mobile: "0715426257",
     birthday: "1994-07-09",
     age: 30,
   },
@@ -71,7 +71,7 @@ const rows = [
     name: "William",
     gender: "male",
     address: "Sydney",
-    mobile: "715426257",
+    mobile: "0715426257",
     birthday: "1987-09-21",
     age: 41,
   },
@@ -80,7 +80,7 @@ const rows = [
     name: "Sophia",
     gender: "female",
     address: "Berlin",
-    mobile: "715426257",
+    mobile: "0715426257",
     birthday: "1986-05-17",
     age: 24,
   },
@@ -89,7 +89,7 @@ const rows = [
     name: "Alexander",
     gender: "male",
     address: "Moscow",
-    mobile: "715426257",
+    mobile: "0715426257",
     birthday: "2003-01-08",
     age: 36,
   },
@@ -164,11 +164,8 @@ const alerts = {
 //mobile field validation
 function mobile(params:GridPreProcessEditCellProps){
     const hasError = /^\d{10}$/.test(params.props.value);
-    if(params.hasChanged){
-      return { ...params.props, error: !hasError, alert:alerts.mobile};
-    }else{
-      return { ...params.props,error: !hasError, alert:""};
-    }
+    return { ...params.props, error: !hasError, alert:alerts.mobile};
+
 }
 
 //address field validation
