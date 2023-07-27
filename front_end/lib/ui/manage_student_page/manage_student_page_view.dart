@@ -33,6 +33,7 @@ class ManageStudentScreen extends StatelessWidget {
         elevation: 7,
         centerTitle: true,
         title: const Text('M A N A G E    S T U D E N T'),
+        toolbarHeight: MediaQuery.of(context).size.height * 0.1,
       ),
       body: Container(
         height: double.infinity,
@@ -89,7 +90,7 @@ class ManageStudentScreen extends StatelessWidget {
                           ),
                         ),
                       ),
-                      const SizedBox(height: 15),
+                      const SizedBox(height: 25),
                       TextField(
                         controller: addressController,
                         decoration: const InputDecoration(
@@ -101,7 +102,7 @@ class ManageStudentScreen extends StatelessWidget {
                           ),
                         ),
                       ),
-                      const SizedBox(height: 15),
+                      const SizedBox(height: 25),
                       TextField(
                         controller: mobileNumberController,
                         decoration: const InputDecoration(
@@ -113,6 +114,7 @@ class ManageStudentScreen extends StatelessWidget {
                           ),
                         ),
                       ),
+                      const SizedBox(height: 5),
                       TextFormField(
                         controller: dateController,
                         readOnly: true,
@@ -127,12 +129,15 @@ class ManageStudentScreen extends StatelessWidget {
                           ),
                         ),
                       ),
-                      const SizedBox(height: 15),
                       BlocBuilder<ManageStudentScreenBloc,
                           ManageStudentScreenState>(
                         buildWhen: (previous, current) =>
                             current.gender != previous.gender,
                         builder: (context, state) {
+                          if (manageStudentScreenBloc.state.gender.isEmpty) {
+                            manageStudentScreenBloc.state.gender =
+                                student.studentGender;
+                          }
                           return Row(
                             children: [
                               Radio(
@@ -165,7 +170,7 @@ class ManageStudentScreen extends StatelessWidget {
                           );
                         },
                       ),
-                      const SizedBox(height: 15),
+                      const SizedBox(height: 35),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
@@ -181,8 +186,9 @@ class ManageStudentScreen extends StatelessWidget {
                                       mobileNumberController.text.trim(),
                                   studentDob: student
                                       .studentDob, /////////////////////////////
-                                  studentGender:
-                                      manageStudentScreenBloc.state.gender.trim(),
+                                  studentGender: manageStudentScreenBloc
+                                      .state.gender
+                                      .trim(),
                                 ),
                               );
                             },

@@ -1,15 +1,16 @@
+// ignore_for_file: must_be_immutable
 import 'package:flutter/material.dart';
 
 @immutable
 class ManageStudentScreenState {
-  final String gender;
+   String gender;
 
-  const ManageStudentScreenState({
+   ManageStudentScreenState({
     required this.gender,
   });
 
   static ManageStudentScreenState get initialState =>
-      const ManageStudentScreenState(
+     ManageStudentScreenState(
         gender: '',
       );
 
