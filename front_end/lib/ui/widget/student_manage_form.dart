@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:front_end/ui/home_page/home_page_bloc.dart';
 import 'package:front_end/ui/home_page/home_page_event.dart';
+import 'package:front_end/util/alert.dart';
 import 'package:intl/intl.dart';
 
 class PopupModel extends StatefulWidget {
@@ -74,15 +74,9 @@ class _PopupModelState extends State<PopupModel> {
           studentGender: selectedGender,
         ),
       );
-      Fluttertoast.showToast(
-        msg: "Successfully Added..!",
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.BOTTOM,
-        timeInSecForIosWeb: 1,
-        backgroundColor: Colors.green,
-        textColor: Colors.white,
-        fontSize: 16.0,
-        webBgColor: "#e74c3c",
+      AlertShowToast.showToast(
+        "Successfully Added..!",
+        Colors.green,
       );
     }
   }

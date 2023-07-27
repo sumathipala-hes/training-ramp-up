@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:front_end/models/student.dart';
 import 'package:front_end/ui/home_page/home_page_bloc.dart';
 import 'package:front_end/ui/home_page/home_page_event.dart';
 import 'package:front_end/ui/manage_student_page/manage_student_page_bloc.dart';
 import 'package:front_end/ui/manage_student_page/manage_student_page_event.dart';
 import 'package:front_end/ui/manage_student_page/manage_student_page_state.dart';
+import 'package:front_end/util/alert.dart';
 import 'package:intl/intl.dart';
 
 // ignore: must_be_immutable
@@ -193,14 +193,9 @@ class ManageStudentScreen extends StatelessWidget {
                                       .trim(),
                                 ),
                               );
-                              Fluttertoast.showToast(
-                                msg: "Successfully Updated..!",
-                                toastLength: Toast.LENGTH_SHORT,
-                                gravity: ToastGravity.BOTTOM,
-                                timeInSecForIosWeb: 1,
-                                backgroundColor: Colors.green,
-                                textColor: Colors.white,
-                                fontSize: 16.0,
+                              AlertShowToast.showToast(
+                                "Successfully Updated..!",
+                                Colors.green,
                               );
                             },
                             style: ElevatedButton.styleFrom(
@@ -221,14 +216,9 @@ class ManageStudentScreen extends StatelessWidget {
                                   id: student.studentId,
                                 ),
                               );
-                              Fluttertoast.showToast(
-                                msg: "Successfully Deleted..!",
-                                toastLength: Toast.LENGTH_SHORT,
-                                gravity: ToastGravity.BOTTOM,
-                                timeInSecForIosWeb: 1,
-                                backgroundColor: Colors.red[400],
-                                textColor: Colors.white,
-                                fontSize: 16.0,
+                              AlertShowToast.showToast(
+                                "Successfully Deleted..!",
+                                Colors.red[400],
                               );
                             },
                             style: ElevatedButton.styleFrom(
