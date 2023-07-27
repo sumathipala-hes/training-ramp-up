@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 abstract class PrimaryTheme {
   PrimaryTheme._();
@@ -23,6 +24,9 @@ abstract class PrimaryTheme {
     return ThemeData(
       primarySwatch: deepPurple,
       brightness: Brightness.light,
+      textTheme: GoogleFonts.cabinTextTheme(
+        Theme.of(context).textTheme,
+      ),
     );
   }
 }
