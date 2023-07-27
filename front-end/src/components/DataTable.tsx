@@ -2,14 +2,19 @@ import { Button, Grid } from '@mui/material';
 import {
   DataGrid,
   GridColDef,
+  GridEventListener,
+  GridRowEditStopReasons,
   GridRowId,
+  GridRowModel,
   GridRowModes,
+  GridRowModesModel,
   GridRowsProp,
+  GridToolbarContainer,
 } from '@mui/x-data-grid';
-import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { addInitialRows, addStudent, setRowModesModel} from '../redux/slice';
-
+import {  setRowModesModel, setRows } from '../redux/slice';
+import { useEffect } from 'react';
+import { randomCreatedDate } from '@mui/x-data-grid-generator';
 
 const usedIDs: number[] = [];
 
@@ -23,33 +28,14 @@ const generateID = () => {
   return randomID;
 };
 
-interface GridRowProps {
-  id: GridRowId;
-  name: string;
-  gender: string;
-  address: string;
-  mobile: string;
-  dateOfBirth: string;
-
-}
-
-
 const initialRows: GridRowsProp = [
-  {
-    id: generateID(),
-    name: 'Alex',
-    gender: 'Male',
-    address: 'toronto',
-    mobile: '0767778989',
-    dateOfBirth: '1998-01-01',
-  },
   {
     id: generateID(),
     name: 'Ted',
     gender: 'Male',
     address: 'toronto',
     mobile: '0767778984',
-    dateOfBirth: '1993-01-01',
+    dateOfBirth: randomCreatedDate(),
   },
   {
     id: generateID(),
@@ -57,7 +43,7 @@ const initialRows: GridRowsProp = [
     gender: 'Female',
     address: 'toronto',
     mobile: '0767778988',
-    dateOfBirth: '1992-01-01',
+    dateOfBirth: randomCreatedDate(),
   },
   {
     id: generateID(),
@@ -65,7 +51,7 @@ const initialRows: GridRowsProp = [
     gender: 'Male',
     address: 'Ohio',
     mobile: '0767778909',
-    dateOfBirth: '1994-01-01',
+    dateOfBirth: randomCreatedDate(),
   },
   {
     id: generateID(),
@@ -73,75 +59,149 @@ const initialRows: GridRowsProp = [
     gender: 'Female',
     address: 'toronto',
     mobile: '0767778899',
-    dateOfBirth: '2010-01-01',
+    dateOfBirth: randomCreatedDate(),
   },
+
 ];
 
+interface EditToolbarProps {
+  setRows: (newRows: (oldRows: GridRowsProp) => GridRowsProp) => void;
+  setRowModesModel: (
+    newModel: (oldModel: GridRowModesModel) => GridRowModesModel,
+  ) => void;
+}
 
 export const DataTable = () => {
   const dispatch = useDispatch();
-  const records = useSelector((state: { data: { records: GridRowProps[] } }) => state.data.records);
-  const rowModesModel = useSelector((state: any ) => state.data.rowModesModel);
+  const rows = useSelector((state: any) => state.data.records);
+  const rowModesModel = useSelector((state: any) => state.data.rowModesModel);
 
-  React.useEffect(() => {
-    dispatch(addInitialRows(initialRows));
-  }, [dispatch]);
+  useEffect(() => {
+    dispatch(setRows(initialRows));
+  }, [dispatch])
 
-  //ADD CLICK
-  const handleAddClick = () => {
-    const id = generateID();
-    const newRow: GridRowProps = {
-      id: id,
-      name: '',
-      gender: '',
-      address: '',
-      mobile: '',
-      dateOfBirth: ''
+  const EditToolbar = (props: EditToolbarProps) => {   
+    const handleAddClick = () => {
+      const id = generateID();
+      const newRow = { id, name: '', gender: '', address: '', mobile: '', dateOfBirth: '', age: '', isNew: true };
+
+      dispatch(
+        setRows([newRow, ...rows]), //add to the begining of the table
+      );
+
+      dispatch(
+        setRowModesModel({
+          ...rowModesModel,
+          [id]: { mode: GridRowModes.Edit, fieldToFocus: 'name' },
+        }),
+      );
     };
-    dispatch(addStudent([...records, newRow]));
 
-    const newMode = { id: { mode: GridRowModes.Edit, fieldToFocus: 'name' } };
-    dispatch(setRowModesModel(newMode));
+    return (
+      <GridToolbarContainer>
+        <Button
+          color="primary"
+          onClick={handleAddClick}
+          sx={{ display: 'flex', justifyContent: 'flex-start' }}
+        >
+          Add New
+        </Button>
+      </GridToolbarContainer>
+    );
   };
-  
-  //EDIT CLICK
+
+  const handleRowEditStop: GridEventListener<'rowEditStop'> = (params, event) => {
+    if (params.reason === GridRowEditStopReasons.rowFocusOut) {
+      event.defaultMuiPrevented = true;
+    }
+  };
+
   const handleEditClick = (id: GridRowId) => () => {
     dispatch(setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } }));
-   };
-  //SAVE CLICK
+  };
+
   const handleSaveClick = (id: GridRowId) => () => {
     dispatch(setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } }));
-  }
-
-  //DELETE CLICK
-   const handleDeleteClick = (id: GridRowId) => () => {
-    dispatch(addStudent(records.filter((student: { id: GridRowId; }) => student.id !== id)));
   };
-  //CANCEL CLICK
+
+  const handleDeleteClick = (id: GridRowId) => () => {
+    dispatch(setRows(rows.filter((row: { id: GridRowId }) => row.id !== id)));
+  };
+
+
   const handleCancelClick = (id: GridRowId) => () => {
     dispatch(setRowModesModel({
       ...rowModesModel,
       [id]: { mode: GridRowModes.View, ignoreModifications: true },
-    }))
-  }
+    }));
 
+    const editedRow = rows.find((row: { id: GridRowId; }) => row.id === id);
+    if (editedRow!.isNew) {
+      dispatch(setRows(rows.filter((row: { id: GridRowId; }) => row.id !== id)));
+    }
+  };
 
-  
+  const processRowUpdate = (newRow: GridRowModel) => {
+    const updatedRow = { ...newRow, isNew: false };
+    dispatch(setRows(rows.map((row: GridRowModel) => (row.id === newRow.id ? updatedRow : row))));
+    return updatedRow;
+  };
 
-
-
-
-  const handleRowModesModelChange = (newRowModesModel: any) => {}
-
-  
+  const handleRowModesModelChange = (newRowModesModel: GridRowModesModel) => {
+    setRowModesModel(newRowModesModel);
+  };
 
   const columns: GridColDef[] = [
     { field: 'id', headerName: 'ID', width: 150 },
-    { field: 'name', headerName: 'Name', width: 150 },
-    { field: 'gender', headerName: 'Gender', width: 150 },
-    { field: 'address', headerName: 'Address', width: 150 },
-    { field: 'mobile', headerName: 'Mobile No', width: 150 },
-    { field: 'dateOfBirth', headerName: 'Date of Birth', width: 150 },
+    { field: 'name', headerName: 'Name', width: 150, editable: true },
+    { 
+      field: 'gender', 
+      headerName: 'Gender', 
+      width: 150, 
+      editable: true, 
+      type: 'singleSelect',
+      valueOptions: ['Male', 'Female']
+    },
+    { field: 'address', headerName: 'Address', width: 150, editable: true },
+    { 
+      field: 'mobile', 
+      headerName: 'Mobile No', 
+      width: 150, editable: true,
+    type: 'number' },
+    {
+      field: 'dateOfBirth',
+      headerName: 'Date of Birth',
+      width: 150,
+      editable: true,
+      type: 'date',
+      // valueParser: (newValue) => {
+      //   // Check if the value is already a Date object (parsed by the date picker)
+      //   if (newValue instanceof Date) {
+      //     return newValue;
+      //   }
+  
+      //   // If the value is not a string or is an empty string, return null (no change)
+      //   if (typeof newValue !== 'string' || newValue === '') {
+      //     return null;
+      //   }
+  
+      //   // Attempt to parse the date from the string
+      //   const parsedDate = new Date(newValue);
+  
+      //   // Check if the parsed date is valid
+      //   if (isNaN(parsedDate.getTime())) {
+      //     return null; // Return null if the date is invalid
+      //   }
+  
+      //   // Check if the parsed date is beyond the maximum allowed date (2005-12-31)
+      //   const maxAllowedDate = new Date('2005-12-31');
+      //   if (parsedDate > maxAllowedDate) {
+      //     return maxAllowedDate; // Return the maximum allowed date
+      //   }
+  
+      //   return parsedDate; // Return the valid parsed date
+      // },
+    },
     {
       field: 'age',
       headerName: 'Age',
@@ -159,7 +219,6 @@ export const DataTable = () => {
       headerName: 'Actions',
       width: 200,
       getActions: ({ id }) => {
-
         const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
 
         if (isInEditMode) {
@@ -170,18 +229,18 @@ export const DataTable = () => {
               color="primary"
               size="small"
               onClick={handleSaveClick(id)}
-              >
-                Save
-              </Button>,
-              <Button
+            >
+              Save
+            </Button>,
+            <Button
               aria-label="cancel"
-              variant="contained"
+              variant="outlined"
               color="primary"
               size="small"
               onClick={handleCancelClick(id)}
-              > 
+            >
               Cancel
-              </Button>,
+            </Button>,
           ];
         }
 
@@ -211,13 +270,20 @@ export const DataTable = () => {
 
   return (
     <Grid>
-      <Button color="primary" onClick={handleAddClick} sx={{ display: 'flex', justifyContent: 'flex-start' }}>Add New</Button>
-      <DataGrid 
-      rows={records} 
-      columns={columns}
-      editMode='row'
-      rowModesModel={{rowModesModel}}
-      onRowModesModelChange={handleRowModesModelChange}
+      <DataGrid
+        rows={rows}
+        columns={columns}
+        editMode="row"
+        rowModesModel={rowModesModel}
+        onRowModesModelChange={handleRowModesModelChange}
+        onRowEditStop={handleRowEditStop}
+        processRowUpdate={processRowUpdate}
+        slots={{
+          toolbar: EditToolbar,
+        }}
+        slotProps={{
+          toolbar: { setRows, setRowModesModel },
+        }}
       ></DataGrid>
     </Grid>
   );
