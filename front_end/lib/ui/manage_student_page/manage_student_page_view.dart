@@ -8,6 +8,7 @@ import 'package:front_end/ui/manage_student_page/manage_student_page_event.dart'
 import 'package:front_end/ui/manage_student_page/manage_student_page_state.dart';
 import 'package:intl/intl.dart';
 
+// ignore: must_be_immutable
 class ManageStudentScreen extends StatelessWidget {
   ManageStudentScreen({super.key, required this.student}) {
     nameController.text = student.studentName;
@@ -21,6 +22,7 @@ class ManageStudentScreen extends StatelessWidget {
   final TextEditingController mobileNumberController = TextEditingController();
   final TextEditingController dateController = TextEditingController();
   final Student student;
+  DateTime dob = DateTime.now();
 
   @override
   Widget build(BuildContext context) {
@@ -118,7 +120,7 @@ class ManageStudentScreen extends StatelessWidget {
                       TextFormField(
                         controller: dateController,
                         readOnly: true,
-                        // onTap: () => _selectDate(context),
+                        onTap: () => _selectDate(context),
                         decoration: const InputDecoration(
                           labelText: "Date of Birth:",
                           suffixIcon: Icon(Icons.calendar_today),
@@ -184,8 +186,7 @@ class ManageStudentScreen extends StatelessWidget {
                                   studentAddress: addressController.text.trim(),
                                   studentMobile:
                                       mobileNumberController.text.trim(),
-                                  studentDob: student
-                                      .studentDob, /////////////////////////////
+                                  studentDob: dob,
                                   studentGender: manageStudentScreenBloc
                                       .state.gender
                                       .trim(),
@@ -231,5 +232,18 @@ class ManageStudentScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  _selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: student.studentDob,
+      firstDate: DateTime(1995),
+      lastDate: DateTime.now(),
+    );
+    if (picked != null && picked != student.studentDob) {
+      dateController.text = DateFormat('EEE MMM d yyyy').format(picked);
+      dob = picked;
+    }
   }
 }
