@@ -75,8 +75,7 @@ class HomePageView extends StatelessWidget {
                   onPressed: () {
                     showDialog(
                       context: context,
-                      builder: (context) =>
-                          const PopupModal(),
+                      builder: (context) => const PopupModal(),
                     );
                   },
                   child: Text(
@@ -88,6 +87,8 @@ class HomePageView extends StatelessWidget {
                 Expanded(
                   child: SingleChildScrollView(
                     child: BlocBuilder<HomePageBloc, HomePageState>(
+                      buildWhen: (previous, current) =>
+                          previous.allStudents != current.allStudents,
                       builder: (context, state) {
                         final List<Student> allStudents = state.allStudents;
                         return ListView.builder(
