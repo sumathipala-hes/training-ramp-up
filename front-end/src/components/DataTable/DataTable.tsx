@@ -163,7 +163,7 @@ function DataTable() {
       headerName: "Gender",
       width: 220,
       editable: true,
-      type: "single",
+      type: "string",
       
     },
     {
