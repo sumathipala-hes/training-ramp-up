@@ -62,7 +62,6 @@ class RampUpHomeScreen extends StatelessWidget {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.grey[700],
                   elevation: 5,
-                  fixedSize: const Size(170, 40),
                   shape: const RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(
                       Radius.circular(10),
@@ -76,7 +75,7 @@ class RampUpHomeScreen extends StatelessWidget {
                   );
                 },
                 child: const Text(
-                  'ADD NEW STUDENT',
+                  '+ ADD NEW STUDENT',
                   style: TextStyle(
                     fontSize: 15.0,
                     fontWeight: FontWeight.bold,
