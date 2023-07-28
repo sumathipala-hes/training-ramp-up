@@ -38,6 +38,7 @@ dependencies:
   intl: ^0.17.0 # Replace with the latest version of the intl package
   flutter_logs: ^2.1.10
   google_fonts: ^5.1.0
+  fluttertoast: ^8.2.2
 
 dev_dependencies:
   flutter_test:

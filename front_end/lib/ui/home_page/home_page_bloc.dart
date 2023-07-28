@@ -11,15 +11,17 @@ class RampUpHomeScreenBloc extends Bloc<RampUpHomePageEvent, RampUpHomeState> {
       : super(RampUpHomeState.initialState) {
     on<SaveButtonPressed>(_onSaveButtonPressed);
     on<GetAllStudents>(_onGetAllStudents);
+    on<DeleteStudent>(_onDeleteStudent);
+    on<UpdateStudent>(_onUpdateStudent);
     add(
       GetAllStudents(),
     );
   }
 
-  FutureOr<void> _onSaveButtonPressed(
+  Future<void> _onSaveButtonPressed(
       SaveButtonPressed event, Emitter<RampUpHomeState> emit) async {
     final student = Student(
-      studentId: event.studentId,
+      studentId: (state.entries.length + 1).toString(),
       studentName: event.studentName,
       studentAddress: event.studentAddress,
       studentMobile: event.studentMobile,
@@ -36,14 +38,48 @@ class RampUpHomeScreenBloc extends Bloc<RampUpHomePageEvent, RampUpHomeState> {
       ),
     );
     emit(
-      state.clone(entries: [
-        ...state.entries,
-      ]),
+      state.clone(
+        entries: [
+          ...state.entries,
+        ],
+      ),
     );
   }
 
-  FutureOr<void> _onGetAllStudents(
-      GetAllStudents event, Emitter<RampUpHomeState> emit) {
+  Future<void> _onGetAllStudents(
+      GetAllStudents event, Emitter<RampUpHomeState> emit) async {
+    emit(
+      state.clone(
+        entries: [
+          ...state.entries,
+        ],
+      ),
+    );
+  }
+
+  Future<void> _onDeleteStudent(
+      DeleteStudent event, Emitter<RampUpHomeState> emit) async {
+    emit(
+      state.clone(
+        entries: [
+          ...state.entries.where((element) => element.studentId != event.id),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _onUpdateStudent(
+      UpdateStudent event, Emitter<RampUpHomeState> emit) async {
+    state.entries[state.entries
+            .indexWhere((element) => element.studentId == event.studentId)] =
+        Student(
+      studentId: event.studentId,
+      studentName: event.studentName,
+      studentAddress: event.studentAddress,
+      studentMobile: event.studentMobile,
+      studentDob: event.studentDob,
+      studentGender: event.studentGender,
+    );
     emit(
       state.clone(
         entries: [

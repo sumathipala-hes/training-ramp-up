@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:front_end/ui/home_page/home_page_bloc.dart';
 import 'package:front_end/ui/home_page/home_page_event.dart';
+import 'package:front_end/util/alert.dart';
 import 'package:intl/intl.dart';
 
 class PopupModel extends StatefulWidget {
@@ -72,125 +74,147 @@ class _PopupModelState extends State<PopupModel> {
           studentGender: selectedGender,
         ),
       );
+      AlertShowToast.showToast(
+        "Successfully Added..!",
+        Colors.green,
+      );
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
+    return Dialog(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20.0),
       ),
-      title: const Center(
-        child: Text("ADD NEW STUDENT"),
-      ),
-      content: SizedBox(
-        width: MediaQuery.of(context).size.width * 0.8,
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              TextField(
-                controller: nameController,
-                decoration: const InputDecoration(
-                  labelText: "Name:",
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(8.0),
+      child: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: SizedBox(
+            width: MediaQuery.of(context).size.width * 0.9,
+            child: Column(
+              children: [
+                const Text(
+                  "ADD NEW STUDENT",
+                  style: TextStyle(
+                    fontSize: 26,
+                    fontWeight: FontWeight.bold,
+                    color: Color.fromARGB(255, 137, 91, 215),
+                  ),
+                ),
+                const SizedBox(height: 25),
+                TextField(
+                  controller: nameController,
+                  decoration: const InputDecoration(
+                    labelText: "Name:",
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(8.0),
+                      ),
+                    ),
+                  ),
+                  inputFormatters: [
+                    FilteringTextInputFormatter.allow(
+                      RegExp(r'[a-zA-Z ]'),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 15),
+                TextField(
+                  controller: addressController,
+                  decoration: const InputDecoration(
+                    labelText: "Address:",
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(8.0),
+                      ),
                     ),
                   ),
                 ),
-              ),
-              const SizedBox(height: 15),
-              TextField(
-                controller: addressController,
-                decoration: const InputDecoration(
-                  labelText: "Address:",
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(8.0),
+                const SizedBox(height: 15),
+                TextField(
+                  controller: mobileNumberController,
+                  decoration: const InputDecoration(
+                    labelText: "Mobile:",
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(8.0),
+                      ),
                     ),
                   ),
                 ),
-              ),
-              const SizedBox(height: 15),
-              TextField(
-                controller: mobileNumberController,
-                decoration: const InputDecoration(
-                  labelText: "Mobile:",
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(8.0),
+                TextFormField(
+                  controller: dateController,
+                  readOnly: true,
+                  onTap: () => _selectDate(context),
+                  decoration: const InputDecoration(
+                    labelText: "Date of Birth:",
+                    suffixIcon: Icon(Icons.calendar_today),
+                    border: InputBorder.none,
+                    contentPadding:
+                        EdgeInsets.symmetric(vertical: 12.0, horizontal: 12.0),
+                  ),
+                ),
+                Row(
+                  children: [
+                    Radio(
+                      value: "Male",
+                      groupValue: selectedGender,
+                      onChanged: (value) {
+                        setState(() {
+                          selectedGender = value!;
+                        });
+                      },
                     ),
-                  ),
+                    const Text("Male"),
+                    Radio(
+                      value: "Female",
+                      groupValue: selectedGender,
+                      onChanged: (value) {
+                        setState(() {
+                          selectedGender = value!;
+                        });
+                      },
+                    ),
+                    const Text("Female"),
+                  ],
                 ),
-              ),
-              TextFormField(
-                controller: dateController,
-                readOnly: true,
-                onTap: () => _selectDate(context),
-                decoration: const InputDecoration(
-                  labelText: "Date of Birth:",
-                  suffixIcon: Icon(Icons.calendar_today),
-                  border: InputBorder.none,
-                  contentPadding:
-                      EdgeInsets.symmetric(vertical: 12.0, horizontal: 14.0),
+                const SizedBox(height: 15),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    ElevatedButton(
+                      onPressed: _saveForm,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.green,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                        elevation: 4,
+                      ),
+                      child: const Text("Save"),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: ElevatedButton(
+                        onPressed: () => Navigator.of(context).pop(),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.grey[700],
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                          elevation: 4,
+                        ),
+                        child: const Text("Cancel"),
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-              Row(
-                children: [
-                  Radio(
-                    value: "Male",
-                    groupValue: selectedGender,
-                    onChanged: (value) {
-                      setState(() {
-                        selectedGender = value!;
-                      });
-                    },
-                  ),
-                  const Text("Male"),
-                  Radio(
-                    value: "Female",
-                    groupValue: selectedGender,
-                    onChanged: (value) {
-                      setState(() {
-                        selectedGender = value!;
-                      });
-                    },
-                  ),
-                  const Text("Female"),
-                ],
-              ),
-            ],
-          ),
-        ),
-      ),
-      actions: [
-        ElevatedButton(
-          onPressed: _saveForm,
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.green,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8.0),
+              ],
             ),
-            elevation: 4,
-          ),
-          child: const Text("Save"),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-          child: ElevatedButton(
-            onPressed: () => Navigator.of(context).pop(),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.grey[700],
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8.0),
-              ),
-              elevation: 4,
-            ),
-            child: const Text("Cancel"),
           ),
         ),
-      ],
+      ),
     );
   }
 }
