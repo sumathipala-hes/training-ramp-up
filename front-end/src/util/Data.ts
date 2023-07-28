@@ -1,5 +1,5 @@
 import generateRandomId from "../util/generateRandomId";
-const gender = ['Male', 'Female', 'Other'];
+
 
 export const initialRows=[
     {
@@ -7,7 +7,7 @@ export const initialRows=[
       name: "sadun",
       age: 26,
       dof: new Date("02/04/1992"),
-    gender: gender[0],
+    gender: "Male",
     address: "colombo",
     mobile: "0771234567"
 
@@ -17,7 +17,7 @@ export const initialRows=[
       name: "sadun",
       age: 25,
       dof: new Date("02/04/1992"),
-    gender: gender[0],
+    gender: "Male",
     address: "colombo",
     mobile: "0771234567"
 
@@ -27,7 +27,7 @@ export const initialRows=[
         name: "sadun",
         age: 25,
         dof: new Date("02/04/1992"),
-      gender: gender[0],
+      gender: "Male",
       address: "colombo",
       mobile: "0771234567"
   
@@ -37,7 +37,7 @@ export const initialRows=[
         name: "sadun",
         age: 25,
         dof: new Date("02/04/1992"),
-      gender: gender[0],
+      gender: "Male",
       address: "colombo",
       mobile: "0771234567"
   
@@ -47,7 +47,7 @@ export const initialRows=[
         name: "sadun",
         age: 25,
         dof: new Date("02/04/1992"),
-      gender: gender[0],
+      gender: "Male",
       address: "colombo",
       mobile: "0771234567"
   
