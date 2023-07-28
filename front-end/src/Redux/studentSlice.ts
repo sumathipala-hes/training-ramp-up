@@ -19,7 +19,7 @@ const initialState: RowState = {
   Rows: [],
 };
 
-const todoSlice = createSlice({
+const studentSlice = createSlice({
   name: 'row',
   initialState,
   reducers: {
@@ -33,7 +33,7 @@ const todoSlice = createSlice({
   },
 });
 
-export const { addStudent, setStudent, fetchStudent } = todoSlice.actions;
+export const { addStudent, setStudent, fetchStudent } = studentSlice.actions;
 
-export default todoSlice.reducer;
+export default studentSlice.reducer;
 

@@ -22,7 +22,7 @@ import generateRandomId from "../../util/generateRandomId";
 import { initialRows } from "../../util/Data";
 import { useDispatch} from "react-redux";
 import { setStudent } from "../../redux/studentSlice";
-// import { RootState } from "../../Redux/store";
+// import { RootState } from "../../redux/store";
 
 // EditToolnarProps is interface its define its type and passing inside editToolBar function
 interface EditToolbarProps {
