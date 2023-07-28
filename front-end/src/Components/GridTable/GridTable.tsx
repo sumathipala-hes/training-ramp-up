@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react/jsx-key */
 import * as React from 'react'
 import Box from '@mui/material/Box'
@@ -13,7 +14,9 @@ import {
     DataGrid,
     GridActionsCellItem,
     GridColDef,
+    GridEditDateCell,
     GridEventListener,
+    GridRenderCellParams,
     GridRowEditStopReasons,
     GridRowId,
     GridRowModel,
@@ -102,10 +105,10 @@ export default function FullFeaturedCrudGrid() {
             }
 
             // Set the row mode to view mode
-            setRowModesModel({
-                ...rowModesModel,
+            setRowModesModel((prevModesModel) => ({
+                ...prevModesModel,
                 [params.id]: { mode: GridRowModes.View },
-            })
+            }))
         }
     }
 
@@ -116,16 +119,33 @@ export default function FullFeaturedCrudGrid() {
         })
     }
 
+    const maxDate = () => {
+        // Calculate the maximum allowed date (current date - 18 years)
+        const currentDate = new Date()
+        const maxAllowedDate = new Date(
+            currentDate.getFullYear() - 18,
+            currentDate.getMonth(),
+            currentDate.getDate()
+        )
+        return maxAllowedDate.toISOString().split('T')[0]
+    }
+
+    const minDate = () => {
+        // Calculate the minimum allowed date (a long time ago to avoid future dates)
+        const minAllowedDate = new Date(1900, 0, 1)
+        return minAllowedDate.toISOString().split('T')[0]
+    }
+
     const handleSaveClick = (id: GridRowId) => () => {
         const editedRow = rows.find((row) => row.id === id)
         if (editedRow) {
             // Dispatch the updateRow action with the edited row data
             dispatch(updateRow({ ...editedRow, isNew: false }))
             // Set the row mode to view mode
-            setRowModesModel({
-                ...rowModesModel,
+            setRowModesModel((prevModesModel) => ({
+                ...prevModesModel,
                 [id]: { mode: GridRowModes.View },
-            })
+            }))
         }
     }
 
@@ -138,10 +158,10 @@ export default function FullFeaturedCrudGrid() {
 
         if (editedRow) {
             // If the row is in edit mode, update row mode to "View" and ignore modifications
-            setRowModesModel({
-                ...rowModesModel,
-                [id]: { mode: GridRowModes.View, ignoreModifications: true },
-            })
+            setRowModesModel((prevModesModel) => ({
+                ...prevModesModel,
+                [id]: { mode: GridRowModes.View },
+            }))
         } else {
             // If the row is a newly added row, remove it from the Redux store
             dispatch(deleteRow(id)) // Dispatch action to delete the row from the Redux store
@@ -175,7 +195,28 @@ export default function FullFeaturedCrudGrid() {
             width: 80,
             align: 'left',
             headerAlign: 'left',
-            editable: true,
+            valueGetter: (params: GridValueGetterParams) => {
+                const dateOfBirthField = 'dateOfBirth'
+
+                // Access the "Date of Birth" value from the row object
+                const rawDateOfBirth = params.row[dateOfBirthField]
+
+                if (rawDateOfBirth) {
+                    const dateOfBirth = new Date(rawDateOfBirth)
+
+                    if (!isNaN(dateOfBirth.getTime())) {
+                        // Calculate the age based on the date of birth
+                        const currentDate = new Date()
+                        const age =
+                            currentDate.getFullYear() -
+                            dateOfBirth.getFullYear()
+                        return age
+                    }
+                }
+
+                // If the value is not a valid date or not set, return an empty value or a placeholder
+                return '-'
+            },
         },
         {
             field: 'dateOfBirth',
@@ -183,6 +224,21 @@ export default function FullFeaturedCrudGrid() {
             type: 'date',
             width: 180,
             editable: true,
+            renderEditCell: (params: GridRenderCellParams) => {
+                const isInEditMode =
+                    rowModesModel[params.id]?.mode === GridRowModes.Edit
+
+                return isInEditMode ? (
+                    // Custom cell renderer for the date column in edit mode
+                    <GridEditDateCell
+                        {...params}
+                        inputProps={{ max: maxDate(), min: minDate() }}
+                    />
+                ) : (
+                    // Default cell renderer for the date column in view mode
+                    <div>{(params.value as Date).toLocaleDateString()}</div>
+                )
+            },
             valueGetter: (params: GridValueGetterParams) => {
                 // Get the raw value of dateOfBirth
                 const rawDateOfBirth = params.value as Date
