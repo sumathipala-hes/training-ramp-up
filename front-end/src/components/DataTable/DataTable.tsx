@@ -17,10 +17,11 @@ import {
   GridRowId,
   GridRowModel,
   GridRowEditStopReasons,
+  GridPreProcessEditCellProps,
 } from "@mui/x-data-grid";
 import generateRandomId from "../../util/generateRandomId";
 import { initialRows } from "../../util/Data";
-import { useDispatch} from "react-redux";
+import { useDispatch } from "react-redux";
 import { setStudent } from "../../redux/studentSlice";
 // import { RootState } from "../../redux/store";
 
@@ -69,8 +70,6 @@ function DataTable() {
     {}
   );
 
- 
-
   //Redux State Update an local state update each others
   const dispatch = useDispatch();
   // const tableRowRedux = useSelector((state: RootState) => state.table.Rows);
@@ -83,8 +82,6 @@ function DataTable() {
     dispatch(setStudent(newRows as Array<any>));
     console.log(newRows);
   }, [rows, dispatch]);
-
-
 
   // handleRowEditStop function will be called when user click on save button and it will stop the edit mode
   const handleRowEditStop: GridEventListener<"rowEditStop"> = (
@@ -104,6 +101,7 @@ function DataTable() {
   // handleSaveClick function will be called when user click on save button and it will change the mode to view mode
   const handleSaveClick = (id: GridRowId) => () => {
     setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
+
   };
 
   // handleDeleteClick function will be called when user click on delete button and it will delete the row
@@ -118,7 +116,7 @@ function DataTable() {
       [id]: { mode: GridRowModes.View, ignoreModifications: true },
     });
 
-   // If the row was new, we remove it from the rows state.
+    // If the row was new, we remove it from the rows state.
     const editedRow = rows.find((row) => row.id === id);
     if (editedRow!.isNew) {
       setRows(rows.filter((row) => row.id !== id));
@@ -137,13 +135,6 @@ function DataTable() {
     setRowModesModel(newRowModesModel);
   };
 
-  //validated age is 18 or above
-  const AgeColumnValidator = (value: any) => {
-    const parsedValue = Number(value);
-    return isNaN(parsedValue) || parsedValue < 18 ? 18 : parsedValue;
-  };
-
-  // columns is the table header and its type and width
   const columns: GridColDef[] = [
     {
       field: "id",
@@ -157,6 +148,10 @@ function DataTable() {
       headerName: "Name",
       width: 180,
       editable: true,
+      preProcessEditCellProps: (params: GridPreProcessEditCellProps) => {
+        const hasError = params.props.value.length < 3;
+        return { ...params.props, error: hasError };
+      },
     },
     {
       field: "gender",
@@ -164,7 +159,6 @@ function DataTable() {
       width: 220,
       editable: true,
       type: "string",
-      
     },
     {
       field: "address",
@@ -181,14 +175,23 @@ function DataTable() {
       align: "left",
       headerAlign: "left",
       editable: true,
+      preProcessEditCellProps: (params: GridPreProcessEditCellProps) => {
+        const value = params.props.value?.trim();
+        const hasError =
+          value !== undefined && value !== "" && !/^\d{10}$/.test(value);
+        return { ...params.props, error: hasError };
+      },
     },
     {
       field: "dof",
       headerName: "Date of Birth",
       type: "date",
-      width: 180,
+      width: 220,
       editable: true,
-      valueFormatter: (params) => params.value?.toString().slice(0, 16),
+      preProcessEditCellProps: (params: GridPreProcessEditCellProps) => {
+        const hasError = new Date(params.props.value).getFullYear() > 2005;
+        return { ...params.props, error: hasError };
+      },
     },
     {
       field: "age",
@@ -198,7 +201,11 @@ function DataTable() {
       align: "left",
       headerAlign: "left",
       editable: true,
-      valueParser: AgeColumnValidator,
+      preProcessEditCellProps: (params: GridPreProcessEditCellProps) => {
+        const hasError = params.props.value < 18;
+        return { ...params.props, error: hasError };
+      },
+
     },
 
     {
