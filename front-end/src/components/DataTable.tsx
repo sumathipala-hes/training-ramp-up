@@ -126,7 +126,7 @@ export const DataTable = () => {
   const handleDeleteClick = (id: GridRowId) => () => {
     dispatch(setRows(rows.filter((row: { id: GridRowId }) => row.id !== id)));
   };
-
+ 
 
   const handleCancelClick = (id: GridRowId) => () => {
     dispatch(setRowModesModel({
@@ -141,15 +141,35 @@ export const DataTable = () => {
   };
 
   const processRowUpdate = (newRow: GridRowModel) => {
-    const updatedRow = { ...newRow, isNew: false };
-    dispatch(setRows(rows.map((row: GridRowModel) => (row.id === newRow.id ? updatedRow : row))));
+    let updatedRow = rows.find((row: GridRowModel) => (row.id === newRow.id));
+    
+    if (newRow.name.trim() === '' || newRow.address.trim() === ''|| newRow.mobile.trim() === '') {
+      alert('Please fill all fields');
+   }
+    
+    
+    const today = new Date();
+    const dob = newRow.dateOfBirth;
+    if (dob !== '') {
+      const age = today.getFullYear() - dob.getFullYear();
+      if (age <= 18) {
+        alert('Age must be above 18');
+      } else {
+        updatedRow = { ...newRow, isNew: false };
+        dispatch(setRows(rows.map((row: GridRowModel) => (row.id === newRow.id ? updatedRow : row))));
+      }
+    } else {
+      alert('Please select the birthday')
+    }
+
+    
     return updatedRow;
   };
 
   const handleRowModesModelChange = (newRowModesModel: GridRowModesModel) => {
     setRowModesModel(newRowModesModel);
   };
-
+  
   const columns: GridColDef[] = [
     { field: 'id', headerName: 'ID', width: 150 },
     { field: 'name', headerName: 'Name', width: 150, editable: true },
@@ -166,7 +186,7 @@ export const DataTable = () => {
       field: 'mobile', 
       headerName: 'Mobile No', 
       width: 150, editable: true,
-    type: 'number' },
+      type: 'number' },
     {
       field: 'dateOfBirth',
       headerName: 'Date of Birth',
@@ -181,7 +201,10 @@ export const DataTable = () => {
       valueGetter: (params) => {
         const dob = new Date(params.row.dateOfBirth);
         const today = new Date();
-        const age = today.getFullYear() - dob.getFullYear();
+        let age: number | string = '';
+        if (!params.row.isNew) {
+          age = today.getFullYear() - dob.getFullYear();
+        }
         return age;
       },
     },
@@ -239,6 +262,8 @@ export const DataTable = () => {
       },
     },
   ];
+
+
 
   return (
     <Grid>
