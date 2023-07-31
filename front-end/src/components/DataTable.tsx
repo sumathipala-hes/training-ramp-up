@@ -34,7 +34,7 @@ const initialRows: GridRowsProp = [
     gender: 'Male',
     address: 'toronto',
     mobile: '767778984',
-    dateOfBirth: new Date('1990-01-05'),
+    dateOfBirth: '1990-01-05',
   },
   {
     id: generateID(),
@@ -42,7 +42,7 @@ const initialRows: GridRowsProp = [
     gender: 'Female',
     address: 'toronto',
     mobile: '67778988',
-    dateOfBirth: new Date('2000-07-25'),
+    dateOfBirth: '2000-07-25',
   },
   {
     id: generateID(),
@@ -50,7 +50,7 @@ const initialRows: GridRowsProp = [
     gender: 'Male',
     address: 'Ohio',
     mobile: '767778909',
-    dateOfBirth: new Date('2002-03-02'),
+    dateOfBirth: '2002-03-02',
   },
   {
     id: generateID(),
@@ -58,7 +58,7 @@ const initialRows: GridRowsProp = [
     gender: 'Female',
     address: 'toronto',
     mobile: '767778899',
-    dateOfBirth: new Date('1995-01-05'),
+    dateOfBirth: '1995-01-05',
   },
 ];
 
