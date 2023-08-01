@@ -1,54 +1,59 @@
 import React from 'react';
 import { fireEvent, render, screen } from '@testing-library/react';
-import { DataTable } from './DataTable';
 import { Provider } from 'react-redux';
 import store from '../redux/store';
-import { DataGrid } from '@mui/x-data-grid';
-import configureMockStore from 'redux-mock-store';
+import { DataTable } from './DataTable';
 
-test('renders DataTable component without error', () => {
+
+
+test('display the initial rows correctly', () => {
   render(
     <Provider store={store}>
       <DataTable />
-    </Provider>,
+    </Provider>
   );
+
+  expect(screen.getByText('Ted')).toBeInTheDocument();
+  expect(screen.getByText('Rachel')).toBeInTheDocument();
+  expect(screen.getByText('Justin')).toBeInTheDocument();
+  expect(screen.getByText('Emma')).toBeInTheDocument();
+
 });
 
-  test('displays initial rows correctly', () => {
-    render(
-      <Provider store={store}>
-        <DataTable />
-      </Provider>,
-    );
+test('render the delete button', () => {
+  render(
+    <Provider store={store}>
+      <DataTable />
+    </Provider>
+  );
 
-    const tedRow = screen.getByText('Ted')
-    const rachelRow = screen.getByText('Rachel');
-    const justinRow = screen.getByText('Justin');
+  const rowToDelete = screen.getByRole('row', {name: /Ted/i});
+  expect(rowToDelete).toBeInTheDocument();
+  const deleteButton = screen.getAllByRole('button', {name: /delete/i});
+  fireEvent.click(deleteButton[0]);
+  expect(rowToDelete).not.toBeInTheDocument();
+})
 
-    expect(tedRow).toBeInTheDocument();
-    expect(rachelRow).toBeInTheDocument();
-    expect(justinRow).toBeInTheDocument();
+test('render the edit button', () => {
+  render(
+    <Provider store={store}>
+      <DataTable />
+    </Provider>
+  );
 
-  });
+  const rowToEdit = screen.getByRole('row', { name: /Emma/i });
+  expect(rowToEdit).toBeInTheDocument();
 
-// test('delete button', () => {
-//   render(
-//     <Provider store={store}>
-//       <DataGrid columns={[]} rows={[]} />
-//     </Provider>
-//   );
+  const editButton = screen.getAllByRole('button', { name: /edit/i });
+  fireEvent.click(editButton[0]);
 
-//   const toDelete = screen.getByRole('row', {name: /Ted/i })
-//   expect(toDelete).toBeInTheDocument();
+  // const rowId = rowToEdit.getAttribute('data-testid');
 
-//   const deleteBtn = screen.getByRole('button', { name: 'Delete' });
-//   fireEvent.click(deleteBtn);
+  // // //check if the row is in edit mode 
+  // const updatedState = store.getState();
+  // expect(updatedState.data.rowModesModel[rowId].mode).toBe('Edit');
   
-//   // const deleteButton = screen.getByRole('button', { name: /delete/i });
-//   // fireEvent.click(deleteButton);
-//     // expect(tedRow).not.toBeInTheDocument();
-// })
-
+})
 
 test('renders the EditToolbar with the "Add New" button and its functionality', () => {
   render(

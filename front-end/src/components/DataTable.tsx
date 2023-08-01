@@ -14,53 +14,9 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import { setRowModesModel, setRows } from '../redux/slice';
 import { useEffect } from 'react';
+import { initialRows, generateID } from '../utils/InitialRows';
 
-const usedIDs: number[] = [];
 
-const generateID = () => {
-  let randomID;
-  do {
-    randomID = Math.floor(Math.random() * 100);
-  } while (usedIDs.includes(randomID));
-
-  usedIDs.push(randomID);
-  return randomID;
-};
-
-const initialRows: GridRowsProp = [
-  {
-    id: generateID(),
-    name: 'Ted',
-    gender: 'Male',
-    address: 'toronto',
-    mobile: '767778984',
-    dateOfBirth: new Date('1990-01-05'),
-  },
-  {
-    id: generateID(),
-    name: 'Rachel',
-    gender: 'Female',
-    address: 'toronto',
-    mobile: '67778988',
-    dateOfBirth: new Date('2000-07-25'),
-  },
-  {
-    id: generateID(),
-    name: 'Justin',
-    gender: 'Male',
-    address: 'Ohio',
-    mobile: '767778909',
-    dateOfBirth: new Date('2002-03-02'),
-  },
-  {
-    id: generateID(),
-    name: 'Emma',
-    gender: 'Female',
-    address: 'toronto',
-    mobile: '767778899',
-    dateOfBirth: new Date('1995-01-05'),
-  },
-];
 
 interface EditToolbarProps {
   setRows: (newRows: (oldRows: GridRowsProp) => GridRowsProp) => void;
@@ -221,6 +177,12 @@ export const DataTable = () => {
       width: 150,
       editable: true,
       type: 'date',
+      valueGetter: (params) => {
+        const dateOfBirthStr = params.value;
+        const dateOfBirth = new Date(dateOfBirthStr);
+        return dateOfBirth;
+      }
+
     },
     {
       field: 'age',
@@ -298,6 +260,7 @@ export const DataTable = () => {
         columns={columns}
         editMode="row"
         rowModesModel={rowModesModel}
+        disableVirtualization
         onRowModesModelChange={handleRowModesModelChange}
         onRowEditStop={handleRowEditStop}
         processRowUpdate={processRowUpdate}
