@@ -34,7 +34,7 @@ const initialRows: GridRowsProp = [
     gender: 'Male',
     address: 'toronto',
     mobile: '767778984',
-    dateOfBirth: '1990-01-05',
+    dateOfBirth: new Date('1990-01-05'),
   },
   {
     id: generateID(),
@@ -42,7 +42,7 @@ const initialRows: GridRowsProp = [
     gender: 'Female',
     address: 'toronto',
     mobile: '67778988',
-    dateOfBirth: '2000-07-25',
+    dateOfBirth: new Date('2000-07-25'),
   },
   {
     id: generateID(),
@@ -50,7 +50,7 @@ const initialRows: GridRowsProp = [
     gender: 'Male',
     address: 'Ohio',
     mobile: '767778909',
-    dateOfBirth: '2002-03-02',
+    dateOfBirth: new Date('2002-03-02'),
   },
   {
     id: generateID(),
@@ -58,7 +58,7 @@ const initialRows: GridRowsProp = [
     gender: 'Female',
     address: 'toronto',
     mobile: '767778899',
-    dateOfBirth: '1995-01-05',
+    dateOfBirth: new Date('1995-01-05'),
   },
 ];
 
@@ -69,6 +69,48 @@ interface EditToolbarProps {
   ) => void;
 }
 
+const EditToolbar = (props: EditToolbarProps) => {
+  const dispatch = useDispatch();
+  const rows = useSelector((state: any) => state.data.records);
+  const rowModesModel = useSelector((state: any) => state.data.rowModesModel);
+  const handleAddClick = () => {
+    const id = generateID();
+    const newRow = {
+      id,
+      name: '',
+      gender: '',
+      address: '',
+      mobile: '',
+      dateOfBirth: '',
+      age: '',
+      isNew: true,
+    };
+
+    dispatch(
+      setRows([newRow, ...rows]), //add to the begining of the table
+    );
+
+    dispatch(
+      setRowModesModel({
+        ...rowModesModel,
+        [id]: { mode: GridRowModes.Edit, fieldToFocus: 'name' },
+      }),
+    );
+  };
+
+  return (
+    <GridToolbarContainer>
+      <Button
+        color="primary"
+        onClick={handleAddClick}
+        sx={{ display: 'flex', justifyContent: 'flex-start' }}
+      >
+        Add New
+      </Button>
+    </GridToolbarContainer>
+  );
+};
+
 export const DataTable = () => {
   const dispatch = useDispatch();
   const rows = useSelector((state: any) => state.data.records);
@@ -77,45 +119,6 @@ export const DataTable = () => {
   useEffect(() => {
     dispatch(setRows(initialRows));
   }, [dispatch]);
-
-  const EditToolbar = (props: EditToolbarProps) => {
-    const handleAddClick = () => {
-      const id = generateID();
-      const newRow = {
-        id,
-        name: '',
-        gender: '',
-        address: '',
-        mobile: '',
-        dateOfBirth: '',
-        age: '',
-        isNew: true,
-      };
-
-      dispatch(
-        setRows([newRow, ...rows]), //add to the begining of the table
-      );
-
-      dispatch(
-        setRowModesModel({
-          ...rowModesModel,
-          [id]: { mode: GridRowModes.Edit, fieldToFocus: 'name' },
-        }),
-      );
-    };
-
-    return (
-      <GridToolbarContainer>
-        <Button
-          color="primary"
-          onClick={handleAddClick}
-          sx={{ display: 'flex', justifyContent: 'flex-start' }}
-        >
-          Add New
-        </Button>
-      </GridToolbarContainer>
-    );
-  };
 
   const handleRowEditStop: GridEventListener<'rowEditStop'> = (
     params,
@@ -149,7 +152,6 @@ export const DataTable = () => {
         [id]: { mode: GridRowModes.View, ignoreModifications: true },
       }),
     );
-
     const editedRow = rows.find((row: { id: GridRowId }) => row.id === id);
     if (editedRow!.isNew) {
       dispatch(setRows(rows.filter((row: { id: GridRowId }) => row.id !== id)));
