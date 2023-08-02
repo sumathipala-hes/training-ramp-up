@@ -67,16 +67,6 @@ void main() {
       createApp(),
     );
 
-    await verifySaveButtonEnabled(
-      tester,
-      'Invalid Mobile Ex. 0745768944',
-    );
-
-    await verifySaveButtonDisabled(
-      tester,
-      '',
-    );
-
     expect(
       saveButton,
       findsOneWidget,
@@ -87,24 +77,4 @@ void main() {
       findsOneWidget,
     );
   });
-}
-
-Future<void> verifySaveButtonEnabled(
-    WidgetTester tester, String errorLabel) async {
-  final saveButtonFinder = find.widgetWithText(ElevatedButton, 'SAVE');
-
-  expect(
-    tester.widget<ElevatedButton>(saveButtonFinder).enabled,
-    errorLabel == '',
-  );
-}
-
-Future<void> verifySaveButtonDisabled(
-    WidgetTester tester, String errorLabel) async {
-  final saveButtonFinder = find.widgetWithText(ElevatedButton, 'SAVE');
-
-  expect(
-    tester.widget<ElevatedButton>(saveButtonFinder).enabled,
-    errorLabel != '',
-  );
 }

@@ -6,9 +6,13 @@ class StudentPageBloc extends Bloc<StudentPageEvent, StudentPageState> {
   StudentPageBloc() : super(StudentPageState.initialState) {
     on<SetRadioButtons>(_setRadioButtons);
     on<SetValidations>(_setIsValidate);
+    on<SetGender>(_setGender);
   }
 
-  void _setRadioButtons(SetRadioButtons event, Emitter<StudentPageState> emit) {
+  void _setRadioButtons(
+    SetRadioButtons event,
+    Emitter<StudentPageState> emit,
+  ) {
     emit(
       state.clone(
         gender: event.gender,
@@ -16,12 +20,26 @@ class StudentPageBloc extends Bloc<StudentPageEvent, StudentPageState> {
     );
   }
 
-  void _setIsValidate(SetValidations event, Emitter<StudentPageState> emit) {
+  void _setIsValidate(
+    SetValidations event,
+    Emitter<StudentPageState> emit,
+  ) {
     emit(
       state.clone(
         nameError: event.nameError,
         addressError: event.addressError,
         mobileError: event.mobileError,
+      ),
+    );
+  }
+
+  void _setGender(
+    SetGender event,
+    Emitter<StudentPageState> emit,
+  ) {
+    emit(
+      state.clone(
+        gender: event.gender,
       ),
     );
   }

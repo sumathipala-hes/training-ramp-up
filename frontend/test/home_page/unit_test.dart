@@ -8,7 +8,10 @@ void main() {
 
       String generatedId = GenerateIdUtil.generateId(lastId);
 
-      expect(generatedId, '1');
+      expect(
+        generatedId,
+        '1',
+      );
     });
 
     test('generateId increments the lastId by 1 when it is non-empty', () {
@@ -16,7 +19,10 @@ void main() {
 
       String generatedId = GenerateIdUtil.generateId(lastId);
 
-      expect(generatedId, '6');
+      expect(
+        generatedId,
+        '6',
+      );
     });
 
     test('generateId increments "0" to "1"', () {
@@ -24,7 +30,10 @@ void main() {
 
       String generatedId = GenerateIdUtil.generateId(lastId);
 
-      expect(generatedId, '1');
+      expect(
+        generatedId,
+        '1',
+      );
     });
   });
 }

@@ -10,7 +10,6 @@ import 'package:frontend/util/validation_util.dart';
 import 'package:intl/intl.dart';
 import '../theme/colors.dart';
 
-// ignore: must_be_immutable
 class StudentPageView extends StatelessWidget {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController addressController = TextEditingController();
@@ -164,9 +163,15 @@ class StudentPageView extends StatelessWidget {
                     },
                   ),
                   BlocBuilder<StudentPageBloc, StudentPageState>(
-                    buildWhen: (previous, current) =>
+                    buildWhen: (
+                      previous,
+                      current,
+                    ) =>
                         current.addressError != previous.addressError,
-                    builder: (context, state) {
+                    builder: (
+                      context,
+                      state,
+                    ) {
                       return Text(
                         state.addressError,
                         style: const TextStyle(
@@ -196,9 +201,15 @@ class StudentPageView extends StatelessWidget {
                     },
                   ),
                   BlocBuilder<StudentPageBloc, StudentPageState>(
-                    buildWhen: (previous, current) =>
+                    buildWhen: (
+                      previous,
+                      current,
+                    ) =>
                         current.mobileError != previous.mobileError,
-                    builder: (context, state) {
+                    builder: (
+                      context,
+                      state,
+                    ) {
                       return Text(
                         state.mobileError,
                         style: const TextStyle(
@@ -225,9 +236,13 @@ class StudentPageView extends StatelessWidget {
                         context: context,
                         initialDate: DateTime.parse('2000-01-01'),
                         firstDate: DateTime(2000),
-                        lastDate: DateTime(DateTime.now().year - 18),
+                        lastDate: DateTime(
+                          DateTime.now().year - 18,
+                        ),
                       );
-                      dateController.text = DateFormat('EEE MMM d yyyy').format(
+                      dateController.text = DateFormat(
+                        'EEE MMM d yyyy',
+                      ).format(
                         date ?? DateTime.now(),
                       );
                       dob = date ?? DateTime.now();
@@ -237,11 +252,21 @@ class StudentPageView extends StatelessWidget {
                     height: 20,
                   ),
                   BlocBuilder<StudentPageBloc, StudentPageState>(
-                    buildWhen: (previous, current) =>
+                    buildWhen: (
+                      previous,
+                      current,
+                    ) =>
                         current.gender != previous.gender,
-                    builder: (context, state) {
-                      if (studentPageBloc.state.gender == '') {
-                        studentPageBloc.state.gender = student.gender;
+                    builder: (
+                      context,
+                      state,
+                    ) {
+                      if (state.gender == '') {
+                        studentPageBloc.add(
+                          SetGender(
+                            gender: student.gender,
+                          ),
+                        );
                       }
                       return Center(
                         child: Row(

@@ -1,12 +1,14 @@
+import 'package:flutter/material.dart';
 import 'package:frontend/model/student.dart';
 
+@immutable
 class HomePageState {
   final List<Student> students;
-  HomePageState({
+  const HomePageState({
     required this.students,
   });
 
-  static HomePageState get initialState => HomePageState(
+  static HomePageState get initialState => const HomePageState(
         students: [],
       );
 

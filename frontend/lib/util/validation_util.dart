@@ -8,6 +8,8 @@ class ValidationUtil {
     RegExp exp,
     String textFieldValue,
   ) {
-    return exp.hasMatch(textFieldValue);
+    return exp.hasMatch(
+      textFieldValue,
+    );
   }
 }

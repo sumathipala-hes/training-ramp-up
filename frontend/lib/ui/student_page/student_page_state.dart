@@ -1,17 +1,20 @@
-class StudentPageState {
-  String gender;
-  String nameError;
-  String addressError;
-  String mobileError;
+import 'package:flutter/material.dart';
 
-  StudentPageState({
+@immutable
+class StudentPageState {
+  final String gender;
+  final String nameError;
+  final String addressError;
+  final String mobileError;
+
+  const StudentPageState({
     required this.gender,
     required this.nameError,
     required this.addressError,
     required this.mobileError,
   });
 
-  static StudentPageState get initialState => StudentPageState(
+  static StudentPageState get initialState => const StudentPageState(
         gender: '',
         nameError: '',
         addressError: '',
@@ -32,4 +35,6 @@ class StudentPageState {
       mobileError: mobileError ?? this.mobileError,
     );
   }
+
+  void setGender(String gender) {}
 }

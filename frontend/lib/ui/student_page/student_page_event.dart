@@ -19,3 +19,11 @@ class SetValidations extends StudentPageEvent {
     required this.mobileError,
   });
 }
+
+class SetGender extends StudentPageEvent {
+  final String gender;
+
+  SetGender({
+    required this.gender,
+  });
+}

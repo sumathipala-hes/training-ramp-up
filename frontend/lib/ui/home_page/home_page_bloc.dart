@@ -17,7 +17,9 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
   }
 
   Future<FutureOr<void>> _saveStudent(
-      SaveStudentEvent event, Emitter<HomePageState> emit) async {
+    SaveStudentEvent event,
+    Emitter<HomePageState> emit,
+  ) async {
     Student student = Student(
       id: GenerateIdUtil.generateId(
         state.students[state.students.length - 1].id,
@@ -39,7 +41,9 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
   }
 
   Future<FutureOr<void>> _updateStudent(
-      UpdateStudentEvent event, Emitter<HomePageState> emit) async {
+    UpdateStudentEvent event,
+    Emitter<HomePageState> emit,
+  ) async {
     Student student = Student(
       id: event.id,
       name: event.name,
@@ -66,7 +70,9 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
   }
 
   Future<FutureOr<void>> _deleteStudent(
-      DeleteStudentEvent event, Emitter<HomePageState> emit) async {
+    DeleteStudentEvent event,
+    Emitter<HomePageState> emit,
+  ) async {
     List<Student> studentList = state.students;
     for (var i = 0; i < studentList.length; i++) {
       if (studentList[i].id == event.id) {
@@ -84,7 +90,9 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
   }
 
   Future<FutureOr<void>> _getAllStudents(
-      GetAllStudents event, Emitter<HomePageState> emit) async {
+    GetAllStudents event,
+    Emitter<HomePageState> emit,
+  ) async {
     List<Student> dummyDataStudents =
         state.students.isNotEmpty ? [] : dummyData;
     List<Student> studentList = [
