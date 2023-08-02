@@ -31,7 +31,7 @@ test('"Delete" button and its functionality: removes a row', () => {
   expect(rowToDelete).not.toBeInTheDocument();
 });
 
-test('"Edit" button and its functionality: changes the value of an existing row, changes the mode as "Edit"', () => {
+test('"Edit" button and its functionality: changes the value of an existing row', () => {
   render(
     <Provider store={store}>
       <DataTable />
@@ -50,7 +50,7 @@ test('"Edit" button and its functionality: changes the value of an existing row,
   expect(saveButton[0]).toBeInTheDocument();
 });
 
-test('"Save" button and its functionality: shows the changes after saving the row, changes the mode as "View"', () => {
+test('"Save" button and its functionality: shows the changes after saving the row', () => {
   render(
     <Provider store={store}>
       <DataTable />
@@ -73,7 +73,7 @@ test('"Save" button and its functionality: shows the changes after saving the ro
   expect(screen.getByRole('row', { name: /Melbourne/i })).toBeInTheDocument();
 });
 
-test('"Cancel" button and its functionality: discard the changes when cancels', () => {
+test('"Cancel" button and its functionality', () => {
   render(
     <Provider store={store}>
       <DataTable />
