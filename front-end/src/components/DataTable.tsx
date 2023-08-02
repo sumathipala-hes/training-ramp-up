@@ -12,56 +12,9 @@ import {
   GridToolbarContainer,
 } from '@mui/x-data-grid';
 import { useDispatch, useSelector } from 'react-redux';
-import {  setRowModesModel, setRows } from '../redux/slice';
+import { setRowModesModel, setRows } from '../redux/slice';
 import { useEffect } from 'react';
-
-const usedIDs: number[] = [];
-
-const generateID = () => {
-  let randomID;
-  do {
-    randomID = Math.floor(Math.random() * 100);
-  } while (usedIDs.includes(randomID));
-
-  usedIDs.push(randomID);
-  return randomID;
-};
-
-const initialRows: GridRowsProp = [
-  {
-    id: generateID(),
-    name: 'Ted',
-    gender: 'Male',
-    address: 'toronto',
-    mobile: '767778984',
-    dateOfBirth: new Date("1990-01-05"),
-  },
-  {
-    id: generateID(),
-    name: 'Rachel',
-    gender: 'Female',
-    address: 'toronto',
-    mobile: '67778988',
-    dateOfBirth: new Date("2000-07-25"),
-  },
-  {
-    id: generateID(),
-    name: 'Justin',
-    gender: 'Male',
-    address: 'Ohio',
-    mobile: '767778909',
-    dateOfBirth: new Date("2002-03-02"),
-  },
-  {
-    id: generateID(),
-    name: 'Emma',
-    gender: 'Female',
-    address: 'toronto',
-    mobile: '767778899',
-    dateOfBirth: new Date("1995-01-05"),
-  },
-
-];
+import { initialRows, generateID } from '../utils/InitialRows';
 
 interface EditToolbarProps {
   setRows: (newRows: (oldRows: GridRowsProp) => GridRowsProp) => void;
@@ -70,6 +23,48 @@ interface EditToolbarProps {
   ) => void;
 }
 
+const EditToolbar = (props: EditToolbarProps) => {
+  const dispatch = useDispatch();
+  const rows = useSelector((state: any) => state.data.records);
+  const rowModesModel = useSelector((state: any) => state.data.rowModesModel);
+  const handleAddClick = () => {
+    const id = generateID();
+    const newRow = {
+      id,
+      name: '',
+      gender: '',
+      address: '',
+      mobile: '',
+      dateOfBirth: '',
+      age: '',
+      isNew: true,
+    };
+
+    dispatch(
+      setRows([newRow, ...rows]), //add to the begining of the table
+    );
+
+    dispatch(
+      setRowModesModel({
+        ...rowModesModel,
+        [id]: { mode: GridRowModes.Edit, fieldToFocus: 'name' },
+      }),
+    );
+  };
+
+  return (
+    <GridToolbarContainer>
+      <Button
+        color="primary"
+        onClick={handleAddClick}
+        sx={{ display: 'flex', justifyContent: 'flex-start' }}
+      >
+        Add New
+      </Button>
+    </GridToolbarContainer>
+  );
+};
+
 export const DataTable = () => {
   const dispatch = useDispatch();
   const rows = useSelector((state: any) => state.data.records);
@@ -77,77 +72,57 @@ export const DataTable = () => {
 
   useEffect(() => {
     dispatch(setRows(initialRows));
-  }, [dispatch])
+  }, [dispatch]);
 
-  const EditToolbar = (props: EditToolbarProps) => {   
-    const handleAddClick = () => {
-      const id = generateID();
-      const newRow = { id, name: '', gender: '', address: '', mobile: '', dateOfBirth: '', age: '', isNew: true };
-
-      dispatch(
-        setRows([newRow, ...rows]), //add to the begining of the table
-      );
-
-      dispatch(
-        setRowModesModel({
-          ...rowModesModel,
-          [id]: { mode: GridRowModes.Edit, fieldToFocus: 'name' },
-        }),
-      );
-    };
-
-    return (
-      <GridToolbarContainer>
-        <Button
-          color="primary"
-          onClick={handleAddClick}
-          sx={{ display: 'flex', justifyContent: 'flex-start' }}
-        >
-          Add New
-        </Button>
-      </GridToolbarContainer>
-    );
-  };
-
-  const handleRowEditStop: GridEventListener<'rowEditStop'> = (params, event) => {
+  const handleRowEditStop: GridEventListener<'rowEditStop'> = (
+    params,
+    event,
+  ) => {
     if (params.reason === GridRowEditStopReasons.rowFocusOut) {
       event.defaultMuiPrevented = true;
     }
   };
 
   const handleEditClick = (id: GridRowId) => () => {
-    dispatch(setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } }));
+    dispatch(
+      setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } }),
+    );
   };
 
   const handleSaveClick = (id: GridRowId) => () => {
-    dispatch(setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } }));
+    dispatch(
+      setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } }),
+    );
   };
 
   const handleDeleteClick = (id: GridRowId) => () => {
     dispatch(setRows(rows.filter((row: { id: GridRowId }) => row.id !== id)));
   };
- 
 
   const handleCancelClick = (id: GridRowId) => () => {
-    dispatch(setRowModesModel({
-      ...rowModesModel,
-      [id]: { mode: GridRowModes.View, ignoreModifications: true },
-    }));
-
-    const editedRow = rows.find((row: { id: GridRowId; }) => row.id === id);
+    dispatch(
+      setRowModesModel({
+        ...rowModesModel,
+        [id]: { mode: GridRowModes.View, ignoreModifications: true },
+      }),
+    );
+    const editedRow = rows.find((row: { id: GridRowId }) => row.id === id);
     if (editedRow!.isNew) {
-      dispatch(setRows(rows.filter((row: { id: GridRowId; }) => row.id !== id)));
+      dispatch(setRows(rows.filter((row: { id: GridRowId }) => row.id !== id)));
     }
   };
 
   const processRowUpdate = (newRow: GridRowModel) => {
-    let updatedRow = rows.find((row: GridRowModel) => (row.id === newRow.id));
-    
-    if (newRow.name.trim() === '' || newRow.address.trim() === ''|| newRow.mobile.trim() === '') {
+    let updatedRow = rows.find((row: GridRowModel) => row.id === newRow.id);
+
+    if (
+      newRow.name.trim() === '' ||
+      newRow.address.trim() === '' ||
+      newRow.mobile.trim() === ''
+    ) {
       alert('Please fill all fields');
-   }
-    
-    
+    }
+
     const today = new Date();
     const dob = newRow.dateOfBirth;
     if (dob !== '') {
@@ -156,43 +131,55 @@ export const DataTable = () => {
         alert('Age must be above 18');
       } else {
         updatedRow = { ...newRow, isNew: false };
-        dispatch(setRows(rows.map((row: GridRowModel) => (row.id === newRow.id ? updatedRow : row))));
+        dispatch(
+          setRows(
+            rows.map((row: GridRowModel) =>
+              row.id === newRow.id ? updatedRow : row,
+            ),
+          ),
+        );
       }
     } else {
-      alert('Please select the birthday')
+      alert('Please select the birthday');
     }
 
-    
     return updatedRow;
   };
 
   const handleRowModesModelChange = (newRowModesModel: GridRowModesModel) => {
     setRowModesModel(newRowModesModel);
   };
-  
+
   const columns: GridColDef[] = [
     { field: 'id', headerName: 'ID', width: 150 },
     { field: 'name', headerName: 'Name', width: 150, editable: true },
-    { 
-      field: 'gender', 
-      headerName: 'Gender', 
-      width: 150, 
-      editable: true, 
+    {
+      field: 'gender',
+      headerName: 'Gender',
+      width: 150,
+      editable: true,
       type: 'singleSelect',
-      valueOptions: ['Male', 'Female']
+      valueOptions: ['Male', 'Female'],
     },
     { field: 'address', headerName: 'Address', width: 150, editable: true },
-    { 
-      field: 'mobile', 
-      headerName: 'Mobile No', 
-      width: 150, editable: true,
-      type: 'number' },
+    {
+      field: 'mobile',
+      headerName: 'Mobile No',
+      width: 150,
+      editable: true,
+      type: 'number',
+    },
     {
       field: 'dateOfBirth',
       headerName: 'Date of Birth',
       width: 150,
       editable: true,
       type: 'date',
+      valueGetter: (params) => {
+        const dateOfBirthStr = params.value;
+        const dateOfBirth = new Date(dateOfBirthStr);
+        return dateOfBirth;
+      },
     },
     {
       field: 'age',
@@ -263,8 +250,6 @@ export const DataTable = () => {
     },
   ];
 
-
-
   return (
     <Grid>
       <DataGrid
@@ -272,6 +257,7 @@ export const DataTable = () => {
         columns={columns}
         editMode="row"
         rowModesModel={rowModesModel}
+        disableVirtualization
         onRowModesModelChange={handleRowModesModelChange}
         onRowEditStop={handleRowEditStop}
         processRowUpdate={processRowUpdate}
