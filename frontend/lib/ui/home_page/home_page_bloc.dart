@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/data/dummy_data.dart';
+import 'package:frontend/util/generate_id_util.dart';
 import '../../model/student.dart';
 import 'home_page_event.dart';
 import 'home_page_state.dart';
@@ -18,7 +19,9 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
   Future<FutureOr<void>> _saveStudent(
       SaveStudentEvent event, Emitter<HomePageState> emit) async {
     Student student = Student(
-      id: (state.students.length + 1).toString(),
+      id: GenerateIdUtil.generateId(
+        state.students[state.students.length - 1].id,
+      ),
       name: event.name,
       address: event.address,
       mobile: event.mobile,
