@@ -1,4 +1,4 @@
-import { GridRowsProp } from "@mui/x-data-grid";
+import { GridRowsProp } from '@mui/x-data-grid';
 
 const usedIDs: number[] = [];
 

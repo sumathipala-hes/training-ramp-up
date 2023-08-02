@@ -9,7 +9,7 @@ test('display the initial rows correctly', () => {
   render(
     <Provider store={store}>
       <DataTable />
-    </Provider>
+    </Provider>,
   );
 
   expect(screen.getByText('Ted')).toBeInTheDocument();
@@ -18,28 +18,25 @@ test('display the initial rows correctly', () => {
   expect(screen.getByText('Emma')).toBeInTheDocument();
 });
 
-
 test('render the "Delete" button and its functionality', () => {
   render(
     <Provider store={store}>
       <DataTable />
-    </Provider>
+    </Provider>,
   );
 
-  const rowToDelete = screen.getByRole('row', {name: /Ted/i});
+  const rowToDelete = screen.getByRole('row', { name: /Ted/i });
   expect(rowToDelete).toBeInTheDocument();
-  const deleteButton = screen.getAllByRole('button', {name: /delete/i});
+  const deleteButton = screen.getAllByRole('button', { name: /delete/i });
   fireEvent.click(deleteButton[0]);
   expect(rowToDelete).not.toBeInTheDocument();
 });
 
-
 test('render the "Edit" button and its functionality', () => {
-  
   render(
     <Provider store={store}>
       <DataTable />
-    </Provider>
+    </Provider>,
   );
 
   //find edit button and trigger a click on it
@@ -50,29 +47,27 @@ test('render the "Edit" button and its functionality', () => {
   fireEvent.click(editButton[0]);
 
   const initialRows = store.getState().data.records;
-  const rowToFind = 'Ted'; // Replace 'correct_value_here' with the correct name to find.
+  const rowToFind = 'Ted'; 
   const matchingRow = initialRows.find((row: any) => row.name === rowToFind);
-  
+
   // if (matchingRow) {
   //   const rowId = matchingRow.id;
   // }
   //   const updatedState = store.getState();
   //   expect(updatedState.data.rowModesModel[rowId].mode).toBe('Edit');
-
 });
 
 test('render the "Save" button and its functionality', () => {
   render(
     <Provider store={store}>
       <DataTable />
-    </Provider>
+    </Provider>,
   );
 
   const rowToEdit = screen.getByRole('row', { name: /Rachel/i });
   expect(rowToEdit).toBeInTheDocument();
   const editButton = screen.getAllByRole('button', { name: /edit/i });
   fireEvent.click(editButton[0]);
-
 
   const nameCell = screen.getByRole('cell', { name: /rachel/i });
   // fireEvent.doubleClick(nameCell);
@@ -88,7 +83,7 @@ test('render the "Save" button and its functionality', () => {
   // }
 
   // fireEvent.change(nameInput, { target: { value: 'Updated Name' } });
-  
+
   const saveButton = screen.getAllByRole('button', { name: /save/i });
   fireEvent.click(saveButton[0]);
 
@@ -101,7 +96,7 @@ test('render the "Cancel" button and its functionality', () => {
   render(
     <Provider store={store}>
       <DataTable />
-    </Provider>
+    </Provider>,
   );
 
   const rowToEdit = screen.getByRole('row', { name: /Rachel/i });
@@ -109,7 +104,7 @@ test('render the "Cancel" button and its functionality', () => {
 
   const editButton = screen.getAllByRole('button', { name: /edit/i });
   fireEvent.click(editButton[0]);
-  
+
   const cancelButton = screen.getAllByRole('button', { name: /cancel/i });
   fireEvent.click(cancelButton[0]);
 });

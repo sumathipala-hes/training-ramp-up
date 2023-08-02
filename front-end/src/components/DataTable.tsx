@@ -16,8 +16,6 @@ import { setRowModesModel, setRows } from '../redux/slice';
 import { useEffect } from 'react';
 import { initialRows, generateID } from '../utils/InitialRows';
 
-
-
 interface EditToolbarProps {
   setRows: (newRows: (oldRows: GridRowsProp) => GridRowsProp) => void;
   setRowModesModel: (
@@ -181,8 +179,7 @@ export const DataTable = () => {
         const dateOfBirthStr = params.value;
         const dateOfBirth = new Date(dateOfBirthStr);
         return dateOfBirth;
-      }
-
+      },
     },
     {
       field: 'age',
