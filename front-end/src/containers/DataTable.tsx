@@ -235,6 +235,7 @@ const handleProcessRowUpdateError = React.useCallback((error: Error) => {
       <Button onClick={addRowHandler} disabled={isAddDisabled} variant="contained" sx={{marginBottom:"20px"}}> Add new</Button>
       <Container sx={{display: "flex" , justifyContent:"center", overflow:"hidden"}}>
       <DataGrid
+      disableVirtualization
       getRowId={(row) => row?.id}
         sx={{
           maxWidth: 1200,
