@@ -1,10 +1,54 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:front_end/models/student.dart';
 import 'package:front_end/ui/home_page/home_page_bloc.dart';
+import 'package:front_end/ui/widget/student_card.dart';
 import 'package:front_end/ui/widget/student_manage_form.dart';
+import 'package:intl/intl.dart';
 
 void main() {
+  testWidgets(
+    'StudentCard displays correct content',
+    (WidgetTester tester) async {
+      Student student = Student(
+        studentId: '1',
+        studentName: 'Pahasara',
+        studentAddress: 'Galle',
+        studentMobile: '0717188524',
+        studentDob: DateTime.now(),
+        studentGender: 'Male',
+      );
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: StudentCard(
+            student: student,
+          ),
+        ),
+      );
+
+      expect(
+        find.text(student.studentId),
+        findsOneWidget,
+      );
+      expect(
+        find.text(student.studentName),
+        findsOneWidget,
+      );
+      expect(
+        find.text(
+          DateFormat(
+            'EEE MMM d yyyy',
+          ).format(
+            student.studentDob,
+          ),
+        ),
+        findsOneWidget,
+      );
+    },
+  );
+
   testWidgets(
     'PopupModel saves data and closes when all fields are filled',
     (WidgetTester tester) async {
@@ -29,7 +73,7 @@ void main() {
       await tester.pumpAndSettle();
 
       // Pick a date from the date picker
-      final dateToPick = DateTime(1995, 1, 1);
+      // final dateToPick = DateTime(1995, 1, 1);
       await tester.tap(
         find.text("1").hitTestable(),
       );
