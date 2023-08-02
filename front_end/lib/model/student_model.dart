@@ -14,26 +14,4 @@ class Student {
     required this.dob,
     required this.gender,
   });
-
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'name': name,
-      'address': address,
-      'mobileNumber': mobileNumber,
-      'dob': dob,
-      'gender': gender,
-    };
-  }
-
-  factory Student.fromJson(Map<String, dynamic> json) {
-    return Student(
-      id: json['id'],
-      name: json['name'],
-      address: json['address'],
-      mobileNumber: json['mobileNumber'],
-      dob: json['dob'],
-      gender: json['gender'],
-    );
-  }
 }
