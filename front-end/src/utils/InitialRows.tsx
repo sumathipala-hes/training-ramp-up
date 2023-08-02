@@ -25,7 +25,7 @@ export const initialRows: GridRowsProp = [
     id: generateID(),
     name: 'Rachel',
     gender: 'Female',
-    address: 'toronto',
+    address: 'sydney',
     mobile: '67778988',
     dateOfBirth: new Date('2000-07-25').toString(),
   },
