@@ -70,24 +70,13 @@ test('render the "Save" button and its functionality', () => {
   fireEvent.click(editButton[0]);
 
   const nameCell = screen.getByRole('cell', { name: /rachel/i });
-  // fireEvent.doubleClick(nameCell);
-  // const inputElement = screen.getAllByText('rachel');
-  // fireEvent.change(inputElement, { target: { value: 'New Name' } });
+  fireEvent.doubleClick(nameCell);
 
-  //  fireEvent.change(nameCell, { target: { value: 'New Name' } });
-
-  // if (document.activeElement) {
-  //   fireEvent.click(document.activeElement);
-  //   fireEvent.change(document.activeElement, { target: { value: 'Update name' } });
-  //   fireEvent.blur(document.activeElement);
-  // }
-
-  // fireEvent.change(nameInput, { target: { value: 'Updated Name' } });
-
+  const nameInput = screen.getByRole('textbox', { name: /rachel/i });
+  fireEvent.change(nameInput, { target: { value: 'Updated Name' } });
   const saveButton = screen.getAllByRole('button', { name: /save/i });
   fireEvent.click(saveButton[0]);
 
-  // expect(screen.getByText(/Updated Name/i)).toBeInTheDocument();
   // const updatedRowModesModel = store.getState().data.rowModesModel;
   // expect(updatedRowModesModel[1].mode).toBe('View');
 });
