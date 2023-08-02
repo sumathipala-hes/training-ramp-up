@@ -1,70 +1,14 @@
 // gridSlice.ts
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { GridRowModel, GridRowId } from '@mui/x-data-grid'
-import {
-    randomCreatedDate,
-    randomTraderName,
-    randomId,
-    randomArrayItem,
-} from '@mui/x-data-grid-generator'
 
-const roles = ['Male', 'Female', 'Other']
-const randomRole = () => {
-    return randomArrayItem(roles)
-}
 // Define the initial state
 interface GridState {
     rows: GridRowModel[]
 }
 
 const initialState: GridState = {
-    rows: [
-        {
-            id: randomId(),
-            name: randomTraderName(),
-            age: 28,
-            dateOfBirth: new Date(randomCreatedDate()),
-            gender: randomRole(),
-            mobileNumber: '012345678',
-            address: 'Colombo',
-        },
-        {
-            id: randomId(),
-            name: randomTraderName(),
-            age: 36,
-            dateOfBirth: new Date(randomCreatedDate()),
-            gender: randomRole(),
-            mobileNumber: '012345678',
-            address: 'Colombo',
-        },
-        {
-            id: randomId(),
-            name: randomTraderName(),
-            age: 19,
-            dateOfBirth: new Date(randomCreatedDate()),
-            gender: randomRole(),
-            mobileNumber: '012345678',
-            address: 'Colombo',
-        },
-        {
-            id: randomId(),
-            name: randomTraderName(),
-            age: 28,
-            dateOfBirth: new Date(randomCreatedDate()),
-            gender: randomRole(),
-            mobileNumber: '012345678',
-            address: 'Colombo',
-        },
-        {
-            id: randomId(),
-            name: new Date(randomCreatedDate()),
-            age: 23,
-            dateOfBirth: randomCreatedDate(),
-            gender: randomRole(),
-            mobileNumber: '012345678',
-            address: 'Colombo',
-        },
-    ],
+    rows: [],
 }
 
 // Create the slice
