@@ -23,6 +23,7 @@ class StudentMangeView extends StatelessWidget {
     addressController.text = student.address;
     mobileNoController.text = student.mobileNumber;
     dateController.text = DateFormat('EEE MMM d yyyy').format(student.dob);
+    dob = student.dob;
   }
 
   final TextEditingController nameController = TextEditingController();
@@ -60,9 +61,9 @@ class StudentMangeView extends StatelessWidget {
     );
 
     dateController.text = DateFormat('EEE MMM d yyyy').format(
-      date ?? DateTime.now(),
+      date ?? student.dob,
     );
-    dob = date ?? DateTime.now();
+    dob = date ?? student.dob;
   }
 
   @override
@@ -125,6 +126,12 @@ class StudentMangeView extends StatelessWidget {
                     height: 30,
                   ),
                   BlocBuilder<StudentManageBloc, StudentManageState>(
+                    buildWhen: (previous, current) {
+                      return previous.nameText != current.nameText ||
+                          previous.addressText != current.addressText ||
+                          previous.mobileNoText != current.mobileNoText ||
+                          previous.selectedGender != current.selectedGender;
+                    },
                     builder: (context, state) {
                       return Padding(
                         padding: const EdgeInsets.all(10.0),
