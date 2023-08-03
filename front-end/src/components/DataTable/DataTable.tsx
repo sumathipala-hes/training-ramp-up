@@ -257,8 +257,8 @@ function DataTable() {
             variant="contained"
             startIcon={<DeleteIcon />}
             onClick={handleDeleteClick(id)}
-            // data-testid={`delete-button-${id}`}
-            data-testid='delete-button-123'
+            data-testid={`delete-button-${id}`}
+            // data-testid='delete-button-123'
             
           >
             Delete
