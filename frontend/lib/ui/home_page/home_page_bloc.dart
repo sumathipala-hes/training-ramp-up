@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/data/dummy_data.dart';
+import 'package:frontend/util/generate_id_util.dart';
 import '../../model/student.dart';
 import 'home_page_event.dart';
 import 'home_page_state.dart';
@@ -16,9 +17,13 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
   }
 
   Future<FutureOr<void>> _saveStudent(
-      SaveStudentEvent event, Emitter<HomePageState> emit) async {
+    SaveStudentEvent event,
+    Emitter<HomePageState> emit,
+  ) async {
     Student student = Student(
-      id: (state.students.length + 1).toString(),
+      id: GenerateIdUtil.generateId(
+        state.students[state.students.length - 1].id,
+      ),
       name: event.name,
       address: event.address,
       mobile: event.mobile,
@@ -36,7 +41,9 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
   }
 
   Future<FutureOr<void>> _updateStudent(
-      UpdateStudentEvent event, Emitter<HomePageState> emit) async {
+    UpdateStudentEvent event,
+    Emitter<HomePageState> emit,
+  ) async {
     Student student = Student(
       id: event.id,
       name: event.name,
@@ -63,7 +70,9 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
   }
 
   Future<FutureOr<void>> _deleteStudent(
-      DeleteStudentEvent event, Emitter<HomePageState> emit) async {
+    DeleteStudentEvent event,
+    Emitter<HomePageState> emit,
+  ) async {
     List<Student> studentList = state.students;
     for (var i = 0; i < studentList.length; i++) {
       if (studentList[i].id == event.id) {
@@ -81,10 +90,15 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
   }
 
   Future<FutureOr<void>> _getAllStudents(
-      GetAllStudents event, Emitter<HomePageState> emit) async {
+    GetAllStudents event,
+    Emitter<HomePageState> emit,
+  ) async {
     List<Student> dummyDataStudents =
         state.students.isNotEmpty ? [] : dummyData;
-    List<Student> studentList = [...state.students, ...dummyDataStudents];
+    List<Student> studentList = [
+      ...state.students,
+      ...dummyDataStudents,
+    ];
     emit(
       state.clone(
         students: studentList

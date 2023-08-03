@@ -166,11 +166,17 @@ class _StudentFormState extends State<StudentForm> {
                   onTap: () async {
                     DateTime? date = await showDatePicker(
                       context: context,
-                      initialDate: DateTime.parse('2000-01-01'),
+                      initialDate: DateTime.parse(
+                        '2000-01-01',
+                      ),
                       firstDate: DateTime(2000),
-                      lastDate: DateTime(DateTime.now().year - 18),
+                      lastDate: DateTime(
+                        DateTime.now().year - 18,
+                      ),
                     );
-                    dateController.text = DateFormat('EEE MMM d yyyy').format(
+                    dateController.text = DateFormat(
+                      'EEE MMM d yyyy',
+                    ).format(
                       date ?? DateTime.now(),
                     );
                     dob = date ?? DateTime.now();
@@ -254,6 +260,15 @@ class _StudentFormState extends State<StudentForm> {
                                     mobile: mobileController.text,
                                     dob: dob,
                                     gender: gender,
+                                  ),
+                                );
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text(
+                                      'Successfully Saved..!',
+                                      textAlign: TextAlign.center,
+                                    ),
+                                    backgroundColor: AppColors.successColor,
                                   ),
                                 );
                               }

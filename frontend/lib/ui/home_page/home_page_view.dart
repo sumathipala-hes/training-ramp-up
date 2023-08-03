@@ -27,7 +27,9 @@ class HomePageView extends StatelessWidget {
         alignment: Alignment.center,
         decoration: const BoxDecoration(
           image: DecorationImage(
-            image: AssetImage('assets/images/background.jpg'),
+            image: AssetImage(
+              'assets/images/background.jpg',
+            ),
             fit: BoxFit.cover,
           ),
         ),
@@ -79,9 +81,15 @@ class HomePageView extends StatelessWidget {
               height: 50,
             ),
             BlocBuilder<HomePageBloc, HomePageState>(
-              buildWhen: (previous, current) =>
+              buildWhen: (
+                previous,
+                current,
+              ) =>
                   current.students != previous.students,
-              builder: (context, state) {
+              builder: (
+                context,
+                state,
+              ) {
                 final List<Student> studentList = state.students;
                 return SizedBox(
                   height: MediaQuery.of(context).size.height * 0.58,
@@ -90,9 +98,11 @@ class HomePageView extends StatelessWidget {
                       children: [
                         ListView.builder(
                           shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
                           itemCount: studentList.length,
-                          itemBuilder: (context, index) {
+                          itemBuilder: (
+                            context,
+                            index,
+                          ) {
                             return StudentCard(
                               student: studentList[index],
                             );

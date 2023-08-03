@@ -10,7 +10,6 @@ import 'package:frontend/util/validation_util.dart';
 import 'package:intl/intl.dart';
 import '../theme/colors.dart';
 
-// ignore: must_be_immutable
 class StudentPageView extends StatelessWidget {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController addressController = TextEditingController();
@@ -33,7 +32,7 @@ class StudentPageView extends StatelessWidget {
   Widget build(BuildContext context) {
     StudentPageBloc studentPageBloc = BlocProvider.of<StudentPageBloc>(context);
     HomePageBloc homePageBloc = BlocProvider.of<HomePageBloc>(context);
-    DateTime dob = DateTime.now();
+    DateTime dob = student.dob;
 
     void validateTextFields(bool isValid, String textField) {
       String nameError = '';
@@ -111,7 +110,9 @@ class StudentPageView extends StatelessWidget {
                       fontSize: 16,
                     ),
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(
+                    height: 20,
+                  ),
                   TextField(
                     controller: nameController,
                     decoration: const InputDecoration(
@@ -162,16 +163,23 @@ class StudentPageView extends StatelessWidget {
                     },
                   ),
                   BlocBuilder<StudentPageBloc, StudentPageState>(
-                      buildWhen: (previous, current) =>
-                          current.addressError != previous.addressError,
-                      builder: (context, state) {
-                        return Text(
-                          state.addressError,
-                          style: const TextStyle(
-                            color: AppColors.errorColor,
-                          ),
-                        );
-                      }),
+                    buildWhen: (
+                      previous,
+                      current,
+                    ) =>
+                        current.addressError != previous.addressError,
+                    builder: (
+                      context,
+                      state,
+                    ) {
+                      return Text(
+                        state.addressError,
+                        style: const TextStyle(
+                          color: AppColors.errorColor,
+                        ),
+                      );
+                    },
+                  ),
                   const SizedBox(
                     height: 20,
                   ),
@@ -193,16 +201,23 @@ class StudentPageView extends StatelessWidget {
                     },
                   ),
                   BlocBuilder<StudentPageBloc, StudentPageState>(
-                      buildWhen: (previous, current) =>
-                          current.mobileError != previous.mobileError,
-                      builder: (context, state) {
-                        return Text(
-                          state.mobileError,
-                          style: const TextStyle(
-                            color: AppColors.errorColor,
-                          ),
-                        );
-                      }),
+                    buildWhen: (
+                      previous,
+                      current,
+                    ) =>
+                        current.mobileError != previous.mobileError,
+                    builder: (
+                      context,
+                      state,
+                    ) {
+                      return Text(
+                        state.mobileError,
+                        style: const TextStyle(
+                          color: AppColors.errorColor,
+                        ),
+                      );
+                    },
+                  ),
                   const SizedBox(
                     height: 20,
                   ),
@@ -221,9 +236,13 @@ class StudentPageView extends StatelessWidget {
                         context: context,
                         initialDate: DateTime.parse('2000-01-01'),
                         firstDate: DateTime(2000),
-                        lastDate: DateTime(DateTime.now().year - 18),
+                        lastDate: DateTime(
+                          DateTime.now().year - 18,
+                        ),
                       );
-                      dateController.text = DateFormat('EEE MMM d yyyy').format(
+                      dateController.text = DateFormat(
+                        'EEE MMM d yyyy',
+                      ).format(
                         date ?? DateTime.now(),
                       );
                       dob = date ?? DateTime.now();
@@ -233,11 +252,21 @@ class StudentPageView extends StatelessWidget {
                     height: 20,
                   ),
                   BlocBuilder<StudentPageBloc, StudentPageState>(
-                    buildWhen: (previous, current) =>
+                    buildWhen: (
+                      previous,
+                      current,
+                    ) =>
                         current.gender != previous.gender,
-                    builder: (context, state) {
-                      if (studentPageBloc.state.gender == '') {
-                        studentPageBloc.state.gender = student.gender;
+                    builder: (
+                      context,
+                      state,
+                    ) {
+                      if (state.gender == '') {
+                        studentPageBloc.add(
+                          SetGender(
+                            gender: student.gender,
+                          ),
+                        );
                       }
                       return Center(
                         child: Row(
@@ -302,6 +331,15 @@ class StudentPageView extends StatelessWidget {
                                 id: student.id,
                               ),
                             );
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text(
+                                  'Successfully Deleted..!',
+                                  textAlign: TextAlign.center,
+                                ),
+                                backgroundColor: AppColors.successColor,
+                              ),
+                            );
                           },
                           child: const Text('DELETE'),
                         ),
@@ -313,9 +351,9 @@ class StudentPageView extends StatelessWidget {
                             backgroundColor: AppColors.successColor,
                           ),
                           onPressed: () async {
-                            if (studentPageBloc.state.nameError != '' &&
-                                studentPageBloc.state.addressError != '' &&
-                                studentPageBloc.state.mobileError != '') {
+                            if (studentPageBloc.state.nameError == '' &&
+                                studentPageBloc.state.addressError == '' &&
+                                studentPageBloc.state.mobileError == '') {
                               Navigator.of(context).pop();
                               homePageBloc.add(
                                 UpdateStudentEvent(
@@ -327,6 +365,15 @@ class StudentPageView extends StatelessWidget {
                                   gender: studentPageBloc.state.gender,
                                 ),
                               );
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text(
+                                    'Successfully Updated..!',
+                                    textAlign: TextAlign.center,
+                                  ),
+                                  backgroundColor: AppColors.successColor,
+                                ),
+                              );
                               return;
                             }
                             ScaffoldMessenger.of(context).showSnackBar(
@@ -335,8 +382,7 @@ class StudentPageView extends StatelessWidget {
                                   'Please Check Details Again..!',
                                   textAlign: TextAlign.center,
                                 ),
-                                backgroundColor:
-                                    Color.fromARGB(255, 192, 42, 42),
+                                backgroundColor: AppColors.errorColor,
                               ),
                             );
                           },
