@@ -22,62 +22,55 @@ import {
     GridRowModel,
     GridRowModes,
     GridRowModesModel,
-    GridRowsProp,
     GridToolbarContainer,
+    GridValidRowModel,
     GridValueGetterParams,
 } from '@mui/x-data-grid'
 import { addRow, updateRow, deleteRow } from './GridSlice' // Import the actions
 import { RootState } from '../../store'
 
-interface EditToolbarProps {
-    setRows: (newRows: (oldRows: GridRowsProp) => GridRowsProp) => void
-    setRowModesModel: (
-        newModel: (oldModel: GridRowModesModel) => GridRowModesModel
-    ) => void
-}
-
-function EditToolbar(props: EditToolbarProps) {
-    const { setRowModesModel } = props
-    const dispatch = useDispatch()
-
-    const handleClick = () => {
-        const id = randomId()
-        const newRow: GridRowModel = {
-            id,
-            name: '',
-            age: '',
-            mobileNumber: '',
-            address: '',
-            isNew: true,
-        }
-        dispatch(addRow(newRow))
-        setRowModesModel((oldModel) => ({
-            [id]: { mode: GridRowModes.Edit, fieldToFocus: 'name' },
-            ...oldModel,
-        }))
-    }
-
-    return (
-        <GridToolbarContainer>
-            <Button
-                color="primary"
-                startIcon={<AddIcon />}
-                onClick={handleClick}
-            >
-                Add record
-            </Button>
-        </GridToolbarContainer>
-    )
-}
-
 export default function FullFeaturedCrudGrid() {
     const dispatch = useDispatch()
     const rows = useSelector((state: RootState) => state.grid.rows)
-    console.log(rows)
 
     const [rowModesModel, setRowModesModel] = React.useState<GridRowModesModel>(
         {}
     )
+    // Initialize the addButtonDisabled state
+    const [addButtonDisabled, setAddButtonDisabled] = React.useState(false)
+    function EditToolbar() {
+        const dispatch = useDispatch()
+
+        const handleClick = () => {
+            const id = randomId()
+            setAddButtonDisabled(true)
+            const newRow: GridRowModel = {
+                id,
+                isNew: true,
+            }
+
+            dispatch(addRow(newRow))
+            setRowModesModel((oldModel) => ({
+                [id]: { mode: GridRowModes.Edit, fieldToFocus: 'name' },
+                ...oldModel,
+            }))
+        }
+
+        return (
+            <GridToolbarContainer>
+                {
+                    <Button
+                        color="primary"
+                        startIcon={<AddIcon />}
+                        onClick={handleClick}
+                        disabled={addButtonDisabled}
+                    >
+                        Add record
+                    </Button>
+                }
+            </GridToolbarContainer>
+        )
+    }
 
     const handleRowEditStop: GridEventListener<'rowEditStop'> = (
         params,
@@ -105,14 +98,16 @@ export default function FullFeaturedCrudGrid() {
             }
 
             // Set the row mode to view mode
-            setRowModesModel((prevModesModel) => ({
-                ...prevModesModel,
+            setRowModesModel((rowModesModel) => ({
+                ...rowModesModel,
                 [params.id]: { mode: GridRowModes.View },
             }))
         }
+        setAddButtonDisabled(false)
     }
 
     const handleEditClick = (id: GridRowId) => () => {
+        setAddButtonDisabled(true)
         setRowModesModel({
             ...rowModesModel,
             [id]: { mode: GridRowModes.Edit },
@@ -140,13 +135,28 @@ export default function FullFeaturedCrudGrid() {
         const editedRow = rows.find((row) => row.id === id)
         if (editedRow) {
             // Dispatch the updateRow action with the edited row data
-            dispatch(updateRow({ ...editedRow, isNew: false }))
+            dispatch(updateRow({ editedRow }))
+
             // Set the row mode to view mode
             setRowModesModel((prevModesModel) => ({
                 ...prevModesModel,
                 [id]: { mode: GridRowModes.View },
             }))
         }
+        console.log(rows[0])
+        // // Check if there are any empty fields in the edited row after saving
+        // while (rows[0].isNew) {
+        //     if (!rows[0].name || !rows[0].mobileNumber || !rows[0].address) {
+        //         alert('Please fill in all required fields.')
+        //         // Set the row mode back to edit mode to keep it in edit mode
+        //         setRowModesModel((prevModesModel) => ({
+        //             ...prevModesModel,
+        //             [id]: { mode: GridRowModes.Edit },
+        //         }))
+        //         return // Stop further processing as there are empty fields
+        //     }
+        // }
+        setAddButtonDisabled(false)
     }
 
     const handleDeleteClick = (id: GridRowId) => () => {
@@ -162,18 +172,29 @@ export default function FullFeaturedCrudGrid() {
                 ...prevModesModel,
                 [id]: { mode: GridRowModes.View },
             }))
-        } else {
-            // If the row is a newly added row, remove it from the Redux store
-            dispatch(deleteRow(id)) // Dispatch action to delete the row from the Redux store
+            setAddButtonDisabled(false)
+            if (editedRow.isNew) {
+                // If the row is a newly added row, remove it from the Redux store
+                dispatch(deleteRow(id)) // Dispatch action to delete the row from the Redux store
+                // Enable the Add record button
+                console.log('handleCancelClick')
+                setAddButtonDisabled(false)
+            }
         }
     }
 
-    const processRowUpdate = (newRow: GridRowModel) => {
+    const processRowUpdate = (newRow: GridValidRowModel) => {
         // Check if the row is new or already existing
         if (newRow.isNew) {
-            // If it's a new row, dispatch an action to add the row to the Redux store
-            const newRowWithoutId = { ...newRow, id: randomId(), isNew: false }
-            dispatch(addRow(newRowWithoutId)) // Dispatch action to add the row to the Redux store
+            // Check for empty fields in the newRow object
+            if (!newRow.name || !newRow.mobileNumber || !newRow.address) {
+                alert('Please fill in all required fields.')
+                // Return a rejected Promise to keep the row in edit mode
+                return Promise.reject()
+            }
+            // Dispatch an action to add the row to the Redux store
+            const newRowWithoutId = { ...newRow, isNew: false }
+            dispatch(updateRow(newRowWithoutId))
             return newRowWithoutId // Return the updated row
         } else {
             // If it's an existing row, dispatch an action to update the row in the Redux store
@@ -284,6 +305,7 @@ export default function FullFeaturedCrudGrid() {
                         <GridActionsCellItem
                             icon={<SaveIcon />}
                             label="Save"
+                            name="SaveButton"
                             sx={{
                                 color: 'primary.main',
                             }}
@@ -302,7 +324,7 @@ export default function FullFeaturedCrudGrid() {
                 return [
                     <GridActionsCellItem
                         icon={<EditIcon />}
-                        label="Edit"
+                        label="EditRow"
                         className="textPrimary"
                         onClick={handleEditClick(id)}
                         color="inherit"
@@ -343,8 +365,9 @@ export default function FullFeaturedCrudGrid() {
                 onRowEditStop={handleRowEditStop}
                 processRowUpdate={processRowUpdate}
                 slotProps={{
-                    toolbar: { setRowModesModel },
+                    toolbar: { rowModesModel, setRowModesModel },
                 }}
+                disableVirtualization
             />
         </Box>
     )
