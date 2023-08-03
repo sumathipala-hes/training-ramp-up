@@ -6,7 +6,7 @@ List<Student> dummyData = [
     name: 'John Doe',
     address: 'England',
     mobile: '0754423424',
-    dob: DateTime.now(),
+    dob: DateTime.parse('2000-01-01'),
     gender: 'Male',
   ),
   Student(
@@ -14,7 +14,7 @@ List<Student> dummyData = [
     name: 'Dasun Pubudu',
     address: 'Galle',
     mobile: '074234234',
-    dob: DateTime.now(),
+    dob: DateTime.parse('2005-02-01'),
     gender: 'Male',
   ),
   Student(
@@ -22,7 +22,7 @@ List<Student> dummyData = [
     name: 'Ramal Silva',
     address: 'Colombo',
     mobile: '0723434534',
-    dob: DateTime.now(),
+    dob: DateTime.parse('2007-05-08'),
     gender: 'Male',
   ),
 ];

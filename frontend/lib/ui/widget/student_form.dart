@@ -262,6 +262,15 @@ class _StudentFormState extends State<StudentForm> {
                                     gender: gender,
                                   ),
                                 );
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text(
+                                      'Successfully Saved..!',
+                                      textAlign: TextAlign.center,
+                                    ),
+                                    backgroundColor: AppColors.successColor,
+                                  ),
+                                );
                               }
                             : null,
                         child: const Text('SAVE'),

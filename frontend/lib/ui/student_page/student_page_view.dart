@@ -331,6 +331,15 @@ class StudentPageView extends StatelessWidget {
                                 id: student.id,
                               ),
                             );
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text(
+                                  'Successfully Deleted..!',
+                                  textAlign: TextAlign.center,
+                                ),
+                                backgroundColor: AppColors.successColor,
+                              ),
+                            );
                           },
                           child: const Text('DELETE'),
                         ),
@@ -356,6 +365,15 @@ class StudentPageView extends StatelessWidget {
                                   gender: studentPageBloc.state.gender,
                                 ),
                               );
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text(
+                                    'Successfully Updated..!',
+                                    textAlign: TextAlign.center,
+                                  ),
+                                  backgroundColor: AppColors.successColor,
+                                ),
+                              );
                               return;
                             }
                             ScaffoldMessenger.of(context).showSnackBar(
@@ -364,8 +382,7 @@ class StudentPageView extends StatelessWidget {
                                   'Please Check Details Again..!',
                                   textAlign: TextAlign.center,
                                 ),
-                                backgroundColor:
-                                    Color.fromARGB(255, 192, 42, 42),
+                                backgroundColor: AppColors.errorColor,
                               ),
                             );
                           },
