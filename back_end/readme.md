@@ -2,7 +2,6 @@
 # Lint your code
 npm run lint
 
-
 # Automatically fix linting issues (if possible)
 npm run lint-fix
 
