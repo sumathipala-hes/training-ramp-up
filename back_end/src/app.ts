@@ -1,11 +1,14 @@
 import express from 'express';
+import routes from './routes';
 
 const app = express();
 const port = 4000;
 
-app.get('/', (req, res) => {
-  res.send('Hello, Express with TypeScript!');
-});
+// Parse incoming JSON data
+app.use(express.json());
+
+// Use the defined routes
+app.use(routes);
 
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
