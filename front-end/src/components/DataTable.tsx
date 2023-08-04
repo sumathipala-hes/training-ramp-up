@@ -117,6 +117,7 @@ export const DataTable = () => {
 
     if (
       newRow.name.trim() === '' ||
+      newRow.gender.trim() === ''  ||
       newRow.address.trim() === '' ||
       newRow.mobile.trim() === ''
     ) {
@@ -144,10 +145,6 @@ export const DataTable = () => {
     }
 
     return updatedRow;
-  };
-
-  const handleRowModesModelChange = (newRowModesModel: GridRowModesModel) => {
-    setRowModesModel(newRowModesModel);
   };
 
   const columns: GridColDef[] = [
@@ -223,7 +220,7 @@ export const DataTable = () => {
               Cancel
             </Button>,
           ];
-        }
+        } else {
 
         return [
           <Button
@@ -245,6 +242,7 @@ export const DataTable = () => {
             Delete
           </Button>,
         ];
+      };
       },
     },
   ];
@@ -257,7 +255,6 @@ export const DataTable = () => {
         editMode="row"
         rowModesModel={rowModesModel}
         disableVirtualization
-        onRowModesModelChange={handleRowModesModelChange}
         onRowEditStop={handleRowEditStop}
         processRowUpdate={processRowUpdate}
         slots={{
