@@ -12,9 +12,9 @@ import {
   GridToolbarContainer,
 } from '@mui/x-data-grid';
 import { useDispatch, useSelector } from 'react-redux';
-import { setRowModesModel, setRows } from '../redux/slice';
+import { initialRows, setRowModesModel, setRows } from '../redux/slice';
 import { useEffect } from 'react';
-import { initialRows, generateID } from '../utils/InitialRows';
+import { generateID } from '../utils/GenerateIds';
 
 interface EditToolbarProps {
   setRows: (newRows: (oldRows: GridRowsProp) => GridRowsProp) => void;
@@ -167,7 +167,6 @@ export const DataTable = () => {
       headerName: 'Mobile No',
       width: 150,
       editable: true,
-      type: 'number',
     },
     {
       field: 'dateOfBirth',
