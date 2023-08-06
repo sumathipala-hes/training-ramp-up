@@ -1,23 +1,19 @@
-class StudentService {
-  public getAllStudents() {
-    console.log('Get All Students');
-  }
+export const getAllStudents = async () => {
+  console.log('Get All Students');
+};
 
-  public getStudentById(id: string) {
-    console.log('Get Student By Id');
-  }
+export const getStudentById = async (id: string) => {
+  console.log('Get Student By Id');
+};
 
-  public createStudent(studentData: any) {
-    console.log('Create Student');
-  }
+export const createStudent = async (studentData: any) => {
+  console.log('Create Student');
+};
 
-  public updateStudent(id: string, studentData: any) {
-    console.log('Update Student');
-  }
+export const updateStudent = async (id: string, studentData: any) => {
+  console.log('Update Student');
+};
 
-  public deleteStudent(id: string) {
-    console.log('Delete Student');
-  }
-}
-
-export default new StudentService();
+export const deleteStudent = async (id: string) => {
+  console.log('Delete Student');
+};
