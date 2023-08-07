@@ -12,9 +12,9 @@ import {
   GridToolbarContainer,
 } from '@mui/x-data-grid';
 import { useDispatch, useSelector } from 'react-redux';
-import { setRowModesModel, setRows } from '../redux/slice';
+import { initialRows, setRowModesModel, setRows } from '../redux/slice';
 import { useEffect } from 'react';
-import { initialRows, generateID } from '../utils/InitialRows';
+import { generateID } from '../utils/GenerateIds';
 
 interface EditToolbarProps {
   setRows: (newRows: (oldRows: GridRowsProp) => GridRowsProp) => void;
@@ -117,6 +117,7 @@ export const DataTable = () => {
 
     if (
       newRow.name.trim() === '' ||
+      newRow.gender.trim() === ''  ||
       newRow.address.trim() === '' ||
       newRow.mobile.trim() === ''
     ) {
@@ -146,10 +147,6 @@ export const DataTable = () => {
     return updatedRow;
   };
 
-  const handleRowModesModelChange = (newRowModesModel: GridRowModesModel) => {
-    setRowModesModel(newRowModesModel);
-  };
-
   const columns: GridColDef[] = [
     { field: 'id', headerName: 'ID', width: 150 },
     { field: 'name', headerName: 'Name', width: 150, editable: true },
@@ -167,7 +164,6 @@ export const DataTable = () => {
       headerName: 'Mobile No',
       width: 150,
       editable: true,
-      type: 'number',
     },
     {
       field: 'dateOfBirth',
@@ -224,7 +220,7 @@ export const DataTable = () => {
               Cancel
             </Button>,
           ];
-        }
+        } else {
 
         return [
           <Button
@@ -246,6 +242,7 @@ export const DataTable = () => {
             Delete
           </Button>,
         ];
+      };
       },
     },
   ];
@@ -258,7 +255,6 @@ export const DataTable = () => {
         editMode="row"
         rowModesModel={rowModesModel}
         disableVirtualization
-        onRowModesModelChange={handleRowModesModelChange}
         onRowEditStop={handleRowEditStop}
         processRowUpdate={processRowUpdate}
         slots={{

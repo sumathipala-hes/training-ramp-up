@@ -1,9 +1,8 @@
 import React from 'react';
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import store from '../redux/store';
 import { DataTable } from './DataTable';
-import { initialRows } from '../utils/InitialRows';
 
 test('display the initial rows correctly', () => {
   render(
@@ -18,7 +17,7 @@ test('display the initial rows correctly', () => {
   expect(screen.getByText('Emma')).toBeInTheDocument();
 });
 
-test('render the "Delete" button and its functionality', () => {
+test('"Delete" button and its functionality: removes a row', () => {
   render(
     <Provider store={store}>
       <DataTable />
@@ -32,56 +31,49 @@ test('render the "Delete" button and its functionality', () => {
   expect(rowToDelete).not.toBeInTheDocument();
 });
 
-test('render the "Edit" button and its functionality', () => {
+test('"Edit" button and its functionality: changes the value of an existing row', () => {
   render(
     <Provider store={store}>
       <DataTable />
     </Provider>,
   );
 
-  //find edit button and trigger a click on it
   const rowToEdit = screen.getByRole('row', { name: /Ted/i });
   expect(rowToEdit).toBeInTheDocument();
-
   const editButton = screen.getAllByRole('button', { name: /edit/i });
   fireEvent.click(editButton[0]);
 
-  const initialRows = store.getState().data.records;
-  const rowToFind = 'Ted'; 
-  const matchingRow = initialRows.find((row: any) => row.name === rowToFind);
+  const nameCell = screen.getAllByRole('cell', { name: 'Ted' });
+  nameCell[0].textContent = 'James';
 
-  // if (matchingRow) {
-  //   const rowId = matchingRow.id;
-  // }
-  //   const updatedState = store.getState();
-  //   expect(updatedState.data.rowModesModel[rowId].mode).toBe('Edit');
+  const saveButton = screen.getAllByRole('button', { name: /save/i });
+  expect(saveButton[0]).toBeInTheDocument();
 });
 
-test('render the "Save" button and its functionality', () => {
+test('"Save" button and its functionality: shows the changes after saving the row', async () => {
   render(
     <Provider store={store}>
       <DataTable />
     </Provider>,
   );
 
-  const rowToEdit = screen.getByRole('row', { name: /Rachel/i });
-  expect(rowToEdit).toBeInTheDocument();
   const editButton = screen.getAllByRole('button', { name: /edit/i });
   fireEvent.click(editButton[0]);
 
-  const nameCell = screen.getByRole('cell', { name: /rachel/i });
-  fireEvent.doubleClick(nameCell);
+  const newAddress = screen.getAllByRole('textbox')[0];
+  fireEvent.change(newAddress, { target: { value: 'Melbourne' } });
 
-  const nameInput = screen.getByRole('textbox', { name: /rachel/i });
-  fireEvent.change(nameInput, { target: { value: 'Updated Name' } });
   const saveButton = screen.getAllByRole('button', { name: /save/i });
+  expect(saveButton[0]).toBeInTheDocument();
   fireEvent.click(saveButton[0]);
 
-  // const updatedRowModesModel = store.getState().data.rowModesModel;
-  // expect(updatedRowModesModel[1].mode).toBe('View');
+  await waitFor(() => {
+    const updatedRow = screen.getByText('Melbourne');
+    expect(updatedRow).toBeInTheDocument();
+  });
 });
 
-test('render the "Cancel" button and its functionality', () => {
+test('"Cancel" button and its functionality', () => {
   render(
     <Provider store={store}>
       <DataTable />
@@ -96,6 +88,29 @@ test('render the "Cancel" button and its functionality', () => {
 
   const cancelButton = screen.getAllByRole('button', { name: /cancel/i });
   fireEvent.click(cancelButton[0]);
+});
+
+test('update the age field correctly', async () => {
+  render(
+    <Provider store={store}>
+      <DataTable />
+    </Provider>,
+  );
+
+  const editButton = screen.getAllByRole('button', { name: /edit/i });
+  fireEvent.click(editButton[0]);
+
+  const newDoB = screen.getAllByRole('textbox')[0];
+  fireEvent.change(newDoB, { target: { value: '1980-02-15' } });
+
+  const saveButton = screen.getAllByRole('button', { name: /save/i });
+  expect(saveButton[0]).toBeInTheDocument();
+  fireEvent.click(saveButton[0]);
+
+  await waitFor(() => {
+    const ageField = screen.getByText('33');
+    expect(ageField).toBeInTheDocument();
+  });
 });
 
 test('renders the EditToolbar with the "Add New" button and its functionality', () => {
