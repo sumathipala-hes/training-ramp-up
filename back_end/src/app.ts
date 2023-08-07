@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { json, urlencoded } from 'express';
 import routes from './routes';
 import cors from 'cors';
 import { appDataSource } from './configs/datasource.config';
@@ -8,8 +8,9 @@ dotenv.config();
 
 const app = express();
 
-app.use(express.json());
-app.use(routes);
+app.use(json());
+app.use(urlencoded({ extended: true }));
+app.use('/', routes);
 app.use(cors());
 
 appDataSource
