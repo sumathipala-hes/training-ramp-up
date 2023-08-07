@@ -28,12 +28,12 @@ const tableSlice = createSlice({
   name: 'rows',
   initialState,
   reducers: {
-    addRow(state, action) {
+    addStudent(state, action) {
       const newRow = action.payload;
       newRow.id = state.id + 1;
       state.rows.unshift(action.payload); 
     },
-    removeRow(state, action) {
+    removeStudent(state, action) {
       state.rows = state.rows.filter((row) => row.id !== action.payload);
     },
     updateRow(state, action){
