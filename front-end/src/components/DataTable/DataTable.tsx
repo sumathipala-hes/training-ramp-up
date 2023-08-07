@@ -40,7 +40,7 @@ function EditToolbar(props: EditToolbarProps) {
   // handleClick function will be called when user click on add new button and it will create empty row
   const handleClick = () => {
     const id = generateRandomId();
-    setRows((oldRows) => [{ id, name: "", age: "", isNew: true }, ...oldRows]);
+    setRows((oldRows) => [{ id, name: "", age: "",dof:new Date(),gender: '',address: '',mobile: '', isNew: true }, ...oldRows]);
     setRowModesModel((oldModel) => ({
       ...oldModel,
       [id]: { mode: GridRowModes.Edit, fieldToFocus: "name" },
@@ -55,6 +55,9 @@ function EditToolbar(props: EditToolbarProps) {
         variant="contained"
         startIcon={<AddIcon />}
         onClick={handleClick}
+        // role="add-new1"
+        data-testid="add-new1"
+        
       >
         Add new
       </Button>
@@ -224,6 +227,7 @@ function DataTable() {
               variant="contained"
               startIcon={<SaveIcon />}
               onClick={handleSaveClick(id)}
+              data-testid={`save-button-${id}`}
             >
               Save
             </Button>,
@@ -244,6 +248,7 @@ function DataTable() {
             variant="contained"
             startIcon={<EditIcon />}
             onClick={handleEditClick(id)}
+            data-testid={`edit-button-${id}`}
           >
             Edit
           </Button>,
@@ -252,6 +257,9 @@ function DataTable() {
             variant="contained"
             startIcon={<DeleteIcon />}
             onClick={handleDeleteClick(id)}
+            data-testid={`delete-button-${id}`}
+            // data-testid='delete-button-123'
+            
           >
             Delete
           </Button>,
@@ -273,11 +281,14 @@ function DataTable() {
           color: "text.primary",
         },
       }}
+      role="row12"
+    
     >
       <DataGrid
+        
         rows={rows}
         columns={columns}
-        editMode="row"
+        editMode='row'
         rowModesModel={rowModesModel}
         onRowModesModelChange={handleRowModesModelChange}
         onRowEditStop={handleRowEditStop}
@@ -288,6 +299,7 @@ function DataTable() {
         slotProps={{
           toolbar: { setRows, setRowModesModel },
         }}
+        
       />
     </Box>
   );
