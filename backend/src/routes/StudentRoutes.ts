@@ -4,13 +4,13 @@ import {
   deleteStudents,
   retriveAllStudents,
   updateStudents,
-} from '../controller/StudentController';
+} from '../controllers/StudentController';
 
 const router: Router = express.Router();
 
 router.get('/', retriveAllStudents);
 router.post('/', addStudents);
 router.put('/', updateStudents);
-router.delete('/', deleteStudents);
+router.delete('/:id', deleteStudents);
 
 export default router;
