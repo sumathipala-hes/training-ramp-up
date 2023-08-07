@@ -1,15 +1,28 @@
 import express from 'express';
 import routes from './routes';
+import cors from 'cors';
+import { appDataSource } from './configs/datasource.config';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const app = express();
-const port = 4000;
 
-// Parse incoming JSON data
 app.use(express.json());
-
-// Use the defined routes
 app.use(routes);
+app.use(cors());
 
-app.listen(port, () => {
-  console.log(`⚡️[server]: Server is running at https://localhost:${port}`)
+appDataSource
+  .initialize()
+  .then(() => {
+    console.log('Connected to the database!');
+  })
+  .catch(err => {
+    console.error('Error during Data Source initialization:', err);
+  });
+
+app.listen(process.env.PORT, () => {
+  console.log(
+    `⚡️[server]: Server is running at https://localhost:${process.env.PORT}`,
+  );
 });
