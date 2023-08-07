@@ -3,13 +3,12 @@ import {
   createStudent,
   deleteStudent,
   getAllStudents,
-  getStudentById,
   updateStudent,
 } from '../services/student.service';
 
 export const requestGetAllStudents: RequestHandler = async (
   req: Request,
-  res: Response
+  res: Response,
 ): Promise<Response> => {
   try {
     const students = await getAllStudents();
@@ -24,25 +23,9 @@ export const requestGetAllStudents: RequestHandler = async (
   }
 };
 
-export const requestGetStudentById: RequestHandler = async (
-  req: Request,
-  res: Response
-): Promise<Response> => {
-  const { id } = req.params;
-  try {
-    const student = await getStudentById(id);
-    if (student === undefined) {
-      return res.status(404).json({ message: 'Student not found' });
-    }
-    return res.json({ message: 'Student found successfully', data: student });
-  } catch (error) {
-    return res.status(500).json({ message: 'Error retrieving student', error });
-  }
-};
-
 export const requestCreateStudent: RequestHandler = async (
   req: Request,
-  res: Response
+  res: Response,
 ): Promise<Response> => {
   const studentData = req.body;
   try {
@@ -58,7 +41,7 @@ export const requestCreateStudent: RequestHandler = async (
 
 export const requestUpdateStudent: RequestHandler = async (
   req: Request,
-  res: Response
+  res: Response,
 ): Promise<Response> => {
   const { id } = req.params;
   const studentData = req.body;
@@ -78,7 +61,7 @@ export const requestUpdateStudent: RequestHandler = async (
 
 export const requestDeleteStudent: RequestHandler = async (
   req: Request,
-  res: Response
+  res: Response,
 ): Promise<Response> => {
   const { id } = req.params;
   try {
