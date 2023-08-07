@@ -1,7 +1,7 @@
 import { config } from 'dotenv';
 config();
 import { DataSource } from 'typeorm';
-import { Student } from '../models/Student';
+import { Student } from '../models/student.model';
 
 export const dataSource = new DataSource({
   type: 'postgres',

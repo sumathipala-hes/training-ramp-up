@@ -4,7 +4,7 @@ import {
   getAllStudents,
   saveStudent,
   updateStudent,
-} from '../services/StudentService';
+} from '../services/student.service';
 
 export const retriveAllStudents: RequestHandler = async (
   req: Request,
