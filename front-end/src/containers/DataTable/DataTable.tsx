@@ -2,9 +2,9 @@ import React, { useState } from "react";
 import { Container, Button } from "@mui/material";
 import { DataGrid, GridColDef, GridRowModes, GridRowModesModel,  GridRenderEditCellParams, GridEditDateCell,} from "@mui/x-data-grid";
 import { useSelector,useDispatch } from 'react-redux';
-import { alerts, calculateAge, capitalizeFirstLetter, generateAutoIds, maxDate, minDate, renderBirthdayCell, validations } from "../utils";
-import { tableActions } from "../redux/tableData/tableSlice";
-import EditInputCell from "../components/EditInputCell";
+import { alerts, calculateAge, capitalizeFirstLetter, generateAutoIds, maxDate, minDate, renderBirthdayCell, validations } from "../../utils";
+import { tableActions } from "../../redux/tableData/tableSlice";
+import EditInputCell from "../../components/EditInputCell/EditInputCell";
 
 interface rowData {
   id:number,
@@ -19,7 +19,8 @@ interface rowData {
 function handleEditCell(params: GridRenderEditCellParams){
   return <EditInputCell {...params} />;
 }
-function DataTable() {
+
+function DataTable(props: { isTesting: any; }) {
   const dispatch = useDispatch();
 
   //initialize rows and id
@@ -30,6 +31,7 @@ function DataTable() {
   const [isDisabled, setDisabled] = useState(true);
   const [isAddDisabled, setAddDisabeld] = useState(false);
   const [isUpdating, setUpdate] = useState(false);
+  const [isDisabUpBtn, setDisableUp] = useState(false);
 
     //set columns
     const columns: GridColDef[] = [
@@ -128,7 +130,7 @@ function DataTable() {
           //set buttons according to row's model
           if (isInEditMode) {
             return [
-              <Button size="small" disabled={isDisabled} variant="contained" sx={{ marginRight: "10px" }} onClick={() => handleSaveChanges({ row })}>
+              <Button size="small" disabled={props.isTesting?false : isDisabled} variant="contained" sx={{ marginRight: "10px" }} onClick={() => handleSaveChanges({ row })}>
                 {isUpdating? "Update" :"Add"}
               </Button>,
               <Button size="small" color="error" variant="contained" onClick={() => handleDiscardChanges({ row })}>
@@ -138,7 +140,7 @@ function DataTable() {
           }
   
           return [
-            <Button size="small" disabled={isUpdating} variant="contained" sx={{ marginRight: "10px" }}onClick={() => handleUpdates({ row })}>
+            <Button size="small" disabled={isDisabUpBtn} variant="contained" sx={{ marginRight: "10px" }}onClick={() => handleUpdates({ row })}>
               Edit
             </Button>,
             <Button size="small" color="error" variant="contained" onClick={() => handleRemove({ row })}>
@@ -161,15 +163,17 @@ function DataTable() {
       age: 0,
     };
 
-    dispatch(tableActions.addRow(newEditableRow));
+    dispatch(tableActions.addStudent(newEditableRow));
     setRowModesModel({ [rowId + 1]: { mode: GridRowModes.Edit } });
     setAddDisabeld(true);
+    setDisableUp(true);
   }
   
   //handle row updates
   function handleUpdates(row:any) {
     const id  = row.row.id;
     setUpdate(true);
+    setDisableUp(true);
     setRowModesModel({ [id]: { mode: GridRowModes.Edit } });
     setAddDisabeld(true);
   }
@@ -177,17 +181,19 @@ function DataTable() {
   //handle row removes
   function handleRemove(row:any){
     const id  = row.row.id;
-    dispatch(tableActions.removeRow(id));
+    dispatch(tableActions.removeStudent(id));
   }
 
   //discard button event handler
   function handleDiscardChanges(row:any) {
     const id  = row.row.id;
     if(!isUpdating){
-      dispatch(tableActions.removeRow(id));
+      dispatch(tableActions.removeStudent(id));
+      setDisableUp(false);
     }else{
       setRowModesModel({ [id]: { mode: GridRowModes.View, ignoreModifications: true} });
       setUpdate(false);
+      setDisableUp(false);
     }
     setDisabled(true);
     setAddDisabeld(false);
@@ -201,6 +207,7 @@ function DataTable() {
     }else{
       setUpdate(false);
     }
+    setDisableUp(false);
     setRowModesModel({ [id]: { mode: GridRowModes.View} });
   }
 
