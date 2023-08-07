@@ -21,12 +21,13 @@ export const saveStudent = async (student: Student): Promise<InsertResult> => {
 };
 
 export const updateStudent = async (
+  id: string,
   student: Student
 ): Promise<UpdateResult> => {
   try {
     const updatedStudent = await dataSource.manager.update(
       Student,
-      student.id,
+      id,
       student
     );
     return updatedStudent;

@@ -35,7 +35,7 @@ export const updateStudents: RequestHandler = async (
   res: Response
 ): Promise<void> => {
   try {
-    const student = await updateStudent(req.body);
+    const student = await updateStudent(req.params.id, req.body);
     res.status(200).json(student);
   } catch (error) {
     res.status(500).json(error);
