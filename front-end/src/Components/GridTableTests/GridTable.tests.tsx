@@ -1,9 +1,9 @@
 import React from 'react'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
-import App from './App'
+import App from '../../App'
 import { Provider } from 'react-redux'
-import { store } from './store'
-import FullFeaturedCrudGrid from './Components/GridTable/GridTable'
+import { store } from '../../store'
+import FullFeaturedCrudGrid from '../GridTable/GridTable'
 
 test('Check initial status of add new button', () => {
     render(
@@ -25,7 +25,7 @@ test('Check presence of rows on initial render', () => {
     )
 
     const rows = screen.getAllByRole('row')
-    expect(rows.length).toBe(1) // Assuming the initial state has 5 rows.
+    expect(rows.length).toBe(1)
 })
 
 test('Check if "Add record" button adds a new row', () => {
@@ -50,7 +50,7 @@ test('renders with initial rows', () => {
     )
 
     const rows = screen.getAllByRole('row')
-    expect(rows.length).toBe(2) // Assuming the initial state has 1 row.
+    expect(rows.length).toBe(2)
 })
 
 test('adds a new row with valid data', () => {
@@ -76,34 +76,9 @@ test('adds a new row with valid data', () => {
     const saveButton = screen.getByRole('menuitem', { name: 'Save' })
     fireEvent.click(saveButton)
 
-    // Assuming the initial state has 1 row and a new row is added.
     const rows = screen.getAllByRole('row')
     expect(rows.length).toBe(3)
 })
-
-// test('shows alert for new row with missing required fields', async () => {
-//     render(
-//         <Provider store={store}>
-//             <FullFeaturedCrudGrid />
-//         </Provider>
-//     )
-
-//     const addButton = screen.getByRole('button', { name: 'Add record' })
-//     fireEvent.click(addButton)
-
-//     // Click the Save button to trigger the save action on the new row
-//     const saveButton = screen.getByRole('menuitem', { name: 'Save' })
-//     fireEvent.click(saveButton)
-
-//     // Wait for the alert to appear
-//     await waitFor(() => {
-//         const alert = screen.getByRole('alert')
-//         expect(alert).toHaveTextContent('Please fill in all required fields.')
-//     })
-
-//     const rows = screen.getAllByRole('row')
-//     expect(rows.length).toBe(3)
-// })
 
 test('edits a row with valid data', async () => {
     render(
@@ -175,4 +150,24 @@ test('deletes a row', async () => {
         const rows = screen.queryAllByRole('row')
         expect(rows.length).toBe(2) // Assuming the initial state has 2 rows and one is deleted.
     })
+})
+
+test('handleRowEditStop deletes row if fields are not filled properly', async () => {
+    render(
+        <Provider store={store}>
+            <FullFeaturedCrudGrid />
+        </Provider>
+    )
+
+    // Assume we have an "Add record" button
+    const addButton = screen.getByRole('button', { name: 'Add record' })
+    fireEvent.click(addButton)
+
+    // Assume we have a save button for the new row
+    const saveButton = screen.getByRole('menuitem', { name: 'Save' })
+    fireEvent.click(saveButton)
+
+    // Check if the row is deleted from the Redux store
+    const rowsAfterDelete = store.getState().grid.rows
+    expect(rowsAfterDelete).toHaveLength(2)
 })

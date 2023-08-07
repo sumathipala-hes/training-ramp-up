@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react/jsx-key */
 import * as React from 'react'
 import Box from '@mui/material/Box'
@@ -28,6 +27,7 @@ import {
 } from '@mui/x-data-grid'
 import { addRow, updateRow, deleteRow } from './GridSlice' // Import the actions
 import { RootState } from '../../store'
+import { minDate, maxDate } from './GridTableUtility/min_maxDate'
 
 export default function FullFeaturedCrudGrid() {
     const dispatch = useDispatch()
@@ -114,23 +114,6 @@ export default function FullFeaturedCrudGrid() {
         })
     }
 
-    const maxDate = () => {
-        // Calculate the maximum allowed date (current date - 18 years)
-        const currentDate = new Date()
-        const maxAllowedDate = new Date(
-            currentDate.getFullYear() - 18,
-            currentDate.getMonth(),
-            currentDate.getDate()
-        )
-        return maxAllowedDate.toISOString().split('T')[0]
-    }
-
-    const minDate = () => {
-        // Calculate the minimum allowed date (a long time ago to avoid future dates)
-        const minAllowedDate = new Date(1900, 0, 1)
-        return minAllowedDate.toISOString().split('T')[0]
-    }
-
     const handleSaveClick = (id: GridRowId) => () => {
         const editedRow = rows.find((row) => row.id === id)
         if (editedRow) {
@@ -143,19 +126,7 @@ export default function FullFeaturedCrudGrid() {
                 [id]: { mode: GridRowModes.View },
             }))
         }
-        console.log(rows[0])
-        // // Check if there are any empty fields in the edited row after saving
-        // while (rows[0].isNew) {
-        //     if (!rows[0].name || !rows[0].mobileNumber || !rows[0].address) {
-        //         alert('Please fill in all required fields.')
-        //         // Set the row mode back to edit mode to keep it in edit mode
-        //         setRowModesModel((prevModesModel) => ({
-        //             ...prevModesModel,
-        //             [id]: { mode: GridRowModes.Edit },
-        //         }))
-        //         return // Stop further processing as there are empty fields
-        //     }
-        // }
+
         setAddButtonDisabled(false)
     }
 
@@ -281,7 +252,15 @@ export default function FullFeaturedCrudGrid() {
             headerName: 'Mobile No',
             width: 180,
             editable: true,
-            type: 'string',
+            type: 'number',
+            valueFormatter: (params) => {
+                // Convert the number to a string without formatting commas
+                return String(params.value)
+            },
+            valueParser: (value) => {
+                // Parse the string back to a number (remove commas if present)
+                return parseFloat(value.replace(/,/g, ''))
+            },
         },
         {
             field: 'address',
