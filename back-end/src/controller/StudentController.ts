@@ -1,20 +1,20 @@
 import { AppDataSource } from "../data-source"
 import { NextFunction, Request, Response } from "express"
-import { User } from "../entity/User"
+import { Student } from "../entity/Student"
 
-export class UserController {
+export class StudentController {
 
-    private userRepository = AppDataSource.getRepository(User)
+    private studentRepository = AppDataSource.getRepository(Student)
 
     async all(request: Request, response: Response, next: NextFunction) {
-        return this.userRepository.find()
+        return this.studentRepository.find()
     }
 
     async one(request: Request, response: Response, next: NextFunction) {
         const id = parseInt(request.params.id)
 
 
-        const user = await this.userRepository.findOne({
+        const user = await this.studentRepository.findOne({
             where: { id }
         })
 
@@ -27,25 +27,25 @@ export class UserController {
     async save(request: Request, response: Response, next: NextFunction) {
         const { firstName, lastName, age } = request.body;
 
-        const user = Object.assign(new User(), {
+        const user = Object.assign(new Student(), {
             firstName,
             lastName,
             age
         })
 
-        return this.userRepository.save(user)
+        return this.studentRepository.save(user)
     }
 
     async remove(request: Request, response: Response, next: NextFunction) {
         const id = parseInt(request.params.id)
 
-        let userToRemove = await this.userRepository.findOneBy({ id })
+        let userToRemove = await this.studentRepository.findOneBy({ id })
 
         if (!userToRemove) {
             return "this user not exist"
         }
 
-        await this.userRepository.remove(userToRemove)
+        await this.studentRepository.remove(userToRemove)
 
         return "user has been removed"
     }
