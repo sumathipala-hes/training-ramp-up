@@ -59,8 +59,8 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
       dob: event.date,
       gender: event.gender,
     );
-    StudentService().saveStudent(student);
-    emit(state.clone(allStudents: await _getAllEvent()));
+    await StudentService().saveStudent(student);
+    add(GetAllStudent());
   }
 
   Future<void> _updateStudent(
@@ -75,13 +75,13 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
       dob: event.date,
       gender: event.gender,
     );
-    StudentService().updateStudent(student);
-    emit(state.clone(allStudents: await _getAllEvent()));
+    await StudentService().updateStudent(student);
+    add(GetAllStudent());
   }
 
   Future<void> _deleteStudent(
       DeleteStudent event, Emitter<HomePageState> emit) async {
-    StudentService().deleteStudent(event.id);
-    emit(state.clone(allStudents: await _getAllEvent()));
+    await StudentService().deleteStudent(event.id);
+    add(GetAllStudent());
   }
 }
