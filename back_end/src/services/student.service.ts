@@ -15,4 +15,17 @@ const saveStudent = async (student: Student): Promise<InsertResult> => {
   }
 };
 
-export default saveStudent;
+const retrieveAllStudents = async (): Promise<Student[]> => {
+  try {
+    // Retrieve all the students from the database
+    const students: Student[] = await dataSource.manager
+    // .getRepository(Student)
+    .find(Student);
+  return students;
+  } catch (error) {
+    // Handle and rethrow the error
+    throw error;
+  }
+};
+
+export { saveStudent, retrieveAllStudents };

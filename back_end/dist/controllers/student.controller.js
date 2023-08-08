@@ -8,11 +8,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-const student_service_1 = __importDefault(require("../services/student.service"));
+const student_service_1 = require("../services/student.service");
 class StudentController {
     constructor() {
         this.addStudent = (req, res) => __awaiter(this, void 0, void 0, function* () {
@@ -21,7 +18,7 @@ class StudentController {
                 // destructuring assignment
                 const newStudent = req.body;
                 // save the student
-                const student = yield (0, student_service_1.default)(newStudent);
+                const student = yield (0, student_service_1.saveStudent)(newStudent);
                 return res // return the response
                     .status(200)
                     .json({ message: 'New student added.!', responseData: student });
@@ -38,7 +35,20 @@ class StudentController {
         });
         this.retrieveAllStudents = (req, res) => __awaiter(this, void 0, void 0, function* () {
             //read operation
-            return res.status(200).json({ message: 'All students retrieved' });
+            try {
+                // retrieve all the students
+                let students = yield (0, student_service_1.retrieveAllStudents)();
+                return res.status(200).json({ responseData: students });
+            }
+            catch (error) {
+                // catch block is used to handle the errors
+                if (error instanceof Error) {
+                    return res.status(500).json({ message: error.message });
+                }
+                else {
+                    return res.status(500).json({ message: 'Unknown error occured.' });
+                }
+            }
         });
         this.updateStudent = (req, res) => __awaiter(this, void 0, void 0, function* () {
             //update operation
