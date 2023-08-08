@@ -1,4 +1,4 @@
-import { InsertResult } from 'typeorm/query-builder/result/InsertResult';
+import { InsertResult, UpdateResult } from 'typeorm';
 import { Student } from '../models/student.model';
 import { dataSource } from '../configs/db.config';
 
@@ -6,9 +6,9 @@ const saveStudent = async (student: Student): Promise<InsertResult> => {
   try {
     // Insert the student into the database
     const newStudent: InsertResult = await dataSource.manager
-    .getRepository(Student)
-    .insert(student);
-  return newStudent;
+      .getRepository(Student)
+      .insert(student);
+    return newStudent;
   } catch (error) {
     // Handle and rethrow the error
     throw error;
@@ -19,22 +19,31 @@ const retrieveAllStudents = async (): Promise<Student[]> => {
   try {
     // Retrieve all the students from the database
     const students: Student[] = await dataSource.manager
-    .getRepository(Student)
-    .find();
-  return students;
+      .getRepository(Student)
+      .find();
+    return students;
   } catch (error) {
     // Handle and rethrow the error
     throw error;
   }
 };
 
-const updateStudent = async (student: Student): Promise<Student> => {
+const updateStudent = async (
+  id: string,
+  student: Student,
+): Promise<UpdateResult> => {
   try {
     // Update the student in the database
-    const updatedStudent: Student = await dataSource.manager
-    .getRepository(Student)
-    .save(student);
-  return updatedStudent;
+    const updatedStudent: UpdateResult = await dataSource.manager
+      .getRepository(Student)
+      .update(id, student);
+    if (updatedStudent.affected === 1) {
+      // If the student is updated
+      updatedStudent.raw = student;
+    } else {
+      throw new Error('Student not found.');
+    }
+    return updatedStudent;
   } catch (error) {
     // Handle and rethrow the error
     throw error;

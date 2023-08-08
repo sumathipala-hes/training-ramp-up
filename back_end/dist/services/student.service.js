@@ -40,12 +40,18 @@ const retrieveAllStudents = () => __awaiter(void 0, void 0, void 0, function* ()
     }
 });
 exports.retrieveAllStudents = retrieveAllStudents;
-const updateStudent = (student) => __awaiter(void 0, void 0, void 0, function* () {
+const updateStudent = (id, student) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         // Update the student in the database
         const updatedStudent = yield db_config_1.dataSource.manager
             .getRepository(student_model_1.Student)
-            .save(student);
+            .update(id, student);
+        // if (updatedStudent.affected === 1) {
+        //   // If the student is updated
+        //   updatedStudent.raw = student;
+        // } else {
+        //   throw new Error('Student not found.');
+        // }
         return updatedStudent;
     }
     catch (error) {

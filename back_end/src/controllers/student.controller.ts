@@ -1,5 +1,9 @@
 import { RequestHandler, Request, Response } from 'express';
-import { retrieveAllStudents, saveStudent, updateStudent } from '../services/student.service';
+import {
+  retrieveAllStudents,
+  saveStudent,
+  updateStudent,
+} from '../services/student.service';
 
 export default class StudentController {
   addStudent: RequestHandler = async (
@@ -53,15 +57,20 @@ export default class StudentController {
   ): Promise<Response> => {
     //update operation
     try {
+      // get the student id from the request params
+      const { id } = req.params;
       // get the student data from the request body
       const newStudent = req.body;
 
       // update the student
-      const student = await updateStudent(newStudent);
+      const updatedStudent = await updateStudent(id, newStudent);
 
       return res // return the response
         .status(200)
-        .json({ message: 'New student updated.!', responseData: student });
+        .json({
+          message: 'Student updated.!',
+          responseData: updatedStudent,
+        });
     } catch (error: unknown) {
       // catch block is used to handle the errors
       if (error instanceof Error) {

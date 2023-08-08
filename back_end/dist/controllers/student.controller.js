@@ -53,13 +53,21 @@ class StudentController {
         this.updateStudent = (req, res) => __awaiter(this, void 0, void 0, function* () {
             //update operation
             try {
+                // get the student id from the request params
+                const { id } = req.params;
                 // get the student data from the request body
                 const newStudent = req.body;
                 // update the student
-                const student = yield (0, student_service_1.updateStudent)(newStudent);
+                const updatedStudent = yield (0, student_service_1.updateStudent)(id, newStudent);
+                if (!updatedStudent) {
+                    return res.status(404).json({ message: 'User not found' });
+                }
                 return res // return the response
                     .status(200)
-                    .json({ message: 'New student updated.!', responseData: student });
+                    .json({
+                    message: 'New student updated.!',
+                    responseData: updatedStudent,
+                });
             }
             catch (error) {
                 // catch block is used to handle the errors
