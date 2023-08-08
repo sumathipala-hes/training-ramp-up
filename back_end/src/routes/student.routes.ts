@@ -15,6 +15,9 @@ export default class UserRoutes {
 
      //GET /api/v1/student
      this.router.get("/", this.studentController.retrieveAllStudents);
+     
+     //PUT /api/v1/student/:id
+     this.router.put("/:id", this.studentController.updateStudent);
   };
 
   public getRouter = (): Router => {
