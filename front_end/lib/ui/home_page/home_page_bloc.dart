@@ -1,11 +1,14 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:logger/logger.dart';
 import 'package:ramp_up/ui/home_page/home_page_event.dart';
 import 'package:ramp_up/ui/home_page/home_page_state.dart';
 
 import '../../model/student_model.dart';
+import '../../repo/student.repo.dart';
 
 class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
   HomePageBloc(BuildContext context) : super(HomePageState.initialState) {
@@ -18,9 +21,8 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
     );
   }
 
-  Future<FutureOr<void>> _getAllStudent(
+  Future<void> _getAllStudent(
       GetAllStudent event, Emitter<HomePageState> emit) async {
-    addDummyData();
     emit(
       state.clone(
         allStudents: await _getAllEvent(),
@@ -28,67 +30,36 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
     );
   }
 
-  void addDummyData() {
-    state.allStudents.clear();
-    state.allStudents.add(
-      Student(
-        id: '1',
-        name: 'John Doe',
-        address: '123 Main St',
-        mobileNumber: '0771234567',
-        dob: DateTime(2001, 07, 27),
-        gender: 'Male',
-      ),
-    );
-    state.allStudents.add(
-      Student(
-        id: '2',
-        name: 'Jane Smith',
-        address: '456 Oak Ave',
-        mobileNumber: '0725555678',
-        dob: DateTime(2005, 07, 04),
-        gender: 'Female',
-      ),
-    );
-    state.allStudents.add(
-      Student(
-        id: '3',
-        name: 'Michael Johnson',
-        address: '789 Broadway',
-        mobileNumber: '0755559876',
-        dob: DateTime(2005, 07, 24),
-        gender: 'Male',
-      ),
-    );
-  }
-
   Future<List<Student>> _getAllEvent() async {
-    List<Student> getAll = state.allStudents.toList();
-    return getAll
-        .map(
-          (e) => Student(
-            id: e.id,
-            name: e.name,
-            address: e.address,
-            mobileNumber: e.mobileNumber,
-            dob: e.dob,
-            gender: e.gender,
-          ),
-        )
-        .toList();
+    final response = await StudentService().getAllStudents();
+    if (response.statusCode == 200) {
+      Map<String, dynamic> responseData = jsonDecode(response.body);
+
+      if (responseData.containsKey('data')) {
+        List<dynamic> studentDataList = responseData['data'];
+        return studentDataList
+            .map((studentData) => Student.fromJson(studentData))
+            .toList();
+      } else {
+        Logger().e('Response does not contain "data" key');
+      }
+    } else {
+      Logger().e('Failed to load students: ${response.statusCode}');
+    }
+    return [];
   }
 
   Future<void> _saveStudent(
       SaveStudent event, Emitter<HomePageState> emit) async {
     final student = Student(
-      id: (state.allStudents.length + 1).toString(),
+      id: '',
       name: event.name,
       address: event.address,
       mobileNumber: event.mobileNo,
       dob: event.date,
       gender: event.gender,
     );
-    emit(state.clone(allStudents: [...state.allStudents, student]));
+    StudentService().saveStudent(student);
     emit(state.clone(allStudents: await _getAllEvent()));
   }
 
@@ -96,27 +67,21 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
     UpdateStudent event,
     Emitter<HomePageState> emit,
   ) async {
-    List<Student> updatedStudents = state.allStudents.map((student) {
-      return student.id == event.id
-          ? Student(
-              name: event.name,
-              address: event.address,
-              mobileNumber: event.mobileNo,
-              dob: event.date,
-              gender: event.gender,
-              id: student.id,
-            )
-          : student;
-    }).toList();
-
-    emit(state.clone(allStudents: updatedStudents));
+    final student = Student(
+      id: event.id,
+      name: event.name,
+      address: event.address,
+      mobileNumber: event.mobileNo,
+      dob: event.date,
+      gender: event.gender,
+    );
+    StudentService().updateStudent(student);
+    emit(state.clone(allStudents: await _getAllEvent()));
   }
 
   Future<void> _deleteStudent(
       DeleteStudent event, Emitter<HomePageState> emit) async {
-    final filteredStudents =
-        state.allStudents.where((student) => student.id != event.id).toList();
-
-    emit(state.clone(allStudents: filteredStudents));
+    StudentService().deleteStudent(event.id);
+    emit(state.clone(allStudents: await _getAllEvent()));
   }
 }
