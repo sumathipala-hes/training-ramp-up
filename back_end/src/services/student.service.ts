@@ -19,8 +19,8 @@ const retrieveAllStudents = async (): Promise<Student[]> => {
   try {
     // Retrieve all the students from the database
     const students: Student[] = await dataSource.manager
-    // .getRepository(Student)
-    .find(Student);
+    .getRepository(Student)
+    .find();
   return students;
   } catch (error) {
     // Handle and rethrow the error
@@ -28,4 +28,17 @@ const retrieveAllStudents = async (): Promise<Student[]> => {
   }
 };
 
-export { saveStudent, retrieveAllStudents };
+const updateStudent = async (student: Student): Promise<Student> => {
+  try {
+    // Update the student in the database
+    const updatedStudent: Student = await dataSource.manager
+    .getRepository(Student)
+    .save(student);
+  return updatedStudent;
+  } catch (error) {
+    // Handle and rethrow the error
+    throw error;
+  }
+};
+
+export { saveStudent, retrieveAllStudents, updateStudent };

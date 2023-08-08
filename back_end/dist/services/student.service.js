@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.retrieveAllStudents = exports.saveStudent = void 0;
+exports.updateStudent = exports.retrieveAllStudents = exports.saveStudent = void 0;
 const student_model_1 = require("../models/student.model");
 const db_config_1 = require("../configs/db.config");
 const saveStudent = (student) => __awaiter(void 0, void 0, void 0, function* () {
@@ -30,8 +30,8 @@ const retrieveAllStudents = () => __awaiter(void 0, void 0, void 0, function* ()
     try {
         // Retrieve all the students from the database
         const students = yield db_config_1.dataSource.manager
-            // .getRepository(Student)
-            .find(student_model_1.Student);
+            .getRepository(student_model_1.Student)
+            .find();
         return students;
     }
     catch (error) {
@@ -40,3 +40,17 @@ const retrieveAllStudents = () => __awaiter(void 0, void 0, void 0, function* ()
     }
 });
 exports.retrieveAllStudents = retrieveAllStudents;
+const updateStudent = (student) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        // Update the student in the database
+        const updatedStudent = yield db_config_1.dataSource.manager
+            .getRepository(student_model_1.Student)
+            .save(student);
+        return updatedStudent;
+    }
+    catch (error) {
+        // Handle and rethrow the error
+        throw error;
+    }
+});
+exports.updateStudent = updateStudent;

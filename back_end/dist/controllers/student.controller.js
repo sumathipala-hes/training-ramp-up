@@ -15,7 +15,7 @@ class StudentController {
         this.addStudent = (req, res) => __awaiter(this, void 0, void 0, function* () {
             //create operation
             try {
-                // destructuring assignment
+                // get the student data from the request body
                 const newStudent = req.body;
                 // save the student
                 const student = yield (0, student_service_1.saveStudent)(newStudent);
@@ -52,7 +52,24 @@ class StudentController {
         });
         this.updateStudent = (req, res) => __awaiter(this, void 0, void 0, function* () {
             //update operation
-            return res.status(200).json({ message: 'Student updated successfully' });
+            try {
+                // get the student data from the request body
+                const newStudent = req.body;
+                // update the student
+                const student = yield (0, student_service_1.updateStudent)(newStudent);
+                return res // return the response
+                    .status(200)
+                    .json({ message: 'New student updated.!', responseData: student });
+            }
+            catch (error) {
+                // catch block is used to handle the errors
+                if (error instanceof Error) {
+                    return res.status(500).json({ message: error.message });
+                }
+                else {
+                    return res.status(500).json({ message: 'Unknown error occured.' });
+                }
+            }
         });
         this.deleteStudent = (req, res) => __awaiter(this, void 0, void 0, function* () {
             //delete operation
