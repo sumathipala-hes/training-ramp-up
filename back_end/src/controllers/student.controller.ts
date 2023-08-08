@@ -87,7 +87,6 @@ export default class StudentController {
     res: Response,
   ): Promise<Response> => {
     //delete operation
-    // return res.status(200).json({ message: 'Student deleted successfully' });
     try {
       // get the student id from the request params
       const { id } = req.params;
