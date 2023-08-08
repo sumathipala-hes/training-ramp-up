@@ -6,7 +6,7 @@ import 'package:http/http.dart' as http;
 
 import '../../model/student_model.dart';
 
-class StudentService {
+class StudentRepository {
   final String baseUrl = 'http://192.168.54.142:4000/api/v1';
 
   Future<http.Response> getAllStudents() async {

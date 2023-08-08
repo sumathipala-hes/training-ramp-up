@@ -8,7 +8,7 @@ import 'package:ramp_up/ui/home_page/home_page_event.dart';
 import 'package:ramp_up/ui/home_page/home_page_state.dart';
 
 import '../../model/student_model.dart';
-import '../../repo/student.repo.dart';
+import '../../repository/student.repository.dart';
 
 class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
   HomePageBloc(BuildContext context) : super(HomePageState.initialState) {
@@ -31,7 +31,7 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
   }
 
   Future<List<Student>> _getAllEvent() async {
-    final response = await StudentService().getAllStudents();
+    final response = await StudentRepository().getAllStudents();
     if (response.statusCode == 200) {
       Map<String, dynamic> responseData = jsonDecode(response.body);
 
@@ -59,7 +59,7 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
       dob: event.date,
       gender: event.gender,
     );
-    await StudentService().saveStudent(student);
+    await StudentRepository().saveStudent(student);
     add(GetAllStudent());
   }
 
@@ -75,13 +75,13 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
       dob: event.date,
       gender: event.gender,
     );
-    await StudentService().updateStudent(student);
+    await StudentRepository().updateStudent(student);
     add(GetAllStudent());
   }
 
   Future<void> _deleteStudent(
       DeleteStudent event, Emitter<HomePageState> emit) async {
-    await StudentService().deleteStudent(event.id);
+    await StudentRepository().deleteStudent(event.id);
     add(GetAllStudent());
   }
 }
