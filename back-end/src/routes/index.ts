@@ -1,6 +1,14 @@
 import express from 'express';
-import {initializeApp} from "../controllers/initializeApp"
+import addStudent from '../controllers/addStudent';
+import getStudents from '../controllers/getStudents';
+import updateStudent from '../controllers/updateStudent';
+import deleteStudent from '../controllers/deleteStudent';
 
+//add routers from controllers
 const router = express.Router();
-router.get('/', initializeApp);
+router.post('/add-student',addStudent)
+router.get('/get-students', getStudents);
+router.post('/update-student', updateStudent);
+router.post('/delete-student', deleteStudent)
+
 export default router;
