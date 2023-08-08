@@ -1,8 +1,9 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:frontend/data/dummy_data.dart';
-import 'package:frontend/util/generate_id_util.dart';
+import 'package:frontend/repository/student_repository.dart';
+import 'package:logger/logger.dart';
 import '../../model/student.dart';
 import 'home_page_event.dart';
 import 'home_page_state.dart';
@@ -16,28 +17,26 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
     GetAllStudents();
   }
 
+  final String baseUrl = 'http://192.168.8.105:5000/api/v1';
+
   Future<FutureOr<void>> _saveStudent(
     SaveStudentEvent event,
     Emitter<HomePageState> emit,
   ) async {
     Student student = Student(
-      id: GenerateIdUtil.generateId(
-        state.students[state.students.length - 1].id,
-      ),
+      id: '',
       name: event.name,
       address: event.address,
       mobile: event.mobile,
       dob: event.dob,
       gender: event.gender,
     );
-    emit(
-      state.clone(
-        students: [
-          ...state.students,
-          student,
-        ],
-      ),
-    );
+
+    final response = await StudentRepository().addStudents(student);
+
+    if (response.statusCode == 200) {
+      add(GetAllStudents());
+    } else {}
   }
 
   Future<FutureOr<void>> _updateStudent(
@@ -53,67 +52,47 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
       gender: event.gender,
     );
 
-    List<Student> studentList = state.students;
-    for (var i = 0; i < studentList.length; i++) {
-      if (studentList[i].id == student.id) {
-        studentList[i] = student;
-        break;
-      }
+    final response = await StudentRepository().updateStudents(student);
+
+    if (response.statusCode == 200) {
+      add(GetAllStudents());
+    } else {
+      Logger().e('Something Went Wrong..!');
     }
-    emit(
-      state.clone(
-        students: [
-          ...studentList,
-        ],
-      ),
-    );
   }
 
   Future<FutureOr<void>> _deleteStudent(
     DeleteStudentEvent event,
     Emitter<HomePageState> emit,
   ) async {
-    List<Student> studentList = state.students;
-    for (var i = 0; i < studentList.length; i++) {
-      if (studentList[i].id == event.id) {
-        studentList.removeAt(i);
-        break;
-      }
+    final response = await StudentRepository().deleteStudents(event.id);
+
+    if (response.statusCode == 200) {
+      add(GetAllStudents());
+    } else {
+      Logger().e('Something Went Wrong..!');
     }
-    emit(
-      state.clone(
-        students: [
-          ...studentList,
-        ],
-      ),
-    );
   }
 
   Future<FutureOr<void>> _getAllStudents(
     GetAllStudents event,
     Emitter<HomePageState> emit,
   ) async {
-    List<Student> dummyDataStudents =
-        state.students.isNotEmpty ? [] : dummyData;
-    List<Student> studentList = [
-      ...state.students,
-      ...dummyDataStudents,
-    ];
-    emit(
-      state.clone(
-        students: studentList
-            .map(
-              (student) => Student(
-                id: student.id,
-                name: student.name,
-                address: student.address,
-                mobile: student.mobile,
-                dob: student.dob,
-                gender: student.gender,
-              ),
-            )
-            .toList(),
-      ),
-    );
+    final response = await StudentRepository().fetchStudents();
+
+    if (response.statusCode == 200) {
+      List<dynamic> responseData = jsonDecode(response.body);
+      List<Student> studentList = [
+        ...responseData.map((studentData) => Student.fromJson(studentData)),
+      ];
+
+      emit(
+        state.clone(
+          students: studentList,
+        ),
+      );
+    } else {
+      Logger().e('Something Went Wrong..!');
+    }
   }
 }
