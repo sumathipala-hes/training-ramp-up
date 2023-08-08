@@ -21,7 +21,7 @@ class HomePageView extends StatelessWidget {
         navigateToAnotherUI(context, student);
       },
       child: StudentCard(
-        id: student.id,
+        id: student.id!,
         studentName: student.name,
         studentDOB: student.dob,
       ),
