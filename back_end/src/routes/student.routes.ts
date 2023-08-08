@@ -1,7 +1,7 @@
 import express, { Router } from "express";
 import StudentController from "../controllers/student.controller";
 
-export default class UserRoutes {
+export default class StudentRoutes {
   private router: Router = express.Router();
   private studentController: StudentController = new StudentController();
 
