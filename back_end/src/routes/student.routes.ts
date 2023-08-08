@@ -12,6 +12,9 @@ export default class UserRoutes {
   private configRoutes = (): void => {
      //POST /api/v1/student
      this.router.post("/", this.studentController.addStudent);
+
+     //GET /api/v1/student
+     this.router.get("/", this.studentController.retrieveAllStudents);
   };
 
   public getRouter = (): Router => {
