@@ -15,21 +15,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const typeorm_1 = require("typeorm");
-const student_1 = require("./entities/student");
 dotenv_1.default.config({ path: '../config.env' });
 const app = (0, express_1.default)();
 const main = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        yield (0, typeorm_1.createConnection)({
-            type: 'postgres',
-            host: 'localhost',
-            port: 5432,
-            username: 'postgres',
-            password: 'abdzak@32116',
-            database: 'gridtable',
-            entities: [student_1.Student],
-            synchronize: true,
-        });
+        yield (0, typeorm_1.createConnection)();
         console.log('Connected to postgres');
         //Middleware
         app.use(express_1.default.json());

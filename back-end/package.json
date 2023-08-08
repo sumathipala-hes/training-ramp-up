@@ -6,7 +6,7 @@
   "scripts": {
     "build": "npx tsc",
     "start": "nodemon dist/index.js",
-    "dev": "concurrently \"npx tsc --watch\" \"npx prettier --write dist/index.js\" \"npx eslint --fix dist/index.js\" \"nodemon -q dist/index.js\"",
+    "dev": "concurrently \"npx tsc --watch\"  \"nodemon -q dist/index.js\"",
     "eslint:fix": "eslint --fix"
   },
   "keywords": [],
@@ -14,11 +14,14 @@
   "license": "ISC",
   "dependencies": {
     "dotenv": "^16.3.1",
-    "express": "^4.18.2"
+    "express": "^4.18.2",
+    "pg": "^8.11.2",
+    "typeorm": "^0.3.17"
   },
   "devDependencies": {
     "@types/express": "^4.17.17",
     "@types/node": "^20.4.8",
+    "@types/pg": "^8.10.2",
     "@typescript-eslint/eslint-plugin": "^6.2.1",
     "@typescript-eslint/parser": "^6.2.1",
     "concurrently": "^8.2.0",
@@ -28,7 +31,7 @@
     "eslint-plugin-prettier": "^5.0.0",
     "nodemon": "^3.0.1",
     "prettier": "^3.0.1",
-    "typescript": "^5.1.6"
+    "typescript": "^4.9.4"
   },
   "eslintIgnore": [
     "dist/index.js"
