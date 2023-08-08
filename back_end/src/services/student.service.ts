@@ -1,4 +1,4 @@
-import { InsertResult, UpdateResult } from 'typeorm';
+import { DeleteResult, InsertResult, UpdateResult } from 'typeorm';
 import { Student } from '../models/student.model';
 import { dataSource } from '../configs/db.config';
 
@@ -50,4 +50,19 @@ const updateStudent = async (
   }
 };
 
-export { saveStudent, retrieveAllStudents, updateStudent };
+const deleteStudent = async (id: string): Promise<DeleteResult> => {
+  try {
+    const deletedStudent: DeleteResult = await dataSource.manager
+      .getRepository(Student)
+      .delete(id);
+    if (deletedStudent.affected !== 1) {
+      throw new Error('Student not found.');
+    }
+    return deletedStudent;
+  } catch (error) {
+    // Handle and rethrow the error
+    throw error;
+  }
+};
+
+export { saveStudent, retrieveAllStudents, updateStudent, deleteStudent };

@@ -1,5 +1,6 @@
 import { RequestHandler, Request, Response } from 'express';
 import {
+  deleteStudent,
   retrieveAllStudents,
   saveStudent,
   updateStudent,
@@ -20,7 +21,7 @@ export default class StudentController {
 
       return res // return the response
         .status(200)
-        .json({ message: 'New student added.!', responseData: student });
+        .json({ message: 'New student added successfully.!', responseData: student });
     } catch (error: unknown) {
       // catch block is used to handle the errors
       if (error instanceof Error) {
@@ -68,7 +69,7 @@ export default class StudentController {
       return res // return the response
         .status(200)
         .json({
-          message: 'Student updated.!',
+          message: 'Student updated successfully.!',
           responseData: updatedStudent,
         });
     } catch (error: unknown) {
@@ -86,6 +87,27 @@ export default class StudentController {
     res: Response,
   ): Promise<Response> => {
     //delete operation
-    return res.status(200).json({ message: 'Student deleted successfully' });
+    // return res.status(200).json({ message: 'Student deleted successfully' });
+    try {
+      // get the student id from the request params
+      const { id } = req.params;
+
+      // delete the student
+      const deletedStudent = await deleteStudent(id);
+
+      return res // return the response
+        .status(200)
+        .json({
+          message: 'Student deleted successfully.!',
+          responseData: deletedStudent,
+        });
+    } catch (error: unknown) {
+      // catch block is used to handle the errors
+      if (error instanceof Error) {
+        return res.status(500).json({ message: error.message });
+      } else {
+        return res.status(500).json({ message: 'Unknown error occured.' });
+      }
+    }
   };
 }

@@ -21,7 +21,7 @@ class StudentController {
                 const student = yield (0, student_service_1.saveStudent)(newStudent);
                 return res // return the response
                     .status(200)
-                    .json({ message: 'New student added.!', responseData: student });
+                    .json({ message: 'New student added successfully.!', responseData: student });
             }
             catch (error) {
                 // catch block is used to handle the errors
@@ -59,13 +59,10 @@ class StudentController {
                 const newStudent = req.body;
                 // update the student
                 const updatedStudent = yield (0, student_service_1.updateStudent)(id, newStudent);
-                if (!updatedStudent) {
-                    return res.status(404).json({ message: 'User not found' });
-                }
                 return res // return the response
                     .status(200)
                     .json({
-                    message: 'New student updated.!',
+                    message: 'Student updated successfully.!',
                     responseData: updatedStudent,
                 });
             }
@@ -81,7 +78,28 @@ class StudentController {
         });
         this.deleteStudent = (req, res) => __awaiter(this, void 0, void 0, function* () {
             //delete operation
-            return res.status(200).json({ message: 'Student deleted successfully' });
+            // return res.status(200).json({ message: 'Student deleted successfully' });
+            try {
+                // get the student id from the request params
+                const { id } = req.params;
+                // delete the student
+                const deletedStudent = yield (0, student_service_1.deleteStudent)(id);
+                return res // return the response
+                    .status(200)
+                    .json({
+                    message: 'Student deleted successfully.!',
+                    responseData: deletedStudent,
+                });
+            }
+            catch (error) {
+                // catch block is used to handle the errors
+                if (error instanceof Error) {
+                    return res.status(500).json({ message: error.message });
+                }
+                else {
+                    return res.status(500).json({ message: 'Unknown error occured.' });
+                }
+            }
         });
     }
 }

@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateStudent = exports.retrieveAllStudents = exports.saveStudent = void 0;
+exports.deleteStudent = exports.updateStudent = exports.retrieveAllStudents = exports.saveStudent = void 0;
 const student_model_1 = require("../models/student.model");
 const db_config_1 = require("../configs/db.config");
 const saveStudent = (student) => __awaiter(void 0, void 0, void 0, function* () {
@@ -46,12 +46,13 @@ const updateStudent = (id, student) => __awaiter(void 0, void 0, void 0, functio
         const updatedStudent = yield db_config_1.dataSource.manager
             .getRepository(student_model_1.Student)
             .update(id, student);
-        // if (updatedStudent.affected === 1) {
-        //   // If the student is updated
-        //   updatedStudent.raw = student;
-        // } else {
-        //   throw new Error('Student not found.');
-        // }
+        if (updatedStudent.affected === 1) {
+            // If the student is updated
+            updatedStudent.raw = student;
+        }
+        else {
+            throw new Error('Student not found.');
+        }
         return updatedStudent;
     }
     catch (error) {
@@ -60,3 +61,19 @@ const updateStudent = (id, student) => __awaiter(void 0, void 0, void 0, functio
     }
 });
 exports.updateStudent = updateStudent;
+const deleteStudent = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const deletedStudent = yield db_config_1.dataSource.manager
+            .getRepository(student_model_1.Student)
+            .delete(id);
+        if (deletedStudent.affected !== 1) {
+            throw new Error('Student not found.');
+        }
+        return deletedStudent;
+    }
+    catch (error) {
+        // Handle and rethrow the error
+        throw error;
+    }
+});
+exports.deleteStudent = deleteStudent;
