@@ -32,7 +32,7 @@ class StudentRepository {
     }
   }
 
-    Future<http.Response> deleteStudent(String id) async {
+  Future<http.Response> deleteStudent(String id) async {
     final response = await http.delete(
       Uri.parse('$baseUrl/student/$id'),
     );
@@ -40,6 +40,23 @@ class StudentRepository {
       return response;
     } else {
       throw Exception('Failed to delete student');
+    }
+  }
+
+  Future<http.Response> updateStudent(Student student) async {
+    final response = await http.put(
+      Uri.parse('$baseUrl/student/${student.studentId}'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(
+        student.toJson(),
+      ),
+    );
+    if (response.statusCode == 200) {
+      return response;
+    } else {
+      throw Exception('Failed to update student');
     }
   }
 }

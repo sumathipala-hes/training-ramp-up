@@ -81,9 +81,7 @@ class RampUpHomeScreenBloc extends Bloc<RampUpHomePageEvent, RampUpHomeState> {
 
   Future<void> _onUpdateStudent(
       UpdateStudent event, Emitter<RampUpHomeState> emit) async {
-    state.entries[state.entries
-            .indexWhere((element) => element.studentId == event.studentId)] =
-        Student(
+    final student = Student(
       studentId: event.studentId,
       studentName: event.studentName,
       studentAddress: event.studentAddress,
@@ -91,12 +89,13 @@ class RampUpHomeScreenBloc extends Bloc<RampUpHomePageEvent, RampUpHomeState> {
       studentDob: event.studentDob,
       studentGender: event.studentGender,
     );
-    emit(
-      state.clone(
-        entries: [
-          ...state.entries,
-        ],
-      ),
-    );
+
+    final response = await StudentRepository().updateStudent(student);
+
+    if (response.statusCode == 200) {
+      add(
+        GetAllStudents(),
+      );
+    }
   }
 }
