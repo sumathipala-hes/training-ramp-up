@@ -135,22 +135,39 @@ describe('Student Controller Checked', () => {
     InsertResult: class {
       identifiers = [{ id: 1 }]; // Adjust this based on your insert response
     },
+    getRepository: jest.fn(),
   }));
 
   describe('Create Student', () => {
+    afterEach(() => {
+      jest.clearAllMocks();
+    });
+
     it('creates a new student', async () => {
       const studentData: Student = {
-        id: 1,
         name: 'Akila',
         address: 'Galle',
         mobileNumber: '0761234567',
         dob: new Date('2001-12-15'),
         gender: 'Male',
+        id: 0,
+      };
+
+      const mockInsert = jest.fn(() => new InsertResult());
+      const mockGetRepository = jest.fn(() => ({
+        insert: mockInsert,
+      }));
+
+      require('../configs/datasource.config').appDataSource.manager = {
+        getRepository: mockGetRepository,
       };
 
       const result: InsertResult = await createStudent(studentData);
 
+      expect(result).toBeInstanceOf(InsertResult);
       expect(result.identifiers).toEqual([{ id: 1 }]);
+      expect(mockGetRepository).toHaveBeenCalledWith(Student);
+      expect(mockInsert).toHaveBeenCalledWith(studentData);
     });
 
     it('throws an error if creation fails', async () => {
@@ -165,21 +182,20 @@ describe('Student Controller Checked', () => {
 
       const errorMessage = 'Insert failed';
       const mockInsert = jest.fn(() => Promise.reject(new Error(errorMessage)));
-
-      jest.mock('../configs/datasource.config', () => ({
-        appDataSource: {
-          manager: {
-            getRepository: jest.fn(() => ({
-              insert: mockInsert,
-            })),
-          },
-        },
+      const mockGetRepository = jest.fn(() => ({
+        insert: mockInsert,
       }));
+
+      require('../configs/datasource.config').appDataSource.manager = {
+        getRepository: mockGetRepository,
+      };
 
       try {
         await createStudent(studentData);
       } catch (error) {
         // expect(error.message).toBe(errorMessage);
+        expect(mockGetRepository).toHaveBeenCalledWith(Student);
+        expect(mockInsert).toHaveBeenCalledWith(studentData);
       }
     });
   });
