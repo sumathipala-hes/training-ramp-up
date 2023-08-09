@@ -1,13 +1,13 @@
 import 'dart:convert';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
 
 Future<void> sendNotification(String title, String body) async {
-  // String serverKey = dotenv.env['API_SERVER_KEY']?.toString() ?? '';
-  const String serverKey =
-      'AAAAC_y7llo:APA91bF6Hm1wJpcGz85Cjpd09TLWkorbY4WDBaQF61b4b1uj74A8AXQbzIk8Vg5CBzb1sKXZGejj08WkAOjokXWCwAdHUr6R_vzBztTK4kUXY5ieQAw-9ljYSBL75o19MXR-OjDwbu4R';
+  await dotenv.load();
 
+  String serverKey = dotenv.env['API_SERVER_KEY']?.toString() ?? '';
   const String fcmEndpoint = 'https://fcm.googleapis.com/fcm/send';
 
   final token = await FirebaseMessaging.instance.getToken();
