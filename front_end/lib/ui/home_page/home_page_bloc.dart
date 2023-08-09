@@ -23,7 +23,7 @@ class RampUpHomeScreenBloc extends Bloc<RampUpHomePageEvent, RampUpHomeState> {
   Future<void> _onSaveButtonPressed(
       SaveButtonPressed event, Emitter<RampUpHomeState> emit) async {
     final student = Student(
-      studentId: (state.entries.length + 1).toString(),
+      studentId: '',
       studentName: event.studentName,
       studentAddress: event.studentAddress,
       studentMobile: event.studentMobile,
@@ -31,26 +31,18 @@ class RampUpHomeScreenBloc extends Bloc<RampUpHomePageEvent, RampUpHomeState> {
       studentGender: event.studentGender,
     );
 
-    emit(
-      state.clone(
-        entries: [
-          ...state.entries,
-          student,
-        ],
-      ),
-    );
-    emit(
-      state.clone(
-        entries: [
-          ...state.entries,
-        ],
-      ),
-    );
+    final response = await StudentRepository().createStudent(student);
+
+    if (response.statusCode == 200) {
+      add(
+        GetAllStudents(),
+      );
+    }
   }
 
   Future<void> _onGetAllStudents(
       GetAllStudents event, Emitter<RampUpHomeState> emit) async {
-     final response = await StudentRepository().getAllStudents();
+    final response = await StudentRepository().getAllStudents();
 
     if (response.statusCode == 200) {
       try {
