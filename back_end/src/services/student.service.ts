@@ -20,23 +20,13 @@ const retrieveAllStudents = async (): Promise<Student[]> => {
     // Retrieve all the students from the database
     const students: Student[] = await dataSource.manager
       .getRepository(Student)
-      .find();
+      .find({ order: { studentId: 'DESC' } });
     return students;
   } catch (error) {
     // Handle and rethrow the error
     throw error;
   }
 };
-// const retrieveAllStudents = async (): Promise<Array<Student>> => {
-//   try {
-//     const students: Array<Student> = await dataSource.manager
-//       .getRepository(Student)
-//       .find({ order: { studentId: 'DESC' } });
-//     return students;
-//   } catch (error) {
-//     throw error;
-//   }
-// };
 
 const updateStudent = async (
   id: string,
