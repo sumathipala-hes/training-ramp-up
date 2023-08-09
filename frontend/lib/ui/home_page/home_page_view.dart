@@ -93,23 +93,17 @@ class HomePageView extends StatelessWidget {
                 final List<Student> studentList = state.students;
                 return SizedBox(
                   height: MediaQuery.of(context).size.height * 0.58,
-                  child: SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        ListView.builder(
-                          shrinkWrap: true,
-                          itemCount: studentList.length,
-                          itemBuilder: (
-                            context,
-                            index,
-                          ) {
-                            return StudentCard(
-                              student: studentList[index],
-                            );
-                          },
-                        ),
-                      ],
-                    ),
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: studentList.length,
+                    itemBuilder: (
+                      context,
+                      index,
+                    ) {
+                      return StudentCard(
+                        student: studentList[index],
+                      );
+                    },
                   ),
                 );
               },
