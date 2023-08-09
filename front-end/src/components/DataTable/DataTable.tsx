@@ -18,7 +18,11 @@ import {
   GridRowModel,
   GridRowEditStopReasons,
   GridPreProcessEditCellProps,
+  GridRenderCellParams,
+  GridValueGetterParams,
+  GridEditDateCell,
 } from "@mui/x-data-grid";
+import { minDate, maxDate } from "../../util/dateRange";
 import generateRandomId from "../../util/generateRandomId";
 import { initialRows } from "../../util/Data";
 import { useDispatch } from "react-redux";
@@ -40,7 +44,19 @@ function EditToolbar(props: EditToolbarProps) {
   // handleClick function will be called when user click on add new button and it will create empty row
   const handleClick = () => {
     const id = generateRandomId();
-    setRows((oldRows) => [{ id, name: "", age: "",dof:new Date(),gender: '',address: '',mobile: '', isNew: true }, ...oldRows]);
+    setRows((oldRows) => [
+      {
+        id,
+        name: "",
+        age: "",
+        dof: new Date(),
+        gender: "",
+        address: "",
+        mobile: "",
+        isNew: true,
+      },
+      ...oldRows,
+    ]);
     setRowModesModel((oldModel) => ({
       ...oldModel,
       [id]: { mode: GridRowModes.Edit, fieldToFocus: "name" },
@@ -55,9 +71,7 @@ function EditToolbar(props: EditToolbarProps) {
         variant="contained"
         startIcon={<AddIcon />}
         onClick={handleClick}
-        // role="add-new1"
         data-testid="add-new1"
-        
       >
         Add new
       </Button>
@@ -104,7 +118,6 @@ function DataTable() {
   // handleSaveClick function will be called when user click on save button and it will change the mode to view mode
   const handleSaveClick = (id: GridRowId) => () => {
     setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
-
   };
 
   // handleDeleteClick function will be called when user click on delete button and it will delete the row
@@ -161,7 +174,8 @@ function DataTable() {
       headerName: "Gender",
       width: 220,
       editable: true,
-      type: "string",
+      type: "singleSelect",
+      valueOptions: ["Male", "Female", "Other"],
     },
     {
       field: "address",
@@ -182,20 +196,42 @@ function DataTable() {
         const value = params.props.value?.trim();
         const hasError =
           value !== undefined && value !== "" && !/^\d{10}$/.test(value);
-        return { ...params.props, error: hasError };
+        return {
+          ...params.props,
+          error: hasError,
+        };
       },
     },
     {
       field: "dof",
       headerName: "Date of Birth",
       type: "date",
-      width: 220,
+      width: 180,
       editable: true,
-      preProcessEditCellProps: (params: GridPreProcessEditCellProps) => {
-        const hasError = new Date(params.props.value).getFullYear() > 2005;
-        return { ...params.props, error: hasError };
+      renderEditCell: (params: GridRenderCellParams) => {
+        const isInEditMode =
+          rowModesModel[params.id]?.mode === GridRowModes.Edit;
+
+        return isInEditMode ? (
+          // Custom cell renderer for the date column in edit mode
+          <GridEditDateCell
+            {...params}
+            inputProps={{ max: maxDate(), min: minDate() }}
+          />
+        ) : (
+          // Default cell renderer for the date column in view mode
+          <div>{(params.value as Date).toLocaleDateString()}</div>
+        );
+      },
+      valueGetter: (params: GridValueGetterParams) => {
+        // Get the raw value of dateOfBirth
+        const rawDateOfBirth = params.value as Date;
+        // Convert the rawDateOfBirth into a Date object
+        const dateOfBirth = new Date(rawDateOfBirth);
+        return dateOfBirth;
       },
     },
+
     {
       field: "age",
       headerName: "Age",
@@ -203,12 +239,27 @@ function DataTable() {
       width: 80,
       align: "left",
       headerAlign: "left",
-      editable: true,
-      preProcessEditCellProps: (params: GridPreProcessEditCellProps) => {
-        const hasError = params.props.value < 18;
-        return { ...params.props, error: hasError };
-      },
+      editable: false,
+      valueGetter: (params: GridValueGetterParams) => {
+        const dateOfBirthField = "dof";
 
+        // Access the "Date of Birth" value from the row object
+        const rawDateOfBirth = params.row[dateOfBirthField];
+
+        if (rawDateOfBirth) {
+          const dateOfBirth = new Date(rawDateOfBirth);
+
+          if (!isNaN(dateOfBirth.getTime())) {
+            // Calculate the age based on the date of birth
+            const currentDate = new Date();
+            const age = currentDate.getFullYear() - dateOfBirth.getFullYear();
+            return age;
+          }
+        }
+
+        // If the value is not a valid date or not set, return an empty value or a placeholder
+        return "-";
+      },
     },
 
     {
@@ -258,8 +309,7 @@ function DataTable() {
             startIcon={<DeleteIcon />}
             onClick={handleDeleteClick(id)}
             data-testid={`delete-button-${id}`}
-            // data-testid='delete-button-123'
-            
+          // data-testid='delete-button-123'
           >
             Delete
           </Button>,
@@ -282,13 +332,11 @@ function DataTable() {
         },
       }}
       role="row12"
-    
     >
       <DataGrid
-        
         rows={rows}
         columns={columns}
-        editMode='row'
+        editMode="row"
         rowModesModel={rowModesModel}
         onRowModesModelChange={handleRowModesModelChange}
         onRowEditStop={handleRowEditStop}
@@ -299,7 +347,6 @@ function DataTable() {
         slotProps={{
           toolbar: { setRows, setRowModesModel },
         }}
-        
       />
     </Box>
   );
