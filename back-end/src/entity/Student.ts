@@ -2,17 +2,26 @@ import { Entity, PrimaryGeneratedColumn, Column } from "typeorm"
 
 @Entity()
 export class Student {
-
     @PrimaryGeneratedColumn()
-    id: number
+    id: number;
 
     @Column()
-    firstName: string
+    name: string;
 
     @Column()
-    lastName: string
+    age: number;
 
     @Column()
-    age: number
+    dof: string;
+
+    @Column()
+    gender: string;
+
+    @Column()
+    address: string;
+
+    @Column()
+    mobile: string;
+
 
 }
