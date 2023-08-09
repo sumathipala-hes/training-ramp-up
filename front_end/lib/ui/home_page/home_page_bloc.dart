@@ -1,8 +1,10 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:front_end/models/student.dart';
+import 'package:front_end/repository/student_repository.dart';
 import 'package:front_end/ui/home_page/home_page_event.dart';
 import 'package:front_end/ui/home_page/home_page_state.dart';
 
@@ -48,13 +50,28 @@ class RampUpHomeScreenBloc extends Bloc<RampUpHomePageEvent, RampUpHomeState> {
 
   Future<void> _onGetAllStudents(
       GetAllStudents event, Emitter<RampUpHomeState> emit) async {
-    emit(
-      state.clone(
-        entries: [
-          ...state.entries,
-        ],
-      ),
-    );
+     final response = await StudentRepository().getAllStudents();
+
+    if (response.statusCode == 200) {
+      try {
+        Map<String, dynamic> jsonData = jsonDecode(response.body);
+        final List<dynamic> studentDataList = jsonData['data'];
+        final List<Student> students = studentDataList
+            .map(
+              (data) => Student.fromJson(data),
+            )
+            .toList();
+        emit(
+          state.clone(
+            entries: students,
+          ),
+        );
+      } catch (e) {
+        throw Exception('Failed to decode students');
+      }
+    } else {
+      throw Exception('Failed to load students');
+    }
   }
 
   Future<void> _onDeleteStudent(
