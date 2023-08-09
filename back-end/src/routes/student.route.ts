@@ -1,10 +1,10 @@
 import { Router } from 'express';
 import {
   createStudent,
-  deleteUser,
+  deleteStudent,
   getStudents,
   updateStudent,
-} from '../controllers/student.controllers';
+} from '../controllers/student.controller';
 
 const router = Router();
 
@@ -14,6 +14,6 @@ router.get('/students', getStudents);
 
 router.put('/students/:id', updateStudent);
 
-router.delete('/students/:id', deleteUser);
+router.delete('/students/:id', deleteStudent);
 
 export default router;
