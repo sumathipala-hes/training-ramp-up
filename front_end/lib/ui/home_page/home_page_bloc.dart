@@ -68,13 +68,15 @@ class RampUpHomeScreenBloc extends Bloc<RampUpHomePageEvent, RampUpHomeState> {
 
   Future<void> _onDeleteStudent(
       DeleteStudent event, Emitter<RampUpHomeState> emit) async {
-    emit(
-      state.clone(
-        entries: [
-          ...state.entries.where((element) => element.studentId != event.id),
-        ],
-      ),
-    );
+    final response = await StudentRepository().deleteStudent(event.id);
+
+    if (response.statusCode == 200) {
+      add(
+        GetAllStudents(),
+      );
+    } else {
+      throw Exception('Failed to delete student');
+    }
   }
 
   Future<void> _onUpdateStudent(

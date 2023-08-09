@@ -31,4 +31,15 @@ class StudentRepository {
       throw Exception('Failed to create student.');
     }
   }
+
+    Future<http.Response> deleteStudent(String id) async {
+    final response = await http.delete(
+      Uri.parse('$baseUrl/student/$id'),
+    );
+    if (response.statusCode == 200) {
+      return response;
+    } else {
+      throw Exception('Failed to delete student');
+    }
+  }
 }
