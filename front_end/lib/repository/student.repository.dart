@@ -7,7 +7,7 @@ import 'package:http/http.dart' as http;
 import '../../model/student_model.dart';
 
 class StudentRepository {
-  final String baseUrl = 'http://192.168.214.143:4000/api/v1';
+  final String baseUrl = 'http://192.168.200.142:4000/api/v1';
 
   Future<http.Response> getAllStudents() async {
     final response = await http.get(
