@@ -312,7 +312,7 @@ class StudentMangeView extends StatelessWidget {
                                       'Invalid Mobile No.');
                                 } else {
                                   homePageBloc.add(UpdateStudent(
-                                    id: student.id,
+                                    id: student.id!,
                                     name: nameController.text.trim(),
                                     address: addressController.text.trim(),
                                     mobileNo: mobileNoController.text.trim(),
@@ -342,7 +342,7 @@ class StudentMangeView extends StatelessWidget {
                                     .then((confirmed) {
                                   if (confirmed != null && confirmed) {
                                     homePageBloc.add(
-                                      DeleteStudent(id: student.id),
+                                      DeleteStudent(id: student.id!),
                                     );
                                     AlertTextField.showSaveAlert(
                                         'Student Deleted Successfully.');

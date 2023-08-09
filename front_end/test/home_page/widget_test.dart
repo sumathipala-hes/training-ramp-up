@@ -31,14 +31,14 @@ void main() {
     await tester.pumpWidget(
       MaterialApp(
         home: StudentCard(
-          id: student.id,
+          id: student.id!,
           studentName: student.name,
           studentDOB: student.dob,
         ),
       ),
     );
 
-    expect(find.text(student.id), findsOneWidget);
+    expect(find.text(student.id!), findsOneWidget);
     expect(find.text(student.name), findsOneWidget);
     expect(
       find.text(DateFormat('EEE MMM d yyyy').format(student.dob)),
