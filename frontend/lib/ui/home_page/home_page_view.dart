@@ -5,7 +5,6 @@ import 'package:frontend/ui/home_page/home_page_bloc.dart';
 import 'package:frontend/ui/home_page/home_page_state.dart';
 import 'package:frontend/ui/widget/student_form.dart';
 import '../widget/student_card.dart';
-import 'home_page_event.dart';
 
 class HomePageView extends StatelessWidget {
   const HomePageView({
@@ -14,8 +13,6 @@ class HomePageView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    HomePageBloc homePageBloc = BlocProvider.of<HomePageBloc>(context);
-    homePageBloc.add(GetAllStudents());
     return Scaffold(
       appBar: AppBar(
         title: const Text('Ramp Up'),

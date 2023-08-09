@@ -1,8 +1,10 @@
 import 'dart:async';
 import 'dart:convert';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:frontend/model/notification_data.dart';
 import 'package:frontend/repository/student_repository.dart';
+import 'package:frontend/util/notification_util.dart';
 import 'package:logger/logger.dart';
 import '../../model/student.dart';
 import 'home_page_event.dart';
@@ -14,7 +16,8 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
     on<GetAllStudents>(_getAllStudents);
     on<UpdateStudentEvent>(_updateStudent);
     on<DeleteStudentEvent>(_deleteStudent);
-    GetAllStudents();
+    add(GetAllStudents());
+    configListener();
   }
 
   final String baseUrl = 'http://192.168.8.105:5000/api/v1';
@@ -36,6 +39,12 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
 
     if (response.statusCode == 200) {
       add(GetAllStudents());
+      sendNotification(
+        NotificationData(
+          title: "Successful",
+          body: 'Student Saved..!',
+        ),
+      );
     } else {}
   }
 
@@ -56,6 +65,12 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
 
     if (response.statusCode == 200) {
       add(GetAllStudents());
+      sendNotification(
+        NotificationData(
+          title: "Successful",
+          body: 'Student Updated..!',
+        ),
+      );
     } else {
       Logger().e('Something Went Wrong..!');
     }
@@ -69,6 +84,12 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
 
     if (response.statusCode == 200) {
       add(GetAllStudents());
+      sendNotification(
+        NotificationData(
+          title: "Successful",
+          body: 'Student Deleted..!',
+        ),
+      );
     } else {
       Logger().e('Something Went Wrong..!');
     }
