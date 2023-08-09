@@ -1,6 +1,6 @@
 import { DeleteResult, InsertResult, UpdateResult } from 'typeorm';
 import { appDataSource } from '../configs/datasource.config';
-import { Student } from '../models/student.models';
+import { Student } from '../entities/student.entities';
 
 export const getAllStudents = async (): Promise<Array<Student>> => {
   try {

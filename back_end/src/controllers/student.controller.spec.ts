@@ -1,6 +1,5 @@
 import { appDataSource } from '../configs/datasource.config';
 import { Student } from '../models/student.models';
-
 import {
   createStudent,
   getAllStudents,

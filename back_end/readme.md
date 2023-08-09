@@ -8,3 +8,4 @@ npm run lint-fix
 # Format your code with Prettier
 npm run format
 ```
+npm install --save-dev jest @types/jest ts-jest

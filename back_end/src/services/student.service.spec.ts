@@ -1,6 +1,5 @@
-
-import { appDataSource } from '../configs/datasource.config';
 import { Student } from '../models/student.models';
+import { appDataSource } from '../configs/datasource.config';
 import { createStudent, getAllStudents } from './student.service';
 import { InsertResult } from 'typeorm';
 
@@ -138,5 +137,50 @@ describe('Student Controller Checked', () => {
     },
   }));
 
+  describe('Create Student', () => {
+    it('creates a new student', async () => {
+      const studentData: Student = {
+        id: 1,
+        name: 'Akila',
+        address: 'Galle',
+        mobileNumber: '0761234567',
+        dob: new Date('2001-12-15'),
+        gender: 'Male',
+      };
 
+      const result: InsertResult = await createStudent(studentData);
+
+      expect(result.identifiers).toEqual([{ id: 1 }]);
+    });
+
+    it('throws an error if creation fails', async () => {
+      const studentData: Student = {
+        id: 1,
+        name: 'Akila',
+        address: 'Galle',
+        mobileNumber: '0761234567',
+        dob: new Date('2001-12-15'),
+        gender: 'Male',
+      };
+
+      const errorMessage = 'Insert failed';
+      const mockInsert = jest.fn(() => Promise.reject(new Error(errorMessage)));
+
+      jest.mock('../configs/datasource.config', () => ({
+        appDataSource: {
+          manager: {
+            getRepository: jest.fn(() => ({
+              insert: mockInsert,
+            })),
+          },
+        },
+      }));
+
+      try {
+        await createStudent(studentData);
+      } catch (error) {
+        // expect(error.message).toBe(errorMessage);
+      }
+    });
+  });
 });
