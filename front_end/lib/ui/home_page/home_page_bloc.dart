@@ -1,14 +1,18 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+
 import 'package:logger/logger.dart';
-import 'package:ramp_up/ui/home_page/home_page_event.dart';
-import 'package:ramp_up/ui/home_page/home_page_state.dart';
 
 import '../../model/student_model.dart';
 import '../../repository/student.repository.dart';
+import '../../util/notification.util.dart';
+import 'home_page_event.dart';
+import 'home_page_state.dart';
 
 class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
   HomePageBloc(BuildContext context) : super(HomePageState.initialState) {
@@ -19,34 +23,62 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
     add(
       GetAllStudent(),
     );
+
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      Logger().d('Got a message whilst in the foreground!');
+
+      Logger().d('Message data: ${message.data}');
+
+      if (message.notification != null) {
+        Logger().d(
+            'Message also contained a notification: ${message.notification?.title}');
+
+        Logger().d(
+            'Message also contained a notification: ${message.notification?.body}');
+
+        Fluttertoast.showToast(
+          msg: message.notification?.body ?? "",
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.BOTTOM,
+          backgroundColor: Colors.green,
+          textColor: Colors.white,
+          timeInSecForIosWeb: 1,
+          fontSize: 16.0,
+        );
+      }
+    });
   }
 
   Future<void> _getAllStudent(
       GetAllStudent event, Emitter<HomePageState> emit) async {
-    emit(
-      state.clone(
-        allStudents: await _getAllEvent(),
-      ),
-    );
-  }
+    try {
+      final response = await StudentRepository().getAllStudents();
 
-  Future<List<Student>> _getAllEvent() async {
-    final response = await StudentRepository().getAllStudents();
-    if (response.statusCode == 200) {
-      Map<String, dynamic> responseData = jsonDecode(response.body);
+      if (response.statusCode == 200) {
+        Map<String, dynamic> responseData = jsonDecode(response.body);
 
-      if (responseData.containsKey('data')) {
-        List<dynamic> studentDataList = responseData['data'];
-        return studentDataList
-            .map((studentData) => Student.fromJson(studentData))
-            .toList();
+        if (responseData.containsKey('data')) {
+          List<dynamic> studentDataList = responseData['data'];
+
+          List<Student> studentList = [
+            ...studentDataList
+                .map((studentData) => Student.fromJson(studentData)),
+          ];
+
+          emit(
+            state.clone(
+              allStudents: studentList,
+            ),
+          );
+        } else {
+          Logger().e('Response does not contain "data" key');
+        }
       } else {
-        Logger().e('Response does not contain "data" key');
+        Logger().e('Failed to load students: ${response.statusCode}');
       }
-    } else {
-      Logger().e('Failed to load students: ${response.statusCode}');
+    } catch (e) {
+      Logger().e('Error fetching students: $e');
     }
-    return [];
   }
 
   Future<void> _saveStudent(
@@ -61,6 +93,7 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
     );
     await StudentRepository().saveStudent(student);
     add(GetAllStudent());
+    sendNotification("Student", "New Student Added.");
   }
 
   Future<void> _updateStudent(
@@ -77,11 +110,13 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
     );
     await StudentRepository().updateStudent(student);
     add(GetAllStudent());
+    sendNotification("Student.", "Update Student.");
   }
 
   Future<void> _deleteStudent(
       DeleteStudent event, Emitter<HomePageState> emit) async {
     await StudentRepository().deleteStudent(event.id);
     add(GetAllStudent());
+    sendNotification("Student", "Delete Student.");
   }
 }

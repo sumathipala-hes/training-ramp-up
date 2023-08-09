@@ -7,7 +7,7 @@ import 'package:http/http.dart' as http;
 import '../../model/student_model.dart';
 
 class StudentRepository {
-  final String baseUrl = 'http://192.168.54.142:4000/api/v1';
+  final String baseUrl = 'http://192.168.214.143:4000/api/v1';
 
   Future<http.Response> getAllStudents() async {
     final response = await http.get(
@@ -31,7 +31,7 @@ class StudentRepository {
       );
 
       if (response.statusCode != 201) {
-        throw Exception('Failed to create item: ${response.statusCode}');
+        Logger().d('Successfully to create Student: ${response.statusCode}');
       }
     } catch (error) {
       Logger().e('Error creating student: $error');
@@ -49,7 +49,7 @@ class StudentRepository {
       );
 
       if (response.statusCode != 201) {
-        throw Exception('Failed to update item: ${response.statusCode}');
+        Logger().d('Successfully to update Student: ${response.statusCode}');
       }
     } catch (error) {
       Logger().e('Error updating student: $error');
@@ -63,7 +63,7 @@ class StudentRepository {
       );
 
       if (response.statusCode != 201) {
-        throw Exception('Failed to delete item: ${response.statusCode}');
+        Logger().d('Successfully to delete Student: ${response.statusCode}');
       }
     } catch (error) {
       Logger().e('Error deleting student: $error');

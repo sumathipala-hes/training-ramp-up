@@ -1,4 +1,4 @@
-name: ramp_up
+name: front_end
 description: A new Flutter project.
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
@@ -41,6 +41,9 @@ dependencies:
   fluttertoast: ^8.2.2
   http: ^1.1.0
   logger: ^2.0.1
+  firebase_core: ^2.15.0
+  firebase_messaging: ^14.6.5
+  overlay_support: ^2.1.0
 
 dev_dependencies:
   flutter_test:

@@ -6,11 +6,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
-import 'package:ramp_up/ui/home_page/home_page_bloc.dart';
 
 import '../../model/student_model.dart';
 import '../../theme/primary_theme.dart';
 import '../../util/alert.dart';
+import '../home_page/home_page_bloc.dart';
 import '../home_page/home_page_event.dart';
 import 'manage_student_page_bloc.dart';
 import 'manage_student_page_event.dart';
@@ -321,8 +321,7 @@ class StudentMangeView extends StatelessWidget {
                                         studentManageBloc.state.selectedGender,
                                   ));
                                   clear();
-                                  AlertTextField.showSaveAlert(
-                                      'Student Updated Successfully.');
+
                                   Navigator.of(context).pop();
                                 }
                               },
@@ -344,8 +343,6 @@ class StudentMangeView extends StatelessWidget {
                                     homePageBloc.add(
                                       DeleteStudent(id: student.id!),
                                     );
-                                    AlertTextField.showSaveAlert(
-                                        'Student Deleted Successfully.');
                                     Navigator.of(context).pop();
                                   }
                                 });

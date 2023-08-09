@@ -1,19 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:ramp_up/theme/primary_theme.dart';
+
+import '../theme/primary_theme.dart';
 
 class AlertTextField {
-  static void showSaveAlert(String message) {
-    Fluttertoast.showToast(
-        msg: message,
-        toastLength: Toast.LENGTH_LONG,
-        gravity: ToastGravity.BOTTOM,
-        backgroundColor: Colors.green,
-        textColor: Colors.white,
-        timeInSecForIosWeb: 1,
-        fontSize: 16.0);
-  }
-
   static void showFieldError(String message) {
     Fluttertoast.showToast(
         msg: message,
