@@ -41,7 +41,7 @@ export default class StudentController {
       // retrieve all the students
       let students = await retrieveAllStudents();
 
-      return res.status(200).json({ responseData: students });
+      return res.json({ data: students });
     } catch (error: unknown) {
       // catch block is used to handle the errors
       if (error instanceof Error) {
