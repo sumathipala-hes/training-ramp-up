@@ -4,7 +4,7 @@ import { Student } from '../services/student';
 import AppDataSource from "../services/dataSoure"
 
 //delete student record
-const updateStudent = (async (req: Request, res: Response) => {
+const deleteStudent = (async (req: Request, res: Response) => {
     try {
         const id = req.body.id;
         const studentRepository = AppDataSource.getRepository(Student)
@@ -35,4 +35,4 @@ const updateStudent = (async (req: Request, res: Response) => {
     }
 });
 
-export default updateStudent;
+export default deleteStudent;

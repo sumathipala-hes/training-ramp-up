@@ -2,10 +2,17 @@ import express from 'express';
 import "reflect-metadata";
 import AppDataSource from './services/dataSoure';
 import router from "./routes";
+import cors from 'cors';
+import dotenv from 'dotenv'
+dotenv.config();
 
 const app = express();
-const port = 3000;
+const port = 4000;
 
+//provide access to frontend application
+app.use(cors({
+  origin: process.env.ORIGIN, // Replace with the actual origin of your frontend
+}));
 app.use(express.json());
 
 //set routers

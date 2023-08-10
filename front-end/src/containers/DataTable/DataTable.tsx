@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {  useEffect, useState } from "react";
 import { Container, Button } from "@mui/material";
 import { DataGrid, GridColDef, GridRowModes, GridRowModesModel,  GridRenderEditCellParams, GridEditDateCell,} from "@mui/x-data-grid";
 import { useSelector,useDispatch } from 'react-redux';
@@ -22,6 +22,10 @@ function handleEditCell(params: GridRenderEditCellParams){
 
 function DataTable(props: { isTesting: any; }) {
   const dispatch = useDispatch();
+
+  useEffect(() =>{
+    dispatch(tableActions.fetchStudents());
+  },[]);
 
   //initialize rows and id
   const rows = useSelector((state: {table: any; rows:rowData[]} ) => state.table.rows);
@@ -224,9 +228,14 @@ function DataTable(props: { isTesting: any; }) {
       address: newRow.address,
       mobile: newRow.mobile,
       birthday: `${year}-${month}-${day}`,
-      age: newRow.age,
+      age: 1,
     };
-    dispatch(tableActions.updateRow(newRows));
+    if(oldRow.name ===  '' && oldRow.mobile ===  '' && isNaN(oldRow.birthday) && oldRow.age === 0){
+      dispatch(tableActions.dbAddStudent(newRows));
+    }else{
+      dispatch(tableActions.dbUpdateStudent(newRows));
+    }
+    dispatch(tableActions.updateStudent(newRows));
     setDisabled(true);
     setAddDisabeld(false);
     return newRow;
