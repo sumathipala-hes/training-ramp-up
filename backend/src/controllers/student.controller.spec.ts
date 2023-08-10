@@ -7,7 +7,6 @@ describe('Student Controller Test', () => {
   const studentRepo = dataSource.manager;
 
   describe('Get All Students', () => {
-
     const allStudents = [
       {
         id: 2,
@@ -32,7 +31,6 @@ describe('Student Controller Test', () => {
       studentRepo.find = jest
         .fn()
         .mockResolvedValue(allStudents);
-
       const data = await getAllStudents();
       expect(data).toEqual(allStudents);
     });
@@ -42,16 +40,12 @@ describe('Student Controller Test', () => {
       studentRepo.find = jest
         .fn()
         .mockRejectedValue(new Error('Error'));
-
       await expect(getAllStudents()).rejects.toThrowError('Error');
     });
 
   });
 
-
-
   describe('Save Student', () => {
-
     const newStudent = {
       id: 1,
       name: 'Dasun',
@@ -65,7 +59,6 @@ describe('Student Controller Test', () => {
       studentRepo.insert = jest
         .fn()
         .mockResolvedValue(newStudent);
-
       const data = await saveStudent(newStudent);
       expect(data).toEqual(newStudent);
     });
@@ -74,13 +67,11 @@ describe('Student Controller Test', () => {
       studentRepo.insert = jest
         .fn()
         .mockRejectedValue(new Error('Error'));
-
       await expect(saveStudent(newStudent)).rejects.toThrowError('Error');
     });
   });
 
   describe('Update Student', () => {
-
     const student: Student = {
       id: 1,
       name: 'Dasun',
@@ -109,14 +100,12 @@ describe('Student Controller Test', () => {
 
 
   describe('Delete Student', () => {
-
     const id = '1';
 
     test('Delete Student Success', async () => {
       studentRepo.delete = jest
         .fn()
         .mockResolvedValue(id);
-
       const data = await deleteStudent(id);
       expect(data).toEqual(id);
     });
