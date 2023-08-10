@@ -16,7 +16,6 @@ class StudentRepository {
         'Content-Type': 'application/json',
       },
     );
-
     return response;
   }
 
