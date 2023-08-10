@@ -3,7 +3,6 @@ import { Student } from "../models/student.model";
 import { deleteStudent, getAllStudents, saveStudent, updateStudent } from "../services/student.service";
 
 describe('Student Controller Test', () => {
-
   const studentRepo = dataSource.manager;
 
   describe('Get All Students', () => {
@@ -27,7 +26,6 @@ describe('Student Controller Test', () => {
     ];
 
     test('Get All Students Success', async () => {
-
       studentRepo.find = jest
         .fn()
         .mockResolvedValue(allStudents);
@@ -36,7 +34,6 @@ describe('Student Controller Test', () => {
     });
 
     test('Get All Students Fail', async () => {
-
       studentRepo.find = jest
         .fn()
         .mockRejectedValue(new Error('Error'));
@@ -96,8 +93,6 @@ describe('Student Controller Test', () => {
       await expect(updateStudent('1', student)).rejects.toThrowError('Error');
     });
   });
-
-
 
   describe('Delete Student', () => {
     const id = '1';
