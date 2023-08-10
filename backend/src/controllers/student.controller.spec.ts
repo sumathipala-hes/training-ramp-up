@@ -2,15 +2,15 @@ import { dataSource } from "../configs/dataSourceConfig";
 import { Student } from "../models/student.model";
 import { deleteStudent, getAllStudents, saveStudent, updateStudent } from "../services/student.service";
 
-describe('Student Controller Checked', () => {
+describe('Student Controller Test', () => {
 
   const studentRepo = dataSource.manager;
 
-  describe('Get All students', () => {
+  describe('Get All Students', () => {
 
     const allStudents = [
       {
-        id: '1',
+        id: 2,
         name: 'Dasun',
         address: 'Galle',
         mobile: '0746578012',
@@ -18,7 +18,7 @@ describe('Student Controller Checked', () => {
         gender: 'Male',
       },
       {
-        id: '2',
+        id: 1,
         name: 'Dasun',
         address: 'Galle',
         mobile: '0746578012',
@@ -27,7 +27,7 @@ describe('Student Controller Checked', () => {
       },
     ];
 
-    test('Get All students success', async () => {
+    test('Get All Students Success', async () => {
 
       studentRepo.find = jest
         .fn()
@@ -37,7 +37,7 @@ describe('Student Controller Checked', () => {
       expect(data).toEqual(allStudents);
     });
 
-    test('Get All students fail', async () => {
+    test('Get All Students Fail', async () => {
 
       studentRepo.find = jest
         .fn()
@@ -50,7 +50,7 @@ describe('Student Controller Checked', () => {
 
 
 
-  describe('Create student', () => {
+  describe('Save Student', () => {
 
     const newStudent = {
       id: 1,
@@ -61,7 +61,7 @@ describe('Student Controller Checked', () => {
       gender: 'Male',
     };
 
-    test('Create student success', async () => {
+    test('Save Student Success', async () => {
       studentRepo.insert = jest
         .fn()
         .mockResolvedValue(newStudent);
@@ -70,7 +70,7 @@ describe('Student Controller Checked', () => {
       expect(data).toEqual(newStudent);
     });
 
-    test('Create student fail', async () => {
+    test('Save Student Fail', async () => {
       studentRepo.insert = jest
         .fn()
         .mockRejectedValue(new Error('Error'));
@@ -79,7 +79,7 @@ describe('Student Controller Checked', () => {
     });
   });
 
-  describe('Update student', () => {
+  describe('Update Student', () => {
 
     const student: Student = {
       id: 1,
@@ -90,7 +90,7 @@ describe('Student Controller Checked', () => {
       gender: 'Male',
     };
 
-    test('Update student success', async () => {
+    test('Update Student Success', async () => {
       studentRepo.update = jest
         .fn()
         .mockResolvedValue(student);
@@ -98,7 +98,7 @@ describe('Student Controller Checked', () => {
       expect(data).toEqual(student);
     });
 
-    test('Update student fail', async () => {
+    test('Update Student Fail', async () => {
       studentRepo.update = jest
         .fn()
         .mockRejectedValue(new Error('Error'));
@@ -108,11 +108,11 @@ describe('Student Controller Checked', () => {
 
 
 
-  describe('Delete student', () => {
+  describe('Delete Student', () => {
 
     const id = '1';
 
-    test('Delete student success', async () => {
+    test('Delete Student Success', async () => {
       studentRepo.delete = jest
         .fn()
         .mockResolvedValue(id);
@@ -121,7 +121,7 @@ describe('Student Controller Checked', () => {
       expect(data).toEqual(id);
     });
 
-    test('Delete student fail', async () => {
+    test('Delete Student Fail', async () => {
       studentRepo.delete = jest
         .fn()
         .mockRejectedValue(new Error('Error'));
