@@ -1,150 +1,70 @@
 import { Student } from '../models/student.models';
 import { appDataSource } from '../configs/datasource.config';
-import { createStudent, getAllStudents } from './student.service';
-import { InsertResult } from 'typeorm';
+import {
+  createStudent,
+  deleteStudent,
+  getAllStudents,
+  updateStudent,
+} from './student.service';
+import { DeleteResult, InsertResult, UpdateResult } from 'typeorm';
 
-jest.mock('../configs/datasource.config');
+describe('Student Service Checked', () => {
+  const mockStudentData = [
+    {
+      id: 1,
+      name: 'Nimesh',
+      address: 'Galle',
+      mobileNumber: '0761234567',
+      dob: new Date('2001-12-15'),
+      gender: 'Male',
+    },
+    {
+      id: 2,
+      name: 'Akila',
+      address: 'Galle',
+      mobileNumber: '0761234567',
+      dob: new Date('2001-12-15'),
+      gender: 'Male',
+    },
+  ];
 
-describe('Student Controller Checked', () => {
-  const mockRepository = {
-    find: jest.fn().mockResolvedValue([
-      {
-        id: 2,
-        name: 'Nimesh',
-        address: 'Galle',
-        mobileNumber: '0761234567',
-        dob: new Date('2001-12-15'),
-        gender: 'Male',
-      },
-      {
-        id: 1,
-        name: 'Akila',
-        address: 'Galle',
-        mobileNumber: '0761234567',
-        dob: new Date('2001-12-15'),
-        gender: 'Male',
-      },
-    ]),
-  };
+  const mockFind = jest.fn().mockResolvedValue(mockStudentData);
 
-  const mockManager = {
-    getRepository: jest.fn().mockReturnValue(mockRepository),
-  };
-
-  describe('Student list object check', () => {
-    test('Should fetch and return a list of students', async () => {
-      const result = await mockManager
-        .getRepository(Student)
-        .find({ order: { id: 'DESC' } });
-      expect(result).toEqual([
-        {
-          id: 2,
-          name: 'Nimesh',
-          address: 'Galle',
-          mobileNumber: '0761234567',
-          dob: new Date('2001-12-15'),
-          gender: 'Male',
-        },
-        {
-          id: 1,
-          name: 'Akila',
-          address: 'Galle',
-          mobileNumber: '0761234567',
-          dob: new Date('2001-12-15'),
-          gender: 'Male',
-        },
-      ]);
-
-      expect(mockManager.getRepository).toHaveBeenCalledTimes(1);
-      expect(mockManager.getRepository).toHaveBeenCalledWith(Student);
-      expect(mockRepository.find).toHaveBeenCalledTimes(1);
-      expect(mockRepository.find).toHaveBeenCalledWith({
-        order: { id: 'DESC' },
-      });
-    });
-
-    test('should throw an error if fetching students fails', async () => {
-      const mockRepository = {
-        find: jest.fn().mockRejectedValue(new Error('Error')),
-      };
-
-      const mockManager = {
-        getRepository: jest.fn().mockReturnValue(mockRepository),
-      };
-
-      await expect(
-        mockManager.getRepository(Student).find({ order: { id: 'DESC' } }),
-      ).rejects.toThrowError('Error');
-
-      expect(mockManager.getRepository).toHaveBeenCalledTimes(1);
-      expect(mockManager.getRepository).toHaveBeenCalledWith(Student);
-      expect(mockRepository.find).toHaveBeenCalledTimes(1);
-      expect(mockRepository.find).toHaveBeenCalledWith({
-        order: { id: 'DESC' },
-      });
-    });
+  const mockGetRepository = jest.fn().mockReturnValue({
+    find: mockFind,
+    insert: jest.fn(() => new InsertResult()),
+    update: jest.fn(() => new UpdateResult()),
+    delete: jest.fn(() => new DeleteResult()),
   });
 
-  describe('Get All Students Check', () => {
+  appDataSource.manager.getRepository = mockGetRepository;
+
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  describe('Student list', () => {
     test('should fetch and return a list of students', async () => {
-      const mockStudentData: Student[] = [
-        {
-          id: 1,
-          name: 'Nimesh',
-          address: 'Galle',
-          mobileNumber: '0761234567',
-          dob: new Date('2001-12-15'),
-          gender: 'Male',
-        },
-        {
-          id: 2,
-          name: 'Akila',
-          address: 'Galle',
-          mobileNumber: '0761234567',
-          dob: new Date('2001-12-15'),
-          gender: 'Male',
-        },
-      ];
-
-      const mockFind = jest.fn().mockResolvedValue(mockStudentData);
-      appDataSource.manager.getRepository = jest.fn().mockReturnValue({
-        find: mockFind,
-      });
-
       const result = await getAllStudents();
 
       expect(result).toEqual(mockStudentData);
-      expect(appDataSource.manager.getRepository).toHaveBeenCalledWith(Student);
+      expect(mockGetRepository).toHaveBeenCalledWith(Student);
       expect(mockFind).toHaveBeenCalledWith({ order: { id: 'DESC' } });
     });
 
-    it('should throw an error if fetching students fails', async () => {
+    test('should throw an error if fetching students fails', async () => {
       const mockError = new Error('Mocked error');
-      const mockFind = jest.fn().mockRejectedValue(mockError);
-      appDataSource.manager.getRepository = jest.fn().mockReturnValue({
-        find: mockFind,
-      });
+      mockFind.mockRejectedValue(mockError);
 
       await expect(getAllStudents()).rejects.toThrow(mockError);
-      expect(appDataSource.manager.getRepository).toHaveBeenCalledWith(Student);
+      expect(mockGetRepository).toHaveBeenCalledWith(Student);
       expect(mockFind).toHaveBeenCalledWith({ order: { id: 'DESC' } });
     });
   });
 
-  jest.mock('typeorm', () => ({
-    InsertResult: class {
-      identifiers = [{ id: 1 }]; // Adjust this based on your insert response
-    },
-    getRepository: jest.fn(),
-  }));
-
   describe('Create Student', () => {
-    afterEach(() => {
-      jest.clearAllMocks();
-    });
-
-    it('creates a new student', async () => {
-      const studentData: Student = {
+    test('creates a new student', async () => {
+      const studentData = {
         name: 'Akila',
         address: 'Galle',
         mobileNumber: '0761234567',
@@ -153,24 +73,15 @@ describe('Student Controller Checked', () => {
         id: 1,
       };
 
-      const mockInsert = jest.fn(() => new InsertResult());
-      const mockGetRepository = jest.fn(() => ({
-        insert: mockInsert,
-      }));
-
-      require('../configs/datasource.config').appDataSource.manager = {
-        getRepository: mockGetRepository,
-      };
-
-      const result: InsertResult = await createStudent(studentData);
+      const result = await createStudent(studentData);
 
       expect(result).toBeInstanceOf(InsertResult);
       expect(mockGetRepository).toHaveBeenCalledWith(Student);
-      expect(mockInsert).toHaveBeenCalledWith(studentData);
+      expect(mockGetRepository().insert).toHaveBeenCalledWith(studentData);
     });
 
-    it('throws an error if creation fails', async () => {
-      const studentData: Student = {
+    test('throws an error if creation fails', async () => {
+      const studentData = {
         id: 1,
         name: 'Akila',
         address: 'Galle',
@@ -181,20 +92,74 @@ describe('Student Controller Checked', () => {
 
       const errorMessage = 'Insert failed';
       const mockInsert = jest.fn(() => Promise.reject(new Error(errorMessage)));
-      const mockGetRepository = jest.fn(() => ({
-        insert: mockInsert,
-      }));
+      mockGetRepository().insert = mockInsert;
 
-      require('../configs/datasource.config').appDataSource.manager = {
-        getRepository: mockGetRepository,
+      await expect(createStudent(studentData)).rejects.toThrow(errorMessage);
+      expect(mockGetRepository).toHaveBeenCalledWith(Student);
+      expect(mockInsert).toHaveBeenCalledWith(studentData);
+    });
+  });
+
+  describe('Update Student', () => {
+    test('update a  student', async () => {
+      const updateStudentData = {
+        name: 'Pasan',
+        address: 'Galle',
+        mobileNumber: '0761234563',
+        dob: new Date('2001-12-11'),
+        gender: 'Male',
+        id: 1,
       };
 
-      try {
-        await createStudent(studentData);
-      } catch (error) {
-        expect(mockGetRepository).toHaveBeenCalledWith(Student);
-        expect(mockInsert).toHaveBeenCalledWith(studentData);
-      }
+      const result = await updateStudent('1', updateStudentData);
+
+      expect(result).toBeInstanceOf(UpdateResult);
+      expect(mockGetRepository).toHaveBeenCalledWith(Student);
+      expect(mockGetRepository().update).toHaveBeenCalledWith(
+        '1',
+        updateStudentData,
+      );
+    });
+
+    test('throws an error if update fails', async () => {
+      const updateStudentData = {
+        name: 'Pasan',
+        address: 'Galle',
+        mobileNumber: '0761234563',
+        dob: new Date('2001-12-11'),
+        gender: 'Male',
+        id: 1,
+      };
+
+      const errorMessage = 'Update failed';
+      const mockUpdate = jest.fn(() => Promise.reject(new Error(errorMessage)));
+      mockGetRepository().update = mockUpdate;
+
+      await expect(updateStudent('1', updateStudentData)).rejects.toThrow(
+        errorMessage,
+      );
+      expect(mockGetRepository).toHaveBeenCalledWith(Student);
+      expect(mockUpdate).toHaveBeenCalledWith('1', updateStudentData);
+    });
+  });
+
+  describe('Delete Student', () => {
+    test('Delete a  student', async () => {
+      const result = await deleteStudent('1');
+
+      expect(result).toBeInstanceOf(DeleteResult);
+      expect(mockGetRepository).toHaveBeenCalledWith(Student);
+      expect(mockGetRepository().delete).toHaveBeenCalledWith('1');
+    });
+
+    test('throws an error if delete fails', async () => {
+      const errorMessage = 'Delete failed';
+      const mockDelete = jest.fn(() => Promise.reject(new Error(errorMessage)));
+      mockGetRepository().delete = mockDelete;
+
+      await expect(deleteStudent('1')).rejects.toThrow(errorMessage);
+      expect(mockGetRepository).toHaveBeenCalledWith(Student);
+      expect(mockDelete).toHaveBeenCalledWith('1');
     });
   });
 });

@@ -31,7 +31,7 @@ export class Student {
     address: string,
     mobileNumber: string,
     dob: Date,
-    gender: string
+    gender: string,
   ) {
     this.name = name;
     this.address = address;
