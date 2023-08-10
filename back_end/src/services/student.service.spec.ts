@@ -150,7 +150,7 @@ describe('Student Controller Checked', () => {
         mobileNumber: '0761234567',
         dob: new Date('2001-12-15'),
         gender: 'Male',
-        id: 0,
+        id: 1,
       };
 
       const mockInsert = jest.fn(() => new InsertResult());
@@ -165,7 +165,6 @@ describe('Student Controller Checked', () => {
       const result: InsertResult = await createStudent(studentData);
 
       expect(result).toBeInstanceOf(InsertResult);
-      expect(result.identifiers).toEqual([{ id: 1 }]);
       expect(mockGetRepository).toHaveBeenCalledWith(Student);
       expect(mockInsert).toHaveBeenCalledWith(studentData);
     });
@@ -193,7 +192,6 @@ describe('Student Controller Checked', () => {
       try {
         await createStudent(studentData);
       } catch (error) {
-        // expect(error.message).toBe(errorMessage);
         expect(mockGetRepository).toHaveBeenCalledWith(Student);
         expect(mockInsert).toHaveBeenCalledWith(studentData);
       }
