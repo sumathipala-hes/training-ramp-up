@@ -3,11 +3,13 @@ import { DataSource } from 'typeorm';
 import 'reflect-metadata';
 import { Student } from './models/student';
 import studentRoutes from './routes/student.route';
+import cors from 'cors';
 
 const app: Express = express();
-const port = 3000;
+const port = 3001;
 
 app.use(express.json());
+app.use(cors());
 
 app.use(studentRoutes);
 
