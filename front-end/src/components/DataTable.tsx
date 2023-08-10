@@ -12,9 +12,10 @@ import {
   GridToolbarContainer,
 } from '@mui/x-data-grid';
 import { useDispatch, useSelector } from 'react-redux';
-import { initialRows, setRowModesModel, setRows } from '../redux/slice';
+import { setRowModesModel, setRows } from '../redux/slice';
 import { useEffect } from 'react';
 import { generateID } from '../utils/GenerateIds';
+import { deleteStudent, getAllStudents } from '../redux/actions';
 
 interface EditToolbarProps {
   setRows: (newRows: (oldRows: GridRowsProp) => GridRowsProp) => void;
@@ -41,7 +42,7 @@ const EditToolbar = (props: EditToolbarProps) => {
     };
 
     dispatch(
-      setRows([newRow, ...rows]), //add to the begining of the table
+      setRows([newRow, ...rows]),
     );
 
     dispatch(
@@ -69,10 +70,16 @@ export const DataTable = () => {
   const dispatch = useDispatch();
   const rows = useSelector((state: any) => state.data.records);
   const rowModesModel = useSelector((state: any) => state.data.rowModesModel);
+  const deleteSuccess = useSelector((state: any) => state.data.deleteSuccess);
 
-  useEffect(() => {
-    dispatch(setRows(initialRows));
-  }, [dispatch]);
+    //api call to get list
+    useEffect(() => {
+      dispatch(getAllStudents());
+    }, [dispatch]);
+
+  // useEffect(() => {
+  //   dispatch(setRows(initialRows));
+  // }, [dispatch]);
 
   const handleRowEditStop: GridEventListener<'rowEditStop'> = (
     params,
@@ -96,8 +103,22 @@ export const DataTable = () => {
   };
 
   const handleDeleteClick = (id: GridRowId) => () => {
-    dispatch(setRows(rows.filter((row: { id: GridRowId }) => row.id !== id)));
+    const studentId = Number(id);
+      dispatch(deleteStudent(studentId));
+    // try {
+    //   const studentId = Number(id);
+    //   dispatch(deleteStudent(studentId));
+    //   if (deleteSuccess) {
+    //     console.log("Here 9")
+    //     dispatch(setRows(rows.filter((row: { id: GridRowId }) => row.id !== id)));
+    //     dispatch(setDeleteSuccess(false));
+    //   }
+    // } catch (error) {
+    //   console.log('Error deleting student', error)
+    // }
+   
   };
+
 
   const handleCancelClick = (id: GridRowId) => () => {
     dispatch(

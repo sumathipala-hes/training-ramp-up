@@ -37,9 +37,20 @@ export const initialRows: GridRowsProp = [
   },
 ];
 
+
+export interface DataState {
+  records: GridRowsProp;
+  rowModesModel: any;
+}
+
+const initialState: DataState = {
+  records: [],
+  rowModesModel: {},
+};
+
 export const dataSlice = createSlice({
   name: 'data',
-  initialState: { records: [], rowModesModel: {} },
+  initialState,
   reducers: {
     setRows: (state, action) => {
       state.records = action.payload;
@@ -47,8 +58,16 @@ export const dataSlice = createSlice({
     setRowModesModel: (state, action) => {
       state.rowModesModel = action.payload;
     },
-  },
-});
 
-export const { setRows, setRowModesModel } = dataSlice.actions;
+    //api success actions
+    getAllStudentsSuccess: (state, action) => {
+      state.records = action.payload;
+    },
+    removeDeletedStudent: (state, action) => {
+      state.records = state.records.filter(row => row.id !== action.payload);
+    },
+
+}});
+
+export const { setRows, setRowModesModel, getAllStudentsSuccess, removeDeletedStudent } = dataSlice.actions;
 export default dataSlice.reducer;

@@ -19,6 +19,9 @@ export class Student extends BaseEntity {
   address!: string;
 
   @Column()
+  mobile!: number;
+
+  @Column()
   dob!: string;
 
   @Column()
