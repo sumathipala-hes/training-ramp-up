@@ -3,6 +3,7 @@ import dotenv from 'dotenv'
 import { createConnection } from 'typeorm'
 import { createStudentRouter } from './routes/createStudent'
 import { Student } from './entities/student'
+import cors from 'cors'
 
 dotenv.config({ path: '../config.env' })
 const app: Express = express()
@@ -21,6 +22,7 @@ const main = async () => {
     })
     console.log('Connected to postgres')
     //Middleware
+    app.use(cors())
     app.use(express.json())
     app.use(createStudentRouter)
 

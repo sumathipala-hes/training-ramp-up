@@ -8,7 +8,6 @@ import DeleteIcon from '@mui/icons-material/DeleteOutlined'
 import SaveIcon from '@mui/icons-material/Save'
 import CancelIcon from '@mui/icons-material/Close'
 import { useDispatch, useSelector } from 'react-redux'
-import { randomId } from '@mui/x-data-grid-generator'
 import {
     DataGrid,
     GridActionsCellItem,
@@ -25,13 +24,25 @@ import {
     GridValidRowModel,
     GridValueGetterParams,
 } from '@mui/x-data-grid'
-import { addRow, updateRow, deleteRow } from './GridSlice' // Import the actions
+import {
+    addRow,
+    updateRow,
+    deleteRow,
+    fetchRows,
+    deleteRowTableOnly,
+} from './GridSlice' // Import the actions
 import { RootState } from '../../store'
 import { minDate, maxDate } from './GridTableUtility/min_maxDate'
-
+import { useEffect } from 'react'
+const newId = 0
 export default function FullFeaturedCrudGrid() {
     const dispatch = useDispatch()
     const rows = useSelector((state: RootState) => state.grid.rows)
+
+    useEffect(() => {
+        // Dispatch the action to fetch rows when the component mounts
+        dispatch(fetchRows())
+    }, [dispatch])
 
     const [rowModesModel, setRowModesModel] = React.useState<GridRowModesModel>(
         {}
@@ -42,7 +53,8 @@ export default function FullFeaturedCrudGrid() {
         const dispatch = useDispatch()
 
         const handleClick = () => {
-            const id = randomId()
+            const id = newId + 1
+            console.log(id)
             setAddButtonDisabled(true)
             const newRow: GridRowModel = {
                 id,
@@ -85,17 +97,11 @@ export default function FullFeaturedCrudGrid() {
         if (editedRow) {
             // If it's not a new row, dispatch the updateRow action with the edited row data
             if (!editedRow.isNew) {
-                dispatch(updateRow({ ...editedRow, isNew: false }))
+                dispatch(updateRow({ ...editedRow }))
+            } else {
+                dispatch(deleteRowTableOnly(editedRow.id))
             }
             // If it's a new row and the user didn't make any changes, remove the new row from the store
-            else if (
-                !editedRow.name &&
-                !editedRow.age &&
-                !editedRow.mobileNumber &&
-                !editedRow.address
-            ) {
-                dispatch(deleteRow(editedRow.id))
-            }
 
             // Set the row mode to view mode
             setRowModesModel((rowModesModel) => ({
@@ -118,7 +124,7 @@ export default function FullFeaturedCrudGrid() {
         const editedRow = rows.find((row) => row.id === id)
         if (editedRow) {
             // Dispatch the updateRow action with the edited row data
-            dispatch(updateRow({ editedRow }))
+            dispatch(updateRow(editedRow))
 
             // Set the row mode to view mode
             setRowModesModel((prevModesModel) => ({
@@ -146,7 +152,7 @@ export default function FullFeaturedCrudGrid() {
             setAddButtonDisabled(false)
             if (editedRow.isNew) {
                 // If the row is a newly added row, remove it from the Redux store
-                dispatch(deleteRow(id)) // Dispatch action to delete the row from the Redux store
+                dispatch(deleteRowTableOnly(id)) // Dispatch action to delete the row from the Redux store
                 // Enable the Add record button
                 console.log('handleCancelClick')
                 setAddButtonDisabled(false)
@@ -164,13 +170,17 @@ export default function FullFeaturedCrudGrid() {
                 return Promise.reject()
             }
             // Dispatch an action to add the row to the Redux store
-            const newRowWithoutId = { ...newRow, isNew: false }
+            const newRowWithoutId = newRow
             dispatch(updateRow(newRowWithoutId))
-            return newRowWithoutId // Return the updated row
-        } else {
+            const oldRowSetToFalse = { ...newRow, isNew: false }
+            return oldRowSetToFalse // Return the updated row
+        } else if (!newRow.isNew && !newRow.name === undefined) {
+            console.log(newRow)
             // If it's an existing row, dispatch an action to update the row in the Redux store
             dispatch(updateRow(newRow)) // Dispatch action to update the row in the Redux store
             return newRow // Return the updated row
+        } else {
+            return newRow
         }
     }
 
@@ -183,7 +193,7 @@ export default function FullFeaturedCrudGrid() {
         {
             field: 'age',
             headerName: 'Age',
-            type: 'number',
+            type: 'string',
             width: 80,
             align: 'left',
             headerAlign: 'left',
@@ -342,6 +352,11 @@ export default function FullFeaturedCrudGrid() {
                 rowModesModel={rowModesModel}
                 onRowModesModelChange={handleRowModesModelChange}
                 onRowEditStop={handleRowEditStop}
+                onProcessRowUpdateError={(error) => {
+                    // Handle the error here
+                    console.error('Error processing row update:', error)
+                    // You can also display a user-friendly message or take appropriate actions
+                }}
                 processRowUpdate={processRowUpdate}
                 slotProps={{
                     toolbar: { rowModesModel, setRowModesModel },

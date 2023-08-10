@@ -3,11 +3,12 @@ import { Student } from '../entities/student'
 const router = express.Router()
 
 router.post('/api/student', async (req, res) => {
-  const { name, age, gender, mobilenumber, address } = req.body
+  const { id, name, age, gender, mobilenumber, address } = req.body
 
   const dateofbirth = new Date(req.body.dateofbirth)
 
   const student = Student.create({
+    id,
     name,
     age,
     dateofbirth,
@@ -39,7 +40,9 @@ router.delete('/api/student/:studentId', async (req, res) => {
 
 router.put('/api/student/:studentId', async (req, res) => {
   const { studentId } = req.params
-  const newData = req.body
+  const { id, name, age, gender, mobilenumber, address } = req.body
+  const dateofbirth = new Date(req.body.dateofbirth)
+  const newData = { id, name, age, gender, mobilenumber, address, dateofbirth }
   const updatedStudent = Student.update(studentId, newData)
 
   return res.send(updatedStudent)
