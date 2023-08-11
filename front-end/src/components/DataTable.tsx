@@ -92,7 +92,6 @@ export const DataTable = () => {
   };
 
   const handleEditClick = (id: GridRowId) => () => {
-    console.log("Yo here 5")
     dispatch(
       setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } }),
     );
@@ -101,7 +100,6 @@ export const DataTable = () => {
   const handleSaveClick = (id: GridRowId) => async () => {
     const editedRow = rows.find((row: { id: GridRowId; }) => row.id === id);
     if (editedRow?.isNew) {
-      console.log("In here 10")
       dispatch(
         setRowModesModel({
           ...rowModesModel,
@@ -136,7 +134,6 @@ export const DataTable = () => {
   };
 
   const processRowUpdate = (newRow: GridRowModel): GridValidRowModel | Promise<GridValidRowModel> => {
-    console.log("Yo here 6")
     let existingRow  = rows.find((row: GridRowModel) => row.id === newRow.id);
 
     const today = new Date();
@@ -167,13 +164,7 @@ export const DataTable = () => {
     if (newRow.isNew) {
       dispatch(createStudent(updatedRow)); 
     } else {
-      console.log("Yo here 7")
       dispatch(updateStudent(updatedRow.id, updatedRow));
-
-    //   const updatedRows = rows.map((row: GridRowModel) =>
-    //   row.id === editingRowId ? changedData : row
-    // );
-    //   dispatch(setRows(updatedRows));
     }
   
     return updatedRow;
