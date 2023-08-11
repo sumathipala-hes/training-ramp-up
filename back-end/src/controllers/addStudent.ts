@@ -5,6 +5,7 @@ import AppDataSource from "../services/dataSoure";
 //add student data
 const addStudent = (async (req: Request, res: Response) => {
     try {
+        const io = req.app.get('io')
         const id = req.body.id;
         const name = req.body.name;
         const gender = req.body.gender
@@ -23,6 +24,7 @@ const addStudent = (async (req: Request, res: Response) => {
         student.id = id;
 
         await AppDataSource.manager.save(student)
+        io.sockets.emit("addStudent","A new student has been added.")
         return res.status(200).json({
             status: 200,
         });

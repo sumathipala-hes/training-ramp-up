@@ -5,6 +5,7 @@ import AppDataSource from "../services/dataSoure"
 
 //delete student record
 const deleteStudent = (async (req: Request, res: Response) => {
+    const io = req.app.get('io')
     try {
         const id = req.body.id;
         const studentRepository = AppDataSource.getRepository(Student)
@@ -13,6 +14,7 @@ const deleteStudent = (async (req: Request, res: Response) => {
         })
         if(student !== null){
             await studentRepository.remove(student);
+            io.sockets.emit("deleteStudent","A student has been removed");
             return res.status(200).json({
                 status: 200,
             });
