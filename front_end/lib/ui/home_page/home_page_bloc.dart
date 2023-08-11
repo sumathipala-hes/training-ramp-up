@@ -3,7 +3,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:front_end/api/firebase_api.dart';
+import 'package:front_end/util/firebase_messaging.dart';
 import 'package:front_end/models/student.dart';
 import 'package:front_end/repository/student_repository.dart';
 import 'package:front_end/ui/home_page/home_page_event.dart';
