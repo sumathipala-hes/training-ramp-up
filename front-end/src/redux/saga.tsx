@@ -1,9 +1,9 @@
 import { put, takeLatest, call, takeEvery } from 'redux-saga/effects';
-import { deleteStudentApi, getAllStudentsFromApi, updateStudentApi } from '../api/apiService';
-import { getAllStudentsSuccess, removeDeletedStudent } from './slice';
+import { createStudentApi, deleteStudentApi, getAllStudentsFromApi, updateStudentApi } from '../api/apiService';
+import { createStudentSuccess, getAllStudentsSuccess, removeDeletedStudent, updateStudentSuccess } from './slice';
 import { Student } from '../interfaces/studentInterface';
-import { deleteStudent, updateStudent } from './actions';
-import { PayloadAction } from '@reduxjs/toolkit';
+import { createStudent, deleteStudent, updateStudent } from './actions';
+
 
 function* getAllStudentsSaga(): Generator<any, void, Student[]> {
     try {
@@ -28,30 +28,34 @@ function* deleteStudentSaga(action: ReturnType<typeof deleteStudent>) {
     }
 }
 
-// function* updateStudentSaga(action: PayloadAction<Student>) {
-//     const { studentId, studentData } = action.payload;
-//     try {
-//         const updatedStudent = yield call(updateStudentApi, studentId, studentData);
-//         //success action
-//         yield put(updateStudentSuccess(updateStudent));
-//     } catch (error) {
-//         console.error('Error updating student in postgresql', error);
-//     }
-// }
+function* updateStudentSaga(action: ReturnType<typeof updateStudent>): Generator {
+    const { id: studentId, data: studentData } = action.payload;
+    try {
+        console.log("Yo here 1")
+        const updatedStudent = yield call(updateStudentApi, studentId, studentData);
+        //success action
+        console.log("Yo here 2")
+        yield put(updateStudentSuccess(updatedStudent));
+    } catch (error) {
+        console.error('Error updating student in postgresql', error);
+    }
+}
 
-// function* createStudentSaga(action) {
-//     try {
-//         const createdStudent = yield call(createStudentApi, action.payload);
-//         //success action
-//         yield put(createStudentSuccess(createdStudent));
-//     } catch (error) {
-//         console.error('Error creating new student in postgresql', error);
-//     }
-// }
+function* createStudentSaga(action: ReturnType<typeof createStudent>): Generator<any, void, Student> {
+    const newStudent = action.payload;
+    try {
+        const createdStudent = yield call(createStudentApi, newStudent);
+        //success action
+        yield put(createStudentSuccess(createdStudent));
+    } catch (error) {
+        console.error('Error creating new student in postgresql', error);
+    }
+}
+
 
 export default function* studentSaga() {
     yield takeLatest('GET_STUDENTS', getAllStudentsSaga)
     yield takeEvery('DELETE_STUDENT', deleteStudentSaga)
-    //yield takeLatest('UPDATE_STUDENT', updateStudentSaga)
-    //yield takeLatest('CREATE_STUDENT', createStudentSaga)
+    yield takeLatest('UPDATE_STUDENT', updateStudentSaga)
+    yield takeLatest('CREATE_STUDENT', createStudentSaga)
 }

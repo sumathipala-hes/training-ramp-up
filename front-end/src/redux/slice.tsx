@@ -66,8 +66,13 @@ export const dataSlice = createSlice({
     removeDeletedStudent: (state, action) => {
       state.records = state.records.filter(row => row.id !== action.payload);
     },
-
+    createStudentSuccess: (state, action) => {
+      state.records.push(action.payload);
+    },
+    updateStudentSuccess: (state, action) => {
+      state.records = action.payload;
+    },
 }});
 
-export const { setRows, setRowModesModel, getAllStudentsSuccess, removeDeletedStudent } = dataSlice.actions;
+export const { setRows, setRowModesModel, getAllStudentsSuccess, removeDeletedStudent, createStudentSuccess, updateStudentSuccess } = dataSlice.actions;
 export default dataSlice.reducer;

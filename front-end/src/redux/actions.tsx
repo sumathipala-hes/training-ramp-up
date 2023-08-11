@@ -22,8 +22,3 @@ export const getAllStudents = () => ({
     type: actionTypes.DELETE_STUDENT,
     payload: studentId,
   });
-
-  // export const removeDeletedStudent = (studentId: number) => ({
-  //   type: actionTypes.REMOVE_DELETED_STUDENT,
-  //   payload: studentId,
-  // });
