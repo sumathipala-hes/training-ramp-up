@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:front_end/api/firebase_api.dart';
 import 'package:front_end/models/student.dart';
 import 'package:front_end/repository/student_repository.dart';
 import 'package:front_end/ui/home_page/home_page_event.dart';
@@ -18,6 +19,7 @@ class RampUpHomeScreenBloc extends Bloc<RampUpHomePageEvent, RampUpHomeState> {
     add(
       GetAllStudents(),
     );
+    configListener();
   }
 
   Future<void> _onSaveButtonPressed(
@@ -37,6 +39,7 @@ class RampUpHomeScreenBloc extends Bloc<RampUpHomePageEvent, RampUpHomeState> {
       add(
         GetAllStudents(),
       );
+      sendNotification("Success", "student Saved..!");
     }
   }
 
@@ -74,6 +77,7 @@ class RampUpHomeScreenBloc extends Bloc<RampUpHomePageEvent, RampUpHomeState> {
       add(
         GetAllStudents(),
       );
+      sendNotification("", "student Deleted..!");
     } else {
       throw Exception('Failed to delete student');
     }
@@ -96,6 +100,7 @@ class RampUpHomeScreenBloc extends Bloc<RampUpHomePageEvent, RampUpHomeState> {
       add(
         GetAllStudents(),
       );
+      sendNotification("Success", "student Updated..!");
     }
   }
 }
