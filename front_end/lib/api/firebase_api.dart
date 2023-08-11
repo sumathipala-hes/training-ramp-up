@@ -7,21 +7,19 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
 
-Future<void> sendNotification(
-    String title, String body) async {
+Future<void> sendNotification(String title, String body) async {
   await dotenv.load();
   String serverKey = dotenv.env['API_SERVER_KEY']?.toString() ?? '';
   const String fcmEndpoint = 'https://fcm.googleapis.com/fcm/send';
 
   final token = await FirebaseMessaging.instance.getToken();
-final message = {
-  'notification': {
-    'title': title,
-    'body': body,
-  },
-  'to': token,
-};
-
+  final message = {
+    'notification': {
+      'title': title,
+      'body': body,
+    },
+    'to': token,
+  };
 
   final http.Response response = await http.post(
     Uri.parse(fcmEndpoint),
