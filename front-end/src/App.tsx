@@ -1,17 +1,39 @@
-import React from 'react'
-import { Provider } from 'react-redux'
-import { store } from './store'
+import React, { useEffect } from 'react'
+import { useDispatch } from 'react-redux'
+
 import './App.css'
 import { Container } from '@mui/material'
 import GridTable from './Components/GridTable/GridTable'
+import * as io from 'socket.io-client'
+import { fetchRows } from './Components/GridTable/GridSlice'
+export const socket = io.connect('http://localhost:5000')
 
 function App() {
+    const dispatch = useDispatch()
+    useEffect(() => {
+        // Dispatch the action to fetch rows when the component mounts
+        dispatch(fetchRows())
+    }, [dispatch])
+
+    useEffect(() => {
+        socket.on('recievedNewStudent', () => {
+            alert('New Student Added')
+            dispatch(fetchRows())
+        })
+        socket.on('recievedUpdateStudent', (data) => {
+            alert(data)
+            dispatch(fetchRows())
+        })
+        socket.on('recievedDeleteStudent', (data) => {
+            alert(data)
+            dispatch(fetchRows())
+        })
+    }, [socket])
+
     return (
-        <Provider store={store}>
-            <Container maxWidth={false}>
-                <GridTable />
-            </Container>
-        </Provider>
+        <Container maxWidth={false}>
+            <GridTable />
+        </Container>
     )
 }
 

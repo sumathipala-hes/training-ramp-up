@@ -115,6 +115,7 @@ function* fetchRowsSaga(): Generator<any, any, any> {
     try {
         const response = yield fetch(`${API_BASE_URL}/api/student`)
         const data = yield response.json()
+
         // const dataDate = new Date(data.dateofbirth)
         // Modify the data properties
         const modifiedData = data.map(
@@ -136,6 +137,7 @@ function* fetchRowsSaga(): Generator<any, any, any> {
                 address: item.address,
             })
         )
+
         console.log(modifiedData)
 
         yield put(setFetchedRows(modifiedData))

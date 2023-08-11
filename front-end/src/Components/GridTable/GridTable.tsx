@@ -24,25 +24,16 @@ import {
     GridValidRowModel,
     GridValueGetterParams,
 } from '@mui/x-data-grid'
-import {
-    addRow,
-    updateRow,
-    deleteRow,
-    fetchRows,
-    deleteRowTableOnly,
-} from './GridSlice' // Import the actions
+import { addRow, updateRow, deleteRow, deleteRowTableOnly } from './GridSlice' // Import the actions
 import { RootState } from '../../store'
 import { minDate, maxDate } from './GridTableUtility/min_maxDate'
-import { useEffect } from 'react'
-const newId = 0
+import { socket } from '../../App'
+import randomInteger from 'random-int'
+// import { count } from '../../sagas'
+
 export default function FullFeaturedCrudGrid() {
     const dispatch = useDispatch()
     const rows = useSelector((state: RootState) => state.grid.rows)
-
-    useEffect(() => {
-        // Dispatch the action to fetch rows when the component mounts
-        dispatch(fetchRows())
-    }, [dispatch])
 
     const [rowModesModel, setRowModesModel] = React.useState<GridRowModesModel>(
         {}
@@ -53,7 +44,7 @@ export default function FullFeaturedCrudGrid() {
         const dispatch = useDispatch()
 
         const handleClick = () => {
-            const id = newId + 1
+            const id = randomInteger(10, 100000)
             console.log(id)
             setAddButtonDisabled(true)
             const newRow: GridRowModel = {
@@ -138,6 +129,7 @@ export default function FullFeaturedCrudGrid() {
 
     const handleDeleteClick = (id: GridRowId) => () => {
         dispatch(deleteRow(id))
+        socket.emit('deleteStudent', 'A Student Deleted from Table')
     }
 
     const handleCancelClick = (id: GridRowId) => () => {
@@ -171,15 +163,19 @@ export default function FullFeaturedCrudGrid() {
             }
             // Dispatch an action to add the row to the Redux store
             const newRowWithoutId = newRow
-            dispatch(updateRow(newRowWithoutId))
             const oldRowSetToFalse = { ...newRow, isNew: false }
+            dispatch(updateRow(newRowWithoutId))
+            socket.emit('newStudent', 'New Student Added')
+
             return oldRowSetToFalse // Return the updated row
-        } else if (!newRow.isNew && !newRow.name === undefined) {
+        } else if (!newRow.isNew && newRow.name) {
             console.log(newRow)
             // If it's an existing row, dispatch an action to update the row in the Redux store
             dispatch(updateRow(newRow)) // Dispatch action to update the row in the Redux store
+            socket.emit('updateStudent', 'Student Details Updated')
             return newRow // Return the updated row
         } else {
+            console.log(newRow.name)
             return newRow
         }
     }
