@@ -1,4 +1,4 @@
-import { Button, Grid } from '@mui/material';
+import { Alert, AlertProps, Button, Grid, TextField } from '@mui/material';
 import {
   DataGrid,
   GridColDef,
@@ -11,6 +11,7 @@ import {
   GridRowsProp,
   GridToolbarContainer,
   GridValidRowModel,
+  GridEditDateCell
 } from '@mui/x-data-grid';
 import { useDispatch, useSelector } from 'react-redux';
 import { setRowModesModel, setRows } from '../redux/slice';
@@ -18,6 +19,8 @@ import { useEffect } from 'react';
 import { generateID } from '../utils/GenerateIds';
 import { createStudent, deleteStudent, getAllStudents, updateStudent } from '../redux/actions';
 import { Student } from '../interfaces/studentInterface';
+import React from 'react';
+import Snackbar from '@mui/material/Snackbar'
 
 interface EditToolbarProps {
   setRows: (newRows: (oldRows: GridRowsProp) => GridRowsProp) => void;
@@ -97,22 +100,6 @@ export const DataTable = () => {
     );
   };
 
-  const handleSaveClick = (id: GridRowId) => async () => {
-    const editedRow = rows.find((row: { id: GridRowId; }) => row.id === id);
-    if (editedRow?.isNew) {
-      dispatch(
-        setRowModesModel({
-          ...rowModesModel,
-          [id]: { mode: GridRowModes.View },
-        })
-      );
-    }
-    else {
-    dispatch(
-      setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } }),
-    );
-  };
-}
 
   const handleDeleteClick = (id: GridRowId) => () => {
     const studentId = Number(id);
@@ -133,23 +120,43 @@ export const DataTable = () => {
     }
   };
 
+  const handleSaveClick = (id: GridRowId, ) => async () => {
+    const editedRow = rows.find((row: { id: GridRowId; }) => row.id === id);
+    if (editedRow?.isNew) {
+      dispatch(
+        setRowModesModel({
+          ...rowModesModel,
+          [id]: { mode: GridRowModes.View },
+        })
+      );
+    }
+    else {
+    dispatch(
+      setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } }),
+    );
+  };
+}
+
   const processRowUpdate = (newRow: GridRowModel): GridValidRowModel | Promise<GridValidRowModel> => {
+    //find an existing row to update
     let existingRow  = rows.find((row: GridRowModel) => row.id === newRow.id);
 
     const today = new Date();
-    const dob = newRow.dateOfBirth;
+    const dob = newRow.dob;
 
-    if (
-      newRow.name.trim() === '' ||
-      newRow.gender.trim() === '' ||
-      newRow.address.trim() === '' ||
-      (typeof newRow.mobile === 'string' && newRow.mobile.trim() === '') ||
-      isNaN(dob) ||
-      today.getFullYear() - dob.getFullYear() <= 18
-    ) {
-      alert('Please fill all fields and ensure age is above 18');
-      return newRow; 
+    if (newRow.name.trim() === '') {
+      return Promise.reject(new Error("Please fill name"));
+    } else if (newRow.gender.trim() === '') {
+      return Promise.reject(new Error("Please select gender"));
+    } else if (newRow.address.trim() === '') {
+      return Promise.reject(new Error("Please fill address"));
+    } else if (typeof newRow.mobile === 'string' && newRow.mobile.trim() === '') {
+      return Promise.reject(new Error("Please fill mobile"));
+    } else if (isNaN(dob)) {
+      return Promise.reject(new Error("Please select date of birth"));
     }
+
+
 
     const updatedRow: Student = {
       ...existingRow,
@@ -157,7 +164,7 @@ export const DataTable = () => {
       gender: newRow.gender,
       address: newRow.address,
       mobile: typeof newRow.mobile === 'string' ? Number(newRow.mobile) : newRow.mobile,
-      dob: newRow.dateOfBirth,
+      dob: newRow.dob,
       age: today.getFullYear() - dob.getFullYear(),
     };
 
@@ -169,6 +176,17 @@ export const DataTable = () => {
   
     return updatedRow;
   };
+
+  const [snackbar, setSnackbar] = React.useState<Pick<
+  AlertProps,
+  'children' | 'severity'
+  > | null>(null);
+
+  const handleCloseSnackbar = () => setSnackbar(null);
+
+  const handleProcessRowUpdateError = React.useCallback((error: Error) => {
+    setSnackbar({ children: error.message, severity: 'error' });
+  }, []);
 
   const columns: GridColDef[] = [
     { field: 'id', headerName: 'ID', width: 150 },
@@ -189,16 +207,34 @@ export const DataTable = () => {
       editable: true,
     },
     {
-      field: 'dateOfBirth',
+      field: 'dob',
       headerName: 'Date of Birth',
       width: 150,
       editable: true,
       type: 'date',
       valueGetter: (params) => {
-        console.log(params);
         const dateOfBirthStr = params.value;
         const dateOfBirth = new Date(dateOfBirthStr);
         return dateOfBirth;
+      },
+      renderEditCell: (params) => {
+        return (
+          <GridEditDateCell
+            {...params}
+            renderInput={(props: { InputProps: any; }) => (
+              <TextField
+                {...props}
+                InputProps={{
+                  ...props.InputProps,
+                  inputProps: {
+                    max: new Date(2005, 11, 31),
+                    min: new Date(1985, 0, 1),
+                  },
+                }}
+              />
+            )}
+          />
+        );
       },
     },
     {
@@ -206,7 +242,7 @@ export const DataTable = () => {
       headerName: 'Age',
       width: 150,
       valueGetter: (params) => {
-        const dob = new Date(params.row.dateOfBirth);
+        const dob = new Date(params.row.dob);
         const today = new Date();
         let age: number | string = '';
         if (!params.row.isNew) {
@@ -281,9 +317,7 @@ export const DataTable = () => {
         disableVirtualization
         onRowEditStop={handleRowEditStop}
         processRowUpdate={processRowUpdate}
-        onProcessRowUpdateError={(error) => {
-          console.error('An error occurred while processing row update:', error);
-        }}
+        onProcessRowUpdateError={handleProcessRowUpdateError}
         slots={{
           toolbar: EditToolbar,
         }}
@@ -291,6 +325,16 @@ export const DataTable = () => {
           toolbar: { setRows, setRowModesModel },
         }}
       ></DataGrid>
+      {!!snackbar && (
+        <Snackbar
+          open
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+          onClose={handleCloseSnackbar}
+          autoHideDuration={6000}
+        >
+          <Alert {...snackbar} onClose={handleCloseSnackbar} />
+        </Snackbar>
+      )}
     </Grid>
   );
 };
