@@ -20,7 +20,13 @@ import { generateID } from '../utils/GenerateIds';
 import { createStudent, deleteStudent, getAllStudents, updateStudent } from '../redux/actions';
 import { Student } from '../interfaces/studentInterface';
 import React from 'react';
-import Snackbar from '@mui/material/Snackbar'
+import Snackbar from '@mui/material/Snackbar';
+import { io } from 'socket.io-client';
+
+const socket = io("http://localhost:4000");
+socket.on("connect", () => {
+  console.log(socket.id); 
+});
 
 interface EditToolbarProps {
   setRows: (newRows: (oldRows: GridRowsProp) => GridRowsProp) => void;
@@ -81,10 +87,6 @@ export const DataTable = () => {
       dispatch(getAllStudents());
     }, [dispatch]);
 
-  // useEffect(() => {
-  //   dispatch(setRows(initialRows));
-  // }, [dispatch]);
-
   const handleRowEditStop: GridEventListener<'rowEditStop'> = (
     params,
     event,
@@ -104,6 +106,9 @@ export const DataTable = () => {
   const handleDeleteClick = (id: GridRowId) => () => {
     const studentId = Number(id);
       dispatch(deleteStudent(studentId));   
+      socket.on('studentDeleted', msg => {
+        setSnackbar({ children: msg, severity: 'success' });
+      })
   };
 
 
@@ -120,44 +125,40 @@ export const DataTable = () => {
     }
   };
 
-  const handleSaveClick = (id: GridRowId, ) => async () => {
-    const editedRow = rows.find((row: { id: GridRowId; }) => row.id === id);
-    if (editedRow?.isNew) {
+
+  const handleSaveClick = (id: GridRowId ) => () => {
       dispatch(
-        setRowModesModel({
-          ...rowModesModel,
-          [id]: { mode: GridRowModes.View },
-        })
+        setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } }),
       );
-    }
-    else {
-    dispatch(
-      setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } }),
-    );
-  };
-}
+    };
 
   const processRowUpdate = (newRow: GridRowModel): GridValidRowModel | Promise<GridValidRowModel> => {
     //find an existing row to update
     let existingRow  = rows.find((row: GridRowModel) => row.id === newRow.id);
 
+    let validated = false;
     const today = new Date();
-    const dob = newRow.dob;
-
+    // const dob = newRow.dob;
     if (newRow.name.trim() === '') {
-      return Promise.reject(new Error("Please fill name"));
+      setSnackbar({ children: "Please fill name", severity: 'error' });
     } else if (newRow.gender.trim() === '') {
-      return Promise.reject(new Error("Please select gender"));
+      setSnackbar({ children: "Please select gender", severity: 'error' });
     } else if (newRow.address.trim() === '') {
-      return Promise.reject(new Error("Please fill address"));
+      setSnackbar({ children: "Please fill address", severity: 'error' });
     } else if (typeof newRow.mobile === 'string' && newRow.mobile.trim() === '') {
-      return Promise.reject(new Error("Please fill mobile"));
-    } else if (isNaN(dob)) {
-      return Promise.reject(new Error("Please select date of birth"));
+      setSnackbar({ children: "Please fill mobile", severity: 'error' });
+    } else if (isNaN(newRow.dob)) {
+      setSnackbar({ children: "Please fill date of birth", severity: 'error' });
+    } else {
+      validated = true
     }
 
-
-
+    if (!validated) {
+      dispatch(
+        setRowModesModel({ ...rowModesModel, [existingRow.id]: { mode: GridRowModes.Edit } }),
+      );
+    }
+    
     const updatedRow: Student = {
       ...existingRow,
       name: newRow.name,
@@ -165,11 +166,14 @@ export const DataTable = () => {
       address: newRow.address,
       mobile: typeof newRow.mobile === 'string' ? Number(newRow.mobile) : newRow.mobile,
       dob: newRow.dob,
-      age: today.getFullYear() - dob.getFullYear(),
+      age: today.getFullYear() - newRow.dob.getFullYear(),
     };
 
     if (newRow.isNew) {
       dispatch(createStudent(updatedRow)); 
+      socket.on('studentAdded', msg => {
+        setSnackbar({ children: msg, severity: 'success' });
+      })
     } else {
       dispatch(updateStudent(updatedRow.id, updatedRow));
     }
@@ -266,7 +270,7 @@ export const DataTable = () => {
               variant="contained"
               color="primary"
               size="small"
-              onClick={handleSaveClick(id)}
+              onClick={() => handleSaveClick(id)()}
             >
               Save
             </Button>,

@@ -1,11 +1,13 @@
+import { Server } from 'socket.io';
 import { StudentData } from '../interfaces/student.interface';
 import { Student } from '../models/student';
+import { getSocketInstance } from '../server';
+
 
 export const createStudentService = async (data: StudentData) => {
   if (!data.name || !data.gender || !data.address || !data.mobile || !data.dob || !data.age) {
     throw new Error('Missing required data for creating a student');
   }
-
   const { name, gender, address, mobile, dob, age } = data;
 
   const student = new Student();
@@ -17,6 +19,8 @@ export const createStudentService = async (data: StudentData) => {
   student.age = age;
 
   await student.save();
+  const io = getSocketInstance();
+  io.sockets.emit('studentAdded', "Added a new student");
   return student;
 };
 
@@ -33,6 +37,8 @@ export const updateStudentService = async (id: string, data: StudentData) => {
   }
 
   await Student.update({ id: parseInt(id) }, data);
+  const io = getSocketInstance();
+  io.sockets.emit('studentUpdated', "Updated a student");
 };
 
 export const deleteStudentService = async (id: string) => {
@@ -41,4 +47,6 @@ export const deleteStudentService = async (id: string) => {
   if (result.affected === 0) {
     throw new Error('Student not found ');
   }
+  const io = getSocketInstance();
+  io.sockets.emit('studentDeleted', "Deleted a student");
 };
