@@ -1,4 +1,4 @@
-import { Alert, AlertProps, Button, Grid, TextField } from '@mui/material';
+import { Alert, AlertProps, Button, Grid } from '@mui/material';
 import {
   DataGrid,
   GridColDef,
@@ -11,22 +11,23 @@ import {
   GridRowsProp,
   GridToolbarContainer,
   GridValidRowModel,
-  GridEditDateCell
 } from '@mui/x-data-grid';
 import { useDispatch, useSelector } from 'react-redux';
 import { setRowModesModel, setRows } from '../redux/slice';
 import { useEffect } from 'react';
 import { generateID } from '../utils/GenerateIds';
-import { createStudent, deleteStudent, getAllStudents, updateStudent } from '../redux/actions';
+import {
+  createStudent,
+  deleteStudent,
+  getAllStudents,
+  updateStudent,
+} from '../redux/actions';
 import { Student } from '../interfaces/studentInterface';
 import React from 'react';
 import Snackbar from '@mui/material/Snackbar';
 import { io } from 'socket.io-client';
 
-const socket = io("http://localhost:4000");
-socket.on("connect", () => {
-  console.log(socket.id); 
-});
+const socket = io('http://localhost:4000');
 
 interface EditToolbarProps {
   setRows: (newRows: (oldRows: GridRowsProp) => GridRowsProp) => void;
@@ -52,9 +53,7 @@ const EditToolbar = (props: EditToolbarProps) => {
       isNew: true,
     };
 
-    dispatch(
-      setRows([newRow, ...rows]),
-    );
+    dispatch(setRows([newRow, ...rows]));
 
     dispatch(
       setRowModesModel({
@@ -82,10 +81,16 @@ export const DataTable = () => {
   const rows = useSelector((state: any) => state.data.records);
   const rowModesModel = useSelector((state: any) => state.data.rowModesModel);
 
-    //api call to get list
-    useEffect(() => {
-      dispatch(getAllStudents());
-    }, [dispatch]);
+  useEffect(() => {
+    dispatch(getAllStudents());
+  }, [dispatch]);
+
+  const [snackbar, setSnackbar] = React.useState<Pick<
+    AlertProps,
+    'children' | 'severity'
+  > | null>(null);
+
+  const handleCloseSnackbar = () => setSnackbar(null);
 
   const handleRowEditStop: GridEventListener<'rowEditStop'> = (
     params,
@@ -102,15 +107,13 @@ export const DataTable = () => {
     );
   };
 
-
   const handleDeleteClick = (id: GridRowId) => () => {
     const studentId = Number(id);
-      dispatch(deleteStudent(studentId));   
-      socket.on('studentDeleted', msg => {
-        setSnackbar({ children: msg, severity: 'success' });
-      })
+    dispatch(deleteStudent(studentId));
+    socket.on('studentDeleted', (msg) => {
+      setSnackbar({ children: msg, severity: 'success' });
+    });
   };
-
 
   const handleCancelClick = (id: GridRowId) => () => {
     dispatch(
@@ -125,68 +128,78 @@ export const DataTable = () => {
     }
   };
 
+  const handleSaveClick = (id: GridRowId) => () => {
+    dispatch(
+      setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } }),
+    );
+  };
 
-  const handleSaveClick = (id: GridRowId ) => () => {
-      dispatch(
-        setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } }),
-      );
-    };
-
-  const processRowUpdate = (newRow: GridRowModel): GridValidRowModel | Promise<GridValidRowModel> => {
-    //find an existing row to update
-    let existingRow  = rows.find((row: GridRowModel) => row.id === newRow.id);
+  const processRowUpdate = (
+    newRow: GridRowModel,
+  ): GridValidRowModel | Promise<GridValidRowModel> => {
+    let existingRow = rows.find((row: GridRowModel) => row.id === newRow.id);
 
     let validated = false;
     const today = new Date();
-    // const dob = newRow.dob;
+
     if (newRow.name.trim() === '') {
-      setSnackbar({ children: "Please fill name", severity: 'error' });
+      setSnackbar({ children: 'Please fill name', severity: 'error' });
     } else if (newRow.gender.trim() === '') {
-      setSnackbar({ children: "Please select gender", severity: 'error' });
+      setSnackbar({ children: 'Please select gender', severity: 'error' });
     } else if (newRow.address.trim() === '') {
-      setSnackbar({ children: "Please fill address", severity: 'error' });
-    } else if (typeof newRow.mobile === 'string' && newRow.mobile.trim() === '') {
-      setSnackbar({ children: "Please fill mobile", severity: 'error' });
+      setSnackbar({ children: 'Please fill address', severity: 'error' });
+    } else if (
+      typeof newRow.mobile === 'string' &&
+      newRow.mobile.trim() === ''
+    ) {
+      setSnackbar({ children: 'Please fill mobile', severity: 'error' });
     } else if (isNaN(newRow.dob)) {
-      setSnackbar({ children: "Please fill date of birth", severity: 'error' });
+      setSnackbar({ children: 'Please fill date of birth', severity: 'error' });
     } else {
-      validated = true
+      validated = true;
     }
 
     if (!validated) {
       dispatch(
-        setRowModesModel({ ...rowModesModel, [existingRow.id]: { mode: GridRowModes.Edit } }),
+        setRowModesModel({
+          ...rowModesModel,
+          [existingRow.id]: { mode: GridRowModes.Edit },
+        }),
       );
     }
-    
+
     const updatedRow: Student = {
       ...existingRow,
       name: newRow.name,
       gender: newRow.gender,
       address: newRow.address,
-      mobile: typeof newRow.mobile === 'string' ? Number(newRow.mobile) : newRow.mobile,
+      mobile:
+        typeof newRow.mobile === 'string'
+          ? Number(newRow.mobile)
+          : newRow.mobile,
       dob: newRow.dob,
       age: today.getFullYear() - newRow.dob.getFullYear(),
     };
 
-    if (newRow.isNew) {
-      dispatch(createStudent(updatedRow)); 
-      socket.on('studentAdded', msg => {
-        setSnackbar({ children: msg, severity: 'success' });
-      })
-    } else {
-      dispatch(updateStudent(updatedRow.id, updatedRow));
+    if (validated) {
+      if (newRow.isNew) {
+        dispatch(createStudent(updatedRow));
+        socket.on('studentAdded', (msg) => {
+          setSnackbar({ children: msg, severity: 'success' });
+        });
+        dispatch(
+          setRows(rows.filter((row: { id: any }) => row.id !== newRow.id)),
+        );
+      } else {
+        dispatch(updateStudent(updatedRow.id, updatedRow));
+        socket.on('studentUpdated', (msg) => {
+          setSnackbar({ children: msg, severity: 'success' });
+        });
+      }
     }
-  
+
     return updatedRow;
   };
-
-  const [snackbar, setSnackbar] = React.useState<Pick<
-  AlertProps,
-  'children' | 'severity'
-  > | null>(null);
-
-  const handleCloseSnackbar = () => setSnackbar(null);
 
   const handleProcessRowUpdateError = React.useCallback((error: Error) => {
     setSnackbar({ children: error.message, severity: 'error' });
@@ -220,25 +233,6 @@ export const DataTable = () => {
         const dateOfBirthStr = params.value;
         const dateOfBirth = new Date(dateOfBirthStr);
         return dateOfBirth;
-      },
-      renderEditCell: (params) => {
-        return (
-          <GridEditDateCell
-            {...params}
-            renderInput={(props: { InputProps: any; }) => (
-              <TextField
-                {...props}
-                InputProps={{
-                  ...props.InputProps,
-                  inputProps: {
-                    max: new Date(2005, 11, 31),
-                    min: new Date(1985, 0, 1),
-                  },
-                }}
-              />
-            )}
-          />
-        );
       },
     },
     {
@@ -285,28 +279,27 @@ export const DataTable = () => {
             </Button>,
           ];
         } else {
-
-        return [
-          <Button
-            aria-label="edit"
-            variant="contained"
-            color="error"
-            size="small"
-            onClick={handleEditClick(id)}
-          >
-            Edit
-          </Button>,
-          <Button
-            aria-label="delete"
-            variant="outlined"
-            color="primary"
-            size="small"
-            onClick={handleDeleteClick(id)}
-          >
-            Delete
-          </Button>,
-        ];
-      };
+          return [
+            <Button
+              aria-label="edit"
+              variant="contained"
+              color="error"
+              size="small"
+              onClick={handleEditClick(id)}
+            >
+              Edit
+            </Button>,
+            <Button
+              aria-label="delete"
+              variant="outlined"
+              color="primary"
+              size="small"
+              onClick={handleDeleteClick(id)}
+            >
+              Delete
+            </Button>,
+          ];
+        }
       },
     },
   ];

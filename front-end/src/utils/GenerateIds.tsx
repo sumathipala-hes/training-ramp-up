@@ -9,5 +9,3 @@ export const generateID = () => {
   usedIDs.push(randomID);
   return randomID;
 };
-
-

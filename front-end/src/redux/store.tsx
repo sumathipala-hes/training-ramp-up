@@ -1,7 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit';
 import dataReducer from './slice';
 import createSagaMiddleware from 'redux-saga';
-import studentSaga from './saga'
+import studentSaga from './saga';
 
 const sagaMiddleware = createSagaMiddleware();
 
@@ -10,9 +10,8 @@ const store = configureStore({
     data: dataReducer,
   },
   middleware: [sagaMiddleware],
-  });
+});
 
-  
-  sagaMiddleware.run(studentSaga);
+sagaMiddleware.run(studentSaga);
 
 export default store;
