@@ -142,20 +142,25 @@ export const DataTable = () => {
     let validated = false;
     const today = new Date();
 
+    const dob = new Date(newRow.dob);
+    let newAge: number | string = '';
+    newAge = today.getFullYear() - dob.getFullYear();
+
     if (newRow.name.trim() === '') {
       setSnackbar({ children: 'Please fill name', severity: 'error' });
     } else if (newRow.gender.trim() === '') {
       setSnackbar({ children: 'Please select gender', severity: 'error' });
     } else if (newRow.address.trim() === '') {
       setSnackbar({ children: 'Please fill address', severity: 'error' });
-    } else if (
-      typeof newRow.mobile === 'string' &&
-      newRow.mobile.trim() === ''
-    ) {
+    } else if (typeof newRow.mobile === 'string' && newRow.mobile.trim() === '') {
       setSnackbar({ children: 'Please fill mobile', severity: 'error' });
+    } else if (!/^\d{10}$/.test(newRow.mobile)) {
+      setSnackbar({ children: 'Please add a valid mobile number with 10 digits', severity: 'error' });
     } else if (isNaN(newRow.dob)) {
       setSnackbar({ children: 'Please fill date of birth', severity: 'error' });
-    } else {
+    } else if (newAge < 18 ) {
+      setSnackbar({ children: 'Age must be above 18. Add birth of date again', severity: 'error' });
+    }  else {
       validated = true;
     }
 
@@ -173,10 +178,7 @@ export const DataTable = () => {
       name: newRow.name,
       gender: newRow.gender,
       address: newRow.address,
-      mobile:
-        typeof newRow.mobile === 'string'
-          ? Number(newRow.mobile)
-          : newRow.mobile,
+      mobile: newRow.mobile,
       dob: newRow.dob,
       age: today.getFullYear() - newRow.dob.getFullYear(),
     };

@@ -1,5 +1,5 @@
-import axios from 'axios';
 import { Student } from '../interfaces/studentInterface';
+import axios from 'axios';
 
 export const getAllStudentsFromApi = async () => {
   try {
