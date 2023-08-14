@@ -13,16 +13,10 @@ import {
   GridValidRowModel,
 } from '@mui/x-data-grid';
 import { useDispatch, useSelector } from 'react-redux';
-import { setRowModesModel, setRows } from '../redux/slice';
+import { createStudent, deleteStudent, getAllStudents, setRowModesModel, setRows, updateStudent } from '../redux/slice';
 import { useEffect } from 'react';
 import { generateID } from '../utils/GenerateIds';
-import {
-  createStudent,
-  deleteStudent,
-  getAllStudents,
-  updateStudent,
-} from '../redux/actions';
-import { Student } from '../interfaces/studentInterface';
+import { Student } from '../redux/slice';
 import React from 'react';
 import Snackbar from '@mui/material/Snackbar';
 import { io } from 'socket.io-client';
@@ -193,7 +187,7 @@ export const DataTable = () => {
           setRows(rows.filter((row: { id: any }) => row.id !== newRow.id)),
         );
       } else {
-        dispatch(updateStudent(updatedRow.id, updatedRow));
+        dispatch(updateStudent({id: updatedRow.id, data: updatedRow}));
         socket.on('studentUpdated', (msg) => {
           setSnackbar({ children: msg, severity: 'success' });
         });

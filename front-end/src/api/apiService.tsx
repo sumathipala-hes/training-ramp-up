@@ -1,4 +1,4 @@
-import { Student } from '../interfaces/studentInterface';
+import { Student } from '../redux/slice';
 import axios from 'axios';
 
 export const getAllStudentsFromApi = async () => {
@@ -8,7 +8,6 @@ export const getAllStudentsFromApi = async () => {
 
 export const deleteStudentApi = async (studentId: number) => {
   await axios.delete(`http://localhost:4000/students/${studentId}`);
-
 };
 
 export const updateStudentApi = async (
@@ -19,6 +18,7 @@ export const updateStudentApi = async (
       `http://localhost:4000/students/${studentId}`,
       updatedData,
     );
+
     return response.data as Student;
 };
 
@@ -27,5 +27,6 @@ export const createStudentApi = async (studentData: Student) => {
       `http://localhost:4000/students`,
       studentData,
     );
+
     return response.data;
 };

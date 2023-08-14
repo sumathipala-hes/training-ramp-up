@@ -1,14 +1,36 @@
 import { GridRowsProp } from '@mui/x-data-grid';
-import { createSlice } from '@reduxjs/toolkit';
+import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
 export interface DataState {
   records: GridRowsProp;
   rowModesModel: any;
+  studentId: number;
+  studentData: Student;
+}
+
+export interface Student {
+  id: number;
+  name: string;
+  gender: string;
+  address: string;
+  mobile: string;
+  dob: string;
+  age: number;
 }
 
 const initialState: DataState = {
   records: [],
   rowModesModel: {},
+  studentId: 0,
+  studentData: {
+    id: 0,
+    name: '',
+    gender: '',
+    address: '',
+    mobile: '',
+    dob: '',
+    age: 0,
+  },
 };
 
 export const dataSlice = createSlice({
@@ -20,6 +42,22 @@ export const dataSlice = createSlice({
     },
     setRowModesModel: (state, action) => {
       state.rowModesModel = action.payload;
+    },
+
+    getAllStudents: () => {},
+
+    deleteStudent: (state,action) => {
+      state.studentId = action.payload;
+    },
+
+    updateStudent: (state, action: PayloadAction <{ id: number; data: Student}>) => {
+      const { id, data } = action.payload;
+      state.studentId = id;
+      state.studentData = data;
+    },
+
+    createStudent: (state, action) => {
+      state.studentData = action.payload;
     },
 
     //api success actions
@@ -51,5 +89,9 @@ export const {
   removeDeletedStudent,
   createStudentSuccess,
   updateStudentSuccess,
+  createStudent,
+  getAllStudents,
+  updateStudent,
+  deleteStudent
 } = dataSlice.actions;
 export default dataSlice.reducer;

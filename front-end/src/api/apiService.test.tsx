@@ -85,6 +85,7 @@ describe('API Functions', () => {
       config: {},
     };
 
+    //mock axios post function to return mockResponse
     (axios.post as jest.Mock).mockResolvedValue(mockResponse);
 
     const createdStudent = await createStudentApi(mockStudent);
@@ -93,5 +94,16 @@ describe('API Functions', () => {
       'http://localhost:4000/students',
       mockStudent,
     );
+  });
+
+  it('should handle API error when getting all students', async () => {
+    const errorMessage = 'Failed to fetch students';
+    
+    // Mock axios get function to throw an error
+    (axios.get as jest.Mock).mockRejectedValue(new Error(errorMessage));
+
+    await expect(getAllStudentsFromApi()).rejects.toThrow(errorMessage);
+
+    expect(axios.get).toHaveBeenCalledWith('http://localhost:4000/students');
   });
 });

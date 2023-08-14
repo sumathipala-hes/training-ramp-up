@@ -10,9 +10,12 @@ import {
   getAllStudentsSuccess,
   removeDeletedStudent,
   updateStudentSuccess,
+  getAllStudents,
+  createStudent, 
+  deleteStudent, 
+  updateStudent
 } from './slice';
-import { Student } from '../interfaces/studentInterface';
-import { createStudent, deleteStudent, updateStudent } from './actions';
+import { Student } from './slice';
 
 function* getAllStudentsSaga(): Generator<any, void, Student[]> {
   try {
@@ -62,8 +65,8 @@ function* createStudentSaga(
 }
 
 export default function* studentSaga() {
-  yield takeLatest('GET_STUDENTS', getAllStudentsSaga);
-  yield takeEvery('DELETE_STUDENT', deleteStudentSaga);
-  yield takeLatest('UPDATE_STUDENT', updateStudentSaga);
-  yield takeLatest('CREATE_STUDENT', createStudentSaga);
+  yield takeLatest(getAllStudents.type, getAllStudentsSaga);
+  yield takeEvery(deleteStudent.type, deleteStudentSaga);
+  yield takeLatest(updateStudent.type, updateStudentSaga);
+  yield takeLatest(createStudent.type, createStudentSaga);
 }
