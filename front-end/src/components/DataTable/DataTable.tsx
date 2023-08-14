@@ -25,9 +25,9 @@ import {
 import { minDate, maxDate } from "../../util/dateRange";
 import generateRandomId from "../../util/generateRandomId";
 import { initialRows } from "../../util/Data";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setStudent } from "../../redux/studentSlice";
-// import { RootState } from "../../redux/store";
+import { RootState } from "../../redux/store";
 
 // EditToolnarProps is interface its define its type and passing inside editToolBar function
 interface EditToolbarProps {
@@ -47,13 +47,13 @@ function EditToolbar(props: EditToolbarProps) {
     setRows((oldRows) => [
       {
         id,
-        name: "",
-        age: "",
-        dof: new Date(),
-        gender: "",
-        address: "",
-        mobile: "",
-        isNew: true,
+        // name: "",
+        // age: "",
+        // dof: new Date(),
+        // gender: "",
+        // address: "",
+        // mobile: "",
+        // isNew: true,
       },
       ...oldRows,
     ]);
@@ -89,16 +89,25 @@ function DataTable() {
 
   //Redux State Update an local state update each others
   const dispatch = useDispatch();
-  // const tableRowRedux = useSelector((state: RootState) => state.table.Rows);
+  const tableRowRedux = useSelector((state: RootState) => state.table.rows);
 
   React.useEffect(() => {
     //its conerting date to string function bcz cant pass date object directly to redux store serialization problem
-    const newRows = rows.map((row) => {
-      return { ...row, dof: row.dof?.toString() };
-    });
-    dispatch(setStudent(newRows as Array<any>));
-    console.log(newRows);
+    // const newRows = rows.map((row) => {
+    //   return { ...row, dof: row.dof?.toString() };
+    // });
+    // dispatch(setStudent(newRows as Array<any>));
+    // console.log(newRows);
+
+    dispatch(setStudent(rows as Array<any>));
+    console.log(rows);
   }, [rows, dispatch]);
+
+  React.useEffect(() => {
+    setRows(tableRowRedux);
+    console.log("from redux store : ",tableRowRedux);
+  }, [tableRowRedux]);
+
 
   // handleRowEditStop function will be called when user click on save button and it will stop the edit mode
   const handleRowEditStop: GridEventListener<"rowEditStop"> = (
