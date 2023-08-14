@@ -45,11 +45,11 @@ export const updateStudents: RequestHandler = async (
 export const deleteStudents: RequestHandler = async (
   req: Request,
   res: Response
-): Promise<Response> => {
+): Promise<void> => {
   try {
     const student = await deleteStudent(req.params.id);
-    return res.status(200).json(student);
+     res.status(200).json(student);
   } catch (error) {
-    return res.status(500).json(error);
+     res.status(500).json(error);
   }
 };

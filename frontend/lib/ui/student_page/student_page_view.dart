@@ -365,15 +365,6 @@ class StudentPageView extends StatelessWidget {
                                   gender: studentPageBloc.state.gender,
                                 ),
                               );
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text(
-                                    'Successfully Updated..!',
-                                    textAlign: TextAlign.center,
-                                  ),
-                                  backgroundColor: AppColors.successColor,
-                                ),
-                              );
                               return;
                             }
                             ScaffoldMessenger.of(context).showSnackBar(

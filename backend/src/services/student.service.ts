@@ -2,9 +2,12 @@ import { DeleteResult, InsertResult, UpdateResult } from 'typeorm';
 import { dataSource } from '../configs/dataSourceConfig';
 import { Student } from '../models/student.model';
 
-export const getAllStudents = async (): Promise<Student[]> => {
+export const getAllStudents = async (): Promise<Array<Student>> => {
   try {
-    const students = await dataSource.manager.find(Student);
+    const students: Array<Student> = await dataSource.manager.find(Student, {
+      order: {
+        id: 'DESC',
+        }});
     return students;
   } catch (error) {
     throw error;
