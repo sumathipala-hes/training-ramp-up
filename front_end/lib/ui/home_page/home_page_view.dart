@@ -2,13 +2,14 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:front_end/ui/widget/student_modal.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:ramp_up/ui/widget/card_details.dart';
-import 'package:ramp_up/ui/widget/student_modal.dart';
+
 
 import '../../model/student_model.dart';
 import '../../theme/primary_theme.dart';
 import '../manage_student_page/manage_student_page_provider.dart';
+import '../widget/card_details.dart';
 import 'home_page_bloc.dart';
 import 'home_page_state.dart';
 

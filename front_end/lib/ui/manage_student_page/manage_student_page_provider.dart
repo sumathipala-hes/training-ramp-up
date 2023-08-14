@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:ramp_up/model/student_model.dart';
-
+import '../../model/student_model.dart';
 import 'manage_student_page_bloc.dart';
 import 'manage_student_page_view.dart';
 

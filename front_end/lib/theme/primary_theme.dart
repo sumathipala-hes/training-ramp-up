@@ -1,8 +1,7 @@
-// app_theme.dart
-
 import 'package:flutter/material.dart';
+import 'package:front_end/theme/styled_theme.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:ramp_up/theme/styled_theme.dart';
+
 
 final ThemeData appThemeData = ThemeData(
   primaryColor: const Color.fromARGB(255, 9, 202, 199),

@@ -6,11 +6,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
-import 'package:ramp_up/ui/home_page/home_page_bloc.dart';
 
 import '../../model/student_model.dart';
 import '../../theme/primary_theme.dart';
-import '../../util/alert.dart';
+import '../../util/notification.util.dart';
+import '../home_page/home_page_bloc.dart';
 import '../home_page/home_page_event.dart';
 import 'manage_student_page_bloc.dart';
 import 'manage_student_page_event.dart';
@@ -295,21 +295,18 @@ class StudentMangeView extends StatelessWidget {
                                     addressController.text.trim().isEmpty ||
                                     mobileNoController.text.trim().isEmpty ||
                                     dateController.text.trim().isEmpty) {
-                                  AlertTextField.showFieldError(
+                                  showFieldError(
                                       'Text Field should not be empty.');
                                 } else if (!RegExp(r'^[a-zA-Z ]+$')
                                     .hasMatch(nameController.text.trim())) {
-                                  AlertTextField.showFieldError(
-                                      'Invalid Name.');
+                                  showFieldError('Invalid Name.');
                                 } else if (!RegExp(r'^[a-zA-Z0-9 ]+$')
                                     .hasMatch(addressController.text.trim())) {
-                                  AlertTextField.showFieldError(
-                                      'Invalid Address.');
+                                  showFieldError('Invalid Address.');
                                 } else if (!RegExp(
                                         r'^(07(0|1|2|4|5|6|7|8)[0-9]{7})$')
                                     .hasMatch(mobileNoController.text.trim())) {
-                                  AlertTextField.showFieldError(
-                                      'Invalid Mobile No.');
+                                  showFieldError('Invalid Mobile No.');
                                 } else {
                                   homePageBloc.add(UpdateStudent(
                                     id: student.id!,
@@ -321,8 +318,7 @@ class StudentMangeView extends StatelessWidget {
                                         studentManageBloc.state.selectedGender,
                                   ));
                                   clear();
-                                  AlertTextField.showSaveAlert(
-                                      'Student Updated Successfully.');
+
                                   Navigator.of(context).pop();
                                 }
                               },
@@ -338,14 +334,11 @@ class StudentMangeView extends StatelessWidget {
                             height: 45,
                             child: ElevatedButton(
                               onPressed: () {
-                                AlertTextField.showYesNoAlert(context)
-                                    .then((confirmed) {
+                                showYesNoAlert(context).then((confirmed) {
                                   if (confirmed != null && confirmed) {
                                     homePageBloc.add(
                                       DeleteStudent(id: student.id!),
                                     );
-                                    AlertTextField.showSaveAlert(
-                                        'Student Deleted Successfully.');
                                     Navigator.of(context).pop();
                                   }
                                 });

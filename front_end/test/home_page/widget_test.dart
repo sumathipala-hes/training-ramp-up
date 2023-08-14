@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:front_end/model/student_model.dart';
+import 'package:front_end/ui/home_page/home_page_bloc.dart';
+import 'package:front_end/ui/widget/card_details.dart';
+import 'package:front_end/ui/widget/student_modal.dart';
 import 'package:intl/intl.dart';
-import 'package:ramp_up/model/student_model.dart';
-import 'package:ramp_up/ui/home_page/home_page_bloc.dart';
-import 'package:ramp_up/ui/widget/card_details.dart';
-import 'package:ramp_up/ui/widget/student_modal.dart';
 
 void main() {
   Widget createApp() {
