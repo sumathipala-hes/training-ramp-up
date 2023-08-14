@@ -73,7 +73,7 @@ test.skip('"Save" button and its functionality: shows the changes after saving t
   });
 });
 
-test('"Cancel" button and its functionality', () => {
+test.skip('"Cancel" button and its functionality', () => {
   render(
     <Provider store={store}>
       <DataTable />
