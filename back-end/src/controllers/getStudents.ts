@@ -5,10 +5,10 @@ import AppDataSource from "../services/dataSoure"
 
 const getStudents = (async (req: Request, res: Response) => {
     try {
-        const savedPhotos = await AppDataSource.manager.find(Student);
+        const students = await AppDataSource.manager.find(Student);
             return res.status(200).json({
                 status: 200,
-                data:savedPhotos
+                data:students
             });
     } catch (err) {
         if (err instanceof Error) {

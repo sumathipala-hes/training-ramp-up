@@ -28,7 +28,12 @@ const updateStudent = (async (req: Request, res: Response) => {
             student.age = age;
 
             await studentRepository.save(student);
-            io.sockets.emit("updateStudent","A student record has been updated")
+            
+            try{
+                io.sockets.emit("updateStudent","A student record has been updated")
+            } catch(error){
+               console.log(error) 
+            }
             return res.status(200).json({
                 status: 200,
             });

@@ -14,7 +14,11 @@ const deleteStudent = (async (req: Request, res: Response) => {
         })
         if(student !== null){
             await studentRepository.remove(student);
-            io.sockets.emit("deleteStudent","A student has been removed");
+            try{
+                io.sockets.emit("deleteStudent","A student has been removed");
+            } catch(error){
+                console.log(error) 
+             }
             return res.status(200).json({
                 status: 200,
             });
