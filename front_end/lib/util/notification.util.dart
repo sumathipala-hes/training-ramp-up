@@ -15,6 +15,7 @@ Future<void> sendNotification(String title, String body) async {
   const String fcmEndpoint = 'https://fcm.googleapis.com/fcm/send';
 
   final token = await FirebaseMessaging.instance.getToken();
+  Logger().d('Token: $token');
 
   final message = {
     'notification': {
