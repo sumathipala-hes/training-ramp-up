@@ -7,6 +7,7 @@
     "build": "npx tsc",
     "start": "nodemon dist/index.js",
     "dev": "concurrently \"npx tsc --watch\"  \"nodemon -q dist/index.js\"",
+    "test": "jest",
     "eslint:fix": "eslint --fix"
   },
   "keywords": [],
@@ -38,7 +39,13 @@
     "nodemon": "^3.0.1",
     "prettier": "^3.0.1",
     "supertest": "^6.3.3",
-    "ts-jest": "^29.1.1",
     "typescript": "^4.9.4"
+  },
+  "jest": {
+    "collectCoverageFrom": [
+      "src/routes/createStudent.ts",
+      "src/services/studentServices.ts",
+      "src/controllers/studentControllers.ts"
+    ]
   }
 }

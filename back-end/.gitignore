@@ -4,9 +4,9 @@
 /node_modules
 /.pnp
 .pnp.js
-
+src/ormconfig.ts
 node_modules
-/dist
+dist
 ./dist
 # testing
 /coverage

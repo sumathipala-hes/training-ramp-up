@@ -2,26 +2,17 @@ import express, { Express } from 'express'
 import dotenv from 'dotenv'
 import { createConnection } from 'typeorm'
 import { createStudentRouter } from './routes/createStudent'
-import { Student } from './entities/student'
 import cors from 'cors'
 import { Server } from 'socket.io'
 import http from 'http'
+import { connectionOptions } from './ormconfig'
 
 dotenv.config({ path: '../config.env' })
 const app: Express = express()
 
 const main = async () => {
   try {
-    await createConnection({
-      type: 'postgres',
-      host: 'localhost',
-      port: 5432,
-      username: 'postgres',
-      password: 'abdzak@32116',
-      database: 'gridtable',
-      entities: [Student],
-      synchronize: true,
-    })
+    await createConnection(connectionOptions)
     console.log('Connected to postgres')
     //Middleware
     app.use(cors())
@@ -64,8 +55,10 @@ const main = async () => {
     //   res.send('This one works fine Now')
     // })
   } catch (err) {
-    console.error('Unable to connecto to postgres')
+    console.error(err)
   }
 }
 
 main()
+
+export default app

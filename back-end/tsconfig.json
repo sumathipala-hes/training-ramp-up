@@ -107,11 +107,6 @@
     "skipLibCheck": true /* Skip type checking all .d.ts files. */
   },
   "include": [
-    "src/**/*.ts", // Your source TypeScript files
-    "ormconfig.ts" // Include your ormconfig.ts file
-  ],
-  "exclude": [
-    "node_modules",
-    "dist" // Exclude your output directory
+    "src/**/*.ts" // or any other patterns that match your source files
   ]
 }
