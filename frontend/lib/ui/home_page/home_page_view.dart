@@ -19,93 +19,96 @@ class HomePageView extends StatelessWidget {
         toolbarHeight: MediaQuery.of(context).size.height * 0.1,
         backgroundColor: Colors.black87,
       ),
-      body: Container(
-        width: double.infinity,
-        alignment: Alignment.center,
-        decoration: const BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage(
-              'assets/images/background.jpg',
+      body: SingleChildScrollView(
+        child: Container(
+          height: MediaQuery.of(context).size.height,
+          width: double.infinity,
+          alignment: Alignment.center,
+          decoration: const BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage(
+                'assets/images/background.jpg',
+              ),
+              fit: BoxFit.cover,
             ),
-            fit: BoxFit.cover,
           ),
-        ),
-        padding: const EdgeInsetsDirectional.fromSTEB(10, 20, 10, 20),
-        child: Column(
-          children: [
-            SizedBox(
-              width: MediaQuery.of(context).size.width * 0.9,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(40),
+          padding: const EdgeInsetsDirectional.fromSTEB(10, 20, 10, 20),
+          child: Column(
+            children: [
+              SizedBox(
+                width: MediaQuery.of(context).size.width * 0.9,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(40),
+                    ),
+                    backgroundColor: Colors.black87,
                   ),
-                  backgroundColor: Colors.black87,
-                ),
-                onPressed: () {
-                  showDialog(
-                    context: context,
-                    builder: (context) {
-                      return const StudentForm();
-                    },
-                  );
-                },
-                child: const Padding(
-                  padding: EdgeInsetsDirectional.fromSTEB(20, 10, 20, 10),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        Icons.add,
-                        color: Colors.white,
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Text(
-                        "Add Student",
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.normal,
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder: (context) {
+                        return const StudentForm();
+                      },
+                    );
+                  },
+                  child: const Padding(
+                    padding: EdgeInsetsDirectional.fromSTEB(20, 10, 20, 10),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.add,
+                          color: Colors.white,
                         ),
-                      ),
-                    ],
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Text(
+                          "Add Student",
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.normal,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
-            const SizedBox(
-              height: 50,
-            ),
-            BlocBuilder<HomePageBloc, HomePageState>(
-              buildWhen: (
-                previous,
-                current,
-              ) =>
-                  current.students != previous.students,
-              builder: (
-                context,
-                state,
-              ) {
-                final List<Student> studentList = state.students;
-                return SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.58,
-                  child: ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: studentList.length,
-                    itemBuilder: (
-                      context,
-                      index,
-                    ) {
-                      return StudentCard(
-                        student: studentList[index],
-                      );
-                    },
-                  ),
-                );
-              },
-            ),
-          ],
+              const SizedBox(
+                height: 50,
+              ),
+              BlocBuilder<HomePageBloc, HomePageState>(
+                buildWhen: (
+                  previous,
+                  current,
+                ) =>
+                    current.students != previous.students,
+                builder: (
+                  context,
+                  state,
+                ) {
+                  final List<Student> studentList = state.students;
+                  return SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.58,
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: studentList.length,
+                      itemBuilder: (
+                        context,
+                        index,
+                      ) {
+                        return StudentCard(
+                          student: studentList[index],
+                        );
+                      },
+                    ),
+                  );
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );
