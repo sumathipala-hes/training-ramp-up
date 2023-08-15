@@ -12,7 +12,7 @@ export const createStudent = async (req: Request, res: Response) => {
     return res.json(student);
   } catch (err) {
     if (err instanceof Error) {
-      return res.status(500).json({ message: err.message });
+      return res.status(400).json({ message: err.message });
     }
   }
 };
@@ -23,7 +23,7 @@ export const getStudents = async (req: Request, res: Response) => {
     res.json(students);
   } catch (err) {
     if (err instanceof Error) {
-      return res.status(500).json({ message: err.message });
+      return res.status(400).json({ message: err.message });
     }
   }
 };
@@ -37,7 +37,7 @@ export const updateStudent = async (req: Request, res: Response) => {
     return res.sendStatus(204);
   } catch (err) {
     if (err instanceof Error) {
-      return res.status(500).json({ message: err.message });
+      return res.status(400).json({ message: err.message });
     }
   }
 };
@@ -51,7 +51,7 @@ export const deleteStudent = async (req: Request, res: Response) => {
     return res.sendStatus(204);
   } catch (err) {
     if (err instanceof Error) {
-      return res.status(500).json({ message: err.message });
+      return res.status(400).json({ message: err.message });
     }
   }
 };

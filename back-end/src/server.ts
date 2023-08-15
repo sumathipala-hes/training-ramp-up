@@ -6,6 +6,7 @@ import studentRoutes from './routes/student.route';
 import cors from 'cors';
 import { Server } from 'socket.io';
 import { createServer } from 'http';
+import AppDataSource from './database';
 
 const app: Express = express();
 const port = 4000;
@@ -41,17 +42,7 @@ app.get('/', (req: Request, res: Response) => {
   res.send('Hello, this is Express + TypeScript and Postgresql');
 });
 
-export const AppDataSource = new DataSource({
-  type: 'postgres',
-  host: 'localhost',
-  port: 5432,
-  username: 'postgres',
-  password: 'admin',
-  database: 'master',
-  synchronize: true,
-  logging: true,
-  entities: [Student],
-});
+
 
 AppDataSource.initialize()
   .then(() => {
@@ -62,3 +53,5 @@ AppDataSource.initialize()
 server.listen(port, (): void => {
   console.log(`[Server]: I am running at http://localhost:${port}`);
 });
+
+export default app;
