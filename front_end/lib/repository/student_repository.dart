@@ -1,8 +1,7 @@
 import 'dart:convert';
+import 'package:front_end/util/db_util.dart';
 import 'package:http/http.dart' as http;
 import '../models/student.dart';
-
-const String baseUrl = 'http://192.168.1.9:4000/api/v1';
 
 class StudentRepository {
   Future<http.Response> getAllStudents() async {

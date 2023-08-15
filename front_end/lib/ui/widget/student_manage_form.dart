@@ -137,6 +137,9 @@ class _PopupModelState extends State<PopupModel> {
                       ),
                     ),
                   ),
+                  inputFormatters: [
+                    FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+                  ],
                 ),
                 TextFormField(
                   controller: dateController,
