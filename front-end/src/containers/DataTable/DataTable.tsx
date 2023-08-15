@@ -75,12 +75,12 @@ function DataTable(props: { isTesting: any; }) {
         cellClassName: "cellStyles",
         editable:true,
         preProcessEditCellProps: (params:any)=>{
-          if( /^\d{10}$/.test(params.otherFieldsProps.mobile.value) && params.otherFieldsProps.address.value !== "" && params.props.value.length > 0 && !isNaN(params.otherFieldsProps.birthday.value) && (params.otherFieldsProps.birthday.value).toString() !== 'Invalid Date'){
+          if( /^\d{10}$/.test(params.otherFieldsProps.mobile.value) && params.otherFieldsProps.address.value !== "" && params.props.value.length > 0 && /^[A-Za-z]+$/.test(params.props.value) && !isNaN(params.otherFieldsProps.birthday.value) && (params.otherFieldsProps.birthday.value).toString() !== 'Invalid Date'){
             setDisabled(false);
           }else{
             setDisabled(true);
           }
-            const hasError = params.props.value.length < 1;
+            const hasError = params.props.value.length < 1 || ! /^[A-Za-z]+$/.test(params.props.value);
             return { ...params.props, error:hasError, alert:alerts.name};
         },
         renderEditCell: handleEditCell,

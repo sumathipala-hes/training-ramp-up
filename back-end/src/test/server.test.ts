@@ -13,8 +13,8 @@ describe("API TEST CASES", () => {
 
   test("Delete route with invalid student id", async () => {
     const res = await request(app).post("/remove-student").send({"id" : 1000});
-    expect(res.statusCode).toEqual(500);
-    expect(res.body).toEqual({"status": 500,"error": "No Student data found"});
+    expect(res.statusCode).toEqual(400);
+    expect(res.body).toEqual({"status": 400,"error": "No Student data found"});
   });
 
   test("Add student to the database", async () => {
@@ -39,7 +39,7 @@ describe("API TEST CASES", () => {
             "age": 24
         }
     );
-    expect(res.statusCode).toEqual(500);
+    expect(res.statusCode).toEqual(400);
   });
 
   test("Edit valid student using edit route", async () => {
@@ -77,7 +77,7 @@ describe("API TEST CASES", () => {
             "age": 24
         }
     );
-    expect(res.body).toEqual({"status": 500,"error": "No Student data found"});
+    expect(res.body).toEqual({"status": 400,"error": "No Student data found"});
     await AppDataSource.destroy();
   });
 });

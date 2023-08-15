@@ -1,6 +1,8 @@
 import {Request, Response} from 'express'; 
-import { Student } from '../models/student';
 import { fetchStudents, saveStudent, deleteStudentDb, updateStudentDb } from '../services/student';
+import { validationResult } from 'express-validator';
+import { idValidRules, stuValidRules } from '../middlewares/expressValiator';
+import { calculateAge } from '../utils';
 
 //get all students
 const getStudents = (async (req: Request, res: Response) => {
@@ -13,8 +15,8 @@ const getStudents = (async (req: Request, res: Response) => {
     } catch (err) {
         if (err instanceof Error) {
             // 'err' is now recognized as an instance of the 'Error' class
-            return res.status(500).json({
-                status: 500,
+            return res.status(400).json({
+                status: 400,
                 error: err.message,
             });
         } else {
@@ -29,36 +31,29 @@ const getStudents = (async (req: Request, res: Response) => {
 
 //add student data
 const addStudent = (async (req: Request, res: Response) => {
+    req.body.age = calculateAge(req.body.birthday);
+    await Promise.all(stuValidRules.map(validation => validation.run(req)));
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({
+            status: 400,
+            errors: errors.array(),
+        });
+    }
     try {
-        const id = req.body.id;
-        const name = req.body.name;
-        const gender = req.body.gender
-        const address = req.body.address;
-        const mobile = req.body.mobile;
-        const birthday = req.body.birthday;
-        const age = req.body.age;
-
-        const student = new Student()
-        student.name = name;
-        student.gender= gender;
-        student.address = address;
-        student.mobile = mobile;
-        student.birthday = birthday;
-        student.age = age;
-        student.id = id;
-
-        const saveProcess = await saveStudent(student, req);
-        if(saveProcess.status === 500){
+        const isSaved = await saveStudent(req);
+        if(isSaved){
+            return res.status(200).json({
+                status: 200,
+            });
+        }else{
             throw new Error("Failed to save the student data");
         }
-        return res.status(200).json({
-            status: 200,
-        });
 
     } catch (err) {
         if (err instanceof Error) {
-            return res.status(500).json({
-                status: 500,
+            return res.status(400).json({
+                status: 400,
                 error: err.message,
             });
         } else {
@@ -74,6 +69,15 @@ const addStudent = (async (req: Request, res: Response) => {
 //delete student record
 const deleteStudent = (async(req: Request, res: Response) => {
     const id = req.body.id;
+    await Promise.all(idValidRules.map(validation => validation.run(req)));
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+        return res.status(400).json({
+            status: 400,
+            errors: errors.array(),
+        });
+    }
     try {
         const isDeleted = await deleteStudentDb(id, req);
         if(isDeleted){
@@ -85,8 +89,8 @@ const deleteStudent = (async(req: Request, res: Response) => {
         }
     } catch (err) {
         if (err instanceof Error) {
-            return res.status(500).json({
-                status: 500,
+            return res.status(400).json({
+                status: 400,
                 error: err.message,
             });
         } else {
@@ -101,6 +105,16 @@ const deleteStudent = (async(req: Request, res: Response) => {
 
 //update student data
 const updateStudent = (async (req: Request, res: Response) => {
+    req.body.age = calculateAge(req.body.birthday);
+    await Promise.all(stuValidRules.map(validation => validation.run(req)));
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+        return res.status(400).json({
+            status: 400,
+            errors: errors.array(),
+        });
+    }
     try {
         const isUpdated = await updateStudentDb(req);
         if(isUpdated){
@@ -112,8 +126,8 @@ const updateStudent = (async (req: Request, res: Response) => {
         }
     } catch (err) {
         if (err instanceof Error) {
-            return res.status(500).json({
-                status: 500,
+            return res.status(400).json({
+                status: 400,
                 error: err.message,
             });
         } else {
