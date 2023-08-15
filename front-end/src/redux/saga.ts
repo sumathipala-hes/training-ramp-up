@@ -87,7 +87,6 @@ function* updateStudent(action: PayloadAction<TableData>) {
 function* getStudents(action: PayloadAction<TableData>) {
     try {
         const response:ResponseType = yield call(axios.get,'http://localhost:4000/get-students');
-        console.log(response.data.data)
         yield put(tableActions.initializeStudents(response.data.data));
     } catch (error) {
         console.log(error);

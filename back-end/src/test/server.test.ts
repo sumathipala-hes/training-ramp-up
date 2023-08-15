@@ -36,11 +36,6 @@ describe("API TEST CASES", () => {
     const res = await request(app).post("/add-student").send(
         {
             "id": "100",
-            "name": "John",
-            "gender": "male",
-            "address": "Jon",
-            "mobile": "0715426257",
-            "birthday": "1999-08-01",
             "age": 24
         }
     );
