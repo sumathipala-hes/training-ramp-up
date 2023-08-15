@@ -10,20 +10,8 @@ import { dataSource } from './configs/db.config';
 // Create the express app
 const app = express();
 
-// Here you can add more origins to allow CORS
-const allowedOrigins = ['http://localhost:3000'];
-
-app.use(
-  cors({
-    origin: (origin, callback) => {
-      if (allowedOrigins.indexOf(origin!) !== -1 || !origin) {
-        callback(null, true);
-      } else {
-        callback(new Error('Not allowed by CORS'));
-      }
-    },
-  }),
-);
+// Allow all CORS origins
+app.use(cors());
 
 // if you are receiving JSON data in request-body
 app.use(express.json());
