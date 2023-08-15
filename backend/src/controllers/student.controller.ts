@@ -5,7 +5,7 @@ import {
   saveStudent,
   updateStudent,
 } from '../services/student.service';
-import validations from '../utils/validation_util';
+import validations from '../utils/validation.util';
 
 export const retriveAllStudents: RequestHandler = async (
   req: Request,
@@ -33,7 +33,7 @@ export const addStudents: RequestHandler = async (
     res.status(200).json(student);
   } catch (error) {
     console.log(error);
-    res.status(500).json('error');
+    res.status(500).json(error);
   }
 };
 
