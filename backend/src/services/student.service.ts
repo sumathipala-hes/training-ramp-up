@@ -8,7 +8,7 @@ export const getAllStudents = async (): Promise<Array<Student>> => {
     const students: Array<Student> = await dataSource.manager.find(Student, {
       order: {
         id: 'DESC',
-      }
+      },
     });
     return students;
   } catch (error) {

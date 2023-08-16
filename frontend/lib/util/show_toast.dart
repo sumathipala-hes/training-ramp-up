@@ -5,7 +5,7 @@ import '../ui/theme/colors.dart';
 
 showToast(message) {
   Fluttertoast.showToast(
-    msg: message.notification!.body!,
+    msg: message,
     toastLength: Toast.LENGTH_LONG,
     gravity: ToastGravity.CENTER,
     timeInSecForIosWeb: 1,
