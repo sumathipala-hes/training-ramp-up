@@ -12,14 +12,15 @@ export const requestGetAllStudents: RequestHandler = async (
 ): Promise<Response> => {
   try {
     const students = await getAllStudents();
-    return res.json({
-      message: 'Students found successfully',
-      data: students,
-    });
-  } catch (error) {
     return res
-      .status(500)
-      .json({ message: 'Error retrieving students', error });
+      .status(200)
+      .json({ data: students, message: 'Students found successfully' });
+  } catch (error: any) {
+    if (error.message === 'Student not found') {
+      return res.status(400).json({ message: 'Student not found' });
+    } else {
+      return res.status(500).json({ message: 'An error occurred' });
+    }
   }
 };
 
@@ -30,7 +31,7 @@ export const requestCreateStudent: RequestHandler = async (
   const studentData = req.body;
   try {
     const newStudent = await createStudent(studentData);
-    return res.json({
+    return res.status(200).json({
       message: 'Student created successfully',
       data: newStudent,
     });
@@ -47,15 +48,17 @@ export const requestUpdateStudent: RequestHandler = async (
   const studentData = req.body;
   try {
     const updatedStudent = await updateStudent(id, studentData);
-    if (updatedStudent === undefined) {
-      return res.status(404).json({ message: 'Student not found' });
-    }
-    return res.json({
+
+    return res.status(200).json({
       message: 'Student updated successfully',
       data: updatedStudent,
     });
-  } catch (error) {
-    return res.status(500).json({ message: 'Error updating student', error });
+  } catch (error: any) {
+    if (error.message === 'Student not found') {
+      return res.status(400).json({ message: 'Student not found' });
+    } else {
+      return res.status(500).json({ message: 'An error occurred' });
+    }
   }
 };
 
@@ -66,14 +69,16 @@ export const requestDeleteStudent: RequestHandler = async (
   const { id } = req.params;
   try {
     const deletedStudent = await deleteStudent(id);
-    if (deletedStudent === undefined) {
-      return res.status(404).json({ message: 'Student not found' });
-    }
-    return res.json({
+
+    return res.status(200).json({
       message: 'Student deleted successfully',
       data: deletedStudent,
     });
-  } catch (error) {
-    return res.status(500).json({ message: 'Error deleting student', error });
+  } catch (error: any) {
+    if (error.message === 'Student not found') {
+      return res.status(400).json({ message: 'Student not found' });
+    } else {
+      return res.status(500).json({ message: 'An error occurred' });
+    }
   }
 };

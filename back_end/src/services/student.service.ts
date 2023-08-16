@@ -7,6 +7,11 @@ export const getAllStudents = async (): Promise<Array<Student>> => {
     const students: Array<Student> = await appDataSource.manager
       .getRepository(Student)
       .find({ order: { id: 'DESC' } });
+
+    if (students.length === 0) {
+      throw new Error('No students found');
+    }
+
     return students;
   } catch (error) {
     throw error;
@@ -29,11 +34,16 @@ export const createStudent = async (
 export const updateStudent = async (
   id: string,
   studentData: Student,
-): Promise<UpdateResult> => {
+): Promise<UpdateResult | null> => {
   try {
     const updatedStudent: UpdateResult = await appDataSource.manager
       .getRepository(Student)
       .update(id, studentData);
+
+    if (updatedStudent.affected === 0) {
+      throw new Error('Student not found');
+    }
+
     return updatedStudent;
   } catch (error) {
     throw error;
@@ -42,10 +52,15 @@ export const updateStudent = async (
 
 export const deleteStudent = async (id: string): Promise<DeleteResult> => {
   try {
-    const deleteStudent: DeleteResult = await appDataSource.manager
+    const deleteResult: DeleteResult = await appDataSource.manager
       .getRepository(Student)
       .delete(id);
-    return deleteStudent;
+
+    if (deleteResult.affected === 0) {
+      throw new Error('Student not found');
+    }
+
+    return deleteResult;
   } catch (error) {
     throw error;
   }
