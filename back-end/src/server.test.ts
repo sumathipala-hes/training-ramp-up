@@ -1,27 +1,6 @@
-import AppDataSource from "../database"
-import request from 'supertest';
-import app from "../server";
-
-const mockStudents = [
-  {
-    id: 1,
-    name: "Sara",
-    gender: "Female",
-    address: "colombo",
-    mobile: 771417685,
-    dob: "2000-10-14",
-    age: 23
-  },
-  {
-    id: 2,
-    name: "Hannah",
-    gender: "Female",
-    address: "colombo",
-    mobile: 771417685,
-    dob: "2000-10-14",
-    age: 23
-  },
-]
+import AppDataSource from "./database"
+import request from "supertest";
+import app from "./server";
 
 describe('API Functions', () => {
 
@@ -39,18 +18,6 @@ describe('API Functions', () => {
     expect(Array.isArray(res.body)).toBe(true);
   })
 
-  it('delete an existing student', async () => {
-    const idToDelete = mockStudents[0].id;
-    const res = await request(app).delete(`/students/${idToDelete}`);
-    expect(res.statusCode).toEqual(204);
-  })
-
-  it('update an existing student', async () => {
-    const idToUpdate = mockStudents[1].id;
-    const res = await request(app).put(`/students/${idToUpdate}`);
-    expect(res.statusCode).toEqual(204);
-  })
-
   it('create a new student', async () => {
     const newStudentData = {
       name: "Jane",
@@ -62,6 +29,20 @@ describe('API Functions', () => {
     };
     const res = await request(app).post('/students').send(newStudentData);
     expect(res.statusCode).toEqual(200);
+  })
+
+  it('update an existing student', async () => {
+    const updatedStudentData = {
+      name: "Zac",
+      gender: "Male"
+    };
+    const res = (await request(app).put(`/students/1`).send(updatedStudentData));
+    expect(res.statusCode).toEqual(204);
+  })
+
+  it('delete an existing student', async () => {
+    const res = await request(app).delete(`/students/2`);
+    expect(res.statusCode).toEqual(204);
   })
 
   it('delete a non-existing student', async () => {

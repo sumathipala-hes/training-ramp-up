@@ -15,7 +15,6 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import { createStudent, deleteStudent, getAllStudents, setRowModesModel, setRows, updateStudent } from '../redux/slice';
 import { useEffect } from 'react';
-import { generateID } from '../utils/GenerateIds';
 import { Student } from '../redux/slice';
 import React from 'react';
 import Snackbar from '@mui/material/Snackbar';
@@ -35,7 +34,7 @@ const EditToolbar = (props: EditToolbarProps) => {
   const rows = useSelector((state: any) => state.data.records);
   const rowModesModel = useSelector((state: any) => state.data.rowModesModel);
   const handleAddClick = () => {
-    const id = generateID();
+    const id = 0;
     const newRow = {
       id,
       name: '',
