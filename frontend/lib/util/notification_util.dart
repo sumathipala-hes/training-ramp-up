@@ -15,6 +15,7 @@ Future<void> sendNotification(NotificationData notificationData) async {
   const String fcmEndpoint = 'https://fcm.googleapis.com/fcm/send';
 
   final token = await FirebaseMessaging.instance.getToken();
+  print(token);
   final message = {
     'notification': notificationData.toJson(),
     'to': token,
@@ -37,6 +38,7 @@ Future<void> sendNotification(NotificationData notificationData) async {
 }
 
 void configListener() {
+  FirebaseMessaging.instance.getToken();
   FirebaseMessaging.onMessage.listen((RemoteMessage message) {
     Logger().d('Got a message whilst in the foreground!');
     Logger().d('Message data: ${message.data}');

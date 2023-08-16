@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/model/notification_data.dart';
@@ -17,10 +18,9 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
     on<UpdateStudentEvent>(_updateStudent);
     on<DeleteStudentEvent>(_deleteStudent);
     add(GetAllStudents());
+    FirebaseMessaging.instance.getToken();
     configListener();
   }
-
-  final String baseUrl = 'http://192.168.8.105:5000/api/v1';
 
   Future<FutureOr<void>> _saveStudent(
     SaveStudentEvent event,

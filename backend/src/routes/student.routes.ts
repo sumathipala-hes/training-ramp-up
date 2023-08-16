@@ -5,6 +5,7 @@ import {
   retriveAllStudents,
   updateStudents,
 } from '../controllers/student.controller';
+// import { validateStudent } from '../middleware/validation.middleware';
 
 const router: Router = express.Router();
 
