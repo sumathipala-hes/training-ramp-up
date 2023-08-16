@@ -1,8 +1,12 @@
 import { Request, Response, NextFunction } from 'express';
 import { validationResult, body } from 'express-validator';
 
-const value = (value: string) => {
+const number = (value: string) => {
   return /^(07(0|1|2|4|5|6|7|8)[0-9]{7})$/.test(value);
+};
+
+const name = (value: string) => {
+  return /^[a-zA-Z ]+$/.test(value);
 };
 
 export const validateStudent: Array<
@@ -12,7 +16,8 @@ export const validateStudent: Array<
     .notEmpty()
     .withMessage('Name is required')
     .isString()
-    .withMessage('Name must be a string'),
+    .custom(name)
+    .withMessage('Name must be a string and it cannot contain numbers.'),
 
   body('address').notEmpty().withMessage('Address is required'),
 
@@ -22,7 +27,7 @@ export const validateStudent: Array<
     .isMobilePhone('any')
     .withMessage('Invalid mobile number')
     .isLength({ min: 10, max: 10 })
-    .custom(value)
+    .custom(number)
     .withMessage(
       'Mobile must be exactly 10 numbers and start with 07"0|1|2|4|5|6|7|8".',
     ),
