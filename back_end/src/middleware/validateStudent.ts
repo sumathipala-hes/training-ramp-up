@@ -23,11 +23,11 @@ export const validateStudent: Array<
     .withMessage('Invalid mobile number')
     .isLength({ min: 10, max: 10 })
     .custom(value)
-    .withMessage('Mobile must be exactly 10 numbers and start with 07"0|1|2|4|5|6|7|8".'),
+    .withMessage(
+      'Mobile must be exactly 10 numbers and start with 07"0|1|2|4|5|6|7|8".',
+    ),
 
-  body('dob')
-    .notEmpty()
-    .withMessage('Date of birth is required'),
+  body('dob').notEmpty().withMessage('Date of birth is required'),
 
   body('gender')
     .notEmpty()
