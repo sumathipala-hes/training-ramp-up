@@ -1,50 +1,56 @@
 import 'dart:convert';
+import 'package:frontend/util/show_toast.dart';
 import 'package:http/http.dart' as http;
 import '../model/student.dart';
+import '../util/db_util.dart';
 
 class StudentRepository {
-  final String baseUrl = 'http://192.168.8.105:5000/api/v1';
-
-  Future<http.Response> fetchStudents() async {
+  Future<List<Student>> fetchStudents() async {
     final response = await http.get(
       Uri.parse('$baseUrl/student'),
       headers: <String, String>{
         'Content-Type': 'application/json',
       },
     );
-
-    return response;
+    List<dynamic> responseData = jsonDecode(response.body);
+    List<Student> studentList = [
+      ...responseData.map((studentData) => Student.fromJson(studentData)),
+    ];
+    return studentList;
   }
 
-  Future<http.Response> addStudents(Student student) async {
-    final response = await http.post(
+  Future<void> addStudents(Student student) async {
+    final res = await http.post(
       Uri.parse('$baseUrl/student'),
       headers: <String, String>{
         'Content-Type': 'application/json',
       },
       body: jsonEncode(student.toJson()),
     );
-
-    return response;
+    if (res.statusCode == 500) {
+      showToast('Failed to Save Student');
+    }
   }
 
-  Future<http.Response> updateStudents(Student student) async {
-    final response = await http.put(
+  Future<void> updateStudents(Student student) async {
+    final res = await http.put(
       Uri.parse('$baseUrl/student/${student.id}'),
       headers: <String, String>{
         'Content-Type': 'application/json',
       },
       body: jsonEncode(student.toJson()),
     );
-
-    return response;
+    if (res.statusCode == 500) {
+      showToast('Failed to Update Student');
+    }
   }
 
-  Future<http.Response> deleteStudents(String id) async {
-    final response = await http.delete(
+  Future<void> deleteStudents(String id) async {
+    final res = await http.delete(
       Uri.parse('$baseUrl/student/$id'),
     );
-
-    return response;
+    if (res.statusCode == 500) {
+      showToast('Failed to Delete Student');
+    }
   }
 }

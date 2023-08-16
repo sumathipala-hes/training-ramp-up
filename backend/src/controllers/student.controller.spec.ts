@@ -1,4 +1,4 @@
-import { dataSource } from "../configs/dataSourceConfig";
+import { dataSource } from "../configs/datasource.config";
 import { Student } from "../models/student.model";
 import { deleteStudent, getAllStudents, saveStudent, updateStudent } from "../services/student.service";
 

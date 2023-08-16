@@ -331,15 +331,6 @@ class StudentPageView extends StatelessWidget {
                                 id: student.id,
                               ),
                             );
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text(
-                                  'Successfully Deleted..!',
-                                  textAlign: TextAlign.center,
-                                ),
-                                backgroundColor: AppColors.successColor,
-                              ),
-                            );
                           },
                           child: const Text('DELETE'),
                         ),
