@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:front_end/ui/root_page/root_page.dart';
 import 'package:logger/logger.dart';
 
-
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
