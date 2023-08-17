@@ -1,9 +1,5 @@
 import express from 'express';
-import addStudent from '../controllers/addStudent';
-import getStudents from '../controllers/getStudents';
-import updateStudent from '../controllers/updateStudent';
-import deleteStudent from '../controllers/deleteStudent';
-
+import {addStudent,getStudents, deleteStudent, updateStudent} from '../controllers/student';
 //add routers from controllers
 const router = express.Router();
 router.post('/add-student',addStudent)

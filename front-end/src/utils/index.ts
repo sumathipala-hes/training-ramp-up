@@ -66,7 +66,7 @@ function capitalizeFirstLetter(str:string) {
 
 //validation error alerts
 const alerts = {
-  name:"Name field can't be empty",
+  name:"Name field can't be empty or only should contain letters",
   gender:"Gender value should be male or female",
   age:"Age should be > 18",
   mobile:"Mobile number should be contain 10 numbers",
