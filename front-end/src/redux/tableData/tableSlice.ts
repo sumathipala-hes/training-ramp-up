@@ -1,5 +1,4 @@
 import { createSlice} from '@reduxjs/toolkit';
-import { rows } from '../../utils';
 
 //create interface to accept values to states
 interface TableState {
@@ -17,11 +16,8 @@ interface rowData {
   age: number,
 }
 
-//max id value of the demo data
-const maxId = Math.max(...rows.map((row) => row.id));
-
 //set initial state  
-const initialState: TableState = { rows:rows, id:maxId };
+const initialState: TableState = { rows:[], id:0 };
 
 //create a slice to update table state
 const tableSlice = createSlice({
@@ -36,7 +32,7 @@ const tableSlice = createSlice({
     removeStudent(state, action) {
       state.rows = state.rows.filter((row) => row.id !== action.payload);
     },
-    updateRow(state, action){
+    updateStudent(state, action){
       const rowIndex = state.rows.findIndex((row) => row.id === action.payload.id);
       if (rowIndex !== -1) {
         state.rows[rowIndex] = action.payload;
@@ -45,6 +41,21 @@ const tableSlice = createSlice({
     updateId(state){
       state.id = state.id + 1;
     },
+    dbAddStudent(state, action){
+      
+    },
+    dbUpdateStudent(state, action){
+
+    },
+    fetchStudents(state){
+
+    },
+    initializeStudents(state, action){
+      const students = action.payload
+      const maxId = Math.max(...students.map((row: { id: number; }) => row.id));
+      state.id = maxId;
+      state.rows = students;
+    }
   },
 });
 

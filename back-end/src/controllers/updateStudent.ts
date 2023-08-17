@@ -25,7 +25,6 @@ const updateStudent = (async (req: Request, res: Response) => {
             student.mobile = mobile;
             student.birthday = birthday;
             student.age = age;
-            student.id = id;
 
             await studentRepository.save(student)
             return res.status(200).json({

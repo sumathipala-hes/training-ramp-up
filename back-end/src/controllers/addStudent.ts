@@ -1,10 +1,11 @@
 import {Request, Response} from 'express'; 
 import { Student } from '../services/student';
-import AppDataSource from "../services/dataSoure"
+import AppDataSource from "../services/dataSoure";
 
 //add student data
 const addStudent = (async (req: Request, res: Response) => {
     try {
+        const id = req.body.id;
         const name = req.body.name;
         const gender = req.body.gender
         const address = req.body.address;
@@ -19,6 +20,7 @@ const addStudent = (async (req: Request, res: Response) => {
         student.mobile = mobile;
         student.birthday = birthday;
         student.age = age;
+        student.id = id;
 
         await AppDataSource.manager.save(student)
         return res.status(200).json({
