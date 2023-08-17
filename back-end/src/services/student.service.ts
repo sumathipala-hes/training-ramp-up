@@ -2,16 +2,17 @@ import { StudentData } from '../interfaces/student.interface';
 import { Student } from '../models/student';
 
 export const createStudentService = async (data: StudentData) => {
-  if (!data.name || !data.gender || !data.address || !data.dob || !data.age) {
+  if (!data.name || !data.gender || !data.address || !data.mobile || !data.dob || !data.age) {
     throw new Error('Missing required data for creating a student');
   }
 
-  const { name, gender, address, dob, age } = data;
+  const { name, gender, address, mobile, dob, age } = data;
 
   const student = new Student();
   student.name = name;
   student.gender = gender;
   student.address = address;
+  student.mobile = mobile;
   student.dob = dob;
   student.age = age;
 

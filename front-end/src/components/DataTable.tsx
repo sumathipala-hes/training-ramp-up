@@ -1,4 +1,4 @@
-import { Button, Grid } from '@mui/material';
+import { Alert, AlertProps, Button, Grid, TextField } from '@mui/material';
 import {
   DataGrid,
   GridColDef,
@@ -10,11 +10,17 @@ import {
   GridRowModesModel,
   GridRowsProp,
   GridToolbarContainer,
+  GridValidRowModel,
+  GridEditDateCell
 } from '@mui/x-data-grid';
 import { useDispatch, useSelector } from 'react-redux';
-import { initialRows, setRowModesModel, setRows } from '../redux/slice';
+import { setRowModesModel, setRows } from '../redux/slice';
 import { useEffect } from 'react';
 import { generateID } from '../utils/GenerateIds';
+import { createStudent, deleteStudent, getAllStudents, updateStudent } from '../redux/actions';
+import { Student } from '../interfaces/studentInterface';
+import React from 'react';
+import Snackbar from '@mui/material/Snackbar'
 
 interface EditToolbarProps {
   setRows: (newRows: (oldRows: GridRowsProp) => GridRowsProp) => void;
@@ -41,7 +47,7 @@ const EditToolbar = (props: EditToolbarProps) => {
     };
 
     dispatch(
-      setRows([newRow, ...rows]), //add to the begining of the table
+      setRows([newRow, ...rows]),
     );
 
     dispatch(
@@ -70,9 +76,14 @@ export const DataTable = () => {
   const rows = useSelector((state: any) => state.data.records);
   const rowModesModel = useSelector((state: any) => state.data.rowModesModel);
 
-  useEffect(() => {
-    dispatch(setRows(initialRows));
-  }, [dispatch]);
+    //api call to get list
+    useEffect(() => {
+      dispatch(getAllStudents());
+    }, [dispatch]);
+
+  // useEffect(() => {
+  //   dispatch(setRows(initialRows));
+  // }, [dispatch]);
 
   const handleRowEditStop: GridEventListener<'rowEditStop'> = (
     params,
@@ -89,15 +100,12 @@ export const DataTable = () => {
     );
   };
 
-  const handleSaveClick = (id: GridRowId) => () => {
-    dispatch(
-      setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } }),
-    );
-  };
 
   const handleDeleteClick = (id: GridRowId) => () => {
-    dispatch(setRows(rows.filter((row: { id: GridRowId }) => row.id !== id)));
+    const studentId = Number(id);
+      dispatch(deleteStudent(studentId));   
   };
+
 
   const handleCancelClick = (id: GridRowId) => () => {
     dispatch(
@@ -112,40 +120,73 @@ export const DataTable = () => {
     }
   };
 
-  const processRowUpdate = (newRow: GridRowModel) => {
-    let updatedRow = rows.find((row: GridRowModel) => row.id === newRow.id);
-
-    if (
-      newRow.name.trim() === '' ||
-      newRow.gender.trim() === ''  ||
-      newRow.address.trim() === '' ||
-      newRow.mobile.trim() === ''
-    ) {
-      alert('Please fill all fields');
+  const handleSaveClick = (id: GridRowId, ) => async () => {
+    const editedRow = rows.find((row: { id: GridRowId; }) => row.id === id);
+    if (editedRow?.isNew) {
+      dispatch(
+        setRowModesModel({
+          ...rowModesModel,
+          [id]: { mode: GridRowModes.View },
+        })
+      );
     }
+    else {
+    dispatch(
+      setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } }),
+    );
+  };
+}
+
+  const processRowUpdate = (newRow: GridRowModel): GridValidRowModel | Promise<GridValidRowModel> => {
+    //find an existing row to update
+    let existingRow  = rows.find((row: GridRowModel) => row.id === newRow.id);
 
     const today = new Date();
-    const dob = newRow.dateOfBirth;
-    if (dob !== '') {
-      const age = today.getFullYear() - dob.getFullYear();
-      if (age <= 18) {
-        alert('Age must be above 18');
-      } else {
-        updatedRow = { ...newRow, isNew: false };
-        dispatch(
-          setRows(
-            rows.map((row: GridRowModel) =>
-              row.id === newRow.id ? updatedRow : row,
-            ),
-          ),
-        );
-      }
-    } else {
-      alert('Please select the birthday');
+    const dob = newRow.dob;
+
+    if (newRow.name.trim() === '') {
+      return Promise.reject(new Error("Please fill name"));
+    } else if (newRow.gender.trim() === '') {
+      return Promise.reject(new Error("Please select gender"));
+    } else if (newRow.address.trim() === '') {
+      return Promise.reject(new Error("Please fill address"));
+    } else if (typeof newRow.mobile === 'string' && newRow.mobile.trim() === '') {
+      return Promise.reject(new Error("Please fill mobile"));
+    } else if (isNaN(dob)) {
+      return Promise.reject(new Error("Please select date of birth"));
     }
 
+
+
+    const updatedRow: Student = {
+      ...existingRow,
+      name: newRow.name,
+      gender: newRow.gender,
+      address: newRow.address,
+      mobile: typeof newRow.mobile === 'string' ? Number(newRow.mobile) : newRow.mobile,
+      dob: newRow.dob,
+      age: today.getFullYear() - dob.getFullYear(),
+    };
+
+    if (newRow.isNew) {
+      dispatch(createStudent(updatedRow)); 
+    } else {
+      dispatch(updateStudent(updatedRow.id, updatedRow));
+    }
+  
     return updatedRow;
   };
+
+  const [snackbar, setSnackbar] = React.useState<Pick<
+  AlertProps,
+  'children' | 'severity'
+  > | null>(null);
+
+  const handleCloseSnackbar = () => setSnackbar(null);
+
+  const handleProcessRowUpdateError = React.useCallback((error: Error) => {
+    setSnackbar({ children: error.message, severity: 'error' });
+  }, []);
 
   const columns: GridColDef[] = [
     { field: 'id', headerName: 'ID', width: 150 },
@@ -166,7 +207,7 @@ export const DataTable = () => {
       editable: true,
     },
     {
-      field: 'dateOfBirth',
+      field: 'dob',
       headerName: 'Date of Birth',
       width: 150,
       editable: true,
@@ -176,13 +217,32 @@ export const DataTable = () => {
         const dateOfBirth = new Date(dateOfBirthStr);
         return dateOfBirth;
       },
+      renderEditCell: (params) => {
+        return (
+          <GridEditDateCell
+            {...params}
+            renderInput={(props: { InputProps: any; }) => (
+              <TextField
+                {...props}
+                InputProps={{
+                  ...props.InputProps,
+                  inputProps: {
+                    max: new Date(2005, 11, 31),
+                    min: new Date(1985, 0, 1),
+                  },
+                }}
+              />
+            )}
+          />
+        );
+      },
     },
     {
       field: 'age',
       headerName: 'Age',
       width: 150,
       valueGetter: (params) => {
-        const dob = new Date(params.row.dateOfBirth);
+        const dob = new Date(params.row.dob);
         const today = new Date();
         let age: number | string = '';
         if (!params.row.isNew) {
@@ -257,6 +317,7 @@ export const DataTable = () => {
         disableVirtualization
         onRowEditStop={handleRowEditStop}
         processRowUpdate={processRowUpdate}
+        onProcessRowUpdateError={handleProcessRowUpdateError}
         slots={{
           toolbar: EditToolbar,
         }}
@@ -264,6 +325,16 @@ export const DataTable = () => {
           toolbar: { setRows, setRowModesModel },
         }}
       ></DataGrid>
+      {!!snackbar && (
+        <Snackbar
+          open
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+          onClose={handleCloseSnackbar}
+          autoHideDuration={6000}
+        >
+          <Alert {...snackbar} onClose={handleCloseSnackbar} />
+        </Snackbar>
+      )}
     </Grid>
   );
 };
