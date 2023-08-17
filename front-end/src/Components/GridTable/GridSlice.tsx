@@ -16,6 +16,10 @@ const gridSlice = createSlice({
     name: 'grid',
     initialState,
     reducers: {
+        fetchRows: () => {},
+        setFetchedRows: (state, action: PayloadAction<GridRowModel[]>) => {
+            state.rows = action.payload
+        },
         addRow(state, action: PayloadAction<GridRowModel>) {
             state.rows.unshift(action.payload)
         },
@@ -29,9 +33,19 @@ const gridSlice = createSlice({
         deleteRow(state, action: PayloadAction<GridRowId>) {
             state.rows = state.rows.filter((row) => row.id !== action.payload)
         },
+        deleteRowTableOnly(state, action: PayloadAction<GridRowId>) {
+            state.rows = state.rows.filter((row) => row.id !== action.payload)
+        },
     },
 })
 
 // Export the actions and reducer
-export const { addRow, updateRow, deleteRow } = gridSlice.actions
+export const {
+    addRow,
+    updateRow,
+    deleteRow,
+    deleteRowTableOnly,
+    fetchRows,
+    setFetchedRows,
+} = gridSlice.actions
 export default gridSlice.reducer
