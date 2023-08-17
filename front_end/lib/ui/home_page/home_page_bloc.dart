@@ -10,7 +10,6 @@ import 'package:logger/logger.dart';
 
 import '../../model/student_model.dart';
 import '../../repository/student.repository.dart';
-import '../../util/notification.util.dart';
 import 'home_page_event.dart';
 import 'home_page_state.dart';
 
@@ -23,7 +22,7 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
     add(
       GetAllStudent(),
     );
-
+    FirebaseMessaging.instance.getToken();
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       Logger().d('Got a message whilst in the foreground!');
 
@@ -93,7 +92,6 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
     );
     await StudentRepository().saveStudent(student);
     add(GetAllStudent());
-    sendNotification("Student", "New Student Added.");
   }
 
   Future<void> _updateStudent(
@@ -110,13 +108,11 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
     );
     await StudentRepository().updateStudent(student);
     add(GetAllStudent());
-    sendNotification("Student.", "Update Student.");
   }
 
   Future<void> _deleteStudent(
       DeleteStudent event, Emitter<HomePageState> emit) async {
     await StudentRepository().deleteStudent(event.id);
     add(GetAllStudent());
-    sendNotification("Student", "Delete Student.");
   }
 }

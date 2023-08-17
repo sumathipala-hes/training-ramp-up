@@ -11,32 +11,17 @@ export class Student {
   id!: number;
 
   @Column()
-  name: string;
+  name!: string;
 
   @Column()
-  address: string;
+  address!: string;
 
   @Column()
-  mobileNumber: string;
+  mobileNumber!: string;
 
   @CreateDateColumn()
-  dob: Date;
+  dob!: Date;
 
   @Column()
-  gender: string;
-
-  constructor(
-    id: number,
-    name: string,
-    address: string,
-    mobileNumber: string,
-    dob: Date,
-    gender: string,
-  ) {
-    this.name = name;
-    this.address = address;
-    this.mobileNumber = mobileNumber;
-    this.dob = dob;
-    this.gender = gender;
-  }
+  gender!: string;
 }

@@ -5,10 +5,9 @@ import 'package:logger/logger.dart';
 import 'package:http/http.dart' as http;
 
 import '../../model/student_model.dart';
+import '../util/db_util.dart';
 
 class StudentRepository {
-  final String baseUrl = 'http://192.168.209.142:4000/api/v1';
-
   Future<http.Response> getAllStudents() async {
     final response = await http.get(
       Uri.parse('$baseUrl/students'),

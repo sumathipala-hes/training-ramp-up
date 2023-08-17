@@ -13,6 +13,9 @@ app.use(urlencoded({ extended: true }));
 app.use('/api/v1', routes);
 app.use(cors());
 
+const admin = require('firebase-admin');
+const serviceAccount = require('./configs/serviceAccountKey.json');
+
 appDataSource
   .initialize()
   .then(() => {
@@ -21,6 +24,10 @@ appDataSource
   .catch(err => {
     console.error('Error during Data Source initialization:', err);
   });
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+});
 
 app.listen(process.env.PORT, () => {
   console.log(
