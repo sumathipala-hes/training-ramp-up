@@ -52,8 +52,11 @@ const tableSlice = createSlice({
     },
     initializeStudents(state, action){
       const students = action.payload
-      const maxId = Math.max(...students.map((row: { id: number; }) => row.id));
-      state.id = maxId;
+      if(students.length > 0){
+        const maxId = Math.max(...students.map((row: { id: number; }) => row.id));
+        state.id = maxId;
+      }
+
       state.rows = students;
     }
   },

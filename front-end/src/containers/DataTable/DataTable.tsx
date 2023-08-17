@@ -1,10 +1,11 @@
 import React, {  useEffect, useState } from "react";
-import { Container, Button } from "@mui/material";
+import { Container, Button, Snackbar, Alert } from "@mui/material";
 import { DataGrid, GridColDef, GridRowModes, GridRowModesModel,  GridRenderEditCellParams, GridEditDateCell,} from "@mui/x-data-grid";
 import { useSelector,useDispatch } from 'react-redux';
 import { alerts, calculateAge, capitalizeFirstLetter, generateAutoIds, maxDate, minDate, renderBirthdayCell, validations } from "../../utils";
 import { tableActions } from "../../redux/tableData/tableSlice";
 import EditInputCell from "../../components/EditInputCell/EditInputCell";
+import socket from "../../config/socketIo";
 
 interface rowData {
   id:number,
@@ -23,6 +24,7 @@ function handleEditCell(params: GridRenderEditCellParams){
 function DataTable(props: { isTesting: any; }) {
   const dispatch = useDispatch();
 
+  //initialize table's rows by getting student data from the database
   useEffect(() =>{
     dispatch(tableActions.fetchStudents());
   },[]);
@@ -36,6 +38,24 @@ function DataTable(props: { isTesting: any; }) {
   const [isAddDisabled, setAddDisabeld] = useState(false);
   const [isUpdating, setUpdate] = useState(false);
   const [isDisabUpBtn, setDisableUp] = useState(false);
+  const [isSnackOpen, setSnackOpen] = useState(false);
+  const [snackMessage, setSnackMessage] = useState("Test message")
+
+    socket.on("deleteStudent", (arg) => {
+      setSnackOpen(false);
+      setSnackMessage(arg);
+      setSnackOpen(true);
+    });
+    socket.on("addStudent", (arg) => {
+      setSnackOpen(false);
+      setSnackMessage(arg);
+      setSnackOpen(true);
+    });
+    socket.on("updateStudent", (arg) => {
+      setSnackOpen(false);
+      setSnackMessage(arg);
+      setSnackOpen(true);
+    });
 
     //set columns
     const columns: GridColDef[] = [
@@ -246,6 +266,13 @@ const handleProcessRowUpdateError = React.useCallback((error: Error) => {
   console.log(error)
 }, []);
 
+const handleClose = (event: React.SyntheticEvent | Event, reason?: string) => {
+  if (reason === 'clickaway') {
+    return;
+  }
+  setSnackOpen(false);
+};
+
   return (
     <Container maxWidth="xl" sx={{display: "flex",justifyContent:"start", flexDirection:"column", alignItems: "center",minHeight: "100vh", padding:"80px 20px"}}>
       <Button onClick={addRowHandler} disabled={isAddDisabled} variant="contained" sx={{marginBottom:"20px"}}> Add new</Button>
@@ -277,6 +304,11 @@ const handleProcessRowUpdateError = React.useCallback((error: Error) => {
         onProcessRowUpdateError={handleProcessRowUpdateError}
       />
       </Container>
+      <Snackbar open={isSnackOpen} autoHideDuration={6000} onClose={handleClose}>
+        <Alert onClose={handleClose} severity="info" sx={{ width: '100%' }}>
+          {snackMessage}
+        </Alert>
+      </Snackbar>
     </Container>
   );
 }

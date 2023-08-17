@@ -6,6 +6,7 @@ import AppDataSource from "../services/dataSoure"
 //update student data
 const updateStudent = (async (req: Request, res: Response) => {
     try {
+        const io = req.app.get('io')
         const name = req.body.name;
         const gender = req.body.gender
         const address = req.body.address;
@@ -26,7 +27,8 @@ const updateStudent = (async (req: Request, res: Response) => {
             student.birthday = birthday;
             student.age = age;
 
-            await studentRepository.save(student)
+            await studentRepository.save(student);
+            io.sockets.emit("updateStudent","A student record has been updated")
             return res.status(200).json({
                 status: 200,
             });
