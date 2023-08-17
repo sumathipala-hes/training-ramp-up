@@ -46,11 +46,14 @@ export const dataSlice = createSlice({
 
     getAllStudents: () => {},
 
-    deleteStudent: (state,action) => {
+    deleteStudent: (state, action) => {
       state.studentId = action.payload;
     },
 
-    updateStudent: (state, action: PayloadAction <{ id: number; data: Student}>) => {
+    updateStudent: (
+      state,
+      action: PayloadAction<{ id: number; data: Student }>,
+    ) => {
       const { id, data } = action.payload;
       state.studentId = id;
       state.studentData = data;
@@ -92,6 +95,6 @@ export const {
   createStudent,
   getAllStudents,
   updateStudent,
-  deleteStudent
+  deleteStudent,
 } = dataSlice.actions;
 export default dataSlice.reducer;

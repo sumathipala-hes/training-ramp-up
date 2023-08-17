@@ -13,7 +13,14 @@ import {
   GridValidRowModel,
 } from '@mui/x-data-grid';
 import { useDispatch, useSelector } from 'react-redux';
-import { createStudent, deleteStudent, getAllStudents, setRowModesModel, setRows, updateStudent } from '../redux/slice';
+import {
+  createStudent,
+  deleteStudent,
+  getAllStudents,
+  setRowModesModel,
+  setRows,
+  updateStudent,
+} from '../redux/slice';
 import { useEffect } from 'react';
 import { Student } from '../redux/slice';
 import React from 'react';
@@ -145,15 +152,24 @@ export const DataTable = () => {
       setSnackbar({ children: 'Please select gender', severity: 'error' });
     } else if (newRow.address.trim() === '') {
       setSnackbar({ children: 'Please fill address', severity: 'error' });
-    } else if (typeof newRow.mobile === 'string' && newRow.mobile.trim() === '') {
+    } else if (
+      typeof newRow.mobile === 'string' &&
+      newRow.mobile.trim() === ''
+    ) {
       setSnackbar({ children: 'Please fill mobile', severity: 'error' });
     } else if (!/^\d{10}$/.test(newRow.mobile)) {
-      setSnackbar({ children: 'Please add a valid mobile number with 10 digits', severity: 'error' });
+      setSnackbar({
+        children: 'Please add a valid mobile number with 10 digits',
+        severity: 'error',
+      });
     } else if (isNaN(newRow.dob)) {
       setSnackbar({ children: 'Please fill date of birth', severity: 'error' });
-    } else if (newAge < 18 ) {
-      setSnackbar({ children: 'Age must be above 18. Add birth of date again', severity: 'error' });
-    }  else {
+    } else if (newAge < 18) {
+      setSnackbar({
+        children: 'Age must be above 18. Add birth of date again',
+        severity: 'error',
+      });
+    } else {
       validated = true;
     }
 
@@ -186,7 +202,7 @@ export const DataTable = () => {
           setRows(rows.filter((row: { id: any }) => row.id !== newRow.id)),
         );
       } else {
-        dispatch(updateStudent({id: updatedRow.id, data: updatedRow}));
+        dispatch(updateStudent({ id: updatedRow.id, data: updatedRow }));
         socket.on('studentUpdated', (msg) => {
           setSnackbar({ children: msg, severity: 'success' });
         });

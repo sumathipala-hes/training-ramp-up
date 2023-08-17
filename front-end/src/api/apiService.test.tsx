@@ -98,7 +98,7 @@ describe('API Functions', () => {
 
   it('should handle API error when getting all students', async () => {
     const errorMessage = 'Failed to fetch students';
-    
+
     // Mock axios get function to throw an error
     (axios.get as jest.Mock).mockRejectedValue(new Error(errorMessage));
 

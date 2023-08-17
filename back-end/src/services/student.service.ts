@@ -1,11 +1,14 @@
 import { Server } from 'socket.io';
+import { validationResult } from 'express-validator';
 import { StudentData } from '../interfaces/student.interface';
 import { Student } from '../models/student';
 import { getSocketInstance } from '../server';
 
 export const createStudentService = async (data: StudentData) => {
-  if (!data.name || !data.gender || !data.address || !data.mobile || !data.dob || !data.age) {
-    throw new Error('Missing required data for creating a student');
+  const errors = validationResult(data);
+
+  if (!errors.isEmpty()) {
+    throw new Error('Validation failed: ' + JSON.stringify(errors.array()));
   }
   const { name, gender, address, mobile, dob, age } = data;
 

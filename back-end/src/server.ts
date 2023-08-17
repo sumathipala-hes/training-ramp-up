@@ -42,8 +42,6 @@ app.get('/', (req: Request, res: Response) => {
   res.send('Hello, this is Express + TypeScript and Postgresql');
 });
 
-
-
 AppDataSource.initialize()
   .then(() => {
     console.log(`[Server]: Database Connected Successfully.`);

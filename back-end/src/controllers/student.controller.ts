@@ -5,8 +5,18 @@ import {
   updateStudentService,
   deleteStudentService,
 } from '../services/student.service';
+import { validationResult } from 'express-validator';
+import { createStudentValidationRules } from '../validations';
 
 export const createStudent = async (req: Request, res: Response) => {
+  await Promise.all(createStudentValidationRules.map((validation) => validation.run(req)));
+
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
   try {
     const student = await createStudentService(req.body);
     return res.json(student);

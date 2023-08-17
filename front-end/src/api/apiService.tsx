@@ -15,18 +15,18 @@ export const updateStudentApi = async (
   updatedData: Student,
 ) => {
   const response = await axios.put(
-      `http://localhost:4000/students/${studentId}`,
-      updatedData,
-    );
+    `http://localhost:4000/students/${studentId}`,
+    updatedData,
+  );
 
-    return response.data as Student;
+  return response.data as Student;
 };
 
 export const createStudentApi = async (studentData: Student) => {
   const response = await axios.post(
-      `http://localhost:4000/students`,
-      studentData,
-    );
+    `http://localhost:4000/students`,
+    studentData,
+  );
 
-    return response.data;
+  return response.data;
 };

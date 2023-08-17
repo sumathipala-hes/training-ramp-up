@@ -11,9 +11,9 @@ import {
   removeDeletedStudent,
   updateStudentSuccess,
   getAllStudents,
-  createStudent, 
-  deleteStudent, 
-  updateStudent
+  createStudent,
+  deleteStudent,
+  updateStudent,
 } from './slice';
 import { Student } from './slice';
 
