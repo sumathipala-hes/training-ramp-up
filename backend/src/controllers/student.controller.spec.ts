@@ -1,6 +1,11 @@
-import { dataSource } from "../configs/dataSourceConfig";
-import { Student } from "../models/student.model";
-import { deleteStudent, getAllStudents, saveStudent, updateStudent } from "../services/student.service";
+import { dataSource } from '../configs/datasource.config';
+import { Student } from '../models/student.model';
+import {
+  deleteStudent,
+  getAllStudents,
+  saveStudent,
+  updateStudent,
+} from '../services/student.service';
 
 describe('Student Controller Test', () => {
   const studentRepo = dataSource.manager;
@@ -26,20 +31,15 @@ describe('Student Controller Test', () => {
     ];
 
     test('Get All Students Success', async () => {
-      studentRepo.find = jest
-        .fn()
-        .mockResolvedValue(allStudents);
+      studentRepo.find = jest.fn().mockResolvedValue(allStudents);
       const data = await getAllStudents();
       expect(data).toEqual(allStudents);
     });
 
     test('Get All Students Fail', async () => {
-      studentRepo.find = jest
-        .fn()
-        .mockRejectedValue(new Error('Error'));
+      studentRepo.find = jest.fn().mockRejectedValue(new Error('Error'));
       await expect(getAllStudents()).rejects.toThrowError('Error');
     });
-
   });
 
   describe('Save Student', () => {
@@ -53,17 +53,13 @@ describe('Student Controller Test', () => {
     };
 
     test('Save Student Success', async () => {
-      studentRepo.insert = jest
-        .fn()
-        .mockResolvedValue(newStudent);
+      studentRepo.insert = jest.fn().mockResolvedValue(newStudent);
       const data = await saveStudent(newStudent);
       expect(data).toEqual(newStudent);
     });
 
     test('Save Student Fail', async () => {
-      studentRepo.insert = jest
-        .fn()
-        .mockRejectedValue(new Error('Error'));
+      studentRepo.insert = jest.fn().mockRejectedValue(new Error('Error'));
       await expect(saveStudent(newStudent)).rejects.toThrowError('Error');
     });
   });
@@ -79,17 +75,13 @@ describe('Student Controller Test', () => {
     };
 
     test('Update Student Success', async () => {
-      studentRepo.update = jest
-        .fn()
-        .mockResolvedValue(student);
+      studentRepo.update = jest.fn().mockResolvedValue(student);
       const data = await updateStudent('1', student);
       expect(data).toEqual(student);
     });
 
     test('Update Student Fail', async () => {
-      studentRepo.update = jest
-        .fn()
-        .mockRejectedValue(new Error('Error'));
+      studentRepo.update = jest.fn().mockRejectedValue(new Error('Error'));
       await expect(updateStudent('1', student)).rejects.toThrowError('Error');
     });
   });
@@ -98,20 +90,14 @@ describe('Student Controller Test', () => {
     const id = '1';
 
     test('Delete Student Success', async () => {
-      studentRepo.delete = jest
-        .fn()
-        .mockResolvedValue(id);
+      studentRepo.delete = jest.fn().mockResolvedValue(id);
       const data = await deleteStudent(id);
       expect(data).toEqual(id);
     });
 
     test('Delete Student Fail', async () => {
-      studentRepo.delete = jest
-        .fn()
-        .mockRejectedValue(new Error('Error'));
+      studentRepo.delete = jest.fn().mockRejectedValue(new Error('Error'));
       await expect(deleteStudent(id)).rejects.toThrowError('Error');
     });
   });
-
 });
-

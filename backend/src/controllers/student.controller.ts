@@ -26,6 +26,7 @@ export const addStudents: RequestHandler = async (
     const student = await saveStudent(req.body);
     res.status(200).json(student);
   } catch (error) {
+    console.log(error);
     res.status(500).json(error);
   }
 };
@@ -48,8 +49,8 @@ export const deleteStudents: RequestHandler = async (
 ): Promise<void> => {
   try {
     const student = await deleteStudent(req.params.id);
-     res.status(200).json(student);
+    res.status(200).json(student);
   } catch (error) {
-     res.status(500).json(error);
+    res.status(500).json(error);
   }
 };
