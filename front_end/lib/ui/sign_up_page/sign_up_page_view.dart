@@ -1,5 +1,6 @@
 // ignore_for_file: must_be_immutable
 
+import 'dart:math';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
@@ -343,7 +344,18 @@ class SignUpPageView extends StatelessWidget {
                                     coPasswordController.text.trim()) {
                                   showFieldError('Password not match.');
                                 } else {
-                                  //save
+                                  signUpBloc.add(RegisterUser(
+                                      nameText: nameController.text.trim(),
+                                      addressText:
+                                          addressController.text.trim(),
+                                      emailText: emailController.text.trim(),
+                                      mobileNoText:
+                                          mobileNoController.text.trim(),
+                                      dateText: dob,
+                                      selectedGender:
+                                          signUpBloc.state.selectedGender,
+                                      passwordText:
+                                          crPasswordController.text.trim()));
                                   clear();
 
                                   Navigator.of(context).pop();

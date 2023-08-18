@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:front_end/repository/user_repository.dart';
 import 'package:logger/logger.dart';
 
 import '../../model/user_model.dart';
@@ -32,6 +31,5 @@ class SignUpPageBloc extends Bloc<SignUpPageEvent, SignUpPageState> {
       password: event.passwordText,
     );
     // await UserRepository().saveUser(user);
-    Logger().d(user);
   }
 }
