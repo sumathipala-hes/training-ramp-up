@@ -1,15 +1,9 @@
-import { Server } from 'socket.io';
-import { validationResult } from 'express-validator';
 import { StudentData } from '../interfaces/student.interface';
 import { Student } from '../models/student';
 import { getSocketInstance } from '../server';
 
 export const createStudentService = async (data: StudentData) => {
-  const errors = validationResult(data);
 
-  if (!errors.isEmpty()) {
-    throw new Error('Validation failed: ' + JSON.stringify(errors.array()));
-  }
   const { name, gender, address, mobile, dob, age } = data;
 
   const student = new Student();
