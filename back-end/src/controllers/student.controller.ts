@@ -9,7 +9,7 @@ import { validationResult } from 'express-validator';
 import { createStudentValidationRules } from '../validations';
 
 export const createStudent = async (req: Request, res: Response) => {
-  const tempReq = req ; 
+  const tempReq = req;
   await Promise.all(createStudentValidationRules.map((validation) => validation.run(tempReq)));
 
   const errors = validationResult(tempReq);

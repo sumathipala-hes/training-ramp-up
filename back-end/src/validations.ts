@@ -3,7 +3,8 @@ import { body } from 'express-validator';
 export const createStudentValidationRules = [
   body('name').notEmpty().withMessage('Name is required'),
   body('gender')
-    .notEmpty().withMessage('Gender is required')
+    .notEmpty()
+    .withMessage('Gender is required')
     .custom((value, { req }) => {
       if (value !== 'male' && value !== 'female') {
         throw new Error('Gender must be either male or female');

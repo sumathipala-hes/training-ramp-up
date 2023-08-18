@@ -3,7 +3,6 @@ import { Student } from '../models/student';
 import { getSocketInstance } from '../server';
 
 export const createStudentService = async (data: StudentData) => {
-
   const { name, gender, address, mobile, dob, age } = data;
 
   const student = new Student();
