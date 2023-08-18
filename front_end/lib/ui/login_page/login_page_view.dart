@@ -31,7 +31,7 @@ class LoginPageView extends StatelessWidget {
                   children: [
                     Container(
                       width: MediaQuery.of(context).size.width * 0.8,
-                      height: MediaQuery.of(context).size.height * 0.4,
+                      height: MediaQuery.of(context).size.height * 0.5,
                       decoration: BoxDecoration(
                         color: Colors.white.withOpacity(0.8),
                         borderRadius: BorderRadius.circular(20.0),
@@ -43,7 +43,7 @@ class LoginPageView extends StatelessWidget {
                             Text(
                               'SIGN IN ',
                               style: TextStyle(
-                                fontSize: 30.0,
+                                fontSize: 40.0,
                                 fontFamily: GoogleFonts.poppins().fontFamily,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.black.withOpacity(0.8),
@@ -58,7 +58,7 @@ class LoginPageView extends StatelessWidget {
                                   ),
                                 ),
                                 labelText: '   Email',
-                                labelStyle: labelText,
+                                labelStyle: labelText3,
                               ),
                             ),
                             const SizedBox(height: 20.0),
@@ -71,10 +71,10 @@ class LoginPageView extends StatelessWidget {
                                   ),
                                 ),
                                 labelText: '   Password',
-                                labelStyle: labelText,
+                                labelStyle: labelText3,
                               ),
                             ),
-                            const SizedBox(height: 25.0),
+                            const SizedBox(height: 35.0),
                             SizedBox(
                               width: double.infinity,
                               height: MediaQuery.of(context).size.height * 0.05,
@@ -95,7 +95,8 @@ class LoginPageView extends StatelessWidget {
                                   );
                                 },
                                 child: Row(
-                                  // Wrap both text and icon in a Row
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
                                     Text(
@@ -109,6 +110,29 @@ class LoginPageView extends StatelessWidget {
                                   ],
                                 ),
                               ),
+                            ),
+                            const SizedBox(height: 30.0),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  'Don\'t have an account ?  ',
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 15.0,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black.withOpacity(0.6),
+                                  ),
+                                ),
+                                TextButton(
+                                  onPressed: () {},
+                                  child: Text('Sign Up',
+                                      style: GoogleFonts.poppins(
+                                        fontSize: 16.0,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.black12.withOpacity(0.8),
+                                      )),
+                                ),
+                              ],
                             ),
                           ],
                         ),

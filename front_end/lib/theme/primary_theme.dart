@@ -102,6 +102,11 @@ final labelText2 = GoogleFonts.ubuntu(
   fontWeight: FontWeight.bold,
 );
 
+final labelText3 = GoogleFonts.ubuntu(
+  fontSize: 17,
+  fontWeight: FontWeight.bold,
+);
+
 final textButton2 = GoogleFonts.ubuntu(
   fontSize: 19,
   fontWeight: FontWeight.bold,
