@@ -1,7 +1,5 @@
 import express, { Express, Request, Response } from 'express';
-import { DataSource } from 'typeorm';
 import 'reflect-metadata';
-import { Student } from './models/student';
 import studentRoutes from './routes/student.route';
 import cors from 'cors';
 import { Server } from 'socket.io';

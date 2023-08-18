@@ -35,12 +35,12 @@ describe('API Functions', () => {
       name: 'Zac',
       gender: 'Male',
     };
-    const res = await request(app).put(`/students/16`).send(updatedStudentData);
+    const res = await request(app).put(`/students/19`).send(updatedStudentData);
     expect(res.statusCode).toEqual(204);
   });
 
   it('delete an existing student', async () => {
-    const res = await request(app).delete(`/students/14`);
+    const res = await request(app).delete(`/students/20`);
     expect(res.statusCode).toEqual(204);
   });
 
