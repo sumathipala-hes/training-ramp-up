@@ -25,7 +25,7 @@ export default class StudentController {
     } catch (error: unknown) {
       // catch block is used to handle the errors
       if (error instanceof Error) {
-        return res.status(500).json({ message: error.message });
+        return res.json({ message: error.message });
       } else {
         return res.status(500).json({ message: 'Unknown error occured.' });
       }
@@ -45,7 +45,7 @@ export default class StudentController {
     } catch (error: unknown) {
       // catch block is used to handle the errors
       if (error instanceof Error) {
-        return res.status(500).json({ message: error.message });
+        return res.json({ message: error.message });
       } else {
         return res.status(500).json({ message: 'Unknown error occured.' });
       }
@@ -75,7 +75,7 @@ export default class StudentController {
     } catch (error: unknown) {
       // catch block is used to handle the errors
       if (error instanceof Error) {
-        return res.status(500).json({ message: error.message });
+        return res.json({ message: error.message });
       } else {
         return res.status(500).json({ message: 'Unknown error occured.' });
       }
@@ -103,7 +103,7 @@ export default class StudentController {
     } catch (error: unknown) {
       // catch block is used to handle the errors
       if (error instanceof Error) {
-        return res.status(500).json({ message: error.message });
+        return res.json({ message: error.message });
       } else {
         return res.status(500).json({ message: 'Unknown error occured.' });
       }

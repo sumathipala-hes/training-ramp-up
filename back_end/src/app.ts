@@ -6,24 +6,14 @@ import express from 'express';
 import cors from 'cors';
 import routes from './routes';
 import { dataSource } from './configs/db.config';
+import * as admin from 'firebase-admin';
+const serviceAccount = require('./configs/pushnotification.firebase.config.json');
 
 // Create the express app
 const app = express();
 
-// Here you can add more origins to allow CORS
-const allowedOrigins = ['http://localhost:3000'];
-
-app.use(
-  cors({
-    origin: (origin, callback) => {
-      if (allowedOrigins.indexOf(origin!) !== -1 || !origin) {
-        callback(null, true);
-      } else {
-        callback(new Error('Not allowed by CORS'));
-      }
-    },
-  }),
-);
+// Allow all CORS origins
+app.use(cors());
 
 // if you are receiving JSON data in request-body
 app.use(express.json());
@@ -37,4 +27,9 @@ dataSource.initialize().then(() => {
 
 app.listen(process.env.PORT, () => {
   console.log(`Server is running on port ${process.env.PORT}...!`);
+});
+
+// Initialize Firebase Admin SDK
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
 });
