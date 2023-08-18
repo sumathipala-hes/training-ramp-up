@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:front_end/ui/home_page/home_page_view.dart';
+import 'package:front_end/ui/sign_up_page/sign_up_page_provider.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../theme/primary_theme.dart';
@@ -124,7 +125,14 @@ class SignInPageView extends StatelessWidget {
                                   ),
                                 ),
                                 TextButton(
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              const SignUpPageProvider()),
+                                    );
+                                  },
                                   child: Text('SIGN UP',
                                       style: GoogleFonts.poppins(
                                         fontSize: 16.0,
