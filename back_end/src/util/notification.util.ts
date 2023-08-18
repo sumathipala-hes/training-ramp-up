@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-const token = process.env.API_Token;
+const token = process.env.API_TOKEN;
 
 export const sendNotification = async (title: string, body: string) => {
   const message = {
