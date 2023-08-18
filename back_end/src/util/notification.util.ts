@@ -1,5 +1,9 @@
 import * as admin from 'firebase-admin';
-const token = '';
+import dotenv from 'dotenv';
+
+dotenv.config();
+
+const token = process.env.FIREBASE_TOKEN;
 
 export const sendNotification = async (title: string, body: string) => {
   const message = {
@@ -7,7 +11,7 @@ export const sendNotification = async (title: string, body: string) => {
       title: title,
       body: body,
     },
-    token: token,
+    token: token || '',
   };
 
   try {
