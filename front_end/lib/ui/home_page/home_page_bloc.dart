@@ -9,7 +9,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:logger/logger.dart';
 
 import '../../model/student_model.dart';
-import '../../repository/student.repository.dart';
+import '../../repository/student_repository.dart';
 import 'home_page_event.dart';
 import 'home_page_state.dart';
 
