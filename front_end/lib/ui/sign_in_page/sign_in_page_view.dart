@@ -6,8 +6,8 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../theme/primary_theme.dart';
 
-class LoginPageView extends StatelessWidget {
-  const LoginPageView({Key? key}) : super(key: key);
+class SignInPageView extends StatelessWidget {
+  const SignInPageView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +58,7 @@ class LoginPageView extends StatelessWidget {
                                   ),
                                 ),
                                 labelText: '   Email',
-                                labelStyle: labelText3,
+                                labelStyle: labelText2,
                               ),
                             ),
                             const SizedBox(height: 20.0),
@@ -71,7 +71,7 @@ class LoginPageView extends StatelessWidget {
                                   ),
                                 ),
                                 labelText: '   Password',
-                                labelStyle: labelText3,
+                                labelStyle: labelText2,
                               ),
                             ),
                             const SizedBox(height: 35.0),
@@ -125,7 +125,7 @@ class LoginPageView extends StatelessWidget {
                                 ),
                                 TextButton(
                                   onPressed: () {},
-                                  child: Text('Sign Up',
+                                  child: Text('SIGN UP',
                                       style: GoogleFonts.poppins(
                                         fontSize: 16.0,
                                         fontWeight: FontWeight.bold,

@@ -4,34 +4,26 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:front_end/ui/sign_up_page/sign_up_page_bloc.dart';
+import 'package:front_end/ui/sign_up_page/sign_up_page_state.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 
-import '../../model/student_model.dart';
 import '../../theme/primary_theme.dart';
 import '../../util/notification.util.dart';
-import '../home_page/home_page_bloc.dart';
-import '../home_page/home_page_event.dart';
-import 'manage_student_page_bloc.dart';
-import 'manage_student_page_event.dart';
-import 'manage_student_page_state.dart';
+import 'sign_up_page_event.dart';
 
-class StudentMangeView extends StatelessWidget {
-  final Student student;
-  StudentMangeView({super.key, required this.student}) {
-    nameController.text = student.name;
-    addressController.text = student.address;
-    mobileNoController.text = student.mobileNumber;
-    dateController.text = DateFormat('EEE MMM d yyyy').format(student.dob);
-    dob = student.dob;
-  }
+class SignUpPageView extends StatelessWidget {
+  SignUpPageView({super.key});
 
   final TextEditingController nameController = TextEditingController();
   final TextEditingController addressController = TextEditingController();
   final TextEditingController mobileNoController = TextEditingController();
   final TextEditingController dateController = TextEditingController();
-  DateTime dob = DateTime(DateTime.now().year - 18);
-  int age = 0;
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController crPasswordController = TextEditingController();
+  final TextEditingController coPasswordController = TextEditingController();
+  DateTime dob = DateTime(DateTime.now().year - 28);
 
   void clear() {
     nameController.clear();
@@ -40,43 +32,27 @@ class StudentMangeView extends StatelessWidget {
     dateController.clear();
   }
 
-  int calculateAge() {
-    final DateTime birthDate = student.dob;
-    final currentDate = DateTime.now();
-    age = currentDate.year - birthDate.year;
-    if (currentDate.month < birthDate.month ||
-        (currentDate.month == birthDate.month &&
-            currentDate.day < birthDate.day)) {
-      age--;
-    }
-    return age;
-  }
-
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? date = await showDatePicker(
       context: context,
-      initialDate: DateTime(DateTime.now().year - 18),
-      firstDate: DateTime(DateTime.now().year - 28),
-      lastDate: DateTime(DateTime.now().year - 18),
+      initialDate: DateTime(DateTime.now().year - 28),
+      firstDate: DateTime(DateTime.now().year - 60),
+      lastDate: DateTime(DateTime.now().year - 28),
     );
 
     dateController.text = DateFormat('EEE MMM d yyyy').format(
-      date ?? student.dob,
+      date ?? dob,
     );
-    dob = date ?? student.dob;
+    dob = date ?? dob;
   }
 
   @override
   Widget build(BuildContext context) {
-    StudentManageBloc studentManageBloc =
-        BlocProvider.of<StudentManageBloc>(context);
-    studentManageBloc.add(SelectGender(select: student.gender));
-
-    HomePageBloc homePageBloc = BlocProvider.of<HomePageBloc>(context);
+    final signUpBloc = BlocProvider.of<SignUpPageBloc>(context);
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Manage Student',
+          'Sign Up Page',
           style: TextStyle(
               fontWeight: FontWeight.bold,
               fontFamily: GoogleFonts.ubuntu().fontFamily),
@@ -108,29 +84,29 @@ class StudentMangeView extends StatelessWidget {
                     height: 20,
                   ),
                   Text(
-                    student.name.isEmpty
-                        ? student.name
-                        : student.name.isEmpty
-                            ? "Student Name"
-                            : student.name,
-                    style: headerText2,
+                    "SIGN UP",
+                    style: TextStyle(
+                      fontSize: 30.0,
+                      fontFamily: GoogleFonts.poppins().fontFamily,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black.withOpacity(0.8),
+                    ),
                   ),
                   const SizedBox(
                     height: 5,
                   ),
-                  Text(
-                    age == 0 ? "Age: ${calculateAge()}" : "Age: $age",
-                    style: headerText3,
-                  ),
                   const SizedBox(
-                    height: 30,
+                    height: 10,
                   ),
-                  BlocBuilder<StudentManageBloc, StudentManageState>(
+                  BlocBuilder<SignUpPageBloc, SignUpPageState>(
                     buildWhen: (previous, current) {
                       return previous.nameText != current.nameText ||
                           previous.addressText != current.addressText ||
+                          previous.emailText != current.emailText ||
                           previous.mobileNoText != current.mobileNoText ||
-                          previous.selectedGender != current.selectedGender;
+                          previous.dateText != current.dateText ||
+                          previous.selectedGender != current.selectedGender ||
+                          previous.passwordText != current.passwordText;
                     },
                     builder: (context, state) {
                       return Padding(
@@ -139,14 +115,10 @@ class StudentMangeView extends StatelessWidget {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             TextField(
-                              controller: studentManageBloc
-                                      .state.nameText.isEmpty
-                                  ? nameController
-                                  : TextEditingController(
-                                      text: studentManageBloc.state.nameText),
+                              controller: nameController,
                               onChanged: (value) {},
                               decoration: InputDecoration(
-                                labelText: "Student Name",
+                                labelText: "User Name",
                                 labelStyle: labelText2,
                                 border: const OutlineInputBorder(
                                   borderRadius: BorderRadius.all(
@@ -163,15 +135,10 @@ class StudentMangeView extends StatelessWidget {
                             ),
                             const SizedBox(height: 20),
                             TextField(
-                              controller: studentManageBloc
-                                      .state.addressText.isEmpty
-                                  ? addressController
-                                  : TextEditingController(
-                                      text:
-                                          studentManageBloc.state.addressText),
+                              controller: addressController,
                               onChanged: (value) {},
                               decoration: InputDecoration(
-                                labelText: "Student Address",
+                                labelText: "User Address",
                                 labelStyle: labelText2,
                                 border: const OutlineInputBorder(
                                   borderRadius: BorderRadius.all(
@@ -188,12 +155,27 @@ class StudentMangeView extends StatelessWidget {
                             ),
                             const SizedBox(height: 20),
                             TextField(
-                              controller: studentManageBloc
-                                      .state.mobileNoText.isEmpty
-                                  ? mobileNoController
-                                  : TextEditingController(
-                                      text:
-                                          studentManageBloc.state.mobileNoText),
+                              controller: emailController,
+                              onChanged: (value) {},
+                              decoration: InputDecoration(
+                                labelText: "User Email",
+                                labelStyle: labelText2,
+                                border: const OutlineInputBorder(
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(10),
+                                  ),
+                                ),
+                                filled: true,
+                                fillColor: Colors.grey[200],
+                                contentPadding: const EdgeInsets.symmetric(
+                                  vertical: 12.0,
+                                  horizontal: 16.0,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 20),
+                            TextField(
+                              controller: mobileNoController,
                               onChanged: (value) {},
                               decoration: InputDecoration(
                                 labelText: "Mobile No",
@@ -240,7 +222,7 @@ class StudentMangeView extends StatelessWidget {
                               ),
                             ),
                             const SizedBox(
-                              height: 20,
+                              height: 10,
                             ),
                             Center(
                               child: Row(
@@ -248,10 +230,9 @@ class StudentMangeView extends StatelessWidget {
                                 children: [
                                   Radio(
                                     value: "Male",
-                                    groupValue:
-                                        studentManageBloc.state.selectedGender,
+                                    groupValue: signUpBloc.state.selectedGender,
                                     onChanged: (value) {
-                                      studentManageBloc.add(SelectGender(
+                                      signUpBloc.add(SelectGender(
                                           select: value.toString()));
                                     },
                                   ),
@@ -261,10 +242,9 @@ class StudentMangeView extends StatelessWidget {
                                   ),
                                   Radio(
                                     value: "Female",
-                                    groupValue:
-                                        studentManageBloc.state.selectedGender,
+                                    groupValue: signUpBloc.state.selectedGender,
                                     onChanged: (value) {
-                                      studentManageBloc.add(SelectGender(
+                                      signUpBloc.add(SelectGender(
                                           select: value.toString()));
                                     },
                                   ),
@@ -275,6 +255,46 @@ class StudentMangeView extends StatelessWidget {
                                 ],
                               ),
                             ),
+                            const SizedBox(height: 10),
+                            TextField(
+                              controller: crPasswordController,
+                              onChanged: (value) {},
+                              decoration: InputDecoration(
+                                labelText: "Create Password",
+                                labelStyle: labelText2,
+                                border: const OutlineInputBorder(
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(10),
+                                  ),
+                                ),
+                                filled: true,
+                                fillColor: Colors.grey[200],
+                                contentPadding: const EdgeInsets.symmetric(
+                                  vertical: 12.0,
+                                  horizontal: 16.0,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 20),
+                            TextField(
+                              controller: coPasswordController,
+                              onChanged: (value) {},
+                              decoration: InputDecoration(
+                                labelText: "Confirm Password",
+                                labelStyle: labelText2,
+                                border: const OutlineInputBorder(
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(10),
+                                  ),
+                                ),
+                                filled: true,
+                                fillColor: Colors.grey[200],
+                                contentPadding: const EdgeInsets.symmetric(
+                                  vertical: 12.0,
+                                  horizontal: 16.0,
+                                ),
+                              ),
+                            ),
                           ],
                         ),
                       );
@@ -282,7 +302,7 @@ class StudentMangeView extends StatelessWidget {
                   ),
                   Column(
                     children: [
-                      const SizedBox(height: 20),
+                      const SizedBox(height: 30),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
@@ -294,6 +314,8 @@ class StudentMangeView extends StatelessWidget {
                                 if (nameController.text.trim().isEmpty ||
                                     addressController.text.trim().isEmpty ||
                                     mobileNoController.text.trim().isEmpty ||
+                                    emailController.text.trim().isEmpty ||
+                                    coPasswordController.text.trim().isEmpty ||
                                     dateController.text.trim().isEmpty) {
                                   showFieldError(
                                       'Text Field should not be empty.');
@@ -304,48 +326,32 @@ class StudentMangeView extends StatelessWidget {
                                     .hasMatch(addressController.text.trim())) {
                                   showFieldError('Invalid Address.');
                                 } else if (!RegExp(
+                                        r'^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$')
+                                    .hasMatch(emailController.text.trim())) {
+                                  showFieldError('Invalid Email.');
+                                } else if (!RegExp(
                                         r'^(07(0|1|2|4|5|6|7|8)[0-9]{7})$')
                                     .hasMatch(mobileNoController.text.trim())) {
                                   showFieldError('Invalid Mobile No.');
+                                } else if (!RegExp(
+                                        r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{8,}$')
+                                    .hasMatch(
+                                        crPasswordController.text.trim())) {
+                                  showFieldError(
+                                      'Password must contain at least 8 characters, including UPPER/lowercase and numbers.');
+                                } else if (crPasswordController.text.trim() !=
+                                    coPasswordController.text.trim()) {
+                                  showFieldError('Password not match.');
                                 } else {
-                                  homePageBloc.add(UpdateStudent(
-                                    id: student.id!,
-                                    name: nameController.text.trim(),
-                                    address: addressController.text.trim(),
-                                    mobileNo: mobileNoController.text.trim(),
-                                    date: dob,
-                                    gender:
-                                        studentManageBloc.state.selectedGender,
-                                  ));
+                                  //save
                                   clear();
 
                                   Navigator.of(context).pop();
                                 }
                               },
-                              style: updateButton,
+                              style: saveButton,
                               child: Text(
-                                "Update",
-                                style: textButton2,
-                              ),
-                            ),
-                          ),
-                          SizedBox(
-                            width: 140,
-                            height: 45,
-                            child: ElevatedButton(
-                              onPressed: () {
-                                showYesNoAlert(context).then((confirmed) {
-                                  if (confirmed != null && confirmed) {
-                                    homePageBloc.add(
-                                      DeleteStudent(id: student.id!),
-                                    );
-                                    Navigator.of(context).pop();
-                                  }
-                                });
-                              },
-                              style: deleteButton,
-                              child: Text(
-                                "Delete",
+                                "Register",
                                 style: textButton2,
                               ),
                             ),

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 @immutable
-abstract class LoginPageEvent {}
+abstract class SignInPageEvent {}
 
-class SubmitLoginDetails extends LoginPageEvent {
+class SubmitLoginDetails extends SignInPageEvent {
   final String email;
   final String password;
 

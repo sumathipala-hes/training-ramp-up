@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:front_end/theme/styled_theme.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-
 final ThemeData appThemeData = ThemeData(
   primaryColor: const Color.fromARGB(255, 9, 202, 199),
   hintColor: const Color.fromARGB(255, 52, 73, 94),
@@ -98,12 +97,7 @@ final headerText3 = GoogleFonts.ubuntu(
 );
 
 final labelText2 = GoogleFonts.ubuntu(
-  fontSize: 20,
-  fontWeight: FontWeight.bold,
-);
-
-final labelText3 = GoogleFonts.ubuntu(
-  fontSize: 17,
+  fontSize: 18,
   fontWeight: FontWeight.bold,
 );
 

@@ -26,7 +26,7 @@ class _PopupModalState extends State<PopupModal> {
   static final RegExp _addressRegExp = RegExp(r'^[a-zA-Z0-9 ]+$');
 
   String selectedGender = "Male";
-  DateTime dob = DateTime.now();
+   DateTime dob = DateTime(DateTime.now().year - 18);
 
   void clear() {
     nameController.clear();
@@ -44,9 +44,9 @@ class _PopupModalState extends State<PopupModal> {
     );
 
     dateController.text = DateFormat('EEE MMM d yyyy').format(
-      date ?? DateTime.now(),
+      date ?? dob,
     );
-    dob = date ?? DateTime.now();
+    dob = date ?? dob;
   }
 
   bool isNumeric(String value) {
@@ -175,7 +175,7 @@ class _PopupModalState extends State<PopupModal> {
               _selectDate(context);
             },
             decoration: InputDecoration(
-              labelText: "Date",
+              labelText: "DOB",
               labelStyle: labelText,
               suffixIcon: const Icon(Icons.calendar_today),
               border: const OutlineInputBorder(

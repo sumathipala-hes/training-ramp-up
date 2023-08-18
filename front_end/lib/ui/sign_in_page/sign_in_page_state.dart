@@ -1,22 +1,22 @@
-class LoginPageState {
+class SignInPageState {
   final String email;
   final String password;
 
-  LoginPageState({
+  SignInPageState({
     required this.email,
     required this.password,
   });
 
-  static LoginPageState get initialState => LoginPageState(
+  static SignInPageState get initialState => SignInPageState(
         email: '',
         password: '',
       );
 
-  LoginPageState clone({
+  SignInPageState clone({
     String? email,
     String? password,
   }) {
-    return LoginPageState(
+    return SignInPageState(
       email: email ?? this.email,
       password: password ?? this.password,
     );
