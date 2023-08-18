@@ -6,6 +6,8 @@ import express from 'express';
 import cors from 'cors';
 import routes from './routes';
 import { dataSource } from './configs/db.config';
+import * as admin from 'firebase-admin';
+const serviceAccount = require('./configs/pushnotification.firebase.config.json');
 
 // Create the express app
 const app = express();
@@ -25,4 +27,9 @@ dataSource.initialize().then(() => {
 
 app.listen(process.env.PORT, () => {
   console.log(`Server is running on port ${process.env.PORT}...!`);
+});
+
+// Initialize Firebase Admin SDK
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
 });
