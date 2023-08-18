@@ -1,6 +1,7 @@
 import { DeleteResult, InsertResult, UpdateResult } from 'typeorm';
 import { Student } from '../models/student.model';
 import { dataSource } from '../configs/db.config';
+import { sendNotification } from '../util/notification.util';
 
 const saveStudent = async (student: Student): Promise<InsertResult> => {
   try {
@@ -8,6 +9,7 @@ const saveStudent = async (student: Student): Promise<InsertResult> => {
     const newStudent: InsertResult = await dataSource.manager
       .getRepository(Student)
       .insert(student);
+    sendNotification('Success', 'student Saved..!');
     return newStudent;
   } catch (error) {
     // Handle and rethrow the error
@@ -43,6 +45,7 @@ const updateStudent = async (
     } else {
       throw new Error('Student not found.');
     }
+    sendNotification('Success', 'student Updated..!');
     return updatedStudent;
   } catch (error) {
     // Handle and rethrow the error
@@ -58,6 +61,7 @@ const deleteStudent = async (id: string): Promise<DeleteResult> => {
     if (deletedStudent.affected !== 1) {
       throw new Error('Student not found.');
     }
+    sendNotification('', 'student Deleted..!');
     return deletedStudent;
   } catch (error) {
     // Handle and rethrow the error

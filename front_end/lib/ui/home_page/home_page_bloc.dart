@@ -39,7 +39,7 @@ class RampUpHomeScreenBloc extends Bloc<RampUpHomePageEvent, RampUpHomeState> {
       add(
         GetAllStudents(),
       );
-      sendNotification("Success", "student Saved..!");
+      // sendNotification("Success", "student Saved..!");
     }
   }
 
@@ -77,7 +77,6 @@ class RampUpHomeScreenBloc extends Bloc<RampUpHomePageEvent, RampUpHomeState> {
       add(
         GetAllStudents(),
       );
-      sendNotification("", "student Deleted..!");
     } else {
       throw Exception('Failed to delete student');
     }
@@ -100,7 +99,6 @@ class RampUpHomeScreenBloc extends Bloc<RampUpHomePageEvent, RampUpHomeState> {
       add(
         GetAllStudents(),
       );
-      sendNotification("Success", "student Updated..!");
     }
   }
 }
