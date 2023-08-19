@@ -4,7 +4,7 @@ import 'package:front_end/ui/admin_home_page/admin_home_page_state.dart';
 import 'package:mockito/mockito.dart';
 
 
-class MockState extends Mock implements HomePageState {
+class MockState extends Mock implements AdminHomePageState {
   final List<Student> entries;
 
   MockState(this.entries);

@@ -18,7 +18,8 @@ import 'manage_student_page_state.dart';
 
 class StudentMangeView extends StatelessWidget {
   final Student student;
-  StudentMangeView({super.key, required this.student}) {
+  final String userType;
+  StudentMangeView({super.key, required this.student, required this.userType}) {
     nameController.text = student.name;
     addressController.text = student.address;
     mobileNoController.text = student.mobileNumber;
@@ -72,7 +73,8 @@ class StudentMangeView extends StatelessWidget {
         BlocProvider.of<StudentManageBloc>(context);
     studentManageBloc.add(SelectGender(select: student.gender));
 
-    AdminHomePageBloc homePageBloc = BlocProvider.of<AdminHomePageBloc>(context);
+    AdminHomePageBloc homePageBloc =
+        BlocProvider.of<AdminHomePageBloc>(context);
     return Scaffold(
       appBar: AppBar(
         title: Text(

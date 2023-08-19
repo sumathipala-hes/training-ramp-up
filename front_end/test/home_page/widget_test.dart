@@ -10,8 +10,8 @@ import 'package:intl/intl.dart';
 void main() {
   Widget createApp() {
     return MaterialApp(
-      home: BlocProvider<HomePageBloc>(
-        create: (context) => HomePageBloc(context),
+      home: BlocProvider<AdminHomePageBloc>(
+        create: (context) => AdminHomePageBloc(context),
         child: const PopupModal(),
       ),
     );

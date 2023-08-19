@@ -2,23 +2,21 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:front_end/ui/widget/student_modal.dart';
+import 'package:front_end/ui/user_home_page/user_home_page_bloc.dart';
+import 'package:front_end/ui/user_home_page/user_home_page_state.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../model/student_model.dart';
-import '../../theme/primary_theme.dart';
 import '../manage_student_page/manage_student_page_provider.dart';
 import '../widget/card_details.dart';
-import 'admin_home_page_bloc.dart';
-import 'admin_home_page_state.dart';
 
-class AdminHomePageView extends StatelessWidget {
-  const AdminHomePageView({super.key});
+class UserHomePageView extends StatelessWidget {
+  const UserHomePageView({super.key});
 
   Widget _buildStudentCardView(BuildContext context, Student student) {
     return GestureDetector(
       onTap: () {
-        navigateToAnotherUI(context, student, "ADMIN");
+        navigateToAnotherUI(context, student,"USER");
       },
       child: StudentCard(
         id: student.id!,
@@ -28,15 +26,11 @@ class AdminHomePageView extends StatelessWidget {
     );
   }
 
-  void navigateToAnotherUI(
-      BuildContext context, Student student, String userType) {
+  void navigateToAnotherUI(BuildContext context, Student student,String userType) {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => StudentMangeProvider(
-          student: student,
-          userType: userType,
-        ),
+        builder: (context) => StudentMangeProvider(student: student,userType: userType,),
       ),
     );
   }
@@ -46,7 +40,7 @@ class AdminHomePageView extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          "Manage Student",
+          "Student View",
           style: TextStyle(
               fontWeight: FontWeight.bold,
               fontFamily: GoogleFonts.ubuntu().fontFamily),
@@ -74,23 +68,40 @@ class AdminHomePageView extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 const SizedBox(height: 30),
-                ElevatedButton(
-                  style: popButton,
-                  onPressed: () {
-                    showDialog(
-                      context: context,
-                      builder: (context) => const PopupModal(),
-                    );
-                  },
-                  child: Text(
-                    "ADD NEW STUDENT",
-                    style: textButton,
+                Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: SizedBox(
+                    height: 50,
+                    width: MediaQuery.of(context).size.width.toDouble(),
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(
+                        color: Colors.white70,
+                        border: Border.all(
+                          color: Colors.black,
+                          width: 1,
+                        ),
+                        borderRadius: const BorderRadius.all(
+                          Radius.circular(10),
+                        ),
+                      ),
+                      child: const TextField(
+                        decoration: InputDecoration(
+                          prefixIcon: Icon(Icons.search),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(10),
+                            ),
+                          ),
+                          hintText:
+                              'Search by ID, Name, Address, Mobile No', // Move hint text here
+                        ),
+                      ),
+                    ),
                   ),
                 ),
-                const SizedBox(height: 30),
                 Expanded(
                   child: SingleChildScrollView(
-                    child: BlocBuilder<AdminHomePageBloc, AdminHomePageState>(
+                    child: BlocBuilder<UserHomePageBloc, UserHomePageState>(
                       buildWhen: (previous, current) =>
                           previous.allStudents != current.allStudents,
                       builder: (context, state) {
