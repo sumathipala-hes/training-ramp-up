@@ -18,7 +18,7 @@ class AdminHomePageView extends StatelessWidget {
   Widget _buildStudentCardView(BuildContext context, Student student) {
     return GestureDetector(
       onTap: () {
-        navigateToAnotherUI(context, student, "ADMIN");
+        navigateToAnotherUI(context, student);
       },
       child: StudentCard(
         id: student.id!,
@@ -29,13 +29,14 @@ class AdminHomePageView extends StatelessWidget {
   }
 
   void navigateToAnotherUI(
-      BuildContext context, Student student, String userType) {
+    BuildContext context,
+    Student student,
+  ) {
     Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => StudentMangeProvider(
           student: student,
-          userType: userType,
         ),
       ),
     );

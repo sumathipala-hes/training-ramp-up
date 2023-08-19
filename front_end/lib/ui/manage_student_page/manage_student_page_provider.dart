@@ -6,9 +6,7 @@ import 'manage_student_page_view.dart';
 
 class StudentMangeProvider extends StatelessWidget {
   final Student student;
-  final String userType;
-  const StudentMangeProvider(
-      {Key? key, required this.student, required this.userType})
+  const StudentMangeProvider({Key? key, required this.student})
       : super(key: key);
 
   @override
@@ -17,7 +15,6 @@ class StudentMangeProvider extends StatelessWidget {
       create: (context) => StudentManageBloc(),
       child: StudentMangeView(
         student: student,
-        userType: userType,
       ),
     );
   }

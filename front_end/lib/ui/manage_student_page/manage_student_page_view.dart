@@ -18,8 +18,7 @@ import 'manage_student_page_state.dart';
 
 class StudentMangeView extends StatelessWidget {
   final Student student;
-  final String userType;
-  StudentMangeView({super.key, required this.student, required this.userType}) {
+  StudentMangeView({super.key, required this.student}) {
     nameController.text = student.name;
     addressController.text = student.address;
     mobileNoController.text = student.mobileNumber;
