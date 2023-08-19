@@ -10,11 +10,11 @@ import '../../model/student_model.dart';
 import '../../theme/primary_theme.dart';
 import '../manage_student_page/manage_student_page_provider.dart';
 import '../widget/card_details.dart';
-import 'home_page_bloc.dart';
-import 'home_page_state.dart';
+import 'admin_home_page_bloc.dart';
+import 'admin_home_page_state.dart';
 
-class HomePageView extends StatelessWidget {
-  const HomePageView({super.key});
+class AdminHomePageView extends StatelessWidget {
+  const AdminHomePageView({super.key});
 
   Widget _buildStudentCardView(BuildContext context, Student student) {
     return GestureDetector(
@@ -87,7 +87,7 @@ class HomePageView extends StatelessWidget {
                 const SizedBox(height: 30),
                 Expanded(
                   child: SingleChildScrollView(
-                    child: BlocBuilder<HomePageBloc, HomePageState>(
+                    child: BlocBuilder<AdminHomePageBloc, AdminHomePageState>(
                       buildWhen: (previous, current) =>
                           previous.allStudents != current.allStudents,
                       builder: (context, state) {

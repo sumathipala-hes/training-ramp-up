@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../theme/primary_theme.dart';
-import '../home_page/home_page_bloc.dart';
+import '../admin_home_page/admin_home_page_bloc.dart';
 import '../sign_in_page/sign_in_page_provider.dart';
 
 class RampUpApp extends StatelessWidget {
@@ -18,7 +18,7 @@ class RampUpApp extends StatelessWidget {
     );
 
     return BlocProvider(
-      create: (context) => HomePageBloc(context),
+      create: (context) => AdminHomePageBloc(context),
       child: materialApp,
     );
   }

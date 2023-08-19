@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
 @immutable
-abstract class HomePageEvent {}
+abstract class AdminHomePageEvent {}
 
-class GetAllStudent extends HomePageEvent {
+class GetAllStudent extends AdminHomePageEvent {
   GetAllStudent();
 }
 
-class SaveStudent extends HomePageEvent {
+class SaveStudent extends AdminHomePageEvent {
   final String id;
   final String name;
   final String address;
@@ -25,7 +25,7 @@ class SaveStudent extends HomePageEvent {
   });
 }
 
-class UpdateStudent extends HomePageEvent {
+class UpdateStudent extends AdminHomePageEvent {
   final String id;
   final String name;
   final String address;
@@ -43,7 +43,7 @@ class UpdateStudent extends HomePageEvent {
   });
 }
 
-class DeleteStudent extends HomePageEvent {
+class DeleteStudent extends AdminHomePageEvent {
   final String id;
 
   DeleteStudent({

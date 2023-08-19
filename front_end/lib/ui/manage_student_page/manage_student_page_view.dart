@@ -10,8 +10,8 @@ import 'package:intl/intl.dart';
 import '../../model/student_model.dart';
 import '../../theme/primary_theme.dart';
 import '../../util/notification.util.dart';
-import '../home_page/home_page_bloc.dart';
-import '../home_page/home_page_event.dart';
+import '../admin_home_page/admin_home_page_bloc.dart';
+import '../admin_home_page/admin_home_page_event.dart';
 import 'manage_student_page_bloc.dart';
 import 'manage_student_page_event.dart';
 import 'manage_student_page_state.dart';
@@ -72,7 +72,7 @@ class StudentMangeView extends StatelessWidget {
         BlocProvider.of<StudentManageBloc>(context);
     studentManageBloc.add(SelectGender(select: student.gender));
 
-    HomePageBloc homePageBloc = BlocProvider.of<HomePageBloc>(context);
+    AdminHomePageBloc homePageBloc = BlocProvider.of<AdminHomePageBloc>(context);
     return Scaffold(
       appBar: AppBar(
         title: Text(

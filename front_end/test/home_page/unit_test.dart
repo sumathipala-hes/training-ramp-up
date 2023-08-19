@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:front_end/model/student_model.dart';
-import 'package:front_end/ui/home_page/home_page_state.dart';
+import 'package:front_end/ui/admin_home_page/admin_home_page_state.dart';
 import 'package:mockito/mockito.dart';
 
 

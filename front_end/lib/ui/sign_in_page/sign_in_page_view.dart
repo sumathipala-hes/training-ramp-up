@@ -1,7 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:front_end/ui/home_page/home_page_view.dart';
+import 'package:front_end/ui/admin_home_page/admin_home_page_view.dart';
 import 'package:front_end/ui/sign_up_page/sign_up_page_provider.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -92,7 +92,7 @@ class SignInPageView extends StatelessWidget {
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) =>
-                                            const HomePageView()),
+                                            const AdminHomePageView()),
                                   );
                                 },
                                 child: Row(

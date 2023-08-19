@@ -1,6 +1,6 @@
 import '../../model/student_model.dart';
 
-class HomePageState {
+class AdminHomePageState {
   final String idText;
   final String nameText;
   final String addressText;
@@ -8,7 +8,7 @@ class HomePageState {
   final DateTime dateText;
   final List<Student> allStudents;
 
-  HomePageState({
+  AdminHomePageState({
     required this.idText,
     required this.nameText,
     required this.addressText,
@@ -17,7 +17,7 @@ class HomePageState {
     required this.allStudents,
   });
 
-  static HomePageState get initialState => HomePageState(
+  static AdminHomePageState get initialState => AdminHomePageState(
         idText: '',
         nameText: '',
         addressText: '',
@@ -26,7 +26,7 @@ class HomePageState {
         allStudents: [],
       );
 
-  HomePageState clone({
+  AdminHomePageState clone({
     String? idText,
     String? nameText,
     String? addressText,
@@ -34,7 +34,7 @@ class HomePageState {
     DateTime? dateText,
     List<Student>? allStudents,
   }) {
-    return HomePageState(
+    return AdminHomePageState(
       idText: idText ?? this.idText,
       nameText: nameText ?? this.nameText,
       addressText: addressText ?? this.addressText,

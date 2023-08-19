@@ -3,8 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
 import '../../theme/primary_theme.dart';
-import '../home_page/home_page_bloc.dart';
-import '../home_page/home_page_event.dart';
+import '../admin_home_page/admin_home_page_bloc.dart';
+import '../admin_home_page/admin_home_page_event.dart';
 
 class PopupModal extends StatefulWidget {
   const PopupModal({super.key});
@@ -26,7 +26,7 @@ class _PopupModalState extends State<PopupModal> {
   static final RegExp _addressRegExp = RegExp(r'^[a-zA-Z0-9 ]+$');
 
   String selectedGender = "Male";
-   DateTime dob = DateTime(DateTime.now().year - 18);
+  DateTime dob = DateTime(DateTime.now().year - 18);
 
   void clear() {
     nameController.clear();
@@ -91,7 +91,8 @@ class _PopupModalState extends State<PopupModal> {
 
   @override
   Widget build(BuildContext context) {
-    HomePageBloc homePageBloc = BlocProvider.of<HomePageBloc>(context);
+    AdminHomePageBloc homePageBloc =
+        BlocProvider.of<AdminHomePageBloc>(context);
 
     return AlertDialog(
       shape: RoundedRectangleBorder(
