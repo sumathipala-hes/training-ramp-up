@@ -16,9 +16,11 @@ import 'user_home_page_state.dart';
 class UserHomePageBloc extends Bloc<UserHomePageEvent, UserHomePageState> {
   UserHomePageBloc() : super(UserHomePageState.initialState) {
     on<GetAllStudent>(_getAllStudent);
+    on<GetStudentByOne>(_getStudentByOne);
     add(
       GetAllStudent(),
     );
+
     FirebaseMessaging.instance.getToken();
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       Logger().d('Got a message whilst in the foreground!');
@@ -49,8 +51,6 @@ class UserHomePageBloc extends Bloc<UserHomePageEvent, UserHomePageState> {
       GetAllStudent event, Emitter<UserHomePageState> emit) async {
     try {
       final response = await StudentRepository().getAllStudents();
-      print("response.body");
-      print(response.body);
 
       if (response.statusCode == 200) {
         Map<String, dynamic> responseData = jsonDecode(response.body);
@@ -76,6 +76,41 @@ class UserHomePageBloc extends Bloc<UserHomePageEvent, UserHomePageState> {
       }
     } catch (e) {
       Logger().e('Error fetching students: $e');
+    }
+  }
+
+  Future<void> _getStudentByOne(
+      GetStudentByOne event, Emitter<UserHomePageState> emit) async {
+    try {
+      if (event.search == null) {
+        add(GetAllStudent());
+        return;
+      }
+      final response = await StudentRepository().getStudentByOne(event.search);
+      if (response.statusCode == 200) {
+        Map<String, dynamic> responseData = jsonDecode(response.body);
+
+        if (responseData.containsKey('data')) {
+          Map<String, dynamic> studentData = responseData['data'];
+
+          Student student = Student.fromJson(studentData);
+
+          emit(
+            state.clone(
+              allStudents: [student],
+            ),
+          );
+        } else {
+          Logger().e('Response does not contain "data" key');
+          add(GetAllStudent());
+        }
+      } else {
+        Logger().e('Failed to load student: ${response.statusCode}');
+        add(GetAllStudent());
+      }
+    } catch (e) {
+      Logger().e('Error fetching student: $e');
+      add(GetAllStudent());
     }
   }
 }

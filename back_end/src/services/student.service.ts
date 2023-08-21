@@ -19,6 +19,27 @@ export const getAllStudents = async (): Promise<Array<Student>> => {
   }
 };
 
+export const getStudentByOne = async (
+  search: string,
+): Promise<Student | null> => {
+  try {
+    const studentRepository = await appDataSource.manager.getRepository(
+      Student,
+    );
+    const student = await studentRepository.findOne({
+      where: [{ name: search }, { address: search }, { mobileNumber: search }],
+    });
+
+    if (!student) {
+      throw new Error('No student found');
+    }
+
+    return student;
+  } catch (error) {
+    throw error;
+  }
+};
+
 export const createStudent = async (
   studentData: Student,
 ): Promise<InsertResult> => {

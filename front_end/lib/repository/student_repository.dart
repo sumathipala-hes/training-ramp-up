@@ -18,6 +18,16 @@ class StudentRepository {
     return response;
   }
 
+  Future<http.Response> getStudentByOne(String search) async {
+    final response = await http.get(
+      Uri.parse('$baseUrl/students/$search'),
+      headers: <String, String>{
+        'Content-Type': 'application/json',
+      },
+    );
+    return response;
+  }
+
   Future<void> saveStudent(Student student) async {
     try {
       final response = await http.post(

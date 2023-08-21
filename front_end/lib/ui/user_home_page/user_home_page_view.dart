@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:front_end/ui/user_home_page/user_home_page_bloc.dart';
+import 'package:front_end/ui/user_home_page/user_home_page_event.dart';
 import 'package:front_end/ui/user_home_page/user_home_page_state.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -10,7 +11,9 @@ import '../../model/student_model.dart';
 import '../widget/card_details.dart';
 
 class UserHomePageView extends StatelessWidget {
-  const UserHomePageView({super.key});
+  UserHomePageView({super.key});
+
+  final TextEditingController searchController = TextEditingController();
 
   Widget _buildStudentCardView(BuildContext context, Student student) {
     return GestureDetector(
@@ -36,6 +39,8 @@ class UserHomePageView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final userHomePage = BlocProvider.of<UserHomePageBloc>(context);
+
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -83,16 +88,26 @@ class UserHomePageView extends StatelessWidget {
                           Radius.circular(10),
                         ),
                       ),
-                      child: const TextField(
-                        decoration: InputDecoration(
+                      child: TextField(
+                        controller: searchController,
+                        onChanged: (value) => {
+                          userHomePage.add(
+                            GetStudentByOne(
+                              searchController.text.trim(),
+                            ),
+                          ),
+                        },
+                        decoration: const InputDecoration(
                           prefixIcon: Icon(Icons.search),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.all(
                               Radius.circular(10),
                             ),
                           ),
-                          hintText:
-                              'Search by ID, Name, Address, Mobile No', // Move hint text here
+                          hintText: 'Search by ID, Name, Address, Mobile No',
+                          hintStyle: TextStyle(
+                            color: Colors.black,
+                          ),
                         ),
                       ),
                     ),
