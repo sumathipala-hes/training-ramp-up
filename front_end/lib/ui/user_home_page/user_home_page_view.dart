@@ -90,7 +90,7 @@ class UserHomePageView extends StatelessWidget {
                       ),
                       child: TextField(
                         controller: searchController,
-                        onChanged: (value) => {
+                        onSubmitted: (value) => {
                           userHomePage.add(
                             GetStudentByOne(
                               searchController.text.trim(),

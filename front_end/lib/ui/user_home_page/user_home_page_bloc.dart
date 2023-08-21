@@ -10,6 +10,7 @@ import 'package:logger/logger.dart';
 
 import '../../model/student_model.dart';
 import '../../repository/student_repository.dart';
+import '../../util/notification.util.dart';
 import 'user_home_page_event.dart';
 import 'user_home_page_state.dart';
 
@@ -82,10 +83,6 @@ class UserHomePageBloc extends Bloc<UserHomePageEvent, UserHomePageState> {
   Future<void> _getStudentByOne(
       GetStudentByOne event, Emitter<UserHomePageState> emit) async {
     try {
-      if (event.search == null) {
-        add(GetAllStudent());
-        return;
-      }
       final response = await StudentRepository().getStudentByOne(event.search);
       if (response.statusCode == 200) {
         Map<String, dynamic> responseData = jsonDecode(response.body);
@@ -106,6 +103,7 @@ class UserHomePageBloc extends Bloc<UserHomePageEvent, UserHomePageState> {
         }
       } else {
         Logger().e('Failed to load student: ${response.statusCode}');
+        showFieldError('No data found');
         add(GetAllStudent());
       }
     } catch (e) {
