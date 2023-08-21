@@ -5,8 +5,180 @@ class SignInPageView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: const Text('SignInPageView'),
+    return Scaffold(
+      body: Container(
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage(
+              'assets/images/sign-in-image.jpg',
+            ),
+            fit: BoxFit.cover,
+          ),
+        ),
+        alignment: Alignment.center,
+        child: Center(
+          child: SizedBox(
+            width: MediaQuery.of(context).size.width * 0.9,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text(
+                  'Ramp Up',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 40,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                const TextField(
+                  decoration: InputDecoration(
+                    hintText: 'Email',
+                    hintStyle: TextStyle(
+                      color: Colors.white,
+                    ),
+                    filled: true,
+                    fillColor: Color.fromARGB(70, 0, 0, 0),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide.none,
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(40),
+                      ),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide.none,
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(40),
+                      ),
+                    ),
+                  ),
+                  style: TextStyle(
+                    color: Colors.white,
+                  ),
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                const TextField(
+                  decoration: InputDecoration(
+                    hintText: 'Password',
+                    hintStyle: TextStyle(
+                      color: Colors.white,
+                    ),
+                    filled: true,
+                    fillColor: Color.fromARGB(70, 0, 0, 0),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide.none,
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(40),
+                      ),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide.none,
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(40),
+                      ),
+                    ),
+                  ),
+                  style: TextStyle(
+                    color: Colors.white,
+                  ),
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.9,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(40),
+                      ),
+                      backgroundColor: Colors.white,
+                    ),
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/home');
+                    },
+                    child: const Padding(
+                      padding: EdgeInsetsDirectional.fromSTEB(20, 10, 20, 10),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.login,
+                            color: Colors.black87,
+                          ),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Text(
+                            'Sign In',
+                            style: TextStyle(
+                              color: Colors.black87,
+                              fontSize: 20,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(
+                  height: 40,
+                ),
+                const Text(
+                  'Don\'t have an account?',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                  ),
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.9,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(40),
+                      ),
+                      backgroundColor: Colors.black87,
+                    ),
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/sign-up');
+                    },
+                    child: const Padding(
+                      padding: EdgeInsetsDirectional.fromSTEB(20, 10, 20, 10),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.person_add,
+                            color: Colors.white,
+                          ),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Text(
+                            'Sign Up',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 20,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
