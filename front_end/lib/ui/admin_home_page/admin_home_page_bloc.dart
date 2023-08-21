@@ -5,11 +5,13 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:front_end/model/user_model.dart';
 
 import 'package:logger/logger.dart';
 
 import '../../model/student_model.dart';
 import '../../repository/student_repository.dart';
+import '../../repository/user_repository.dart';
 import 'admin_home_page_event.dart';
 import 'admin_home_page_state.dart';
 
@@ -20,10 +22,22 @@ class AdminHomePageBloc extends Bloc<AdminHomePageEvent, AdminHomePageState> {
     on<SaveStudent>(_saveStudent);
     on<UpdateStudent>(_updateStudent);
     on<DeleteStudent>(_deleteStudent);
+
+    on<GetAllUsers>(_getAllUsers);
+    on<SaveUser>(_saveUser);
+    on<UpdateUser>(_updateUser);
+    on<DeleteUser>(_deleteUser);
     add(
       GetAllStudent(),
     );
-    FirebaseMessaging.instance.getToken();
+
+    add(
+      GetAllUsers(),
+    );
+
+    final token = FirebaseMessaging.instance.getToken();
+    Logger().d('Token: $token');
+
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       Logger().d('Got a message whilst in the foreground!');
 
@@ -116,4 +130,43 @@ class AdminHomePageBloc extends Bloc<AdminHomePageEvent, AdminHomePageState> {
     await StudentRepository().deleteStudent(event.id);
     add(GetAllStudent());
   }
+
+  Future<void> _getAllUsers(
+      GetAllUsers event, Emitter<AdminHomePageState> emit) async {
+    try {
+      final response = await UserRepository().getAllUsers();
+
+      if (response.statusCode == 200) {
+        Map<String, dynamic> responseData = jsonDecode(response.body);
+
+        if (responseData.containsKey('data')) {
+          List<dynamic> userDataList = responseData['data'];
+
+          List<User> userList = [
+            ...userDataList.map((userData) => User.fromJson(userData)),
+          ];
+
+          emit(
+            state.clone(
+              allUsers: userList,
+            ),
+          );
+        } else {
+          Logger().e('Response does not contain "data" key');
+        }
+      } else {
+        Logger().e('Failed to load users: ${response.statusCode}');
+      }
+    } catch (e) {
+      Logger().e('Error fetching users: $e');
+    }
+  }
+
+  FutureOr<void> _saveUser(SaveUser event, Emitter<AdminHomePageState> emit) {}
+
+  FutureOr<void> _updateUser(
+      UpdateUser event, Emitter<AdminHomePageState> emit) {}
+
+  FutureOr<void> _deleteUser(
+      DeleteUser event, Emitter<AdminHomePageState> emit) {}
 }

@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:front_end/model/user_model.dart';
 import 'package:front_end/theme/primary_theme.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -18,7 +19,7 @@ class AdminHomePageView extends StatelessWidget {
   Widget _buildStudentCardView(BuildContext context, Student student) {
     return GestureDetector(
       onTap: () {
-        navigateToAnotherUI(context, student);
+        studentNavigateToAnotherUI(context, student);
       },
       child: StudentCard(
         id: student.id!,
@@ -28,12 +29,36 @@ class AdminHomePageView extends StatelessWidget {
     );
   }
 
-  void navigateToAnotherUI(BuildContext context, Student student) {
+  Widget _buildUserCardView(BuildContext context, User user) {
+    return GestureDetector(
+      onTap: () {
+        userNavigateToAnotherUI(context, user);
+      },
+      child: StudentCard(
+        id: user.email!,
+        studentName: user.name,
+        studentDOB: user.dob,
+      ),
+    );
+  }
+
+  void studentNavigateToAnotherUI(BuildContext context, Student student) {
     Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => StudentMangeProvider(
           student: student,
+        ),
+      ),
+    );
+  }
+
+  void userNavigateToAnotherUI(BuildContext context, User user) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => StudentMangeProvider(
+          user: user,
         ),
       ),
     );
@@ -71,7 +96,7 @@ class AdminHomePageView extends StatelessWidget {
                   );
                 },
                 child: Text(
-                  "ADD NEW STUDENT",
+                  "ADD NEW USER",
                   style: textButton,
                 ),
               ),
@@ -80,16 +105,16 @@ class AdminHomePageView extends StatelessWidget {
                 child: SingleChildScrollView(
                   child: BlocBuilder<AdminHomePageBloc, AdminHomePageState>(
                     buildWhen: (previous, current) =>
-                        previous.allStudents != current.allStudents,
+                        previous.allUsers != current.allUsers,
                     builder: (context, state) {
-                      final List<Student> allStudents = state.allStudents;
+                      final List<User> allUsers = state.allUsers;
                       return ListView.builder(
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
-                        itemCount: allStudents.length,
+                        itemCount: allUsers.length,
                         itemBuilder: (context, index) {
-                          final student = allStudents[index];
-                          return _buildStudentCardView(context, student);
+                          final user = allUsers[index];
+                          return _buildUserCardView(context, user);
                         },
                       );
                     },

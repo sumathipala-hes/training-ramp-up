@@ -4,6 +4,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:front_end/model/user_model.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 
@@ -18,7 +19,7 @@ import 'manage_student_page_state.dart';
 
 class StudentMangeView extends StatelessWidget {
   final Student student;
-  StudentMangeView({super.key, required this.student}) {
+  StudentMangeView({super.key, required this.student, required User user}) {
     nameController.text = student.name;
     addressController.text = student.address;
     mobileNoController.text = student.mobileNumber;

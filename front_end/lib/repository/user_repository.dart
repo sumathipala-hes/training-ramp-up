@@ -8,6 +8,16 @@ import '../util/notification.util.dart';
 import 'package:http/http.dart' as http;
 
 class UserRepository {
+  Future<http.Response> getAllUsers() async {
+    final response = await http.get(
+      Uri.parse('$baseUrl/users'),
+      headers: <String, String>{
+        'Content-Type': 'application/json',
+      },
+    );
+    return response;
+  }
+
   Future<void> saveUser(User user) async {
     try {
       final response = await http.post(

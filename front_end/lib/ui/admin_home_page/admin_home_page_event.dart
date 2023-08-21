@@ -50,3 +50,55 @@ class DeleteStudent extends AdminHomePageEvent {
     required this.id,
   });
 }
+
+class GetAllUsers extends AdminHomePageEvent {
+  GetAllUsers();
+}
+
+class SaveUser extends AdminHomePageEvent {
+  final String userType;
+  final String name;
+  final String address;
+  final String email;
+  final String mobileNo;
+  final DateTime date;
+  final String password;
+
+  SaveUser({
+    required this.userType,
+    required this.name,
+    required this.address,
+    required this.email,
+    required this.mobileNo,
+    required this.date,
+    required this.password,
+  });
+}
+
+class UpdateUser extends AdminHomePageEvent {
+  final String userType;
+  final String name;
+  final String address;
+  final String email;
+  final String mobileNo;
+  final DateTime date;
+  final String password;
+
+  UpdateUser({
+    required this.userType,
+    required this.name,
+    required this.address,
+    required this.email,
+    required this.mobileNo,
+    required this.date,
+    required this.password,
+  });
+}
+
+class DeleteUser extends AdminHomePageEvent {
+  final String id;
+
+  DeleteUser({
+    required this.id,
+  });
+}
