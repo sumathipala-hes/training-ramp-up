@@ -1,0 +1,3 @@
+class UserHomePageState {
+  UserHomePageState();
+}
