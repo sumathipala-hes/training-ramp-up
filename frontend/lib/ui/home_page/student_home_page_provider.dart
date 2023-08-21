@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:frontend/ui/home_page/home_page_bloc.dart';
-import 'package:frontend/ui/home_page/home_page_view.dart';
+import 'package:frontend/ui/home_page/student_home_page_bloc.dart';
+import 'package:frontend/ui/home_page/student_home_page_view.dart';
 
 class HomePageProvider extends StatelessWidget {
   const HomePageProvider({
@@ -11,8 +11,8 @@ class HomePageProvider extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => HomePageBloc(context),
-      child: const HomePageView(),
+      create: (context) => StudentHomePageBloc(context),
+      child: const StudentHomePageView(),
     );
   }
 }

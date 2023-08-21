@@ -1,6 +1,6 @@
-abstract class HomePageEvent {}
+abstract class StudentHomePageEvent {}
 
-class SaveStudentEvent extends HomePageEvent {
+class SaveStudentEvent extends StudentHomePageEvent {
   final String name;
   final String address;
   final String mobile;
@@ -16,9 +16,9 @@ class SaveStudentEvent extends HomePageEvent {
   });
 }
 
-class GetAllStudents extends HomePageEvent {}
+class GetAllStudents extends StudentHomePageEvent {}
 
-class UpdateStudentEvent extends HomePageEvent {
+class UpdateStudentEvent extends StudentHomePageEvent {
   final String id;
   final String name;
   final String address;
@@ -36,7 +36,7 @@ class UpdateStudentEvent extends HomePageEvent {
   });
 }
 
-class DeleteStudentEvent extends HomePageEvent {
+class DeleteStudentEvent extends StudentHomePageEvent {
   final String id;
 
   DeleteStudentEvent({

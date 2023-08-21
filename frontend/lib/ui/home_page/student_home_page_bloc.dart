@@ -6,11 +6,13 @@ import 'package:frontend/repository/student_repository.dart';
 import 'package:frontend/util/show_toast.dart';
 import 'package:logger/logger.dart';
 import '../../model/student.dart';
-import 'home_page_event.dart';
-import 'home_page_state.dart';
+import 'student_home_page_event.dart';
+import 'student_home_page_state.dart';
 
-class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
-  HomePageBloc(BuildContext context) : super(HomePageState.initialState) {
+class StudentHomePageBloc
+    extends Bloc<StudentHomePageEvent, StudentHomePageState> {
+  StudentHomePageBloc(BuildContext context)
+      : super(StudentHomePageState.initialState) {
     on<SaveStudentEvent>(_saveStudent);
     on<GetAllStudents>(_getAllStudents);
     on<UpdateStudentEvent>(_updateStudent);
@@ -24,7 +26,7 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
 
   Future<FutureOr<void>> _saveStudent(
     SaveStudentEvent event,
-    Emitter<HomePageState> emit,
+    Emitter<StudentHomePageState> emit,
   ) async {
     Student student = Student(
       id: '',
@@ -41,7 +43,7 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
 
   Future<FutureOr<void>> _updateStudent(
     UpdateStudentEvent event,
-    Emitter<HomePageState> emit,
+    Emitter<StudentHomePageState> emit,
   ) async {
     Student student = Student(
       id: event.id,
@@ -58,7 +60,7 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
 
   Future<FutureOr<void>> _deleteStudent(
     DeleteStudentEvent event,
-    Emitter<HomePageState> emit,
+    Emitter<StudentHomePageState> emit,
   ) async {
     await studentRepository.deleteStudents(event.id);
     add(GetAllStudents());
@@ -66,7 +68,7 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
 
   Future<FutureOr<void>> _getAllStudents(
     GetAllStudents event,
-    Emitter<HomePageState> emit,
+    Emitter<StudentHomePageState> emit,
   ) async {
     final studentList = await studentRepository.fetchStudents();
 

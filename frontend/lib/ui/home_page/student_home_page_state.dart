@@ -2,20 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:frontend/model/student.dart';
 
 @immutable
-class HomePageState {
+class StudentHomePageState {
   final List<Student> students;
-  const HomePageState({
+  const StudentHomePageState({
     required this.students,
   });
 
-  static HomePageState get initialState => const HomePageState(
+  static StudentHomePageState get initialState => const StudentHomePageState(
         students: [],
       );
 
-  HomePageState clone({
+  StudentHomePageState clone({
     List<Student>? students,
   }) {
-    return HomePageState(
+    return StudentHomePageState(
       students: students ?? this.students,
     );
   }
