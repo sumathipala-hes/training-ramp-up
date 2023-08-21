@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:front_end/ui/admin_home_page/admin_home_page_view.dart';
 import 'package:front_end/ui/user_home_page/user_home_page_provider.dart';
 
 import '../../theme/primary_theme.dart';
@@ -15,7 +16,7 @@ class RampUpApp extends StatelessWidget {
       theme: appThemeData,
       debugShowCheckedModeBanner: false,
       // home: const SignInPageProvider(),
-      home: const UserHomePageProvider(),
+      home:  AdminHomePageView(),
     );
 
     return BlocProvider(

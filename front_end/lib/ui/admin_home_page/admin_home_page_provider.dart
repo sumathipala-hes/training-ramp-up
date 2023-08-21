@@ -11,7 +11,7 @@ class AdminHomePageProvider extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => AdminHomePageBloc(context),
-      child: const AdminHomePageView(),
+      child:  const AdminHomePageView(),
     );
   }
 }
