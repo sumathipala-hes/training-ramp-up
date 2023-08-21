@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/ui/home_page/home_page_provider.dart';
+import 'package:frontend/ui/register_page/register_page_provider.dart';
 
 class SignInPageView extends StatelessWidget {
   const SignInPageView({super.key});
@@ -99,7 +101,14 @@ class SignInPageView extends StatelessWidget {
                       backgroundColor: Colors.white,
                     ),
                     onPressed: () {
-                      Navigator.pushNamed(context, '/home');
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) {
+                            return const HomePageProvider();
+                          },
+                        ),
+                      );
                     },
                     child: const Padding(
                       padding: EdgeInsetsDirectional.fromSTEB(20, 10, 20, 10),
@@ -148,7 +157,14 @@ class SignInPageView extends StatelessWidget {
                       backgroundColor: Colors.black87,
                     ),
                     onPressed: () {
-                      Navigator.pushNamed(context, '/sign-up');
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) {
+                            return const RegisterPageProvider();
+                          },
+                        ),
+                      );
                     },
                     child: const Padding(
                       padding: EdgeInsetsDirectional.fromSTEB(20, 10, 20, 10),
