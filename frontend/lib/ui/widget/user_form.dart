@@ -64,7 +64,7 @@ class _UserFormState extends State<UserForm> {
                   decoration: const InputDecoration(
                     border: UnderlineInputBorder(),
                     labelText: 'Password',
-                    hintText: 'Enter the Password', // Corrected hintText
+                    hintText: 'Enter the Password',
                   ),
                   onChanged: (value) {},
                 ),

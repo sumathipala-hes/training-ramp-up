@@ -1,34 +1,35 @@
 import 'package:flutter/material.dart';
 
 @immutable
-class StudentPageState {
+class ManageStudentPageState {
   final String gender;
   final String nameError;
   final String addressError;
   final String mobileError;
 
-  const StudentPageState({
+  const ManageStudentPageState({
     required this.gender,
     required this.nameError,
     required this.addressError,
     required this.mobileError,
   });
 
-  static StudentPageState get initialState => const StudentPageState(
+  static ManageStudentPageState get initialState =>
+      const ManageStudentPageState(
         gender: '',
         nameError: '',
         addressError: '',
         mobileError: '',
       );
 
-  StudentPageState clone({
+  ManageStudentPageState clone({
     String? gender,
     String? textFieldValue,
     String? nameError,
     String? addressError,
     String? mobileError,
   }) {
-    return StudentPageState(
+    return ManageStudentPageState(
       gender: gender ?? this.gender,
       nameError: nameError ?? this.nameError,
       addressError: addressError ?? this.addressError,

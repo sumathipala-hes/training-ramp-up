@@ -1,9 +1,10 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:frontend/ui/student_page/student_page_event.dart';
-import 'package:frontend/ui/student_page/student_page_state.dart';
+import 'package:frontend/ui/manage_student_page/manage_student_page_event.dart';
+import 'package:frontend/ui/manage_student_page/manage_student_page_state.dart';
 
-class StudentPageBloc extends Bloc<StudentPageEvent, StudentPageState> {
-  StudentPageBloc() : super(StudentPageState.initialState) {
+class ManageStudentPageBloc
+    extends Bloc<ManageStudentPageEvent, ManageStudentPageState> {
+  ManageStudentPageBloc() : super(ManageStudentPageState.initialState) {
     on<SetRadioButtons>(_setRadioButtons);
     on<SetValidations>(_setIsValidate);
     on<SetGender>(_setGender);
@@ -11,7 +12,7 @@ class StudentPageBloc extends Bloc<StudentPageEvent, StudentPageState> {
 
   void _setRadioButtons(
     SetRadioButtons event,
-    Emitter<StudentPageState> emit,
+    Emitter<ManageStudentPageState> emit,
   ) {
     emit(
       state.clone(
@@ -22,7 +23,7 @@ class StudentPageBloc extends Bloc<StudentPageEvent, StudentPageState> {
 
   void _setIsValidate(
     SetValidations event,
-    Emitter<StudentPageState> emit,
+    Emitter<ManageStudentPageState> emit,
   ) {
     emit(
       state.clone(
@@ -35,7 +36,7 @@ class StudentPageBloc extends Bloc<StudentPageEvent, StudentPageState> {
 
   void _setGender(
     SetGender event,
-    Emitter<StudentPageState> emit,
+    Emitter<ManageStudentPageState> emit,
   ) {
     emit(
       state.clone(

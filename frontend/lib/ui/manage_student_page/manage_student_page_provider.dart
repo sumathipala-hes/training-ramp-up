@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/model/student.dart';
-import 'package:frontend/ui/student_page/student_page_bloc.dart';
-import 'package:frontend/ui/student_page/student_page_view.dart';
+import 'package:frontend/ui/manage_student_page/manage_student_page_bloc.dart';
+import 'package:frontend/ui/manage_student_page/manage_student_page_view.dart';
 
 class StudentPageProvider extends StatelessWidget {
   final Student student;
@@ -14,7 +14,7 @@ class StudentPageProvider extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => StudentPageBloc(),
+      create: (context) => ManageStudentPageBloc(),
       child: StudentPageView(
         student: student,
       ),
