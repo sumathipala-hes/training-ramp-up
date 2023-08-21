@@ -35,7 +35,7 @@ class AdminHomePageView extends StatelessWidget {
         userNavigateToAnotherUI(context, user);
       },
       child: StudentCard(
-        id: user.email!,
+        id: user.email,
         studentName: user.name,
         studentDOB: user.dob,
       ),
