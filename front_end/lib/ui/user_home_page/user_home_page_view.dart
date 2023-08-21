@@ -7,7 +7,6 @@ import 'package:front_end/ui/user_home_page/user_home_page_state.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../model/student_model.dart';
-import '../manage_student_page/manage_student_page_provider.dart';
 import '../widget/card_details.dart';
 
 class UserHomePageView extends StatelessWidget {
@@ -16,7 +15,7 @@ class UserHomePageView extends StatelessWidget {
   Widget _buildStudentCardView(BuildContext context, Student student) {
     return GestureDetector(
       onTap: () {
-        navigateToAnotherUI(context, student);
+        // navigateToAnotherUI(context, student);
       },
       child: StudentCard(
         id: student.id!,
@@ -26,14 +25,14 @@ class UserHomePageView extends StatelessWidget {
     );
   }
 
-  void navigateToAnotherUI(BuildContext context, Student student) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => StudentMangeProvider(student: student,),
-      ),
-    );
-  }
+  // void navigateToAnotherUI(BuildContext context, Student student) {
+  //   Navigator.push(
+  //     context,
+  //     MaterialPageRoute(
+  //       builder: (context) => StudentMangeProvider(student: student,),
+  //     ),
+  //   );
+  // }
 
   @override
   Widget build(BuildContext context) {

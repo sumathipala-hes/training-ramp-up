@@ -49,6 +49,8 @@ class UserHomePageBloc extends Bloc<UserHomePageEvent, UserHomePageState> {
       GetAllStudent event, Emitter<UserHomePageState> emit) async {
     try {
       final response = await StudentRepository().getAllStudents();
+      print("response.body");
+      print(response.body);
 
       if (response.statusCode == 200) {
         Map<String, dynamic> responseData = jsonDecode(response.body);
