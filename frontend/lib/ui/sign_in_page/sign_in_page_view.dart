@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/ui/student_home_page/student_home_page_provider.dart';
+import 'package:frontend/ui/home_page/home_page_provider.dart';
 import 'package:frontend/ui/register_page/register_page_provider.dart';
 
 class SignInPageView extends StatelessWidget {
