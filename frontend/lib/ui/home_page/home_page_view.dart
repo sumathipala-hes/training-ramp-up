@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/ui/student_home_page/student_home_page_provider.dart';
+import 'package:frontend/ui/user_home_page/user_home_page_provider.dart';
 
 class HomePageView extends StatelessWidget {
   const HomePageView({super.key});
@@ -89,7 +90,7 @@ class HomePageView extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const StudentHomePageProvider(),
+                        builder: (context) => const UserHomePageProvider(),
                       ),
                     );
                   },
