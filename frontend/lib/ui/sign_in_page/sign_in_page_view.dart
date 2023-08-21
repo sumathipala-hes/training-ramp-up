@@ -23,7 +23,7 @@ class SignInPageView extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const Text(
-                  'Ramp Up',
+                  'LOGIN',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 40,
