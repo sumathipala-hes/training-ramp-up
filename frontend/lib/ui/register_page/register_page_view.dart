@@ -196,7 +196,7 @@ class RegisterPageView extends StatelessWidget {
                     height: 40,
                   ),
                   const Text(
-                    'Don\'t have an account?',
+                    'Already have an account?',
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 20,
