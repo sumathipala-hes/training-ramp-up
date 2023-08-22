@@ -41,6 +41,8 @@ class _UserPopupModalState extends State<UserPopupModal> {
     addressController.clear();
     mobileNoController.clear();
     dateController.clear();
+    emailController.clear();
+    passwordController.clear();
   }
 
   Future<void> _selectDate(BuildContext context) async {
@@ -72,6 +74,8 @@ class _UserPopupModalState extends State<UserPopupModal> {
     addressController.addListener(_updateSaveButton);
     mobileNoController.addListener(_updateSaveButton);
     dateController.addListener(_updateSaveButton);
+    emailController.addListener(_updateSaveButton);
+    passwordController.addListener(_updateSaveButton);
   }
 
   void _updateSaveButton() {
@@ -79,6 +83,8 @@ class _UserPopupModalState extends State<UserPopupModal> {
         addressController.text.trim().isEmpty ||
         mobileNoController.text.trim().isEmpty ||
         dateController.text.trim().isEmpty;
+    emailController.text.trim().isEmpty;
+    passwordController.text.trim().isEmpty;
 
     final isMobileNumberValid = isNumeric(mobileNoController.text.trim());
 
@@ -91,9 +97,15 @@ class _UserPopupModalState extends State<UserPopupModal> {
           _addressRegExp.hasMatch(
             addressController.text.trim(),
           ) &&
+          _emailRegExp.hasMatch(
+            emailController.text.trim(),
+          ) &&
           _telNoRegExp.hasMatch(
             mobileNoController.text.trim(),
           );
+      _passwordRegExp.hasMatch(
+        passwordController.text.trim(),
+      );
     });
   }
 
@@ -115,206 +127,208 @@ class _UserPopupModalState extends State<UserPopupModal> {
           ),
         ),
       ),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          InputDecorator(
-            decoration: InputDecoration(
-              labelText: "User Type",
-              labelStyle: labelText,
-              border: const OutlineInputBorder(
-                borderRadius: BorderRadius.all(
-                  Radius.circular(10),
-                ),
-              ),
-              filled: true,
-              fillColor: Colors.grey[200],
-              contentPadding: const EdgeInsets.symmetric(
-                vertical: 12.0,
-                horizontal: 16.0,
-              ),
-            ),
-            child: DropdownButton<String>(
-              value: userTypeController.text.trim(),
-              onChanged: (newValue) {
-                setState(() {
-                  userTypeController.text = newValue!;
-                });
-              },
-              items: <String>['USER', 'ADMIN']
-                  .map<DropdownMenuItem<String>>((String value) {
-                return DropdownMenuItem<String>(
-                  value: value,
-                  child: Text(value),
-                );
-              }).toList(),
-            ),
-          ),
-          const SizedBox(height: 10),
-          TextField(
-            controller: nameController,
-            decoration: InputDecoration(
-              labelText: "User Name",
-              labelStyle: labelText,
-              border: const OutlineInputBorder(
-                borderRadius: BorderRadius.all(
-                  Radius.circular(10),
-                ),
-              ),
-              filled: true,
-              fillColor: Colors.grey[200],
-              contentPadding: const EdgeInsets.symmetric(
-                vertical: 12.0,
-                horizontal: 16.0,
-              ),
-            ),
-          ),
-          const SizedBox(height: 10),
-          TextField(
-            controller: addressController,
-            decoration: InputDecoration(
-              labelText: "User Address",
-              labelStyle: labelText,
-              border: const OutlineInputBorder(
-                borderRadius: BorderRadius.all(
-                  Radius.circular(10),
-                ),
-              ),
-              filled: true,
-              fillColor: Colors.grey[200],
-              contentPadding: const EdgeInsets.symmetric(
-                vertical: 12.0,
-                horizontal: 16.0,
-              ),
-            ),
-          ),
-          const SizedBox(height: 10),
-          TextField(
-            controller: emailController,
-            decoration: InputDecoration(
-              labelText: "User Email",
-              labelStyle: labelText,
-              border: const OutlineInputBorder(
-                borderRadius: BorderRadius.all(
-                  Radius.circular(10),
-                ),
-              ),
-              filled: true,
-              fillColor: Colors.grey[200],
-              contentPadding: const EdgeInsets.symmetric(
-                vertical: 12.0,
-                horizontal: 16.0,
-              ),
-            ),
-          ),
-          const SizedBox(height: 10),
-          TextField(
-            controller: mobileNoController,
-            decoration: InputDecoration(
-              labelText: "Mobile No",
-              labelStyle: labelText,
-              border: const OutlineInputBorder(
-                borderRadius: BorderRadius.all(
-                  Radius.circular(10),
-                ),
-              ),
-              filled: true,
-              fillColor: Colors.grey[200],
-              contentPadding: const EdgeInsets.symmetric(
-                vertical: 12.0,
-                horizontal: 16.0,
-              ),
-            ),
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          TextField(
-            controller: passwordController,
-            decoration: InputDecoration(
-              labelText: "Password",
-              labelStyle: labelText,
-              border: const OutlineInputBorder(
-                borderRadius: BorderRadius.all(
-                  Radius.circular(10),
-                ),
-              ),
-              filled: true,
-              fillColor: Colors.grey[200],
-              contentPadding: const EdgeInsets.symmetric(
-                vertical: 12.0,
-                horizontal: 16.0,
-              ),
-            ),
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          TextFormField(
-            controller: dateController,
-            onTap: () {
-              _selectDate(context);
-            },
-            decoration: InputDecoration(
-              labelText: "DOB",
-              labelStyle: labelText,
-              suffixIcon: const Icon(Icons.calendar_today),
-              border: const OutlineInputBorder(
-                borderRadius: BorderRadius.all(
-                  Radius.circular(
-                    10,
+      content: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            InputDecorator(
+              decoration: InputDecoration(
+                labelText: "User Type",
+                labelStyle: labelText,
+                border: const OutlineInputBorder(
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(10),
                   ),
                 ),
+                filled: true,
+                fillColor: Colors.grey[200],
+                contentPadding: const EdgeInsets.symmetric(
+                  vertical: 12.0,
+                  horizontal: 16.0,
+                ),
               ),
-              filled: true,
-              fillColor: Colors.grey[200],
-              contentPadding: const EdgeInsets.symmetric(
-                vertical: 12.0,
-                horizontal: 16.0,
+              child: DropdownButton<String>(
+                value: userTypeController.text.trim(),
+                onChanged: (newValue) {
+                  setState(() {
+                    userTypeController.text = newValue!;
+                  });
+                },
+                items: <String>['USER', 'ADMIN']
+                    .map<DropdownMenuItem<String>>((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value),
+                  );
+                }).toList(),
               ),
             ),
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          Center(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Radio(
-                  value: "Male",
-                  groupValue: selectedGender,
-                  onChanged: (value) {
-                    setState(
-                      () {
-                        selectedGender = value!;
-                      },
-                    );
-                  },
+            const SizedBox(height: 10),
+            TextField(
+              controller: nameController,
+              decoration: InputDecoration(
+                labelText: "User Name",
+                labelStyle: labelText,
+                border: const OutlineInputBorder(
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(10),
+                  ),
                 ),
-                Text(
-                  "Male",
-                  style: textRedio,
+                filled: true,
+                fillColor: Colors.grey[200],
+                contentPadding: const EdgeInsets.symmetric(
+                  vertical: 12.0,
+                  horizontal: 16.0,
                 ),
-                Radio(
-                  value: "Female",
-                  groupValue: selectedGender,
-                  onChanged: (value) {
-                    setState(
-                      () {
-                        selectedGender = value!;
-                      },
-                    );
-                  },
-                ),
-                Text(
-                  "Female",
-                  style: textRedio,
-                ),
-              ],
+              ),
             ),
-          )
-        ],
+            const SizedBox(height: 10),
+            TextField(
+              controller: addressController,
+              decoration: InputDecoration(
+                labelText: "User Address",
+                labelStyle: labelText,
+                border: const OutlineInputBorder(
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(10),
+                  ),
+                ),
+                filled: true,
+                fillColor: Colors.grey[200],
+                contentPadding: const EdgeInsets.symmetric(
+                  vertical: 12.0,
+                  horizontal: 16.0,
+                ),
+              ),
+            ),
+            const SizedBox(height: 10),
+            TextField(
+              controller: emailController,
+              decoration: InputDecoration(
+                labelText: "User Email",
+                labelStyle: labelText,
+                border: const OutlineInputBorder(
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(10),
+                  ),
+                ),
+                filled: true,
+                fillColor: Colors.grey[200],
+                contentPadding: const EdgeInsets.symmetric(
+                  vertical: 12.0,
+                  horizontal: 16.0,
+                ),
+              ),
+            ),
+            const SizedBox(height: 10),
+            TextField(
+              controller: mobileNoController,
+              decoration: InputDecoration(
+                labelText: "Mobile No",
+                labelStyle: labelText,
+                border: const OutlineInputBorder(
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(10),
+                  ),
+                ),
+                filled: true,
+                fillColor: Colors.grey[200],
+                contentPadding: const EdgeInsets.symmetric(
+                  vertical: 12.0,
+                  horizontal: 16.0,
+                ),
+              ),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            TextField(
+              controller: passwordController,
+              decoration: InputDecoration(
+                labelText: "Password",
+                labelStyle: labelText,
+                border: const OutlineInputBorder(
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(10),
+                  ),
+                ),
+                filled: true,
+                fillColor: Colors.grey[200],
+                contentPadding: const EdgeInsets.symmetric(
+                  vertical: 12.0,
+                  horizontal: 16.0,
+                ),
+              ),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            TextFormField(
+              controller: dateController,
+              onTap: () {
+                _selectDate(context);
+              },
+              decoration: InputDecoration(
+                labelText: "DOB",
+                labelStyle: labelText,
+                suffixIcon: const Icon(Icons.calendar_today),
+                border: const OutlineInputBorder(
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(
+                      10,
+                    ),
+                  ),
+                ),
+                filled: true,
+                fillColor: Colors.grey[200],
+                contentPadding: const EdgeInsets.symmetric(
+                  vertical: 12.0,
+                  horizontal: 16.0,
+                ),
+              ),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            Center(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Radio(
+                    value: "Male",
+                    groupValue: selectedGender,
+                    onChanged: (value) {
+                      setState(
+                        () {
+                          selectedGender = value!;
+                        },
+                      );
+                    },
+                  ),
+                  Text(
+                    "Male",
+                    style: textRedio,
+                  ),
+                  Radio(
+                    value: "Female",
+                    groupValue: selectedGender,
+                    onChanged: (value) {
+                      setState(
+                        () {
+                          selectedGender = value!;
+                        },
+                      );
+                    },
+                  ),
+                  Text(
+                    "Female",
+                    style: textRedio,
+                  ),
+                ],
+              ),
+            )
+          ],
+        ),
       ),
       actions: [
         SizedBox(
@@ -323,8 +337,10 @@ class _UserPopupModalState extends State<UserPopupModal> {
           child: ElevatedButton(
             onPressed: isSaveButtonEnabled
                 ? () {
-                    homePageBloc.add(SaveStudent(
-                      id: '',
+                    homePageBloc.add(SaveUser(
+                      userType: userTypeController.text.trim(),
+                      email: emailController.text.trim(),
+                      password: passwordController.text.trim(),
                       name: nameController.text.trim(),
                       address: addressController.text.trim(),
                       mobileNo: mobileNoController.text.trim(),

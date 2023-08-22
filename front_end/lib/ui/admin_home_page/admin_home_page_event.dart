@@ -63,6 +63,7 @@ class SaveUser extends AdminHomePageEvent {
   final String mobileNo;
   final DateTime date;
   final String password;
+  final String gender;
 
   SaveUser({
     required this.userType,
@@ -72,6 +73,7 @@ class SaveUser extends AdminHomePageEvent {
     required this.mobileNo,
     required this.date,
     required this.password,
+    required this.gender,
   });
 }
 
