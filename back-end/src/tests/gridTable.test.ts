@@ -1,5 +1,5 @@
 import request from 'supertest'
-import { DataSource, createConnection } from 'typeorm'
+import { createConnection, getConnection } from 'typeorm'
 import app from '../index' // Assuming your Express app is exported from index.ts
 import express from 'express'
 import cors from 'cors'
@@ -10,11 +10,10 @@ import { connectionOptions } from '../ormconfig'
 
 app.use(cors())
 app.use(express.json())
-let connection: DataSource
 const server = http.createServer(app)
 beforeAll(async () => {
   try {
-    connection = await createConnection(connectionOptions)
+    await createConnection(connectionOptions)
     console.log('Connected to postgres')
     server.listen(5001, () => {
       console.log(`⚡️[server]: Server is running without errors Now at the  http://localhost:${5001}`)
@@ -24,11 +23,12 @@ beforeAll(async () => {
   }
 })
 afterAll(async () => {
-  await connection.close()
+  await getConnection().close()
   server.close()
 })
 
 describe('Student API', () => {
+  // jest.useFakeTimers()
   it('should get a list of students', async () => {
     const response = await request(server).get('/api/student')
 
@@ -42,9 +42,9 @@ describe('Student API', () => {
       id: 5678,
       age: 20,
       name: 'John Doe',
-      dateofbirth: '2003-01-01',
+      date_of_birth: '2003-01-01',
       gender: 'Male',
-      mobilenumber: 1234567890,
+      mobile_number: 1234567,
       address: '123 Main St',
     })
 
@@ -58,9 +58,9 @@ describe('Student API', () => {
       id: 7654,
       name: 'Jane Smith',
       age: 26,
-      dateofbirth: '2001-05-10',
+      date_of_birth: '2001-05-10',
       gender: 'Female',
-      mobilenumber: 987654,
+      mobile_number: 987654,
       address: '456 Oak St',
     })
 
@@ -69,9 +69,9 @@ describe('Student API', () => {
     const updateResponse = await request(server).put(`/api/student/${studentId}`).send({
       name: 'Jane Parker',
       age: 28,
-      dateofbirth: '1998-03-15',
+      date_of_birth: '1998-03-15',
       gender: 'Non-Binary',
-      mobilenumber: 55555,
+      mobile_number: 55555,
       address: '789 Pine St',
     })
 
@@ -88,5 +88,20 @@ describe('Student API', () => {
     // Verify that the student is actually deleted by fetching it
     const fetchResponse = await request(server).get(`/api/student/7654`)
     expect(fetchResponse.status).toBe(404)
+  })
+
+  it('should not create a new student', async () => {
+    const response = await request(server).post('/api/student').send({
+      id: 5678,
+      age: 20,
+      name: 'Shepard',
+      date_of_birth: '2003-01-01',
+      gender: 'Male',
+      mobile_number: '1234567hjs',
+      address: '123 Main St',
+    })
+
+    expect(response.status).toBe(400)
+    // Add more assertions to validate the response body
   })
 })

@@ -12,13 +12,13 @@ export class Student extends BaseEntity {
   age?: string
 
   @Column()
-  dateofbirth?: Date
+  date_of_birth?: Date
 
   @Column()
   gender?: string
 
   @Column()
-  mobilenumber?: number
+  mobile_number?: number
 
   @Column()
   address?: string

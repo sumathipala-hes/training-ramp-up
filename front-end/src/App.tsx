@@ -3,9 +3,10 @@ import { useDispatch } from 'react-redux'
 
 import './App.css'
 import { Container } from '@mui/material'
-import GridTable from './Components/GridTable/GridTable'
+// import GridTable from './Components/GridTable/GridTable'
 import * as io from 'socket.io-client'
 import { fetchRows } from './Components/GridTable/GridSlice'
+import AppRouter from './Router/AppRouter'
 export const socket = io.connect('http://localhost:5000')
 
 function App() {
@@ -32,7 +33,7 @@ function App() {
 
     return (
         <Container maxWidth={false}>
-            <GridTable />
+            <AppRouter />
         </Container>
     )
 }

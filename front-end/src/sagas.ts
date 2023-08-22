@@ -19,7 +19,7 @@ function* addRowSaga(
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { isSave, isNew, dateOfBirth, mobileNumber, ...dataToSend } =
             action.payload
-        const mobilenumber = mobileNumber
+        const mobile_number = mobileNumber
         // Calculate age based on dateOfBirth
         const birthYear = dateOfBirth.getFullYear()
         const currentYear = new Date().getFullYear()
@@ -37,8 +37,8 @@ function* addRowSaga(
 
         const modifiedData = {
             ...dataToSend,
-            mobilenumber,
-            dateofbirth: formattedDateOfBirth,
+            mobile_number,
+            date_of_birth: formattedDateOfBirth,
             age: ageString, // Include age in the modified data
         }
         console.log(modifiedData, isNew)
@@ -59,17 +59,17 @@ function* addRowSaga(
                     id: any
                     name: any
                     age: any
-                    dateofbirth: any
+                    date_of_birth: any
                     gender: any
-                    mobilenumber: any
+                    mobile_number: any
                     address: any
                 }) => ({
                     id: item.id,
                     name: item.name,
                     age: item.age,
-                    dateOfBirth: item.dateofbirth,
+                    dateOfBirth: item.date_of_birth,
                     gender: item.gender,
-                    mobileNumber: item.mobilenumber,
+                    mobileNumber: item.mobile_number,
                     address: item.address,
                 })
             )
@@ -88,17 +88,17 @@ function* addRowSaga(
                     id: any
                     name: any
                     age: any
-                    dateofbirth: any
+                    date_of_birth: any
                     gender: any
-                    mobilenumber: any
+                    mobile_number: any
                     address: any
                 }) => ({
                     id: item.id,
                     name: item.name,
                     age: item.age,
-                    dateOfBirth: item.dateofbirth,
+                    dateOfBirth: item.date_of_birth,
                     gender: item.gender,
-                    mobileNumber: item.mobilenumber,
+                    mobileNumber: item.mobile_number,
                     address: item.address,
                 })
             )
@@ -123,17 +123,17 @@ function* fetchRowsSaga(): Generator<any, any, any> {
                 id: any
                 name: any
                 age: any
-                dateofbirth: any
+                date_of_birth: any
                 gender: any
-                mobilenumber: any
+                mobile_number: any
                 address: any
             }) => ({
                 id: item.id,
                 name: item.name,
                 age: item.age,
-                dateOfBirth: item.dateofbirth,
+                dateOfBirth: item.date_of_birth,
                 gender: item.gender,
-                mobileNumber: item.mobilenumber,
+                mobileNumber: item.mobile_number,
                 address: item.address,
             })
         )

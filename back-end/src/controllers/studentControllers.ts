@@ -1,13 +1,19 @@
 import { Student } from '../entities/student'
 import { Request, Response } from 'express'
 import { createStudentDB, deleteStudentDB, updateStudentDB } from '../services/studentServices'
+import { validationResult } from 'express-validator'
 
 const createStudent = async (req: Request, res: Response) => {
-  const { id, name, age, gender, mobilenumber, address } = req.body
+  const errors = validationResult(req)
+  console.log(errors)
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() })
+  }
+  const { id, name, age, gender, mobile_number, address } = req.body
 
-  const dateofbirth = new Date(req.body.dateofbirth)
+  const date_of_birth = new Date(req.body.date_of_birth)
 
-  const student = createStudentDB(id, name, age, dateofbirth, gender, mobilenumber, address)
+  const student = createStudentDB(id, name, age, date_of_birth, gender, mobile_number, address)
 
   return res.send(student)
 }
@@ -23,9 +29,9 @@ const getAllStudents = async (req: Request, res: Response) => {
 
 const updateStudent = async (req: Request, res: Response) => {
   const { studentId } = req.params
-  const { id, name, age, gender, mobilenumber, address } = req.body
-  const dateofbirth = new Date(req.body.dateofbirth)
-  const newData = { id, name, age, gender, mobilenumber, address, dateofbirth }
+  const { id, name, age, gender, mobile_number, address } = req.body
+  const date_of_birth = new Date(req.body.date_of_birth)
+  const newData = { id, name, age, gender, mobile_number, address, date_of_birth }
   const updatedStudent = updateStudentDB(parseInt(studentId), newData)
 
   return res.send(updatedStudent)
