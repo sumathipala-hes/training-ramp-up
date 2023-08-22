@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:front_end/ui/admin_home_page/admin_home_page_provider.dart';
-import 'package:front_end/ui/admin_home_page/admin_home_page_view.dart';
+// import 'package:front_end/ui/admin_home_page/admin_home_page_view.dart';
 import 'package:front_end/ui/register_page/register_page_bloc.dart';
 import 'package:front_end/ui/register_page/register_page_event.dart';
 import 'package:front_end/ui/register_page/register_page_state.dart';
 import 'package:front_end/ui/sign_in_page/sign_in_page_provider.dart';
-// import 'package:front_end/ui/user_home_page/user_home_page_provider.dart';
+import 'package:front_end/ui/user_home_page/user_home_page_provider.dart';
 import 'package:intl/intl.dart';
-
-// import 'package:intl/intl.dart';
 
 // ignore: must_be_immutable
 class RegisterScreen extends StatelessWidget {
@@ -215,8 +212,8 @@ class RegisterScreen extends StatelessWidget {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                // builder: (context) => UserHomeScreenProvider(),
-                                builder: (context) => const AdminHomeScreenProvider(),
+                                builder: (context) => UserHomeScreenProvider(),
+                                // builder: (context) => const AdminHomeScreen(),
                               ),
                             );
                           },
