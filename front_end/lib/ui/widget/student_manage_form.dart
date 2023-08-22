@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:front_end/ui/home_page/home_page_bloc.dart';
-import 'package:front_end/ui/home_page/home_page_event.dart';
+import 'package:front_end/ui/admin_home_page/admin_home_page_bloc.dart';
+import 'package:front_end/ui/admin_home_page/admin_home_page_event.dart';
 import 'package:intl/intl.dart';
 
 class PopupModel extends StatefulWidget {
@@ -60,8 +60,8 @@ class _PopupModelState extends State<PopupModel> {
       );
     } else {
       Navigator.of(context).pop();
-      RampUpHomeScreenBloc bloc =
-          BlocProvider.of<RampUpHomeScreenBloc>(context);
+      AdminHomeScreenBloc bloc =
+          BlocProvider.of<AdminHomeScreenBloc>(context);
 
       bloc.add(
         SaveButtonPressed(

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:front_end/models/student.dart';
-import 'package:front_end/ui/home_page/home_page_bloc.dart';
-import 'package:front_end/ui/home_page/home_page_event.dart';
+import 'package:front_end/ui/admin_home_page/admin_home_page_bloc.dart';
+import 'package:front_end/ui/admin_home_page/admin_home_page_event.dart';
 import 'package:front_end/ui/manage_student_page/manage_student_page_bloc.dart';
 import 'package:front_end/ui/manage_student_page/manage_student_page_event.dart';
 import 'package:front_end/ui/manage_student_page/manage_student_page_state.dart';
@@ -30,8 +30,8 @@ class ManageStudentScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     ManageStudentScreenBloc manageStudentScreenBloc =
         BlocProvider.of<ManageStudentScreenBloc>(context);
-    RampUpHomeScreenBloc rampUpHomeScreenBloc =
-        BlocProvider.of<RampUpHomeScreenBloc>(context);
+    AdminHomeScreenBloc rampUpHomeScreenBloc =
+        BlocProvider.of<AdminHomeScreenBloc>(context);
     return Scaffold(
       appBar: AppBar(
         elevation: 7,

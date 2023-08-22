@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:front_end/models/student.dart';
-import 'package:front_end/ui/home_page/home_page_bloc.dart';
+import 'package:front_end/ui/admin_home_page/admin_home_page_bloc.dart';
 import 'package:front_end/ui/widget/student_card.dart';
 import 'package:front_end/ui/widget/student_manage_form.dart';
 import 'package:intl/intl.dart';
@@ -54,8 +54,8 @@ void main() {
     (WidgetTester tester) async {
       await tester.pumpWidget(
         MaterialApp(
-          home: BlocProvider<RampUpHomeScreenBloc>(
-            create: (context) => RampUpHomeScreenBloc(context),
+          home: BlocProvider<AdminHomeScreenBloc>(
+            create: (context) => AdminHomeScreenBloc(context),
             child: const PopupModel(),
           ),
         ),
