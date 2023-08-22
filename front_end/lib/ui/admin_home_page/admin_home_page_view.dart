@@ -4,6 +4,7 @@ import 'package:front_end/models/student.dart';
 import 'package:front_end/ui/admin_home_page/admin_home_page_bloc.dart';
 import 'package:front_end/ui/admin_home_page/admin_home_page_state.dart';
 import 'package:front_end/ui/manage_student_page/manage_student_page_provider.dart';
+import 'package:front_end/ui/sign_in_page/sign_in_page_provider.dart';
 import 'package:front_end/ui/widget/student_card.dart';
 import 'package:front_end/ui/widget/student_manage_form.dart';
 
@@ -43,6 +44,16 @@ class AdminHomeScreen extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.share),
             onPressed: () {},
+          ),
+          IconButton(
+            icon: const Icon(Icons.logout),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const SignInPageProvider()),
+              );
+            },
           ),
         ],
       ),
