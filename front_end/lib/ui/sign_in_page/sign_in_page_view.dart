@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:front_end/ui/register_page/register_page_provider.dart';
 
 class SignInPageScreen extends StatelessWidget {
   const SignInPageScreen({Key? key}) : super(key: key);
@@ -108,7 +109,14 @@ class SignInPageScreen extends StatelessWidget {
                               ),
                             ),
                             TextButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              const RegisterScreenProvider()),
+                                    );
+                              },
                               child: Text(
                                 'Sign up'.toUpperCase(),
                                 style: TextStyle(
