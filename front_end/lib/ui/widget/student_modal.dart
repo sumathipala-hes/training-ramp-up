@@ -6,15 +6,15 @@ import '../../theme/primary_theme.dart';
 import '../admin_home_page/admin_home_page_bloc.dart';
 import '../admin_home_page/admin_home_page_event.dart';
 
-class PopupModal extends StatefulWidget {
-  const PopupModal({super.key});
+class StudentPopupModal extends StatefulWidget {
+  const StudentPopupModal({super.key});
 
   @override
   // ignore: library_private_types_in_public_api
-  _PopupModalState createState() => _PopupModalState();
+  _StudentPopupModalState createState() => _StudentPopupModalState();
 }
 
-class _PopupModalState extends State<PopupModal> {
+class _StudentPopupModalState extends State<StudentPopupModal> {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController addressController = TextEditingController();
   final TextEditingController mobileNoController = TextEditingController();

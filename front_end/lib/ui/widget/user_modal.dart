@@ -6,16 +6,20 @@ import '../../theme/primary_theme.dart';
 import '../admin_home_page/admin_home_page_bloc.dart';
 import '../admin_home_page/admin_home_page_event.dart';
 
-class PopupModal extends StatefulWidget {
-  const PopupModal({super.key});
+class UserPopupModal extends StatefulWidget {
+  const UserPopupModal({super.key});
 
   @override
   // ignore: library_private_types_in_public_api
-  _PopupModalState createState() => _PopupModalState();
+  _UserPopupModalState createState() => _UserPopupModalState();
 }
 
-class _PopupModalState extends State<PopupModal> {
+class _UserPopupModalState extends State<UserPopupModal> {
   final TextEditingController nameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController userTypeController =
+      TextEditingController(text: 'USER');
   final TextEditingController addressController = TextEditingController();
   final TextEditingController mobileNoController = TextEditingController();
   final TextEditingController dateController = TextEditingController();
@@ -24,6 +28,10 @@ class _PopupModalState extends State<PopupModal> {
   static final RegExp _nameRegExp = RegExp(r'^[a-zA-Z ]+$');
   static final RegExp _telNoRegExp = RegExp(r'^(07(0|1|2|4|5|6|7|8)[0-9]{7})$');
   static final RegExp _addressRegExp = RegExp(r'^[a-zA-Z0-9 ]+$');
+  static final RegExp _emailRegExp =
+      RegExp(r'^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+');
+  static final RegExp _passwordRegExp =
+      RegExp(r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{8,}$');
 
   String selectedGender = "Male";
   DateTime dob = DateTime(DateTime.now().year - 18);
@@ -102,7 +110,7 @@ class _PopupModalState extends State<PopupModal> {
         width: MediaQuery.of(context).size.width * 0.8,
         child: Center(
           child: Text(
-            "ADD NEW STUDENT",
+            "ADD NEW User",
             style: headerText,
           ),
         ),
@@ -110,11 +118,43 @@ class _PopupModalState extends State<PopupModal> {
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
+          InputDecorator(
+            decoration: InputDecoration(
+              labelText: "User Type",
+              labelStyle: labelText,
+              border: const OutlineInputBorder(
+                borderRadius: BorderRadius.all(
+                  Radius.circular(10),
+                ),
+              ),
+              filled: true,
+              fillColor: Colors.grey[200],
+              contentPadding: const EdgeInsets.symmetric(
+                vertical: 12.0,
+                horizontal: 16.0,
+              ),
+            ),
+            child: DropdownButton<String>(
+              value: userTypeController.text.trim(),
+              onChanged: (newValue) {
+                setState(() {
+                  userTypeController.text = newValue!;
+                });
+              },
+              items: <String>['USER', 'ADMIN']
+                  .map<DropdownMenuItem<String>>((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value),
+                );
+              }).toList(),
+            ),
+          ),
           const SizedBox(height: 10),
           TextField(
             controller: nameController,
             decoration: InputDecoration(
-              labelText: "Student Name",
+              labelText: "User Name",
               labelStyle: labelText,
               border: const OutlineInputBorder(
                 borderRadius: BorderRadius.all(
@@ -133,7 +173,26 @@ class _PopupModalState extends State<PopupModal> {
           TextField(
             controller: addressController,
             decoration: InputDecoration(
-              labelText: "Student Address",
+              labelText: "User Address",
+              labelStyle: labelText,
+              border: const OutlineInputBorder(
+                borderRadius: BorderRadius.all(
+                  Radius.circular(10),
+                ),
+              ),
+              filled: true,
+              fillColor: Colors.grey[200],
+              contentPadding: const EdgeInsets.symmetric(
+                vertical: 12.0,
+                horizontal: 16.0,
+              ),
+            ),
+          ),
+          const SizedBox(height: 10),
+          TextField(
+            controller: emailController,
+            decoration: InputDecoration(
+              labelText: "User Email",
               labelStyle: labelText,
               border: const OutlineInputBorder(
                 borderRadius: BorderRadius.all(
@@ -153,6 +212,27 @@ class _PopupModalState extends State<PopupModal> {
             controller: mobileNoController,
             decoration: InputDecoration(
               labelText: "Mobile No",
+              labelStyle: labelText,
+              border: const OutlineInputBorder(
+                borderRadius: BorderRadius.all(
+                  Radius.circular(10),
+                ),
+              ),
+              filled: true,
+              fillColor: Colors.grey[200],
+              contentPadding: const EdgeInsets.symmetric(
+                vertical: 12.0,
+                horizontal: 16.0,
+              ),
+            ),
+          ),
+          const SizedBox(
+            height: 10,
+          ),
+          TextField(
+            controller: passwordController,
+            decoration: InputDecoration(
+              labelText: "Password",
               labelStyle: labelText,
               border: const OutlineInputBorder(
                 borderRadius: BorderRadius.all(
