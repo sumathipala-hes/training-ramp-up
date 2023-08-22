@@ -18,8 +18,11 @@ export const getAllUsers = async (): Promise<Array<User>> => {
 
 export const saveUser = async (user: User): Promise<InsertResult> => {
   try {
-    const savedUser = await dataSource.manager.insert(User, user);
-    return savedUser;
+    const password = await bcrypt.hash(user.password, 10);
+    return await dataSource.manager.insert(User, {
+      ...user,
+      password: password,
+    });
   } catch (error) {
     throw error;
   }
