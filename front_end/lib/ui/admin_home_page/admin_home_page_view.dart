@@ -8,6 +8,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../model/student_model.dart';
 import '../manage_student_page/manage_student_page_provider.dart';
+import '../manage_user_page/manage_user_page_provider.dart';
 import '../widget/card_details.dart';
 import '../widget/student_modal.dart';
 import '../widget/user_modal.dart';
@@ -58,7 +59,7 @@ class AdminHomePageView extends StatelessWidget {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => StudentMangeProvider(
+        builder: (context) => UserMangeProvider(
           user: user,
         ),
       ),

@@ -85,6 +85,7 @@ class UpdateUser extends AdminHomePageEvent {
   final String mobileNo;
   final DateTime date;
   final String password;
+  final String gender;
 
   UpdateUser({
     required this.userType,
@@ -94,6 +95,7 @@ class UpdateUser extends AdminHomePageEvent {
     required this.mobileNo,
     required this.date,
     required this.password,
+    required this.gender,
   });
 }
 

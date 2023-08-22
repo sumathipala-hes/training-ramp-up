@@ -35,6 +35,7 @@ class _UserPopupModalState extends State<UserPopupModal> {
 
   String selectedGender = "Male";
   DateTime dob = DateTime(DateTime.now().year - 18);
+  List<String> roles = ['ADMIN', 'USER'];
 
   void clear() {
     nameController.clear();
@@ -131,34 +132,37 @@ class _UserPopupModalState extends State<UserPopupModal> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            InputDecorator(
-              decoration: InputDecoration(
-                labelText: "User Type",
-                labelStyle: labelText,
-                border: const OutlineInputBorder(
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(10),
-                  ),
-                ),
-                filled: true,
-                fillColor: Colors.grey[200],
-                contentPadding: const EdgeInsets.symmetric(
-                  vertical: 12.0,
-                  horizontal: 16.0,
+            Container(
+              width: MediaQuery.of(context).size.width * 0.9,
+              decoration: BoxDecoration(
+                color: Colors.grey[200],
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(
+                  color: Colors.black,
+                  width: 1.0,
                 ),
               ),
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: DropdownButton<String>(
                 value: userTypeController.text.trim(),
+                style: const TextStyle(
+                  color: Colors.black,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                ),
                 onChanged: (newValue) {
                   setState(() {
                     userTypeController.text = newValue!;
                   });
                 },
-                items: <String>['USER', 'ADMIN']
-                    .map<DropdownMenuItem<String>>((String value) {
+                items: roles.map((String role) {
                   return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(value),
+                    value: role,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 8.0), // Add vertical padding around text
+                      child: Text(role),
+                    ),
                   );
                 }).toList(),
               ),
