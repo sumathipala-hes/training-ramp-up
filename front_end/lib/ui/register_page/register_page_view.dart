@@ -4,6 +4,7 @@ import 'package:front_end/ui/register_page/register_page_bloc.dart';
 import 'package:front_end/ui/register_page/register_page_event.dart';
 import 'package:front_end/ui/register_page/register_page_state.dart';
 import 'package:front_end/ui/sign_in_page/sign_in_page_provider.dart';
+import 'package:front_end/ui/user_home_page/user_home_page_provider.dart';
 import 'package:intl/intl.dart';
 
 // import 'package:intl/intl.dart';
@@ -208,7 +209,14 @@ class RegisterScreen extends StatelessWidget {
                               borderRadius: BorderRadius.circular(15.0),
                             ),
                           ),
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => UserHomeScreenProvider(),
+                              ),
+                            );
+                          },
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             mainAxisSize: MainAxisSize.min,
@@ -244,8 +252,9 @@ class RegisterScreen extends StatelessWidget {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) =>
-                                        const SignInPageProvider()),
+                                  builder: (context) =>
+                                      const SignInPageProvider(),
+                                ),
                               );
                             },
                             child: Text(
