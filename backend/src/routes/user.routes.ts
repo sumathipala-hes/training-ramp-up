@@ -5,15 +5,19 @@ import {
   signIn,
   retriveAllUsers,
   updateUsers,
+  generateNewAccessToken,
 } from '../controllers/user.controller';
-import { authenticateToken } from '../middleware/jwt.middleware';
+import { authorization } from '../middleware/jwt.middleware';
 
 const router: Router = express.Router();
 
-router.get('/', authenticateToken, retriveAllUsers);
-router.get('/login', authenticateToken, signIn);
+router.get('/',retriveAllUsers);
+router.get('/signIn', signIn);
 router.post('/', addUsers);
+router.post('/new', generateNewAccessToken);
+router.post('/detail', authorization, signIn);
 router.put('/:id', updateUsers);
 router.delete('/:id', deleteUsers);
+router.delete('/signOut', authorization, /*deleteUsers*/);
 
 export default router;
