@@ -176,7 +176,7 @@ class UserMangeView extends StatelessWidget {
                                     child: Padding(
                                       padding: const EdgeInsets.symmetric(
                                           vertical:
-                                              8.0), // Add vertical padding around text
+                                              8.0),
                                       child: Text(role),
                                     ),
                                   );
