@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom"
 import { addUser } from "../../redux/userSlice";
 import { useDispatch } from "react-redux";
+import { registerApi } from "../../api/apiService";
 
 export const SignUp = () => {
     const navigate = useNavigate();
@@ -23,7 +24,7 @@ export const SignUp = () => {
         navigate('/login')
     }
 
-    const handleRegisterClick = () => {
+    const handleRegisterClick = async () => {
        if (isEmailValid(username)) {
             if (passwordsMatch) {
                 const newUser = {
@@ -32,7 +33,9 @@ export const SignUp = () => {
                     role: 'user'
                 };
                 dispatch(addUser(newUser))
-                navigate('/main')
+                //navigate('/main')
+                const response = await registerApi(username, password);
+                console.log(response)
             } else {
                 alert('Passwords do not match')
             }

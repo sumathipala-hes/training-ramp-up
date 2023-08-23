@@ -1,17 +1,22 @@
 import express, { Express, Request, Response } from 'express';
 import 'reflect-metadata';
 import studentRoutes from './routes/student.route';
+import userRoutes from './routes/user.route';
 import cors from 'cors';
 import { Server } from 'socket.io';
 import { createServer } from 'http';
 import AppDataSource from './database';
+import cookieParser from 'cookie-parser';
 
 const app: Express = express();
 const port = 4000;
 
 app.use(express.json());
 app.use(cors());
+app.use(cookieParser());
 app.use(studentRoutes);
+app.use(userRoutes);
+
 
 const server = createServer(app);
 const io = new Server(server, {

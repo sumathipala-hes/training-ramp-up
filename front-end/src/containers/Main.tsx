@@ -1,11 +1,13 @@
 import { Button } from '@mui/material';
 import { DataTable } from '../components/DataTable';
-import { useNavigate } from 'react-router-dom';
+//import { useNavigate } from 'react-router-dom';
+import { logoutApi } from '../api/apiService';
 
 export const Main = () => {
-  const navigate = useNavigate();
-  const handleLogOutClick = () => {
-    navigate('/login')
+  //const navigate = useNavigate();
+  const handleLogOutClick = async () => {
+    const response = await logoutApi();
+    console.log(response)
 }
 
   return (

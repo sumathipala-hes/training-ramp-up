@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { setCurrentUser } from "../../redux/userSlice";
+import { loginApi } from "../../api/apiService";
 
 export const Login = () => {
 
@@ -20,20 +21,24 @@ export const Login = () => {
         navigate('/')
     }
 
-    const handleLoginClick = () => {
+    const handleLoginClick = async () => {
+
+        const response = await loginApi(username, password);
+        console.log(response)
 
         const foundUser = users.find((user: { username: string; password: string; }) => user.username === username && user.password === password);
 
-        if (foundUser) {
-            dispatch(setCurrentUser(foundUser));
-            if (foundUser.role === 'admin') {
-                navigate('/admin');
-            } else {
-                navigate('/main');
-            }
-        } else {
-            alert('No user found for the given username and password');
-        }
+        // if (foundUser) {
+
+        //     dispatch(setCurrentUser(foundUser));
+        //     if (foundUser.role === 'admin') {
+        //         navigate('/admin');
+        //     } else {
+        //         navigate('/main');
+        //     }
+        // } else {
+        //     alert('No user found for the given username and password');
+        // }
     }
 
     return (

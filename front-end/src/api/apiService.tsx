@@ -28,3 +28,26 @@ export const createStudentApi = async (studentData: Student) => {
 
   return response.data;
 };
+
+
+//User APIs
+export const loginApi = async (username: String, password: String) => {
+  const response = await apiInstance.post('/login', {
+      username,
+      password
+  });
+  return response.data;
+};
+
+export const registerApi = async (username: String, password: String) => {
+  const response = await apiInstance.post('/register', {
+      username,
+      password
+  });
+  return response.data;
+};
+
+export const logoutApi = async () => {
+  const response = await apiInstance.post('/logout');
+  return response.data;
+}
