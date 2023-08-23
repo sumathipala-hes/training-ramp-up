@@ -6,7 +6,6 @@ import {
   getStudentByOne,
   updateStudent,
 } from '../services/student.service';
-import { validateStudent } from '../middleware/validateStudent';
 
 export const requestGetAllStudents: RequestHandler = async (
   req: Request,
