@@ -34,8 +34,9 @@ class UserHomePageView extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: Text(
-          "Student View",
+          "  Student View",
           style: TextStyle(
               fontWeight: FontWeight.bold,
               fontFamily: GoogleFonts.ubuntu().fontFamily),

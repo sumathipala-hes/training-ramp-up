@@ -202,8 +202,9 @@ class AdminHomePageView extends StatelessWidget {
       length: 2,
       child: Scaffold(
         appBar: AppBar(
+          automaticallyImplyLeading: false,
           title: Text(
-            "Admin Home Page",
+            "  Admin Home Page",
             style: TextStyle(
               fontWeight: FontWeight.bold,
               fontFamily: GoogleFonts.ubuntu().fontFamily,
