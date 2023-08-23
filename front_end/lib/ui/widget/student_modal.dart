@@ -244,15 +244,18 @@ class _StudentPopupModalState extends State<StudentPopupModal> {
           child: ElevatedButton(
             onPressed: isSaveButtonEnabled
                 ? () {
-                    homePageBloc.add(SaveStudent(
+                    homePageBloc.add(
+                      SaveStudent(
                         student: Student(
-                      id: '',
-                      name: nameController.text.trim(),
-                      address: addressController.text.trim(),
-                      mobileNumber: mobileNoController.text.trim(),
-                      dob: dob,
-                      gender: selectedGender,
-                    )));
+                          id: '',
+                          name: nameController.text.trim(),
+                          address: addressController.text.trim(),
+                          mobileNumber: mobileNoController.text.trim(),
+                          dob: dob,
+                          gender: selectedGender,
+                        ),
+                      ),
+                    );
                     clear();
                     Navigator.of(context).pop();
                   }

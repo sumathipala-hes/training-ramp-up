@@ -309,17 +309,20 @@ class StudentMangeView extends StatelessWidget {
                                     .hasMatch(mobileNoController.text.trim())) {
                                   showFieldError('Invalid Mobile No.');
                                 } else {
-                                  homePageBloc.add(UpdateStudent(
+                                  homePageBloc.add(
+                                    UpdateStudent(
                                       student: Student(
-                                    id: student.id!,
-                                    name: nameController.text.trim(),
-                                    address: addressController.text.trim(),
-                                    mobileNumber:
-                                        mobileNoController.text.trim(),
-                                    dob: dob,
-                                    gender:
-                                        studentManageBloc.state.selectedGender,
-                                  )));
+                                        id: student.id!,
+                                        name: nameController.text.trim(),
+                                        address: addressController.text.trim(),
+                                        mobileNumber:
+                                            mobileNoController.text.trim(),
+                                        dob: dob,
+                                        gender: studentManageBloc
+                                            .state.selectedGender,
+                                      ),
+                                    ),
+                                  );
                                   clear();
 
                                   Navigator.of(context).pop();

@@ -231,6 +231,7 @@ class UserMangeView extends StatelessWidget {
                             ),
                             const SizedBox(height: 20),
                             TextField(
+                              enabled: false,
                               controller: userManageBloc.state.emailText.isEmpty
                                   ? emailController
                                   : TextEditingController(
@@ -409,21 +410,24 @@ class UserMangeView extends StatelessWidget {
                                   showFieldError(
                                       'Password should be at least 8 characters.');
                                 } else {
-                                  homePageBloc.add(SaveUser(
+                                  homePageBloc.add(
+                                    UpdateUser(
                                       user: User(
-                                          roleType:
-                                              userTypeController.text.trim(),
-                                          name: nameController.text.trim(),
-                                          address:
-                                              addressController.text.trim(),
-                                          email: emailController.text.trim(),
-                                          mobileNumber:
-                                              mobileNoController.text.trim(),
-                                          dob: dob,
-                                          password:
-                                              passwordController.text.trim(),
-                                          gender: userManageBloc
-                                              .state.selectedGender)));
+                                        roleType:
+                                            userTypeController.text.trim(),
+                                        name: nameController.text.trim(),
+                                        address: addressController.text.trim(),
+                                        email: emailController.text.trim(),
+                                        mobileNumber:
+                                            mobileNoController.text.trim(),
+                                        dob: dob,
+                                        password:
+                                            passwordController.text.trim(),
+                                        gender:
+                                            userManageBloc.state.selectedGender,
+                                      ),
+                                    ),
+                                  );
                                   clear();
 
                                   Navigator.of(context).pop();
@@ -444,7 +448,7 @@ class UserMangeView extends StatelessWidget {
                                 showYesNoAlert(context).then((confirmed) {
                                   if (confirmed != null && confirmed) {
                                     homePageBloc.add(
-                                      DeleteStudent(id: user.email),
+                                      DeleteUser(email: user.email),
                                     );
                                     Navigator.of(context).pop();
                                   }

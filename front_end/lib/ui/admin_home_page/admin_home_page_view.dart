@@ -9,8 +9,9 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../model/student_model.dart';
 import '../manage_student_page/manage_student_page_provider.dart';
 import '../manage_user_page/manage_user_page_provider.dart';
-import '../widget/card_details.dart';
+import '../widget/student_card_details.dart';
 import '../widget/student_modal.dart';
+import '../widget/user_card_details.dart';
 import '../widget/user_modal.dart';
 import 'admin_home_page_bloc.dart';
 import 'admin_home_page_state.dart';
@@ -36,10 +37,11 @@ class AdminHomePageView extends StatelessWidget {
       onTap: () {
         userNavigateToAnotherUI(context, user);
       },
-      child: StudentCard(
-        id: user.email,
-        studentName: user.name,
-        studentDOB: user.dob,
+      child: UserCard(
+        roleType: user.roleType,
+        email: user.email,
+        name: user.name,
+        dob: user.dob,
       ),
     );
   }

@@ -8,7 +8,7 @@ import 'package:front_end/ui/user_home_page/user_home_page_state.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../model/student_model.dart';
-import '../widget/card_details.dart';
+import '../widget/student_card_details.dart';
 
 class UserHomePageView extends StatelessWidget {
   UserHomePageView({super.key});

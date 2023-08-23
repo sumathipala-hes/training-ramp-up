@@ -4,6 +4,8 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:front_end/model/user_model.dart';
+import 'package:front_end/ui/admin_home_page/admin_home_page_event.dart';
 import 'package:front_end/ui/sign_up_page/sign_up_page_bloc.dart';
 import 'package:front_end/ui/sign_up_page/sign_up_page_state.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -11,6 +13,7 @@ import 'package:intl/intl.dart';
 
 import '../../theme/primary_theme.dart';
 import '../../util/notification.util.dart';
+import '../admin_home_page/admin_home_page_bloc.dart';
 import 'sign_up_page_event.dart';
 
 class SignUpPageView extends StatelessWidget {
@@ -49,6 +52,8 @@ class SignUpPageView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final signUpBloc = BlocProvider.of<SignUpPageBloc>(context);
+    final adminPage = BlocProvider.of<AdminHomePageBloc>(context);
+
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -343,18 +348,22 @@ class SignUpPageView extends StatelessWidget {
                                     coPasswordController.text.trim()) {
                                   showFieldError('Password not match.');
                                 } else {
-                                  signUpBloc.add(RegisterUser(
-                                      nameText: nameController.text.trim(),
-                                      addressText:
-                                          addressController.text.trim(),
-                                      emailText: emailController.text.trim(),
-                                      mobileNoText:
-                                          mobileNoController.text.trim(),
-                                      dateText: dob,
-                                      selectedGender:
-                                          signUpBloc.state.selectedGender,
-                                      passwordText:
-                                          crPasswordController.text.trim()));
+                                  adminPage.add(
+                                    SaveUser(
+                                      user: User(
+                                        roleType: 'USER',
+                                        name: nameController.text.trim(),
+                                        address: addressController.text.trim(),
+                                        email: emailController.text.trim(),
+                                        mobileNumber:
+                                            mobileNoController.text.trim(),
+                                        dob: dob,
+                                        gender: signUpBloc.state.selectedGender,
+                                        password:
+                                            coPasswordController.text.trim(),
+                                      ),
+                                    ),
+                                  );
                                   clear();
 
                                   Navigator.of(context).pop();
