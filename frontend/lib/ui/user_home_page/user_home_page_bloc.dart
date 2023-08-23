@@ -25,23 +25,13 @@ class UserHomePageBloc extends Bloc<UserHomePageEvent, UserHomePageState> {
     SaveUserEvent event,
     Emitter<UserHomePageState> emit,
   ) async {
-    final plainText = event.user.password;
-    final key = encrypt.Key.fromUtf8('my 32 length key................');
-    final iv = encrypt.IV.fromLength(16);
-
-    final encrypter = encrypt.Encrypter(encrypt.AES(key));
-
-    final encrypted = encrypter.encrypt(plainText, iv: iv);
-    final decrypted = encrypter.decrypt(encrypted, iv: iv);
-
-    print(decrypted);
-    print(encrypted.base64);
     final User user = User(
       name: event.user.name,
       email: event.user.email,
-      password: encrypted.base64,
+      password: encryptPassword(event.user.password),
       role: event.user.role,
     );
+    print(decryptPassword(user.password));
     userRepository.addUsers(user);
     add(GetAllUsers());
   }

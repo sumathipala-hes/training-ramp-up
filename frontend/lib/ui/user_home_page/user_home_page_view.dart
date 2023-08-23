@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:frontend/model/user.dart';
+import 'package:frontend/ui/user_home_page/user_home_page_bloc.dart';
+import 'package:frontend/ui/user_home_page/user_home_page_state.dart';
+import 'package:frontend/ui/widget/user_card.dart';
 import 'package:frontend/ui/widget/user_form.dart';
 
 class UserHomePageView extends StatelessWidget {
@@ -71,6 +76,34 @@ class UserHomePageView extends StatelessWidget {
               ),
               const SizedBox(
                 height: 50,
+              ),
+              BlocBuilder<UserHomePageBloc, UserHomePageState>(
+                buildWhen: (
+                  previous,
+                  current,
+                ) =>
+                    current.users != previous.users,
+                builder: (
+                  context,
+                  state,
+                ) {
+                  final List<User> userList = state.users;
+                  return SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.58,
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: userList.length,
+                      itemBuilder: (
+                        context,
+                        index,
+                      ) {
+                        return UserCard(
+                          user: userList[index],
+                        );
+                      },
+                    ),
+                  );
+                },
               ),
             ],
           ),

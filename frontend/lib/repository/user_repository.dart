@@ -47,17 +47,16 @@ class UserRepository {
     List<dynamic> responseData = jsonDecode(response.body);
     List<User> userList = [
       ...responseData.map(
-        (userData) => User.fromJson(
+        (studentData) => User.fromJson(
           {
-            ...userData,
+            ...studentData,
             'password': decryptPassword(
-              userData['password'],
+              studentData['password'],
             ),
           },
         ),
       ),
     ];
-    print(userList);
     return userList;
   }
 
