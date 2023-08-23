@@ -1,0 +1,3 @@
+class RegisterPageState {
+  const RegisterPageState();
+}

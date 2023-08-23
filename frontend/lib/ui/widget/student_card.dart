@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/model/student.dart';
-import 'package:frontend/ui/student_page/student_page_provider.dart';
+import 'package:frontend/ui/manage_student_page/manage_student_page_provider.dart';
 import 'package:frontend/ui/theme/colors.dart';
 import 'package:intl/intl.dart';
 

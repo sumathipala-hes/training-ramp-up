@@ -1,113 +1,135 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:frontend/model/student.dart';
-import 'package:frontend/ui/home_page/home_page_bloc.dart';
-import 'package:frontend/ui/home_page/home_page_state.dart';
-import 'package:frontend/ui/widget/student_form.dart';
-import '../widget/student_card.dart';
+import 'package:frontend/ui/student_home_page/student_home_page_provider.dart';
+import 'package:frontend/ui/user_home_page/user_home_page_provider.dart';
 
 class HomePageView extends StatelessWidget {
-  const HomePageView({
-    super.key,
-  });
+  const HomePageView({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Ramp Up'),
-        toolbarHeight: MediaQuery.of(context).size.height * 0.1,
-        backgroundColor: Colors.black87,
-      ),
-      body: SingleChildScrollView(
-        child: Container(
-          height: MediaQuery.of(context).size.height,
-          width: double.infinity,
-          alignment: Alignment.center,
+      body: Scaffold(
+        appBar: AppBar(
+          title: const Text("Home Page"),
+          backgroundColor: Colors.black87,
+        ),
+        body: Container(
           decoration: const BoxDecoration(
             image: DecorationImage(
               image: AssetImage(
-                'assets/images/background.jpg',
+                'assets/images/sign-in-image.jpg',
               ),
               fit: BoxFit.cover,
             ),
           ),
-          padding: const EdgeInsetsDirectional.fromSTEB(10, 20, 10, 20),
-          child: Column(
-            children: [
-              SizedBox(
-                width: MediaQuery.of(context).size.width * 0.9,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(40),
-                    ),
-                    backgroundColor: Colors.black87,
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const Text(
+                  'Welcome to the Ramp Up',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 40,
+                    fontWeight: FontWeight.bold,
                   ),
-                  onPressed: () {
-                    showDialog(
-                      context: context,
-                      builder: (context) {
-                        return const StudentForm();
-                      },
+                ),
+                const SizedBox(
+                  height: 40,
+                ),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => StudentHomePageProvider(),
+                      ),
                     );
                   },
-                  child: const Padding(
-                    padding: EdgeInsetsDirectional.fromSTEB(20, 10, 20, 10),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.add,
-                          color: Colors.white,
-                        ),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        Text(
-                          "Add Student",
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.normal,
+                  child: Container(
+                    decoration: const BoxDecoration(
+                      color: Colors.black87,
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(10),
+                      ),
+                    ),
+                    child: const Padding(
+                      padding: EdgeInsets.fromLTRB(40, 20, 40, 20),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'Manage Students',
+                            style: TextStyle(
+                              fontSize: 20,
+                              color: Colors.white,
+                            ),
                           ),
-                        ),
-                      ],
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Icon(
+                                Icons.arrow_forward_ios,
+                                color: Colors.white,
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-              const SizedBox(
-                height: 50,
-              ),
-              BlocBuilder<HomePageBloc, HomePageState>(
-                buildWhen: (
-                  previous,
-                  current,
-                ) =>
-                    current.students != previous.students,
-                builder: (
-                  context,
-                  state,
-                ) {
-                  final List<Student> studentList = state.students;
-                  return SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.58,
-                    child: ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: studentList.length,
-                      itemBuilder: (
-                        context,
-                        index,
-                      ) {
-                        return StudentCard(
-                          student: studentList[index],
-                        );
-                      },
+                const SizedBox(
+                  height: 20,
+                ),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => UserHomePageProvider(),
+                      ),
+                    );
+                  },
+                  child: Container(
+                    decoration: const BoxDecoration(
+                      color: Colors.black87,
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(10),
+                      ),
                     ),
-                  );
-                },
-              ),
-            ],
+                    child: const Padding(
+                      padding: EdgeInsets.fromLTRB(40, 20, 40, 20),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'Manage Users',
+                            style: TextStyle(
+                              fontSize: 20,
+                              color: Colors.white,
+                            ),
+                          ),
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Icon(
+                                Icons.arrow_forward_ios,
+                                color: Colors.white,
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

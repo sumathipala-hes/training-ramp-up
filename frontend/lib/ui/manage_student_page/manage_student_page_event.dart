@@ -1,6 +1,6 @@
-abstract class StudentPageEvent {}
+abstract class ManageStudentPageEvent {}
 
-class SetRadioButtons extends StudentPageEvent {
+class SetRadioButtons extends ManageStudentPageEvent {
   final String gender;
 
   SetRadioButtons({
@@ -8,7 +8,7 @@ class SetRadioButtons extends StudentPageEvent {
   });
 }
 
-class SetValidations extends StudentPageEvent {
+class SetValidations extends ManageStudentPageEvent {
   final String nameError;
   final String addressError;
   final String mobileError;
@@ -20,7 +20,7 @@ class SetValidations extends StudentPageEvent {
   });
 }
 
-class SetGender extends StudentPageEvent {
+class SetGender extends ManageStudentPageEvent {
   final String gender;
 
   SetGender({

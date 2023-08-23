@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:frontend/ui/home_page/home_page_bloc.dart';
-import 'package:frontend/ui/home_page/home_page_view.dart';
+import 'package:frontend/ui/student_home_page/student_home_page_bloc.dart';
+import 'package:frontend/ui/sign_in_page/sign_in_page_view.dart';
 
 class RampUpApp extends StatelessWidget {
   const RampUpApp({
@@ -16,13 +16,13 @@ class RampUpApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const HomePageView(),
+      home: const SignInPageView(),
     );
 
     return MultiBlocProvider(
       providers: [
-        BlocProvider<HomePageBloc>(
-          create: (context) => HomePageBloc(context),
+        BlocProvider<StudentHomePageBloc>(
+          create: (context) => StudentHomePageBloc(context),
         ),
       ],
       child: materialApp,

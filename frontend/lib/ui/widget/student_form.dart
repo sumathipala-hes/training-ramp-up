@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:frontend/ui/home_page/home_page_bloc.dart';
+import 'package:frontend/ui/student_home_page/student_home_page_bloc.dart';
 import 'package:frontend/ui/theme/colors.dart';
 import 'package:frontend/util/validation_util.dart';
 import 'package:intl/intl.dart';
-import '../home_page/home_page_event.dart';
+import '../student_home_page/student_home_page_event.dart';
 
 class StudentForm extends StatefulWidget {
   const StudentForm({Key? key}) : super(key: key);
@@ -28,7 +28,8 @@ class _StudentFormState extends State<StudentForm> {
 
   @override
   Widget build(BuildContext context) {
-    HomePageBloc homePageBloc = BlocProvider.of<HomePageBloc>(context);
+    StudentHomePageBloc homePageBloc =
+        BlocProvider.of<StudentHomePageBloc>(context);
 
     void validateTextFields(bool isValid, String textField) {
       setState(

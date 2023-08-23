@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/model/student.dart';
-import 'package:frontend/ui/home_page/home_page_bloc.dart';
-import 'package:frontend/ui/home_page/home_page_event.dart';
-import 'package:frontend/ui/student_page/student_page_bloc.dart';
-import 'package:frontend/ui/student_page/student_page_event.dart';
-import 'package:frontend/ui/student_page/student_page_state.dart';
+import 'package:frontend/ui/student_home_page/student_home_page_bloc.dart';
+import 'package:frontend/ui/student_home_page/student_home_page_event.dart';
+import 'package:frontend/ui/manage_student_page/manage_student_page_bloc.dart';
+import 'package:frontend/ui/manage_student_page/manage_student_page_event.dart';
+import 'package:frontend/ui/manage_student_page/manage_student_page_state.dart';
 import 'package:frontend/util/validation_util.dart';
 import 'package:intl/intl.dart';
 import '../theme/colors.dart';
 
-class StudentPageView extends StatelessWidget {
+class ManageStudentPageView extends StatelessWidget {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController addressController = TextEditingController();
   final TextEditingController mobileController = TextEditingController();
   final TextEditingController dateController = TextEditingController();
 
-  StudentPageView({
+  ManageStudentPageView({
     super.key,
     required this.student,
   }) {
@@ -30,8 +30,10 @@ class StudentPageView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    StudentPageBloc studentPageBloc = BlocProvider.of<StudentPageBloc>(context);
-    HomePageBloc homePageBloc = BlocProvider.of<HomePageBloc>(context);
+    ManageStudentPageBloc studentPageBloc =
+        BlocProvider.of<ManageStudentPageBloc>(context);
+    StudentHomePageBloc homePageBloc =
+        BlocProvider.of<StudentHomePageBloc>(context);
     DateTime dob = student.dob;
 
     void validateTextFields(bool isValid, String textField) {
@@ -130,7 +132,7 @@ class StudentPageView extends StatelessWidget {
                       );
                     },
                   ),
-                  BlocBuilder<StudentPageBloc, StudentPageState>(
+                  BlocBuilder<ManageStudentPageBloc, ManageStudentPageState>(
                     buildWhen: (previous, current) =>
                         current.nameError != previous.nameError,
                     builder: (context, state) {
@@ -162,7 +164,7 @@ class StudentPageView extends StatelessWidget {
                       );
                     },
                   ),
-                  BlocBuilder<StudentPageBloc, StudentPageState>(
+                  BlocBuilder<ManageStudentPageBloc, ManageStudentPageState>(
                     buildWhen: (
                       previous,
                       current,
@@ -200,7 +202,7 @@ class StudentPageView extends StatelessWidget {
                       );
                     },
                   ),
-                  BlocBuilder<StudentPageBloc, StudentPageState>(
+                  BlocBuilder<ManageStudentPageBloc, ManageStudentPageState>(
                     buildWhen: (
                       previous,
                       current,
@@ -251,7 +253,7 @@ class StudentPageView extends StatelessWidget {
                   const SizedBox(
                     height: 20,
                   ),
-                  BlocBuilder<StudentPageBloc, StudentPageState>(
+                  BlocBuilder<ManageStudentPageBloc, ManageStudentPageState>(
                     buildWhen: (
                       previous,
                       current,
