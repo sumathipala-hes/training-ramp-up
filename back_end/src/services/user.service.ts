@@ -28,4 +28,22 @@ const retrieveAllUsers = async (): Promise<User[]> => {
   }
 };
 
-export { registerUser, retrieveAllUsers };
+const updateUser = async (id: string, user: User): Promise<UpdateResult> => {
+  try {
+    const updatedUser: UpdateResult = await dataSource.manager
+      .getRepository(User)
+      .update(id, user);
+    if (updatedUser.affected === 1) {
+      updatedUser.raw = user;
+    } else {
+      throw new Error('User not found.');
+    }
+    sendNotification('Success', 'User Updated..!');
+    return updatedUser;
+  } catch (error) {
+    // Handle and rethrow the error
+    throw error;
+  }
+};
+
+export { registerUser, retrieveAllUsers, updateUser };

@@ -1,5 +1,5 @@
 import { RequestHandler, Request, Response } from 'express';
-import { registerUser, retrieveAllUsers } from '../services/user.service';
+import { registerUser, retrieveAllUsers, updateUser } from '../services/user.service';
 
 export default class UserController {
   registerUser: RequestHandler = async (
@@ -56,7 +56,29 @@ export default class UserController {
     res: Response,
   ): Promise<Response> => {
     //update operation
-    return res.json({ message: 'updateUser' });
+    try {
+      // get the user id from the request params
+      const { id } = req.params;
+      // get the user data from the request body
+      const newUser = req.body;
+
+      // update the user
+      const updatedUser = await updateUser(id, newUser);
+
+      return res // return the response
+        .status(200)
+        .json({
+          message: 'User updated successfully.!',
+          responseData: updatedUser,
+        });
+    } catch (error: unknown) {
+      // catch block is used to handle the errors
+      if (error instanceof Error) {
+        return res.json({ message: error.message });
+      } else {
+        return res.status(500).json({ message: 'Unknown error occured.' });
+      }
+    }
   };
 
   deleteUser: RequestHandler = async (
