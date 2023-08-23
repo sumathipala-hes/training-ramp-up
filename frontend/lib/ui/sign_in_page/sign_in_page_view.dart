@@ -105,7 +105,7 @@ class SignInPageView extends StatelessWidget {
                         context,
                         MaterialPageRoute(
                           builder: (context) {
-                            return const HomePageProvider();
+                            return HomePageProvider();
                           },
                         ),
                       );
@@ -161,7 +161,7 @@ class SignInPageView extends StatelessWidget {
                         context,
                         MaterialPageRoute(
                           builder: (context) {
-                            return const RegisterPageProvider();
+                            return RegisterPageProvider();
                           },
                         ),
                       );
