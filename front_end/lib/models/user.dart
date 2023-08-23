@@ -2,13 +2,13 @@ class User {
   String userName;
   String userEmail;
   String userPassword;
-  String userRole;
+  String role;
 
   User({
     required this.userName,
     required this.userEmail,
     required this.userPassword,
-    required this.userRole,
+    required this.role,
   });
 
   Map<String, dynamic> toJson() {
@@ -16,7 +16,7 @@ class User {
       'userName': userName,
       'userEmail': userEmail,
       'userPassword': userPassword,
-      'userRole': userRole,
+      'role': role,
     };
   }
 
@@ -25,7 +25,7 @@ class User {
       userName: json['userName'] as String,
       userEmail: json['userEmail'] as String,
       userPassword: json['userPassword'] as String,
-      userRole: json['userRole'] as String,
+      role: json['role'] as String,
     );
   }
 }
