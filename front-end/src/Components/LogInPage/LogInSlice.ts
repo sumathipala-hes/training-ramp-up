@@ -1,11 +1,11 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
-interface SignInState {
+interface LogInState {
     email: string
     password: string
 }
 
-const initialState: SignInState = {
+const initialState: LogInState = {
     email: '',
     password: '',
 }

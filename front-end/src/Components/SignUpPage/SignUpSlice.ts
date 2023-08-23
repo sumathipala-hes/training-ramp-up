@@ -1,13 +1,13 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
-interface SignInState {
+interface SignUpState {
     email: string
     userName: string
     password: string
     passwordConfirm: string
 }
 
-const initialState: SignInState = {
+const initialState: SignUpState = {
     email: '',
     userName: '',
     password: '',
@@ -27,9 +27,16 @@ const signInSlice = createSlice({
         enteredPassword: (state, action: PayloadAction<string>) => {
             state.password = action.payload
         },
+        enteredPasswordConfirm: (state, action: PayloadAction<string>) => {
+            state.passwordConfirm = action.payload
+        },
     },
 })
 
-export const { enteredEmail, enteredPassword, enteredUserName } =
-    signInSlice.actions
+export const {
+    enteredEmail,
+    enteredPassword,
+    enteredPasswordConfirm,
+    enteredUserName,
+} = signInSlice.actions
 export default signInSlice.reducer

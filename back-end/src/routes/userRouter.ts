@@ -1,6 +1,7 @@
 import express from 'express'
 import { createStudent, deleteStudent, getAllStudents, updateStudent } from '../controllers/studentControllers'
 import { check } from 'express-validator'
+import { getAllUsers, signUp, logIn } from '../controllers/authController'
 const router = express.Router()
 
 router
@@ -10,4 +11,8 @@ router
 
 router.route('/api/student/:studentId').put(updateStudent).delete(deleteStudent)
 
-export { router as createStudentRouter }
+router.post('/api/user/sign-up', signUp)
+router.post('/api/user/log-in', logIn)
+router.get('/api/user', getAllUsers)
+
+export { router as userRouter }

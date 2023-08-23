@@ -2,7 +2,12 @@ import { Box, Button, Container, TextField } from '@mui/material'
 import * as React from 'react'
 import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
-import { enteredEmail, enteredPassword, enteredUserName } from './SignUpSlice'
+import {
+    enteredEmail,
+    enteredPassword,
+    enteredPasswordConfirm,
+    enteredUserName,
+} from './SignUpSlice'
 
 export default function SignUp() {
     const navigate = useNavigate()
@@ -41,8 +46,12 @@ export default function SignUp() {
         navigate('/student-table') // Navigate to the "/other" route
         dispacth(enteredEmail(email))
         dispacth(enteredUserName(userName))
-        dispacth(enteredPassword(password))
+        if (password === passwordConfirm) {
+            dispacth(enteredPassword(password))
+            dispacth(enteredPasswordConfirm(passwordConfirm))
+        }
     }
+
     return (
         <Container
             maxWidth={false}
