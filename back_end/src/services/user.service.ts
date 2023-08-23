@@ -46,4 +46,21 @@ const updateUser = async (id: string, user: User): Promise<UpdateResult> => {
   }
 };
 
-export { registerUser, retrieveAllUsers, updateUser };
+const deleteUser = async (id: string): Promise<DeleteResult> => {
+  try {
+    const deletedUser: DeleteResult = await dataSource.manager
+      .getRepository(User)
+      .delete(id);
+    if (deletedUser.affected === 1) {
+      sendNotification('Success', 'User Deleted..!');
+    } else {
+      throw new Error('User not found.');
+    }
+    return deletedUser;
+  } catch (error) {
+    // Handle and rethrow the error
+    throw error;
+  }
+};
+
+export { registerUser, retrieveAllUsers, updateUser, deleteUser };
