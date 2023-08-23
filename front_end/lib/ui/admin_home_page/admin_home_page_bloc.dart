@@ -162,11 +162,41 @@ class AdminHomePageBloc extends Bloc<AdminHomePageEvent, AdminHomePageState> {
     }
   }
 
-  FutureOr<void> _saveUser(SaveUser event, Emitter<AdminHomePageState> emit) {}
+  Future<void> _saveUser(
+      SaveUser event, Emitter<AdminHomePageState> emit) async {
+    final user = User(
+      roleType: event.user.roleType,
+      name: event.user.name,
+      address: event.user.address,
+      email: event.user.email,
+      mobileNumber: event.user.mobileNumber,
+      dob: event.user.dob,
+      gender: event.user.gender,
+      password: event.user.password,
+    );
+    await UserRepository().saveUser(user);
+    add(GetAllUsers());
+  }
 
-  FutureOr<void> _updateUser(
-      UpdateUser event, Emitter<AdminHomePageState> emit) {}
+  Future<void> _updateUser(
+      UpdateUser event, Emitter<AdminHomePageState> emit) async {
+    final user = User(
+      roleType: event.user.roleType,
+      name: event.user.name,
+      address: event.user.address,
+      email: event.user.email,
+      mobileNumber: event.user.mobileNumber,
+      dob: event.user.dob,
+      gender: event.user.gender,
+      password: event.user.password,
+    );
+    await UserRepository().updateUser(user);
+    add(GetAllUsers());
+  }
 
-  FutureOr<void> _deleteUser(
-      DeleteUser event, Emitter<AdminHomePageState> emit) {}
+  Future<void> _deleteUser(
+      DeleteUser event, Emitter<AdminHomePageState> emit) async {
+    await UserRepository().deleteUser(event.email);
+    add(GetAllUsers());
+  }
 }

@@ -55,9 +55,9 @@ class UpdateUser extends AdminHomePageEvent {
 }
 
 class DeleteUser extends AdminHomePageEvent {
-  final String id;
+  final String email;
 
   DeleteUser({
-    required this.id,
+    required this.email,
   });
 }
