@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 @immutable
-abstract class RampUpHomePageEvent {}
+abstract class AdminHomePageEvent {}
 
-class SaveButtonPressed extends RampUpHomePageEvent {
+class SaveButtonPressed extends AdminHomePageEvent {
   final String studentId;
   final String studentName;
   final String studentAddress;
@@ -21,11 +21,11 @@ class SaveButtonPressed extends RampUpHomePageEvent {
   });
 }
 
-class GetAllStudents extends RampUpHomePageEvent {
+class GetAllStudents extends AdminHomePageEvent {
   GetAllStudents();
 }
 
-class DeleteStudent extends RampUpHomePageEvent {
+class DeleteStudent extends AdminHomePageEvent {
   final String id;
 
   DeleteStudent({
@@ -33,7 +33,7 @@ class DeleteStudent extends RampUpHomePageEvent {
   });
 }
 
-class UpdateStudent extends RampUpHomePageEvent {
+class UpdateStudent extends AdminHomePageEvent {
   final String studentId;
   final String studentName;
   final String studentAddress;

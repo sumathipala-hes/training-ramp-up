@@ -3,15 +3,15 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:front_end/ui/admin_home_page/admin_home_page_event.dart';
+import 'package:front_end/ui/admin_home_page/admin_home_page_state.dart';
 import 'package:front_end/util/firebase_messaging.dart';
 import 'package:front_end/models/student.dart';
 import 'package:front_end/repository/student_repository.dart';
-import 'package:front_end/ui/home_page/home_page_event.dart';
-import 'package:front_end/ui/home_page/home_page_state.dart';
 
-class RampUpHomeScreenBloc extends Bloc<RampUpHomePageEvent, RampUpHomeState> {
-  RampUpHomeScreenBloc(BuildContext context)
-      : super(RampUpHomeState.initialState) {
+class AdminHomeScreenBloc extends Bloc<AdminHomePageEvent, AdminHomeState> {
+  AdminHomeScreenBloc(BuildContext context)
+      : super(AdminHomeState.initialState) {
     on<SaveButtonPressed>(_onSaveButtonPressed);
     on<GetAllStudents>(_onGetAllStudents);
     on<DeleteStudent>(_onDeleteStudent);
@@ -23,7 +23,7 @@ class RampUpHomeScreenBloc extends Bloc<RampUpHomePageEvent, RampUpHomeState> {
   }
 
   Future<void> _onSaveButtonPressed(
-      SaveButtonPressed event, Emitter<RampUpHomeState> emit) async {
+      SaveButtonPressed event, Emitter<AdminHomeState> emit) async {
     final student = Student(
       studentId: '',
       studentName: event.studentName,
@@ -39,12 +39,11 @@ class RampUpHomeScreenBloc extends Bloc<RampUpHomePageEvent, RampUpHomeState> {
       add(
         GetAllStudents(),
       );
-      // sendNotification("Success", "student Saved..!");
     }
   }
 
   Future<void> _onGetAllStudents(
-      GetAllStudents event, Emitter<RampUpHomeState> emit) async {
+      GetAllStudents event, Emitter<AdminHomeState> emit) async {
     final response = await StudentRepository().getAllStudents();
 
     if (response.statusCode == 200) {
@@ -70,7 +69,7 @@ class RampUpHomeScreenBloc extends Bloc<RampUpHomePageEvent, RampUpHomeState> {
   }
 
   Future<void> _onDeleteStudent(
-      DeleteStudent event, Emitter<RampUpHomeState> emit) async {
+      DeleteStudent event, Emitter<AdminHomeState> emit) async {
     final response = await StudentRepository().deleteStudent(event.id);
 
     if (response.statusCode == 200) {
@@ -83,7 +82,7 @@ class RampUpHomeScreenBloc extends Bloc<RampUpHomePageEvent, RampUpHomeState> {
   }
 
   Future<void> _onUpdateStudent(
-      UpdateStudent event, Emitter<RampUpHomeState> emit) async {
+      UpdateStudent event, Emitter<AdminHomeState> emit) async {
     final student = Student(
       studentId: event.studentId,
       studentName: event.studentName,

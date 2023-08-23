@@ -5,6 +5,7 @@ import 'package:logger/logger.dart';
 
 void configListener() {
   FirebaseMessaging.instance.getToken();
+  _printFCMToken();
 
   FirebaseMessaging.onMessage.listen((RemoteMessage message) {
     Logger().d('Got a message whilst in the foreground!');
@@ -33,4 +34,9 @@ void configListener() {
 
 Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   Logger().d("Handling a background message: ${message.messageId}");
+}
+
+Future<void> _printFCMToken() async {
+  final token = await FirebaseMessaging.instance.getToken();
+      Logger().d('FCM Token: $token');
 }

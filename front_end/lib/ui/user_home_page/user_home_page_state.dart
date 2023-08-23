@@ -2,21 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:front_end/models/student.dart';
 
 @immutable
-class RampUpHomeState {
+class UserHomeState {
   final List<Student> entries;
 
-  const RampUpHomeState({
+  const UserHomeState({
     required this.entries,
   });
 
-  static RampUpHomeState get initialState => const RampUpHomeState(
+  static UserHomeState get initialState => const UserHomeState(
         entries: [],
       );
 
-  RampUpHomeState clone({
+  UserHomeState clone({
     List<Student>? entries,
   }) {
-    return RampUpHomeState(
+    return UserHomeState(
 
       entries: entries ?? this.entries,
     );

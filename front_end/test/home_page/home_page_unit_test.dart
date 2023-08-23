@@ -1,12 +1,12 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:front_end/models/student.dart';
-import 'package:front_end/ui/home_page/home_page_state.dart';
+import 'package:front_end/ui/admin_home_page/admin_home_page_state.dart';
 import 'package:front_end/util/student_event.dart';
 import 'package:mockito/mockito.dart';
 
 // Mocking the State class
 // ignore: must_be_immutable
-class MockState extends Mock implements RampUpHomeState {
+class MockState extends Mock implements AdminHomeState {
   @override
   final List<Student> entries;
 

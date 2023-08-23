@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:front_end/models/student.dart';
-import 'package:front_end/ui/home_page/home_page_bloc.dart';
-import 'package:front_end/ui/home_page/home_page_state.dart';
+import 'package:front_end/ui/admin_home_page/admin_home_page_bloc.dart';
+import 'package:front_end/ui/admin_home_page/admin_home_page_state.dart';
 import 'package:front_end/ui/manage_student_page/manage_student_page_provider.dart';
+import 'package:front_end/ui/sign_in_page/sign_in_page_provider.dart';
 import 'package:front_end/ui/widget/student_card.dart';
 import 'package:front_end/ui/widget/student_manage_form.dart';
 
-class RampUpHomeScreen extends StatelessWidget {
-  const RampUpHomeScreen({Key? key}) : super(key: key);
+class AdminHomeScreen extends StatelessWidget {
+  const AdminHomeScreen({Key? key}) : super(key: key);
 
   Widget _buildStudentCardView(BuildContext context, Student student) {
     return GestureDetector(
@@ -38,11 +39,21 @@ class RampUpHomeScreen extends StatelessWidget {
       appBar: AppBar(
         elevation: 7,
         centerTitle: true,
-        title: const Text('R A M P   U P'),
+        title: const Text('R A M P   U P   A D M I N'),
         actions: [
           IconButton(
             icon: const Icon(Icons.share),
             onPressed: () {},
+          ),
+          IconButton(
+            icon: const Icon(Icons.logout),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => SignInPageProvider()),
+              );
+            },
           ),
         ],
       ),
@@ -87,7 +98,7 @@ class RampUpHomeScreen extends StatelessWidget {
             const SizedBox(height: 30),
             Expanded(
               child: SingleChildScrollView(
-                child: BlocBuilder<RampUpHomeScreenBloc, RampUpHomeState>(
+                child: BlocBuilder<AdminHomeScreenBloc, AdminHomeState>(
                   buildWhen: (previous, current) =>
                       previous.entries != current.entries,
                   builder: (context, state) {

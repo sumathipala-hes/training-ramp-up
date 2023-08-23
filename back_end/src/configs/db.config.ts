@@ -12,6 +12,6 @@ export const dataSource = new DataSource({
   database: process.env.DB_NAME,
   entities: [Student],
   synchronize: true,
-  logging: true,
+  logging: false,
 });
 

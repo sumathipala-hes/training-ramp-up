@@ -7,7 +7,7 @@ import cors from 'cors';
 import routes from './routes';
 import { dataSource } from './configs/db.config';
 import * as admin from 'firebase-admin';
-const serviceAccount = require('./configs/pushnotification.firebase.config.json');
+import serviceAccount from './configs/pushnotification.firebase.config.json';
 
 // Create the express app
 const app = express();
@@ -31,5 +31,5 @@ app.listen(process.env.PORT, () => {
 
 // Initialize Firebase Admin SDK
 admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
+  credential: admin.credential.cert(serviceAccount as admin.ServiceAccount),
 });
