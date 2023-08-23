@@ -114,7 +114,7 @@ class SignInPageScreen extends StatelessWidget {
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) =>
-                                              const RegisterScreenProvider()),
+                                              RegisterScreenProvider()),
                                     );
                               },
                               child: Text(

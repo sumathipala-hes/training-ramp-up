@@ -13,7 +13,7 @@ class RampUpApp extends StatelessWidget {
       title: 'RampUp App',
       theme: PrimaryTheme.generateTheme(context),
       debugShowCheckedModeBanner: false,
-      home: const SignInPageProvider(),
+      home: SignInPageProvider(),
     );
 
     return MultiBlocProvider(
