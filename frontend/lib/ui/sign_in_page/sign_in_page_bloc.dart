@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/repository/user_repository.dart';
 import 'package:frontend/ui/sign_in_page/sign_in_page_event.dart';
 import 'package:frontend/ui/sign_in_page/sign_in_page_state.dart';
+import 'package:frontend/util/encrypt_decrypt_util.dart';
 
 class SignInPageBloc extends Bloc<SignInPageEvent, SignInPageState> {
   SignInPageBloc(BuildContext context)
@@ -20,12 +21,9 @@ class SignInPageBloc extends Bloc<SignInPageEvent, SignInPageState> {
     SignInEvent event,
     Emitter<SignInPageState> emit,
   ) async {
-    userRepository.signIn(
+    await userRepository.signIn(
       event.email,
-      event.password,
+      encryptPassword(event.password),
     );
-    emit(state.clone(
-      isAuthenticate: true,
-    ));
   }
 }

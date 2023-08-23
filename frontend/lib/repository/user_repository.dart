@@ -16,8 +16,8 @@ class UserRepository {
         'Content-Type': 'application/json',
       },
       body: jsonEncode({
-        email: email,
-        password: password,
+        "email": email,
+        "password": password,
       }),
     );
     if (res.statusCode == 200) {
@@ -93,5 +93,15 @@ class UserRepository {
     if (res.statusCode == 500) {
       showToast('Failed to Delete Student');
     }
+  }
+
+  Future<void> signOut() async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.remove('email');
+    prefs.remove('role');
+
+    await http.delete(
+      Uri.parse('$baseUrl/user/signOut'),
+    );
   }
 }

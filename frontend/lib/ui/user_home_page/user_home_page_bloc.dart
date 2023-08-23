@@ -6,7 +6,6 @@ import 'package:frontend/model/user.dart';
 import 'package:frontend/repository/user_repository.dart';
 import 'package:frontend/ui/user_home_page/user_home_page_event.dart';
 import 'package:frontend/ui/user_home_page/user_home_page_state.dart';
-import 'package:encrypt/encrypt.dart' as encrypt;
 import 'package:frontend/util/encrypt_decrypt_util.dart';
 
 class UserHomePageBloc extends Bloc<UserHomePageEvent, UserHomePageState> {
@@ -16,6 +15,7 @@ class UserHomePageBloc extends Bloc<UserHomePageEvent, UserHomePageState> {
     on<GetAllUsers>(_getAllUsers);
     on<UpdateUserEvent>(_updateUser);
     on<DeleteUserEvent>(_deleteUser);
+    on<SignOutEvent>(_signOut);
     add(GetAllUsers());
   }
 
@@ -31,7 +31,6 @@ class UserHomePageBloc extends Bloc<UserHomePageEvent, UserHomePageState> {
       password: encryptPassword(event.user.password),
       role: event.user.role,
     );
-    print(decryptPassword(user.password));
     userRepository.addUsers(user);
     add(GetAllUsers());
   }
@@ -49,24 +48,12 @@ class UserHomePageBloc extends Bloc<UserHomePageEvent, UserHomePageState> {
     UpdateUserEvent event,
     Emitter<UserHomePageState> emit,
   ) async {
-    final plainText = event.user.password;
-    final key = encrypt.Key.fromUtf8('my 32 length key................');
-    final iv = encrypt.IV.fromLength(16);
-
-    final encrypter = encrypt.Encrypter(encrypt.AES(key));
-
-    final encrypted = encrypter.encrypt(plainText, iv: iv);
-    final decrypted = encrypter.decrypt(encrypted, iv: iv);
-
-    print(decrypted);
-    print(encrypted.base64);
     final User user = User(
       name: event.user.name,
       email: event.user.email,
       password: encryptPassword(event.user.password),
       role: event.user.role,
     );
-    print(decryptPassword(user.password));
     userRepository.updateUsers(user);
     add(GetAllUsers());
   }
@@ -79,5 +66,12 @@ class UserHomePageBloc extends Bloc<UserHomePageEvent, UserHomePageState> {
       event.email,
     );
     add(GetAllUsers());
+  }
+
+  Future<FutureOr<void>> _signOut(
+    SignOutEvent event,
+    Emitter<UserHomePageState> emit,
+  ) async {
+    userRepository.signOut();
   }
 }

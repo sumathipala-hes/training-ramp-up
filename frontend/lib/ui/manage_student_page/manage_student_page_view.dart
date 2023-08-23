@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/model/student.dart';
+import 'package:frontend/ui/sign_in_page/sign_in_page_provider.dart';
 import 'package:frontend/ui/student_home_page/student_home_page_bloc.dart';
 import 'package:frontend/ui/student_home_page/student_home_page_event.dart';
 import 'package:frontend/ui/manage_student_page/manage_student_page_bloc.dart';
 import 'package:frontend/ui/manage_student_page/manage_student_page_event.dart';
 import 'package:frontend/ui/manage_student_page/manage_student_page_state.dart';
+import 'package:frontend/ui/user_home_page/user_home_page_bloc.dart';
+import 'package:frontend/ui/user_home_page/user_home_page_event.dart';
 import 'package:frontend/util/validation_util.dart';
 import 'package:intl/intl.dart';
 import '../theme/colors.dart';
@@ -34,6 +37,8 @@ class ManageStudentPageView extends StatelessWidget {
         BlocProvider.of<ManageStudentPageBloc>(context);
     StudentHomePageBloc homePageBloc =
         BlocProvider.of<StudentHomePageBloc>(context);
+    UserHomePageBloc userHomePageBloc =
+        BlocProvider.of<UserHomePageBloc>(context);
     DateTime dob = student.dob;
 
     void validateTextFields(bool isValid, String textField) {
@@ -78,6 +83,22 @@ class ManageStudentPageView extends StatelessWidget {
           ],
         ),
         toolbarHeight: MediaQuery.of(context).size.height * 0.1,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout),
+            onPressed: () {
+              userHomePageBloc.add(
+                SignOutEvent(),
+              );
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => SignInPageProvider(),
+                ),
+              );
+            },
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         child: Padding(

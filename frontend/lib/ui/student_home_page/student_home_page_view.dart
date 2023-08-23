@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/model/student.dart';
+import 'package:frontend/ui/sign_in_page/sign_in_page_provider.dart';
 import 'package:frontend/ui/student_home_page/student_home_page_bloc.dart';
 import 'package:frontend/ui/student_home_page/student_home_page_state.dart';
+import 'package:frontend/ui/user_home_page/user_home_page_bloc.dart';
+import 'package:frontend/ui/user_home_page/user_home_page_event.dart';
 import 'package:frontend/ui/widget/student_form.dart';
 import '../widget/student_card.dart';
 
@@ -13,11 +16,30 @@ class StudentHomePageView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    UserHomePageBloc userHomePageBloc =
+        BlocProvider.of<UserHomePageBloc>(context);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Ramp Up'),
         toolbarHeight: MediaQuery.of(context).size.height * 0.1,
         backgroundColor: Colors.black87,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout),
+            onPressed: () {
+              userHomePageBloc.add(
+                SignOutEvent(),
+              );
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => SignInPageProvider(),
+                ),
+              );
+            },
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         child: Container(

@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:frontend/ui/sign_in_page/sign_in_page_provider.dart';
 import 'package:frontend/ui/student_home_page/student_home_page_provider.dart';
+import 'package:frontend/ui/user_home_page/user_home_page_bloc.dart';
+import 'package:frontend/ui/user_home_page/user_home_page_event.dart';
 import 'package:frontend/ui/user_home_page/user_home_page_provider.dart';
 
 class HomePageView extends StatelessWidget {
@@ -7,11 +11,31 @@ class HomePageView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    UserHomePageBloc userHomePageBloc =
+        BlocProvider.of<UserHomePageBloc>(context);
+
     return Scaffold(
       body: Scaffold(
         appBar: AppBar(
           title: const Text("Home Page"),
           backgroundColor: Colors.black87,
+          automaticallyImplyLeading: false,
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.logout),
+              onPressed: () {
+                userHomePageBloc.add(
+                  SignOutEvent(),
+                );
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => SignInPageProvider(),
+                  ),
+                );
+              },
+            ),
+          ],
         ),
         body: Container(
           decoration: const BoxDecoration(

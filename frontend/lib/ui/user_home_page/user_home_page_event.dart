@@ -27,3 +27,5 @@ class DeleteUserEvent extends UserHomePageEvent {
     required this.email,
   });
 }
+
+class SignOutEvent extends UserHomePageEvent {}

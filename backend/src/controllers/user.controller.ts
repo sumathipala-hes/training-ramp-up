@@ -63,6 +63,7 @@ export const signIn: RequestHandler = async (
   res: Response
 ): Promise<void> => {
   try {
+    console.log(req.body);
     const user = await getUser(req.body.email, req.body.password);
     if (user) {
       const accessToken = jwt.sign(
@@ -86,9 +87,7 @@ export const signIn: RequestHandler = async (
     } else {
       res.status(401).json({ message: 'Unauthorized' });
     }
-  } catch (error) {
-    console.log(error);
-    
+  } catch (error) {    
     res.status(500).json(error);
   }
 };
