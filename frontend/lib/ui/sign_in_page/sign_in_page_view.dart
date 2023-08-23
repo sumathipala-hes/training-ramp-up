@@ -1,12 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/ui/home_page/home_page_provider.dart';
 import 'package:frontend/ui/register_page/register_page_provider.dart';
+import 'package:frontend/ui/sign_in_page/sign_in_page_bloc.dart';
+import 'package:frontend/ui/sign_in_page/sign_in_page_event.dart';
 
 class SignInPageView extends StatelessWidget {
   const SignInPageView({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final TextEditingController emailController = TextEditingController();
+    final TextEditingController passwordController = TextEditingController();
+    SignInPageBloc bloc = BlocProvider.of<SignInPageBloc>(context);
+
     return Scaffold(
       body: Container(
         decoration: const BoxDecoration(
@@ -35,8 +42,9 @@ class SignInPageView extends StatelessWidget {
                 const SizedBox(
                   height: 20,
                 ),
-                const TextField(
-                  decoration: InputDecoration(
+                TextField(
+                  controller: emailController,
+                  decoration: const InputDecoration(
                     hintText: 'Email',
                     hintStyle: TextStyle(
                       color: Colors.white,
@@ -56,15 +64,17 @@ class SignInPageView extends StatelessWidget {
                       ),
                     ),
                   ),
-                  style: TextStyle(
+                  style: const TextStyle(
                     color: Colors.white,
                   ),
                 ),
                 const SizedBox(
                   height: 20,
                 ),
-                const TextField(
-                  decoration: InputDecoration(
+                TextField(
+                  controller: passwordController,
+                  obscureText: true,
+                  decoration: const InputDecoration(
                     hintText: 'Password',
                     hintStyle: TextStyle(
                       color: Colors.white,
@@ -84,7 +94,7 @@ class SignInPageView extends StatelessWidget {
                       ),
                     ),
                   ),
-                  style: TextStyle(
+                  style: const TextStyle(
                     color: Colors.white,
                   ),
                 ),
@@ -101,6 +111,12 @@ class SignInPageView extends StatelessWidget {
                       backgroundColor: Colors.white,
                     ),
                     onPressed: () {
+                      bloc.add(
+                        SignInEvent(
+                          email: emailController.text,
+                          password: passwordController.text,
+                        ),
+                      );
                       Navigator.push(
                         context,
                         MaterialPageRoute(
