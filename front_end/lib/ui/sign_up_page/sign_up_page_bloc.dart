@@ -2,8 +2,6 @@ import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../model/user_model.dart';
-import '../../repository/user_repository.dart';
 import 'sign_up_page_event.dart';
 import 'sign_up_page_state.dart';
 
