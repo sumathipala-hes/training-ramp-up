@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:front_end/model/student_model.dart';
-import 'package:front_end/ui/home_page/home_page_bloc.dart';
+import 'package:front_end/ui/admin_home_page/admin_home_page_bloc.dart';
 import 'package:front_end/ui/widget/card_details.dart';
 import 'package:front_end/ui/widget/student_modal.dart';
 import 'package:intl/intl.dart';
@@ -10,9 +10,9 @@ import 'package:intl/intl.dart';
 void main() {
   Widget createApp() {
     return MaterialApp(
-      home: BlocProvider<HomePageBloc>(
-        create: (context) => HomePageBloc(context),
-        child: const PopupModal(),
+      home: BlocProvider<AdminHomePageBloc>(
+        create: (context) => AdminHomePageBloc(context),
+        child: const StudentPopupModal(),
       ),
     );
   }

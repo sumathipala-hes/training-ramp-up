@@ -4,34 +4,41 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:front_end/model/user_model.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 
-import '../../model/student_model.dart';
 import '../../theme/primary_theme.dart';
 import '../../util/notification.util.dart';
 import '../admin_home_page/admin_home_page_bloc.dart';
 import '../admin_home_page/admin_home_page_event.dart';
-import 'manage_student_page_bloc.dart';
-import 'manage_student_page_event.dart';
-import 'manage_student_page_state.dart';
+import 'manage_user_page_bloc.dart';
+import 'manage_user_page_event.dart';
+import 'manage_user_page_state.dart';
 
-class StudentMangeView extends StatelessWidget {
-  final Student student;
-  StudentMangeView({super.key, required this.student}) {
-    nameController.text = student.name;
-    addressController.text = student.address;
-    mobileNoController.text = student.mobileNumber;
-    dateController.text = DateFormat('EEE MMM d yyyy').format(student.dob);
-    dob = student.dob;
+class UserMangeView extends StatelessWidget {
+  final User user;
+  UserMangeView({super.key, required this.user}) {
+    nameController.text = user.name;
+    addressController.text = user.address;
+    mobileNoController.text = user.mobileNumber;
+    dateController.text = DateFormat('EEE MMM d yyyy').format(user.dob);
+    dob = user.dob;
+    emailController.text = user.email;
+    passwordController.text = user.password;
+    userTypeController.text = user.roleType;
   }
 
   final TextEditingController nameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController userTypeController = TextEditingController();
   final TextEditingController addressController = TextEditingController();
   final TextEditingController mobileNoController = TextEditingController();
   final TextEditingController dateController = TextEditingController();
   DateTime dob = DateTime(DateTime.now().year - 18);
   int age = 0;
+  List<String> roles = ['ADMIN', 'USER'];
 
   void clear() {
     nameController.clear();
@@ -41,7 +48,7 @@ class StudentMangeView extends StatelessWidget {
   }
 
   int calculateAge() {
-    final DateTime birthDate = student.dob;
+    final DateTime birthDate = user.dob;
     final currentDate = DateTime.now();
     age = currentDate.year - birthDate.year;
     if (currentDate.month < birthDate.month ||
@@ -61,23 +68,22 @@ class StudentMangeView extends StatelessWidget {
     );
 
     dateController.text = DateFormat('EEE MMM d yyyy').format(
-      date ?? student.dob,
+      date ?? user.dob,
     );
-    dob = date ?? student.dob;
+    dob = date ?? user.dob;
   }
 
   @override
   Widget build(BuildContext context) {
-    StudentManageBloc studentManageBloc =
-        BlocProvider.of<StudentManageBloc>(context);
-    studentManageBloc.add(SelectGender(select: student.gender));
+    UserManageBloc userManageBloc = BlocProvider.of<UserManageBloc>(context);
+    userManageBloc.add(SelectGender(select: user.gender));
 
     AdminHomePageBloc homePageBloc =
         BlocProvider.of<AdminHomePageBloc>(context);
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Manage Student',
+          'Manage User',
           style: TextStyle(
               fontWeight: FontWeight.bold,
               fontFamily: GoogleFonts.ubuntu().fontFamily),
@@ -109,11 +115,11 @@ class StudentMangeView extends StatelessWidget {
                     height: 20,
                   ),
                   Text(
-                    student.name.isEmpty
-                        ? student.name
-                        : student.name.isEmpty
-                            ? "Student Name"
-                            : student.name,
+                    user.name.isEmpty
+                        ? user.name
+                        : user.name.isEmpty
+                            ? "User Name"
+                            : user.name,
                     style: headerText2,
                   ),
                   const SizedBox(
@@ -126,12 +132,15 @@ class StudentMangeView extends StatelessWidget {
                   const SizedBox(
                     height: 30,
                   ),
-                  BlocBuilder<StudentManageBloc, StudentManageState>(
+                  BlocBuilder<UserManageBloc, UserManageState>(
                     buildWhen: (previous, current) {
                       return previous.nameText != current.nameText ||
                           previous.addressText != current.addressText ||
                           previous.mobileNoText != current.mobileNoText ||
-                          previous.selectedGender != current.selectedGender;
+                          previous.dateText != current.dateText ||
+                          previous.passwordText != current.passwordText ||
+                          previous.selectedGender != current.selectedGender ||
+                          previous.emailText != current.emailText;
                     },
                     builder: (context, state) {
                       return Padding(
@@ -139,15 +148,49 @@ class StudentMangeView extends StatelessWidget {
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
+                            Container(
+                              width: MediaQuery.of(context).size.width * 0.9,
+                              decoration: BoxDecoration(
+                                color: Colors.grey[200],
+                                borderRadius: BorderRadius.circular(10),
+                                border: Border.all(
+                                  color: Colors.black,
+                                  width: 1.0,
+                                ),
+                              ),
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 16.0),
+                              child: DropdownButton<String>(
+                                value: userTypeController.text.trim(),
+                                style: const TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                                onChanged: (newValue) {
+                                  userTypeController.text = newValue!;
+                                },
+                                items: roles.map((String role) {
+                                  return DropdownMenuItem<String>(
+                                    value: role,
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 8.0),
+                                      child: Text(role),
+                                    ),
+                                  );
+                                }).toList(),
+                              ),
+                            ),
+                            const SizedBox(height: 20),
                             TextField(
-                              controller: studentManageBloc
-                                      .state.nameText.isEmpty
+                              controller: userManageBloc.state.nameText.isEmpty
                                   ? nameController
                                   : TextEditingController(
-                                      text: studentManageBloc.state.nameText),
+                                      text: userManageBloc.state.nameText),
                               onChanged: (value) {},
                               decoration: InputDecoration(
-                                labelText: "Student Name",
+                                labelText: "User Name",
                                 labelStyle: labelText2,
                                 border: const OutlineInputBorder(
                                   borderRadius: BorderRadius.all(
@@ -164,15 +207,14 @@ class StudentMangeView extends StatelessWidget {
                             ),
                             const SizedBox(height: 20),
                             TextField(
-                              controller: studentManageBloc
+                              controller: userManageBloc
                                       .state.addressText.isEmpty
                                   ? addressController
                                   : TextEditingController(
-                                      text:
-                                          studentManageBloc.state.addressText),
+                                      text: userManageBloc.state.addressText),
                               onChanged: (value) {},
                               decoration: InputDecoration(
-                                labelText: "Student Address",
+                                labelText: "User Address",
                                 labelStyle: labelText2,
                                 border: const OutlineInputBorder(
                                   borderRadius: BorderRadius.all(
@@ -189,12 +231,34 @@ class StudentMangeView extends StatelessWidget {
                             ),
                             const SizedBox(height: 20),
                             TextField(
-                              controller: studentManageBloc
+                              controller: userManageBloc.state.emailText.isEmpty
+                                  ? emailController
+                                  : TextEditingController(
+                                      text: userManageBloc.state.emailText),
+                              onChanged: (value) {},
+                              decoration: InputDecoration(
+                                labelText: "User Email",
+                                labelStyle: labelText2,
+                                border: const OutlineInputBorder(
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(10),
+                                  ),
+                                ),
+                                filled: true,
+                                fillColor: Colors.grey[200],
+                                contentPadding: const EdgeInsets.symmetric(
+                                  vertical: 12.0,
+                                  horizontal: 16.0,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 20),
+                            TextField(
+                              controller: userManageBloc
                                       .state.mobileNoText.isEmpty
                                   ? mobileNoController
                                   : TextEditingController(
-                                      text:
-                                          studentManageBloc.state.mobileNoText),
+                                      text: userManageBloc.state.mobileNoText),
                               onChanged: (value) {},
                               decoration: InputDecoration(
                                 labelText: "Mobile No",
@@ -243,6 +307,30 @@ class StudentMangeView extends StatelessWidget {
                             const SizedBox(
                               height: 20,
                             ),
+                            TextField(
+                              controller: userManageBloc
+                                      .state.passwordText.isEmpty
+                                  ? passwordController
+                                  : TextEditingController(
+                                      text: userManageBloc.state.passwordText),
+                              onChanged: (value) {},
+                              decoration: InputDecoration(
+                                labelText: "Password",
+                                labelStyle: labelText2,
+                                border: const OutlineInputBorder(
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(10),
+                                  ),
+                                ),
+                                filled: true,
+                                fillColor: Colors.grey[200],
+                                contentPadding: const EdgeInsets.symmetric(
+                                  vertical: 12.0,
+                                  horizontal: 16.0,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 20),
                             Center(
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
@@ -250,9 +338,9 @@ class StudentMangeView extends StatelessWidget {
                                   Radio(
                                     value: "Male",
                                     groupValue:
-                                        studentManageBloc.state.selectedGender,
+                                        userManageBloc.state.selectedGender,
                                     onChanged: (value) {
-                                      studentManageBloc.add(SelectGender(
+                                      userManageBloc.add(SelectGender(
                                           select: value.toString()));
                                     },
                                   ),
@@ -263,9 +351,9 @@ class StudentMangeView extends StatelessWidget {
                                   Radio(
                                     value: "Female",
                                     groupValue:
-                                        studentManageBloc.state.selectedGender,
+                                        userManageBloc.state.selectedGender,
                                     onChanged: (value) {
-                                      studentManageBloc.add(SelectGender(
+                                      userManageBloc.add(SelectGender(
                                           select: value.toString()));
                                     },
                                   ),
@@ -292,10 +380,13 @@ class StudentMangeView extends StatelessWidget {
                             height: 45,
                             child: ElevatedButton(
                               onPressed: () {
-                                if (nameController.text.trim().isEmpty ||
+                                if (userTypeController.text.trim().isEmpty ||
+                                    nameController.text.trim().isEmpty ||
                                     addressController.text.trim().isEmpty ||
+                                    emailController.text.trim().isEmpty ||
                                     mobileNoController.text.trim().isEmpty ||
-                                    dateController.text.trim().isEmpty) {
+                                    dateController.text.trim().isEmpty ||
+                                    passwordController.text.trim().isEmpty) {
                                   showFieldError(
                                       'Text Field should not be empty.');
                                 } else if (!RegExp(r'^[a-zA-Z ]+$')
@@ -305,21 +396,34 @@ class StudentMangeView extends StatelessWidget {
                                     .hasMatch(addressController.text.trim())) {
                                   showFieldError('Invalid Address.');
                                 } else if (!RegExp(
+                                        r'^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$')
+                                    .hasMatch(emailController.text.trim())) {
+                                  showFieldError('Invalid Email.');
+                                } else if (!RegExp(
                                         r'^(07(0|1|2|4|5|6|7|8)[0-9]{7})$')
                                     .hasMatch(mobileNoController.text.trim())) {
                                   showFieldError('Invalid Mobile No.');
+                                } else if (!RegExp(
+                                        r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{8,}$')
+                                    .hasMatch(passwordController.text.trim())) {
+                                  showFieldError(
+                                      'Password should be at least 8 characters.');
                                 } else {
-                                  homePageBloc.add(UpdateStudent(
-                                      student: Student(
-                                    id: student.id!,
-                                    name: nameController.text.trim(),
-                                    address: addressController.text.trim(),
-                                    mobileNumber:
-                                        mobileNoController.text.trim(),
-                                    dob: dob,
-                                    gender:
-                                        studentManageBloc.state.selectedGender,
-                                  )));
+                                  homePageBloc.add(SaveUser(
+                                      user: User(
+                                          roleType:
+                                              userTypeController.text.trim(),
+                                          name: nameController.text.trim(),
+                                          address:
+                                              addressController.text.trim(),
+                                          email: emailController.text.trim(),
+                                          mobileNumber:
+                                              mobileNoController.text.trim(),
+                                          dob: dob,
+                                          password:
+                                              passwordController.text.trim(),
+                                          gender: userManageBloc
+                                              .state.selectedGender)));
                                   clear();
 
                                   Navigator.of(context).pop();
@@ -340,7 +444,7 @@ class StudentMangeView extends StatelessWidget {
                                 showYesNoAlert(context).then((confirmed) {
                                   if (confirmed != null && confirmed) {
                                     homePageBloc.add(
-                                      DeleteStudent(id: student.id!),
+                                      DeleteStudent(id: user.email),
                                     );
                                     Navigator.of(context).pop();
                                   }

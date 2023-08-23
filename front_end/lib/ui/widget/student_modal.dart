@@ -1,20 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:front_end/model/student_model.dart';
 import 'package:intl/intl.dart';
 
 import '../../theme/primary_theme.dart';
-import '../home_page/home_page_bloc.dart';
-import '../home_page/home_page_event.dart';
+import '../admin_home_page/admin_home_page_bloc.dart';
+import '../admin_home_page/admin_home_page_event.dart';
 
-class PopupModal extends StatefulWidget {
-  const PopupModal({super.key});
+class StudentPopupModal extends StatefulWidget {
+  const StudentPopupModal({super.key});
 
   @override
   // ignore: library_private_types_in_public_api
-  _PopupModalState createState() => _PopupModalState();
+  _StudentPopupModalState createState() => _StudentPopupModalState();
 }
 
-class _PopupModalState extends State<PopupModal> {
+class _StudentPopupModalState extends State<StudentPopupModal> {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController addressController = TextEditingController();
   final TextEditingController mobileNoController = TextEditingController();
@@ -26,7 +27,7 @@ class _PopupModalState extends State<PopupModal> {
   static final RegExp _addressRegExp = RegExp(r'^[a-zA-Z0-9 ]+$');
 
   String selectedGender = "Male";
-  DateTime dob = DateTime.now();
+  DateTime dob = DateTime(DateTime.now().year - 18);
 
   void clear() {
     nameController.clear();
@@ -44,9 +45,9 @@ class _PopupModalState extends State<PopupModal> {
     );
 
     dateController.text = DateFormat('EEE MMM d yyyy').format(
-      date ?? DateTime.now(),
+      date ?? dob,
     );
-    dob = date ?? DateTime.now();
+    dob = date ?? dob;
   }
 
   bool isNumeric(String value) {
@@ -91,7 +92,8 @@ class _PopupModalState extends State<PopupModal> {
 
   @override
   Widget build(BuildContext context) {
-    HomePageBloc homePageBloc = BlocProvider.of<HomePageBloc>(context);
+    AdminHomePageBloc homePageBloc =
+        BlocProvider.of<AdminHomePageBloc>(context);
 
     return AlertDialog(
       shape: RoundedRectangleBorder(
@@ -175,7 +177,7 @@ class _PopupModalState extends State<PopupModal> {
               _selectDate(context);
             },
             decoration: InputDecoration(
-              labelText: "Date",
+              labelText: "DOB",
               labelStyle: labelText,
               suffixIcon: const Icon(Icons.calendar_today),
               border: const OutlineInputBorder(
@@ -243,13 +245,14 @@ class _PopupModalState extends State<PopupModal> {
             onPressed: isSaveButtonEnabled
                 ? () {
                     homePageBloc.add(SaveStudent(
+                        student: Student(
                       id: '',
                       name: nameController.text.trim(),
                       address: addressController.text.trim(),
-                      mobileNo: mobileNoController.text.trim(),
-                      date: dob,
+                      mobileNumber: mobileNoController.text.trim(),
+                      dob: dob,
                       gender: selectedGender,
-                    ));
+                    )));
                     clear();
                     Navigator.of(context).pop();
                   }

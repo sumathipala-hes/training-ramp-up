@@ -2,24 +2,23 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:front_end/ui/widget/student_modal.dart';
+import 'package:front_end/ui/user_home_page/user_home_page_bloc.dart';
+import 'package:front_end/ui/user_home_page/user_home_page_event.dart';
+import 'package:front_end/ui/user_home_page/user_home_page_state.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-
 import '../../model/student_model.dart';
-import '../../theme/primary_theme.dart';
-import '../manage_student_page/manage_student_page_provider.dart';
 import '../widget/card_details.dart';
-import 'home_page_bloc.dart';
-import 'home_page_state.dart';
 
-class HomePageView extends StatelessWidget {
-  const HomePageView({super.key});
+class UserHomePageView extends StatelessWidget {
+  UserHomePageView({super.key});
+
+  final TextEditingController searchController = TextEditingController();
 
   Widget _buildStudentCardView(BuildContext context, Student student) {
     return GestureDetector(
       onTap: () {
-        navigateToAnotherUI(context, student);
+        // navigateToAnotherUI(context, student);
       },
       child: StudentCard(
         id: student.id!,
@@ -29,21 +28,14 @@ class HomePageView extends StatelessWidget {
     );
   }
 
-  void navigateToAnotherUI(BuildContext context, Student student) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => StudentMangeProvider(student: student),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
+    final userHomePage = BlocProvider.of<UserHomePageBloc>(context);
+
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          "Manage Student",
+          "Student View",
           style: TextStyle(
               fontWeight: FontWeight.bold,
               fontFamily: GoogleFonts.ubuntu().fontFamily),
@@ -71,23 +63,50 @@ class HomePageView extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 const SizedBox(height: 30),
-                ElevatedButton(
-                  style: popButton,
-                  onPressed: () {
-                    showDialog(
-                      context: context,
-                      builder: (context) => const PopupModal(),
-                    );
-                  },
-                  child: Text(
-                    "ADD NEW STUDENT",
-                    style: textButton,
+                Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: SizedBox(
+                    height: 50,
+                    width: MediaQuery.of(context).size.width.toDouble(),
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(
+                        color: Colors.white70,
+                        border: Border.all(
+                          color: Colors.black,
+                          width: 1,
+                        ),
+                        borderRadius: const BorderRadius.all(
+                          Radius.circular(10),
+                        ),
+                      ),
+                      child: TextField(
+                        controller: searchController,
+                        onSubmitted: (value) => {
+                          userHomePage.add(
+                            GetStudentByOne(
+                              searchController.text.trim(),
+                            ),
+                          ),
+                        },
+                        decoration: const InputDecoration(
+                          prefixIcon: Icon(Icons.search),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(10),
+                            ),
+                          ),
+                          hintText: 'Search by ID, Name, Address, Mobile No',
+                          hintStyle: TextStyle(
+                            color: Colors.black,
+                          ),
+                        ),
+                      ),
+                    ),
                   ),
                 ),
-                const SizedBox(height: 30),
                 Expanded(
                   child: SingleChildScrollView(
-                    child: BlocBuilder<HomePageBloc, HomePageState>(
+                    child: BlocBuilder<UserHomePageBloc, UserHomePageState>(
                       buildWhen: (previous, current) =>
                           previous.allStudents != current.allStudents,
                       builder: (context, state) {

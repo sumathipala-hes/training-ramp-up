@@ -9,19 +9,19 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:logger/logger.dart';
 
 import '../../model/student_model.dart';
-import '../../repository/student.repository.dart';
-import 'home_page_event.dart';
-import 'home_page_state.dart';
+import '../../repository/student_repository.dart';
+import '../../util/notification.util.dart';
+import 'user_home_page_event.dart';
+import 'user_home_page_state.dart';
 
-class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
-  HomePageBloc(BuildContext context) : super(HomePageState.initialState) {
+class UserHomePageBloc extends Bloc<UserHomePageEvent, UserHomePageState> {
+  UserHomePageBloc() : super(UserHomePageState.initialState) {
     on<GetAllStudent>(_getAllStudent);
-    on<SaveStudent>(_saveStudent);
-    on<UpdateStudent>(_updateStudent);
-    on<DeleteStudent>(_deleteStudent);
+    on<GetStudentByOne>(_getStudentByOne);
     add(
       GetAllStudent(),
     );
+
     FirebaseMessaging.instance.getToken();
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       Logger().d('Got a message whilst in the foreground!');
@@ -49,7 +49,7 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
   }
 
   Future<void> _getAllStudent(
-      GetAllStudent event, Emitter<HomePageState> emit) async {
+      GetAllStudent event, Emitter<UserHomePageState> emit) async {
     try {
       final response = await StudentRepository().getAllStudents();
 
@@ -80,39 +80,35 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
     }
   }
 
-  Future<void> _saveStudent(
-      SaveStudent event, Emitter<HomePageState> emit) async {
-    final student = Student(
-      id: '',
-      name: event.name,
-      address: event.address,
-      mobileNumber: event.mobileNo,
-      dob: event.date,
-      gender: event.gender,
-    );
-    await StudentRepository().saveStudent(student);
-    add(GetAllStudent());
-  }
+  Future<void> _getStudentByOne(
+      GetStudentByOne event, Emitter<UserHomePageState> emit) async {
+    try {
+      final response = await StudentRepository().getStudentByOne(event.search);
+      if (response.statusCode == 200) {
+        Map<String, dynamic> responseData = jsonDecode(response.body);
 
-  Future<void> _updateStudent(
-    UpdateStudent event,
-    Emitter<HomePageState> emit,
-  ) async {
-    final student = Student(
-      id: event.id,
-      name: event.name,
-      address: event.address,
-      mobileNumber: event.mobileNo,
-      dob: event.date,
-      gender: event.gender,
-    );
-    await StudentRepository().updateStudent(student);
-    add(GetAllStudent());
-  }
+        if (responseData.containsKey('data')) {
+          Map<String, dynamic> studentData = responseData['data'];
 
-  Future<void> _deleteStudent(
-      DeleteStudent event, Emitter<HomePageState> emit) async {
-    await StudentRepository().deleteStudent(event.id);
-    add(GetAllStudent());
+          Student student = Student.fromJson(studentData);
+
+          emit(
+            state.clone(
+              allStudents: [student],
+            ),
+          );
+        } else {
+          Logger().e('Response does not contain "data" key');
+          add(GetAllStudent());
+        }
+      } else {
+        Logger().e('Failed to load student: ${response.statusCode}');
+        showFieldError('No data found');
+        add(GetAllStudent());
+      }
+    } catch (e) {
+      Logger().e('Error fetching student: $e');
+      add(GetAllStudent());
+    }
   }
 }

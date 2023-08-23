@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import '../theme/primary_theme.dart';
 
-
 Future<void> showFieldError(String message) async {
   Fluttertoast.showToast(
       msg: message,

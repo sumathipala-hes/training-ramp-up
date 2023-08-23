@@ -3,6 +3,7 @@ import {
   createStudent,
   deleteStudent,
   getAllStudents,
+  getStudentByOne,
   updateStudent,
 } from '../services/student.service';
 import { validateStudent } from '../middleware/validateStudent';
@@ -18,6 +19,25 @@ export const requestGetAllStudents: RequestHandler = async (
       .json({ data: students, message: 'Students found successfully' });
   } catch (error: any) {
     if (error.message === 'Student not found') {
+      return res.status(400).json({ message: 'Student not found' });
+    } else {
+      return res.status(500).json({ message: 'An error occurred' });
+    }
+  }
+};
+
+export const requestStudentsByOne: RequestHandler = async (
+  req: Request,
+  res: Response,
+): Promise<Response> => {
+  try {
+    const { search } = req.params;
+    const student = await getStudentByOne(search);
+    return res
+      .status(200)
+      .json({ data: student, message: 'Student found successfully' });
+  } catch (error: any) {
+    if (error.message === 'No student found') {
       return res.status(400).json({ message: 'Student not found' });
     } else {
       return res.status(500).json({ message: 'An error occurred' });
