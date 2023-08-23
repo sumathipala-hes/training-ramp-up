@@ -2,9 +2,12 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:frontend/model/user.dart';
 import 'package:frontend/repository/user_repository.dart';
 import 'package:frontend/ui/user_home_page/user_home_page_event.dart';
 import 'package:frontend/ui/user_home_page/user_home_page_state.dart';
+import 'package:encrypt/encrypt.dart' as encrypt;
+import 'package:frontend/util/encrypt_decrypt_util.dart';
 
 class UserHomePageBloc extends Bloc<UserHomePageEvent, UserHomePageState> {
   UserHomePageBloc(BuildContext context)
@@ -22,9 +25,24 @@ class UserHomePageBloc extends Bloc<UserHomePageEvent, UserHomePageState> {
     SaveUserEvent event,
     Emitter<UserHomePageState> emit,
   ) async {
-    userRepository.addUsers(
-      event.user,
+    final plainText = event.user.password;
+    final key = encrypt.Key.fromUtf8('my 32 length key................');
+    final iv = encrypt.IV.fromLength(16);
+
+    final encrypter = encrypt.Encrypter(encrypt.AES(key));
+
+    final encrypted = encrypter.encrypt(plainText, iv: iv);
+    final decrypted = encrypter.decrypt(encrypted, iv: iv);
+
+    print(decrypted);
+    print(encrypted.base64);
+    final User user = User(
+      name: event.user.name,
+      email: event.user.email,
+      password: encrypted.base64,
+      role: event.user.role,
     );
+    userRepository.addUsers(user);
     add(GetAllUsers());
   }
 
@@ -41,9 +59,25 @@ class UserHomePageBloc extends Bloc<UserHomePageEvent, UserHomePageState> {
     UpdateUserEvent event,
     Emitter<UserHomePageState> emit,
   ) async {
-    userRepository.updateUsers(
-      event.user,
+    final plainText = event.user.password;
+    final key = encrypt.Key.fromUtf8('my 32 length key................');
+    final iv = encrypt.IV.fromLength(16);
+
+    final encrypter = encrypt.Encrypter(encrypt.AES(key));
+
+    final encrypted = encrypter.encrypt(plainText, iv: iv);
+    final decrypted = encrypter.decrypt(encrypted, iv: iv);
+
+    print(decrypted);
+    print(encrypted.base64);
+    final User user = User(
+      name: event.user.name,
+      email: event.user.email,
+      password: encryptPassword(event.user.password),
+      role: event.user.role,
     );
+    print(decryptPassword(user.password));
+    userRepository.updateUsers(user);
     add(GetAllUsers());
   }
 

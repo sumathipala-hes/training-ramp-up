@@ -4,6 +4,7 @@ import 'package:frontend/ui/home_page/home_page_view.dart';
 import 'package:frontend/ui/sign_in_page/sign_in_page_bloc.dart';
 import 'package:frontend/ui/student_home_page/student_home_page_bloc.dart';
 import 'package:frontend/ui/sign_in_page/sign_in_page_view.dart';
+import 'package:frontend/ui/user_home_page/user_home_page_bloc.dart';
 
 class RampUpApp extends StatelessWidget {
   const RampUpApp({
@@ -31,6 +32,9 @@ class RampUpApp extends StatelessWidget {
         ),
         BlocProvider<SignInPageBloc>(
           create: (context) => SignInPageBloc(context),
+        ),
+        BlocProvider<UserHomePageBloc>(
+          create: (context) => UserHomePageBloc(context),
         ),
       ],
       child: materialApp,

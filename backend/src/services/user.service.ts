@@ -1,7 +1,6 @@
 import { DeleteResult, InsertResult, UpdateResult } from 'typeorm';
 import { dataSource } from '../configs/datasource.config';
 import { User } from '../models/user.model';
-import bcrypt from 'bcrypt';
 
 export const getAllUsers = async (): Promise<Array<User>> => {
   try {
@@ -18,11 +17,7 @@ export const getAllUsers = async (): Promise<Array<User>> => {
 
 export const saveUser = async (user: User): Promise<InsertResult> => {
   try {
-    const password = await bcrypt.hash(user.password, 10);
-    return await dataSource.manager.insert(User, {
-      ...user,
-      password: password,
-    });
+    return await dataSource.manager.insert(User, user);
   } catch (error) {
     throw error;
   }
@@ -65,7 +60,7 @@ export const getUser = async (
     console.log(password);
 
     if (user) {
-      const isMatch = await bcrypt.compare('1234', user.password);
+      const isMatch = user.password == password;
       if (isMatch) {
         return user;
       } else {

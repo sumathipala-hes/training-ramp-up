@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:frontend/model/user.dart';
 import 'package:frontend/util/db_util.dart';
+import 'package:frontend/util/encrypt_decrypt_util.dart';
 import 'package:frontend/util/show_toast.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -44,10 +45,20 @@ class UserRepository {
       },
     );
     List<dynamic> responseData = jsonDecode(response.body);
-    List<User> studentList = [
-      ...responseData.map((studentData) => User.fromJson(studentData)),
+    List<User> userList = [
+      ...responseData.map(
+        (userData) => User.fromJson(
+          {
+            ...userData,
+            'password': decryptPassword(
+              userData['password'],
+            ),
+          },
+        ),
+      ),
     ];
-    return studentList;
+    print(userList);
+    return userList;
   }
 
   Future<void> addUsers(User user) async {
@@ -65,7 +76,7 @@ class UserRepository {
 
   Future<void> updateUsers(User user) async {
     final res = await http.put(
-      Uri.parse('$baseUrl/student/${user.email}'),
+      Uri.parse('$baseUrl/user/${user.email}'),
       headers: <String, String>{
         'Content-Type': 'application/json',
       },

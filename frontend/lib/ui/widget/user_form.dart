@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:frontend/model/user.dart';
 import 'package:frontend/ui/theme/colors.dart';
+import 'package:frontend/ui/user_home_page/user_home_page_bloc.dart';
+import 'package:frontend/ui/user_home_page/user_home_page_event.dart';
 
 class UserForm extends StatefulWidget {
-  const UserForm({Key? key}) : super(key: key); // Corrected the syntax here
+  const UserForm({Key? key}) : super(key: key);
 
   @override
   State<UserForm> createState() => _UserFormState();
@@ -11,9 +15,14 @@ class UserForm extends StatefulWidget {
 class _UserFormState extends State<UserForm> {
   String selectedItem = 'User';
   List<String> roles = ['Admin', 'User'];
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
+    UserHomePageBloc userHomePageBloc =
+        BlocProvider.of<UserHomePageBloc>(context);
     return Dialog(
       backgroundColor: Colors.transparent,
       child: SingleChildScrollView(
@@ -38,6 +47,7 @@ class _UserFormState extends State<UserForm> {
                 ),
                 const SizedBox(height: 20),
                 TextField(
+                  controller: nameController,
                   decoration: const InputDecoration(
                     border: UnderlineInputBorder(),
                     labelText: 'Full Name',
@@ -49,6 +59,7 @@ class _UserFormState extends State<UserForm> {
                   height: 20,
                 ),
                 TextField(
+                  controller: emailController,
                   decoration: const InputDecoration(
                     border: UnderlineInputBorder(),
                     labelText: 'Email',
@@ -60,6 +71,7 @@ class _UserFormState extends State<UserForm> {
                   height: 20,
                 ),
                 TextField(
+                  controller: passwordController,
                   obscureText: true,
                   decoration: const InputDecoration(
                     border: UnderlineInputBorder(),
@@ -113,7 +125,16 @@ class _UserFormState extends State<UserForm> {
                           backgroundColor: AppColors.successColor,
                         ),
                         onPressed: () {
-                          // Add your logic for handling save button press
+                          userHomePageBloc.add(
+                            SaveUserEvent(
+                              user: User(
+                                name: nameController.text,
+                                email: emailController.text,
+                                password: passwordController.text,
+                                role: selectedItem,
+                              ),
+                            ),
+                          );
                         },
                         child: const Text('SAVE'),
                       ),

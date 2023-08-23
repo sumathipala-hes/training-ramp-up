@@ -9,6 +9,8 @@ Future<void> main() async {
   final prefs = await SharedPreferences.getInstance();
   final email = prefs.getString('email');
   runApp(
-    RampUpApp(isAuthenticate: email != null),
+    RampUpApp(
+      isAuthenticate: email != null,
+    ),
   );
 }
