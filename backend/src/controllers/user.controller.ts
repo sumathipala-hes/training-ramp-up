@@ -81,6 +81,7 @@ export const signIn: RequestHandler = async (
       res.cookie('accessToken', accessToken, {
         httpOnly: true,
       });
+      console.log(accessToken, refreshToken);
       res.status(200).json({ accessToken, refreshToken });
     } else {
       res.status(401).json({ message: 'Unauthorized' });
@@ -117,3 +118,41 @@ export const generateNewAccessToken: RequestHandler = async (
     res.status(500).json(error);
   }
 };
+
+export const signOut: RequestHandler = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    res.clearCookie('accessToken');
+    res.clearCookie('refreshToken');
+    res.clearCookie('user');
+    res.status(200).json({ message: 'Sign out successfully' });
+  } catch (error) {
+    res.status(500).json(error);
+  }
+}
+
+export const getDetails = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const payload = jwt.verify(req.cookies.accessToken, jwtConfig.secretKey);
+    if (payload) {
+      const user = jwt.sign(
+        payload,
+        jwtConfig.userKey,
+        { expiresIn: jwtConfig.expiresIn }
+      );
+      res.cookie('user', user, {
+        httpOnly: true,
+      });
+      res.status(200).json({ user });
+    } else {
+      res.status(401).json({ message: 'Unauthorized' });
+    }
+  } catch (error) {
+    res.status(500).json(error);
+  }
+}

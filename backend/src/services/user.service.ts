@@ -54,7 +54,8 @@ export const getUser = async (
   password: string
 ): Promise<User> => {
   try {
-    const user = await dataSource.manager.findOne(User, {
+    const userRepo = dataSource.manager.getRepository(User);
+    const user = await userRepo.findOne({
       where: {
         email: email,
       },
