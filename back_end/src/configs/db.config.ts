@@ -2,6 +2,7 @@ import { config } from 'dotenv';
 config();
 import { Student } from '../models/student.model';
 import { DataSource } from 'typeorm/data-source/DataSource';
+import { User } from '../models/user.model';
 
 export const dataSource = new DataSource({
   type: 'postgres',
@@ -10,7 +11,7 @@ export const dataSource = new DataSource({
   username: process.env.DB_USER,
   password: process.env.DB_PASS,
   database: process.env.DB_NAME,
-  entities: [Student],
+  entities: [Student, User],
   synchronize: true,
   logging: false,
 });

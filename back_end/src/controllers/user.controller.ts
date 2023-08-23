@@ -1,5 +1,5 @@
 import { RequestHandler, Request, Response } from 'express';
-import { registerUser } from '../services/user.service';
+import { registerUser, retrieveAllUsers } from '../services/user.service';
 
 export default class UserController {
   registerUser: RequestHandler = async (
@@ -36,7 +36,19 @@ export default class UserController {
     res: Response,
   ): Promise<Response> => {
     //read operation
-    return res.json({ message: 'retrieveAllUsers' });
+    try {
+      // retrieve all the users
+      let users = await retrieveAllUsers();
+
+      return res.json({ data: users });
+    } catch (e: unknown) {
+      // catch block is used to handle the errors
+      if (e instanceof Error) {
+        return res.json({ message: e.message });
+      } else {
+        return res.status(500).json(e);
+      }
+    }
   };
 
   updateUser: RequestHandler = async (

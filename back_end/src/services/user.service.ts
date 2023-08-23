@@ -16,4 +16,16 @@ const registerUser = async (user: User): Promise<InsertResult> => {
   }
 };
 
-export { registerUser };
+const retrieveAllUsers = async (): Promise<User[]> => {
+  try {
+    const users: User[] = await dataSource.manager
+      .getRepository(User)
+      .find({ order: { userEmail: 'DESC' } });
+    return users;
+  } catch (error) {
+    // Handle and rethrow the error
+    throw error;
+  }
+};
+
+export { registerUser, retrieveAllUsers };
