@@ -28,15 +28,6 @@ class UserHomePageView extends StatelessWidget {
     );
   }
 
-  // void navigateToAnotherUI(BuildContext context, Student student) {
-  //   Navigator.push(
-  //     context,
-  //     MaterialPageRoute(
-  //       builder: (context) => StudentMangeProvider(student: student,),
-  //     ),
-  //   );
-  // }
-
   @override
   Widget build(BuildContext context) {
     final userHomePage = BlocProvider.of<UserHomePageBloc>(context);

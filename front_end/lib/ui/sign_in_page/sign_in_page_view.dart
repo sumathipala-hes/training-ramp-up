@@ -92,7 +92,7 @@ class SignInPageView extends StatelessWidget {
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) =>
-                                             AdminHomePageView()),
+                                            AdminHomePageView()),
                                   );
                                 },
                                 child: Row(
@@ -130,7 +130,7 @@ class SignInPageView extends StatelessWidget {
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) =>
-                                              const SignUpPageProvider()),
+                                              SignUpPageProvider()),
                                     );
                                   },
                                   child: Text('SIGN UP',

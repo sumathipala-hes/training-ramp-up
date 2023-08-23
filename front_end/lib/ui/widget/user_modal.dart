@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
+import '../../model/user_model.dart';
 import '../../theme/primary_theme.dart';
 import '../admin_home_page/admin_home_page_bloc.dart';
 import '../admin_home_page/admin_home_page_event.dart';
@@ -342,15 +343,16 @@ class _UserPopupModalState extends State<UserPopupModal> {
             onPressed: isSaveButtonEnabled
                 ? () {
                     homePageBloc.add(SaveUser(
-                      userType: userTypeController.text.trim(),
+                        user: User(
+                      roleType: userTypeController.text.trim(),
                       email: emailController.text.trim(),
                       password: passwordController.text.trim(),
                       name: nameController.text.trim(),
                       address: addressController.text.trim(),
-                      mobileNo: mobileNoController.text.trim(),
-                      date: dob,
+                      mobileNumber: mobileNoController.text.trim(),
+                      dob: dob,
                       gender: selectedGender,
-                    ));
+                    )));
                     clear();
                     Navigator.of(context).pop();
                   }

@@ -12,7 +12,7 @@ void main() {
     return MaterialApp(
       home: BlocProvider<AdminHomePageBloc>(
         create: (context) => AdminHomePageBloc(context),
-        child: const PopupModal(),
+        child: const StudentPopupModal(),
       ),
     );
   }

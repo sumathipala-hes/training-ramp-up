@@ -175,8 +175,7 @@ class UserMangeView extends StatelessWidget {
                                     value: role,
                                     child: Padding(
                                       padding: const EdgeInsets.symmetric(
-                                          vertical:
-                                              8.0),
+                                          vertical: 8.0),
                                       child: Text(role),
                                     ),
                                   );
@@ -411,15 +410,20 @@ class UserMangeView extends StatelessWidget {
                                       'Password should be at least 8 characters.');
                                 } else {
                                   homePageBloc.add(SaveUser(
-                                      userType: userTypeController.text.trim(),
-                                      name: nameController.text.trim(),
-                                      address: addressController.text.trim(),
-                                      email: emailController.text.trim(),
-                                      mobileNo: mobileNoController.text.trim(),
-                                      date: dob,
-                                      password: passwordController.text.trim(),
-                                      gender:
-                                          userManageBloc.state.selectedGender));
+                                      user: User(
+                                          roleType:
+                                              userTypeController.text.trim(),
+                                          name: nameController.text.trim(),
+                                          address:
+                                              addressController.text.trim(),
+                                          email: emailController.text.trim(),
+                                          mobileNumber:
+                                              mobileNoController.text.trim(),
+                                          dob: dob,
+                                          password:
+                                              passwordController.text.trim(),
+                                          gender: userManageBloc
+                                              .state.selectedGender)));
                                   clear();
 
                                   Navigator.of(context).pop();

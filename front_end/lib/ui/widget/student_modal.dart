@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:front_end/model/student_model.dart';
 import 'package:intl/intl.dart';
 
 import '../../theme/primary_theme.dart';
@@ -244,13 +245,14 @@ class _StudentPopupModalState extends State<StudentPopupModal> {
             onPressed: isSaveButtonEnabled
                 ? () {
                     homePageBloc.add(SaveStudent(
+                        student: Student(
                       id: '',
                       name: nameController.text.trim(),
                       address: addressController.text.trim(),
-                      mobileNo: mobileNoController.text.trim(),
-                      date: dob,
+                      mobileNumber: mobileNoController.text.trim(),
+                      dob: dob,
                       gender: selectedGender,
-                    ));
+                    )));
                     clear();
                     Navigator.of(context).pop();
                   }

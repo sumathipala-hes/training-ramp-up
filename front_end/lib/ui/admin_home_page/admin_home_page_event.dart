@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../../model/student_model.dart';
+import '../../model/user_model.dart';
+
 @immutable
 abstract class AdminHomePageEvent {}
 
@@ -8,38 +11,18 @@ class GetAllStudent extends AdminHomePageEvent {
 }
 
 class SaveStudent extends AdminHomePageEvent {
-  final String id;
-  final String name;
-  final String address;
-  final String mobileNo;
-  final DateTime date;
-  final String gender;
+  final Student student;
 
   SaveStudent({
-    required this.id,
-    required this.name,
-    required this.address,
-    required this.mobileNo,
-    required this.date,
-    required this.gender,
+    required this.student,
   });
 }
 
 class UpdateStudent extends AdminHomePageEvent {
-  final String id;
-  final String name;
-  final String address;
-  final String mobileNo;
-  final DateTime date;
-  final String gender;
+  final Student student;
 
   UpdateStudent({
-    required this.id,
-    required this.name,
-    required this.address,
-    required this.mobileNo,
-    required this.date,
-    required this.gender,
+    required this.student,
   });
 }
 
@@ -56,46 +39,18 @@ class GetAllUsers extends AdminHomePageEvent {
 }
 
 class SaveUser extends AdminHomePageEvent {
-  final String userType;
-  final String name;
-  final String address;
-  final String email;
-  final String mobileNo;
-  final DateTime date;
-  final String password;
-  final String gender;
+  final User user;
 
   SaveUser({
-    required this.userType,
-    required this.name,
-    required this.address,
-    required this.email,
-    required this.mobileNo,
-    required this.date,
-    required this.password,
-    required this.gender,
+    required this.user,
   });
 }
 
 class UpdateUser extends AdminHomePageEvent {
-  final String userType;
-  final String name;
-  final String address;
-  final String email;
-  final String mobileNo;
-  final DateTime date;
-  final String password;
-  final String gender;
+  final User user;
 
   UpdateUser({
-    required this.userType,
-    required this.name,
-    required this.address,
-    required this.email,
-    required this.mobileNo,
-    required this.date,
-    required this.password,
-    required this.gender,
+    required this.user,
   });
 }
 

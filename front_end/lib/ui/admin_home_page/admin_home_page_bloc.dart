@@ -98,12 +98,12 @@ class AdminHomePageBloc extends Bloc<AdminHomePageEvent, AdminHomePageState> {
   Future<void> _saveStudent(
       SaveStudent event, Emitter<AdminHomePageState> emit) async {
     final student = Student(
-      id: '',
-      name: event.name,
-      address: event.address,
-      mobileNumber: event.mobileNo,
-      dob: event.date,
-      gender: event.gender,
+      id: "",
+      name: event.student.name,
+      address: event.student.address,
+      mobileNumber: event.student.mobileNumber,
+      dob: event.student.dob,
+      gender: event.student.gender,
     );
     await StudentRepository().saveStudent(student);
     add(GetAllStudent());
@@ -114,12 +114,12 @@ class AdminHomePageBloc extends Bloc<AdminHomePageEvent, AdminHomePageState> {
     Emitter<AdminHomePageState> emit,
   ) async {
     final student = Student(
-      id: event.id,
-      name: event.name,
-      address: event.address,
-      mobileNumber: event.mobileNo,
-      dob: event.date,
-      gender: event.gender,
+      id: event.student.id,
+      name: event.student.name,
+      address: event.student.address,
+      mobileNumber: event.student.mobileNumber,
+      dob: event.student.dob,
+      gender: event.student.gender,
     );
     await StudentRepository().updateStudent(student);
     add(GetAllStudent());

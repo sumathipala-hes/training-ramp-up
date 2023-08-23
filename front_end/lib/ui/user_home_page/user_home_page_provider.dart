@@ -4,14 +4,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'user_home_page_bloc.dart';
 import 'user_home_page_view.dart';
 
-class UserHomePageProvider extends StatelessWidget {
-  const UserHomePageProvider({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => UserHomePageBloc(),
-      child: UserHomePageView(),
-    );
-  }
+class UserHomePageProvider extends BlocProvider<UserHomePageBloc> {
+  UserHomePageProvider({Key? key})
+      : super(
+          key: key,
+          create: (context) => UserHomePageBloc(),
+          child: UserHomePageView(),
+        );
 }

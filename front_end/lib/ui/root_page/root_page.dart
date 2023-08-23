@@ -14,7 +14,7 @@ class RampUpApp extends StatelessWidget {
       title: 'RampUp App',
       theme: appThemeData,
       debugShowCheckedModeBanner: false,
-      home: const SignInPageProvider(),
+      home: SignInPageProvider(),
     );
 
     return BlocProvider(
