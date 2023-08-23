@@ -10,13 +10,13 @@ import 'package:frontend/util/validation_util.dart';
 import 'package:intl/intl.dart';
 import '../theme/colors.dart';
 
-class StudentPageView extends StatelessWidget {
+class ManageStudentPageView extends StatelessWidget {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController addressController = TextEditingController();
   final TextEditingController mobileController = TextEditingController();
   final TextEditingController dateController = TextEditingController();
 
-  StudentPageView({
+  ManageStudentPageView({
     super.key,
     required this.student,
   }) {

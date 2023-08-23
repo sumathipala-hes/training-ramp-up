@@ -164,7 +164,7 @@ class RegisterPageView extends StatelessWidget {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => const HomePageProvider(),
+                            builder: (context) => HomePageProvider(),
                           ),
                         );
                       },
@@ -218,7 +218,7 @@ class RegisterPageView extends StatelessWidget {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => const SignInPageProvider(),
+                            builder: (context) => SignInPageProvider(),
                           ),
                         );
                       },
