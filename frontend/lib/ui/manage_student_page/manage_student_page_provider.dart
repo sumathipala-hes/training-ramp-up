@@ -4,20 +4,16 @@ import 'package:frontend/model/student.dart';
 import 'package:frontend/ui/manage_student_page/manage_student_page_bloc.dart';
 import 'package:frontend/ui/manage_student_page/manage_student_page_view.dart';
 
-class StudentPageProvider extends StatelessWidget {
+class StudentPageProvider extends BlocProvider<ManageStudentPageBloc> {
   final Student student;
-  const StudentPageProvider({
+  StudentPageProvider({
     Key? key,
     required this.student,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => ManageStudentPageBloc(),
-      child: StudentPageView(
-        student: student,
-      ),
-    );
-  }
+  }) : super(
+          key: key,
+          create: (context) => ManageStudentPageBloc(),
+          child: ManageStudentPageView(
+            student: student,
+          ),
+        );
 }
