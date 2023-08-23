@@ -9,7 +9,7 @@ import 'package:intl/intl.dart';
 
 import '../../model/student_model.dart';
 import '../../theme/primary_theme.dart';
-import '../../util/notification.util.dart';
+import '../../util/notification_util.dart';
 import '../admin_home_page/admin_home_page_bloc.dart';
 import '../admin_home_page/admin_home_page_event.dart';
 import 'manage_student_page_bloc.dart';

@@ -4,7 +4,7 @@ import 'package:logger/logger.dart';
 
 import '../model/user_model.dart';
 import '../util/db_util.dart';
-import '../util/notification.util.dart';
+import '../util/notification_util.dart';
 import 'package:http/http.dart' as http;
 
 class UserRepository {

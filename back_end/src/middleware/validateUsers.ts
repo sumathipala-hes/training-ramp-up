@@ -14,7 +14,7 @@ const email = (value: string) => {
 };
 
 const password = (value: string) => {
-  return /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})/.test(
+  return /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*=])(?=.{8,})/.test(
     value,
   );
 };

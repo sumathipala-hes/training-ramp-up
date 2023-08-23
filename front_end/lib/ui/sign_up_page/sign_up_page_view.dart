@@ -12,7 +12,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 
 import '../../theme/primary_theme.dart';
-import '../../util/notification.util.dart';
+import '../../util/notification_util.dart';
 import '../admin_home_page/admin_home_page_bloc.dart';
 import 'sign_up_page_event.dart';
 

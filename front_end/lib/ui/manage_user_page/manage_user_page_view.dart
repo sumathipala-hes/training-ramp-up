@@ -9,7 +9,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 
 import '../../theme/primary_theme.dart';
-import '../../util/notification.util.dart';
+import '../../util/encrypted_decrypted_util.dart';
+import '../../util/notification_util.dart';
 import '../admin_home_page/admin_home_page_bloc.dart';
 import '../admin_home_page/admin_home_page_event.dart';
 import 'manage_user_page_bloc.dart';
@@ -25,13 +26,14 @@ class UserMangeView extends StatelessWidget {
     dateController.text = DateFormat('EEE MMM d yyyy').format(user.dob);
     dob = user.dob;
     emailController.text = user.email;
-    passwordController.text = user.password;
     userTypeController.text = user.roleType;
+    passwordController.text = decryptPassword(user.password);
   }
 
   final TextEditingController nameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+
   final TextEditingController userTypeController = TextEditingController();
   final TextEditingController addressController = TextEditingController();
   final TextEditingController mobileNoController = TextEditingController();
@@ -410,6 +412,10 @@ class UserMangeView extends StatelessWidget {
                                   showFieldError(
                                       'Password should be at least 8 characters.');
                                 } else {
+                                  final password = encryptPassword(
+                                    passwordController.text.trim(),
+                                  );
+
                                   homePageBloc.add(
                                     UpdateUser(
                                       user: User(
@@ -421,8 +427,7 @@ class UserMangeView extends StatelessWidget {
                                         mobileNumber:
                                             mobileNoController.text.trim(),
                                         dob: dob,
-                                        password:
-                                            passwordController.text.trim(),
+                                        password: password,
                                         gender:
                                             userManageBloc.state.selectedGender,
                                       ),
