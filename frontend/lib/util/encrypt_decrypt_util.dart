@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:encrypt/encrypt.dart' as encrypt;
 
 String encryptPassword(String password) {

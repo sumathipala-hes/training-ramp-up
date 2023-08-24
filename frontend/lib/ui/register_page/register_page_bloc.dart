@@ -21,7 +21,7 @@ class RegisterPageBloc extends Bloc<RegisterPageEvent, RegisterPageState> {
     final User user = User(
       name: event.user.name,
       email: event.user.email,
-      password: encryptPassword(event.user.password),
+      password: await encryptPassword(event.user.password),
       role: event.user.role,
     );
     await userRepository.addUsers(user);
