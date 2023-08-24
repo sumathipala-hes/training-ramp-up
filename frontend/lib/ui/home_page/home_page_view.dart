@@ -68,7 +68,7 @@ class HomePageView extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const StudentHomePageView(),
+
                       ),
                     );
                   },
@@ -114,8 +114,6 @@ class HomePageView extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const UserHomePageView(),
-                      ),
                     );
                   },
                   child: Container(

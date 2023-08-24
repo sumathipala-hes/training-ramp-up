@@ -173,15 +173,6 @@ class RegisterPageView extends StatelessWidget {
                         backgroundColor: Colors.white,
                       ),
                       onPressed: () {
-                        registerPageBloc.add(
-                          RegisterUserEvent(
-                            user: User(
-                              name: nameController.text,
-                              email: emailController.text,
-                              password: passwordController.text,
-                              role: 'User',
-                            ),
-                            confirmPassword: confirmController.text,
                           ),
                         );
                       },
