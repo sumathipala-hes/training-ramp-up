@@ -112,7 +112,18 @@ class AdminHomeScreenBloc extends Bloc<AdminHomePageEvent, AdminHomeState> {
   }
 
   FutureOr<void> _onRegisterUser(
-      RegisterUser event, Emitter<AdminHomeState> emit) {}
+      RegisterUser event, Emitter<AdminHomeState> emit) async {
+    final user = User(
+      userName: event.user.userName,
+      userEmail: event.user.userEmail,
+      userPassword: event.user.userPassword,
+      role: event.user.role,
+    );
+    await UserRepository().registerUser(user);
+    add(
+      GetAllUsers(),
+    );
+  }
 
   FutureOr<void> _onGetAllUsers(
       GetAllUsers event, Emitter<AdminHomeState> emit) async {
