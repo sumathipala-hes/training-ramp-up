@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:frontend/model/user.dart';
 import 'package:frontend/ui/manage_user_page/manage_user_page_provider.dart';
 import 'package:frontend/ui/theme/colors.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class UserCard extends StatefulWidget {
   final User user;
@@ -26,20 +25,15 @@ class _UserCardState extends State<UserCard> {
           borderRadius: BorderRadius.circular(10),
         ),
         child: ElevatedButton(
-          onPressed: () async {
-            final prefs = await SharedPreferences.getInstance();
-            final role = prefs.getString('role');
-            if (role == 'Admin') {
-              // ignore: use_build_context_synchronously
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => ManageUserPageProvider(
-                    user: widget.user,
-                  ),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ManageUserPageProvider(
+                  user: widget.user,
                 ),
-              );
-            }
+              ),
+            );
           },
           style: ButtonStyle(
             backgroundColor: MaterialStateProperty.all<Color>(

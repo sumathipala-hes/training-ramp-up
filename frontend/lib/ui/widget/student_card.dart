@@ -3,6 +3,7 @@ import 'package:frontend/model/student.dart';
 import 'package:frontend/ui/manage_student_page/manage_student_page_provider.dart';
 import 'package:frontend/ui/theme/colors.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class StudentCard extends StatefulWidget {
   final Student student;
@@ -26,15 +27,20 @@ class _StudentCardState extends State<StudentCard> {
           borderRadius: BorderRadius.circular(10),
         ),
         child: ElevatedButton(
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => StudentPageProvider(
-                  student: widget.student,
+          onPressed: () async {
+            final prefs = await SharedPreferences.getInstance();
+            final role = prefs.getString('role');
+            if (role == 'Admin') {
+              // ignore: use_build_context_synchronously
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => StudentPageProvider(
+                    student: widget.student,
+                  ),
                 ),
-              ),
-            );
+              );
+            }
           },
           style: ButtonStyle(
             backgroundColor: MaterialStateProperty.all<Color>(
