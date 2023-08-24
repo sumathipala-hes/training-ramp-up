@@ -4,7 +4,6 @@ import 'package:frontend/model/user.dart';
 import 'package:frontend/ui/register_page/register_page_bloc.dart';
 import 'package:frontend/ui/register_page/register_page_event.dart';
 import 'package:frontend/ui/sign_in_page/sign_in_page_provider.dart';
-import 'package:frontend/ui/home_page/home_page_provider.dart';
 
 class RegisterPageView extends StatelessWidget {
   RegisterPageView({super.key});
