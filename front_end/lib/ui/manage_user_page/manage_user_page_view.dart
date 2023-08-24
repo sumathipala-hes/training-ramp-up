@@ -382,7 +382,7 @@ class UserMangeView extends StatelessWidget {
                             width: 140,
                             height: 45,
                             child: ElevatedButton(
-                              onPressed: () {
+                              onPressed: () async {
                                 if (userTypeController.text.trim().isEmpty ||
                                     nameController.text.trim().isEmpty ||
                                     addressController.text.trim().isEmpty ||
@@ -412,7 +412,7 @@ class UserMangeView extends StatelessWidget {
                                   showFieldError(
                                       'Password should be at least 8 characters.');
                                 } else {
-                                  final password = encryptPassword(
+                                  final password = await encryptPassword(
                                     passwordController.text.trim(),
                                   );
 

@@ -316,7 +316,7 @@ class SignUpPageView extends StatelessWidget {
                             width: 140,
                             height: 45,
                             child: ElevatedButton(
-                              onPressed: () {
+                              onPressed: () async {
                                 if (nameController.text.trim().isEmpty ||
                                     addressController.text.trim().isEmpty ||
                                     mobileNoController.text.trim().isEmpty ||
@@ -349,7 +349,7 @@ class SignUpPageView extends StatelessWidget {
                                     coPasswordController.text.trim()) {
                                   showFieldError('Password not match.');
                                 } else {
-                                  final coPassword = encryptPassword(
+                                  final coPassword = await encryptPassword(
                                     coPasswordController.text.trim(),
                                   );
                                   adminPage.add(
