@@ -133,16 +133,32 @@ class AdminHomeScreenBloc extends Bloc<AdminHomePageEvent, AdminHomeState> {
           ),
         );
       } catch (e) {
-        throw Exception('Failed to decode students');
+        throw Exception('Failed to decode users');
       }
     } else {
-      throw Exception('Failed to load students');
+      throw Exception('Failed to load users');
     }
   }
 
   FutureOr<void> _onDeleteUser(
-      DeleteUser event, Emitter<AdminHomeState> emit) {}
+      DeleteUser event, Emitter<AdminHomeState> emit) async {
+    await UserRepository().deleteUser(event.email);
+    add(
+      GetAllUsers(),
+    );
+  }
 
   FutureOr<void> _onUpdateUser(
-      UpdateUser event, Emitter<AdminHomeState> emit) {}
+      UpdateUser event, Emitter<AdminHomeState> emit) async {
+    final User user = User(
+      userName: event.user.userName,
+      userEmail: event.user.userEmail,
+      userPassword: event.user.userPassword,
+      role: event.user.role,
+    );
+    await UserRepository().updateUser(user);
+    add(
+      GetAllUsers(),
+    );
+  }
 }
