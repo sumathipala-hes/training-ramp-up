@@ -1,21 +1,22 @@
 import { Box, Button, TextField, Typography } from "@mui/material"
-import React from "react";
 import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { setCurrentUser } from "../../redux/userSlice";
-import { loginApi } from "../../api/apiService";
+import { loginApi, userAuthenticatedApi } from "../../api/apiService";
+import jwt_decode from "jwt-decode"
+
+interface JwtPayload {
+    username: string;
+    id: number;
+    role: string;
+}
 
 export const Login = () => {
 
     const navigate = useNavigate();
-    const dispatch = useDispatch();
 
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const isLoginDisabled = username.trim() === '' || password.trim() === ''
-
-    const users = useSelector((state: any) => state.user.users);
 
     const handleRegisterClick = () => {
         navigate('/')
@@ -24,9 +25,23 @@ export const Login = () => {
     const handleLoginClick = async () => {
 
         const response = await loginApi(username, password);
-        console.log(response)
+        if (response) {
+            localStorage.setItem("token", response.data.token );
 
-        const foundUser = users.find((user: { username: string; password: string; }) => user.username === username && user.password === password);
+            const isAuthenticated = await userAuthenticatedApi();
+            if (isAuthenticated) {
+                const decoded = jwt_decode(response.data.token) as JwtPayload;
+                if (decoded.role === "admin") {
+                    navigate('/admin');
+                } else if (decoded.role === "user") {
+                navigate('/main');
+                }
+            }
+        }   
+
+        //const users = useSelector((state: any) => state.user.users);
+
+        // const foundUser = users.find((user: { username: string; password: string; }) => user.username === username && user.password === password);
 
         // if (foundUser) {
 
@@ -67,7 +82,6 @@ export const Login = () => {
                 <Button variant='text' size='small' onClick={handleRegisterClick}>Register Here</Button>
             </Box>
             </Box>
-        </Box> 
-         
+        </Box>          
     )
 }

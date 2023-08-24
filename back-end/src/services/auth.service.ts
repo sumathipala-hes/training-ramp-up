@@ -1,13 +1,14 @@
 import { UserData } from "../interfaces/user.interface";
 import bcrypt from "bcrypt";
 import { User } from "../models/user";
-import { sign, verify } from "jsonwebtoken";
-import { NextFunction } from "express";
+import { sign } from "jsonwebtoken";
 
 export const createTokens = (user: User) => {
     const accessToken = sign(
-        { username: user.username, id: user.id },
-        process.env.JWT_SECRET as string
+        { username: user.username, id: user.id, role:user.role },
+        process.env.JWT_SECRET as string, {
+            expiresIn: 60 * 1000
+        }
         );
 
         return accessToken;
@@ -35,7 +36,7 @@ export const loginService = async (data: UserData) => {
 
     const user = await User.findOne({ where: { username: username }});
     if (!user) {
-        throw new Error('User does not exist');
+        throw new Error('The email address entered is not connected to an account');
     }
 
     const dbPassword = user.password;

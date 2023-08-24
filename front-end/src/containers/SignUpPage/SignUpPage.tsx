@@ -3,7 +3,14 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom"
 import { addUser } from "../../redux/userSlice";
 import { useDispatch } from "react-redux";
-import { registerApi } from "../../api/apiService";
+import { registerApi, userAuthenticatedApi } from "../../api/apiService";
+import jwt_decode from "jwt-decode"
+
+interface JwtPayload {
+    username: string;
+    id: number;
+    role: string;
+}
 
 export const SignUp = () => {
     const navigate = useNavigate();
@@ -32,10 +39,23 @@ export const SignUp = () => {
                     password,
                     role: 'user'
                 };
+
                 dispatch(addUser(newUser))
-                //navigate('/main')
+
                 const response = await registerApi(username, password);
-                console.log(response)
+
+                if (response) {
+                    console.log('api33')
+                    localStorage.setItem("token", response.data.token );
+        
+                    const isAuthenticated = await userAuthenticatedApi();
+                    if (isAuthenticated) {
+                        const decoded = jwt_decode(response.data.token) as JwtPayload;
+                        if (decoded.role === "user") {
+                            navigate('/main');
+                        }
+                    }
+                }
             } else {
                 alert('Passwords do not match')
             }

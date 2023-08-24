@@ -1,7 +1,7 @@
 import express, { Express, Request, Response } from 'express';
 import 'reflect-metadata';
 import studentRoutes from './routes/student.route';
-import userRoutes from './routes/user.route';
+import userRoutes from './routes/auth.route';
 import cors from 'cors';
 import { Server } from 'socket.io';
 import { createServer } from 'http';

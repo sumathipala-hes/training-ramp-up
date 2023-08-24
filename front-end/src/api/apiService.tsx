@@ -30,21 +30,35 @@ export const createStudentApi = async (studentData: Student) => {
 };
 
 
-//User APIs
+//Auth APIs
 export const loginApi = async (username: String, password: String) => {
   const response = await apiInstance.post('/login', {
       username,
       password
   });
-  return response.data;
+  return response;
 };
 
+export const userAuthenticatedApi = async () => {
+  try {
+    const response = await apiInstance.get('/userAuth', {
+      headers: { "access-token": localStorage.getItem("token") }
+    });
+    return response;
+  } catch (error) {
+    console.error("API Error:", error);
+    throw error; 
+  }
+};
+
+
 export const registerApi = async (username: String, password: String) => {
+
   const response = await apiInstance.post('/register', {
       username,
       password
   });
-  return response.data;
+  return response;
 };
 
 export const logoutApi = async () => {
