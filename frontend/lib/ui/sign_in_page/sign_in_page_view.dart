@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:frontend/ui/home_page/home_page_provider.dart';
 import 'package:frontend/ui/register_page/register_page_provider.dart';
 import 'package:frontend/ui/sign_in_page/sign_in_page_bloc.dart';
 import 'package:frontend/ui/sign_in_page/sign_in_page_event.dart';
@@ -115,14 +114,7 @@ class SignInPageView extends StatelessWidget {
                         SignInEvent(
                           email: emailController.text,
                           password: passwordController.text,
-                        ),
-                      );
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) {
-                            return HomePageProvider();
-                          },
+                          context: context,
                         ),
                       );
                     },

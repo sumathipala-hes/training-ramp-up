@@ -9,7 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 
 class UserRepository {
-  Future<void> signIn(String email, String password) async {
+  Future<bool> signIn(String email, String password) async {
     final res = await http.post(
       Uri.parse('$baseUrl/user/signIn'),
       headers: <String, String>{
@@ -30,11 +30,13 @@ class UserRepository {
         Map<String, dynamic> decodedToken = JwtDecoder.decode(accessToken);
         prefs.setString('email', decodedToken['email']);
         prefs.setString('role', decodedToken['role']);
+        return true;
       }
     }
     if (res.statusCode == 500) {
       showToast('Failed Login..!');
     }
+    return false;
   }
 
   Future<List<User>> fetchUsers() async {
