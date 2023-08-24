@@ -34,7 +34,7 @@ export const authenticatePermissions = (
   }
 };
 
-export const authorization = (
+export const authorizationPermissions = (
   req: Request,
   res: Response,
   next: NextFunction,

@@ -1,6 +1,5 @@
 import express from 'express';
 
-import { validateStudent } from '../middleware/validate.student.middleware';
 import {
   generateNewAccessToken,
   requestCreateUser,
@@ -12,7 +11,7 @@ import {
   signOut,
 } from '../controllers/user.controller';
 import { validateUsers } from '../middleware/validate.users.middleware';
-import { authorization } from '../middleware/jwt.middleware';
+import { authorizationPermissions } from '../middleware/jwt.middleware';
 
 const router = express.Router();
 
@@ -24,7 +23,7 @@ router.delete('/:id', requestDeleteUser);
 
 router.post('/signIn', signIn);
 router.post('/new', generateNewAccessToken);
-router.post('/detail', authorization, signIn);
-router.delete('/signOut', authorization, signOut);
+router.post('/detail', authorizationPermissions, signIn);
+router.delete('/signOut', authorizationPermissions, signOut);
 
 export default router;
