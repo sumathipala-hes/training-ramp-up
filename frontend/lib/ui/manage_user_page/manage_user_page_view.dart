@@ -271,15 +271,29 @@ class ManageUserPageView extends StatelessWidget {
                             backgroundColor: AppColors.successColor,
                           ),
                           onPressed: () async {
-                            Navigator.of(context).pop();
-                            homePageBloc.add(
-                              UpdateUserEvent(
-                                user: User(
-                                  name: nameController.text,
-                                  email: emailController.text,
-                                  password: passwordController.text,
-                                  role: selectedItem,
+                            if (userPageBloc.state.nameError == '' &&
+                                userPageBloc.state.emailError == '' &&
+                                userPageBloc.state.passwordError == '') {
+                              Navigator.of(context).pop();
+                              homePageBloc.add(
+                                UpdateUserEvent(
+                                  user: User(
+                                    name: nameController.text,
+                                    email: emailController.text,
+                                    password: passwordController.text,
+                                    role: selectedItem,
+                                  ),
                                 ),
+                              );
+                              return;
+                            }
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text(
+                                  'Please Check Details Again..!',
+                                  textAlign: TextAlign.center,
+                                ),
+                                backgroundColor: AppColors.errorColor,
                               ),
                             );
                           },

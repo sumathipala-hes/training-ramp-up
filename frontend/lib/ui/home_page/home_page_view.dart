@@ -5,10 +5,10 @@ import 'package:frontend/ui/student_home_page/student_home_page_view.dart';
 import 'package:frontend/ui/user_home_page/user_home_page_bloc.dart';
 import 'package:frontend/ui/user_home_page/user_home_page_event.dart';
 import 'package:frontend/ui/user_home_page/user_home_page_view.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomePageView extends StatelessWidget {
   const HomePageView({super.key});
-
   @override
   Widget build(BuildContext context) {
     UserHomePageBloc userHomePageBloc =
@@ -109,48 +109,67 @@ class HomePageView extends StatelessWidget {
                 const SizedBox(
                   height: 20,
                 ),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const UserHomePageView(),
-                      ),
-                    );
-                  },
-                  child: Container(
-                    decoration: const BoxDecoration(
-                      color: Colors.black87,
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(10),
-                      ),
-                    ),
-                    child: const Padding(
-                      padding: EdgeInsets.fromLTRB(40, 20, 40, 20),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            'Manage Users',
-                            style: TextStyle(
-                              fontSize: 20,
-                              color: Colors.white,
+                FutureBuilder<SharedPreferences>(
+                  // Replace 'your_preference_key' with the actual key used to store the role in SharedPreferences
+                  future: SharedPreferences.getInstance(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      // Return a loading indicator or placeholder if needed
+                      return const CircularProgressIndicator();
+                    }
+
+                    final sharedPreferences = snapshot.data;
+                    final userRole = sharedPreferences?.getString('role');
+
+                    if (userRole == 'Admin') {
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const UserHomePageView(),
+                            ),
+                          );
+                        },
+                        child: Container(
+                          decoration: const BoxDecoration(
+                            color: Colors.black87,
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(10),
                             ),
                           ),
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              Icon(
-                                Icons.arrow_forward_ios,
-                                color: Colors.white,
-                              ),
-                            ],
+                          child: const Padding(
+                            padding: EdgeInsets.fromLTRB(40, 20, 40, 20),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  'Manage Users',
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    Icon(
+                                      Icons.arrow_forward_ios,
+                                      color: Colors.white,
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
                           ),
-                        ],
-                      ),
-                    ),
-                  ),
+                        ),
+                      );
+                    } else {
+                      // Return an empty container or any other widget if the user is not an Admin
+                      return Container();
+                    }
+                  },
                 ),
               ],
             ),
