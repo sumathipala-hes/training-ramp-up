@@ -13,21 +13,18 @@ class UserPopupModel extends StatefulWidget {
 }
 
 class _PopupModelState extends State<UserPopupModel> {
-  final TextEditingController userTypeController = TextEditingController();
   final TextEditingController nameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  final TextEditingController confirmPasswordController =
-      TextEditingController();
+  String selectedItem = 'USER';
   List<String> role = ['ADMIN', 'USER'];
 
   void _saveForm() {
     final name = nameController.text.trim();
     final email = emailController.text.trim();
     final password = passwordController.text.trim();
-    final userType = userTypeController.text.trim();
 
-    if (name.isEmpty || email.isEmpty || password.isEmpty || userType.isEmpty) {
+    if (name.isEmpty || email.isEmpty || password.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text("Please fill all the fields"),
@@ -43,7 +40,7 @@ class _PopupModelState extends State<UserPopupModel> {
             userName: nameController.text.trim(),
             userEmail: emailController.text.trim(),
             userPassword: passwordController.text.trim(),
-            role: userTypeController.text.trim(),
+            role: selectedItem,
           ),
         ),
       );
@@ -72,27 +69,20 @@ class _PopupModelState extends State<UserPopupModel> {
                   ),
                 ),
                 const SizedBox(height: 25),
-                // DropdownButton<String>(
-                //   value: userTypeController.text.trim(),
-                //   style: const TextStyle(
-                //     fontWeight: FontWeight.w600,
-                //   ),
-                //   onChanged: (newValue) {
-                //     setState(() {
-                //       userTypeController.text = newValue!;
-                //     });
-                //   },
-                //   items: role.map((String role) {
-                //     return DropdownMenuItem<String>(
-                //       value: role,
-                //       child: Padding(
-                //         padding: const EdgeInsets.symmetric(
-                //             vertical: 8.0), // Add vertical padding around text
-                //         child: Text(role),
-                //       ),
-                //     );
-                //   }).toList(),
-                // ),
+                DropdownButton<String>(
+                  value: selectedItem,
+                  onChanged: (newValue) {
+                    setState(() {
+                      selectedItem = newValue!;
+                    });
+                  },
+                  items: role.map((String role) {
+                    return DropdownMenuItem<String>(
+                      value: role,
+                      child: Text(role),
+                    );
+                  }).toList(),
+                ),
                 TextField(
                   controller: nameController,
                   decoration: const InputDecoration(
@@ -124,20 +114,6 @@ class _PopupModelState extends State<UserPopupModel> {
                   obscureText: true,
                   decoration: const InputDecoration(
                     labelText: "Create Password:",
-                    prefixIcon: Icon(Icons.lock),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(8.0),
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 15),
-                TextField(
-                  controller: confirmPasswordController,
-                  obscureText: true,
-                  decoration: const InputDecoration(
-                    labelText: "Confirm Password:",
                     prefixIcon: Icon(Icons.lock),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(
