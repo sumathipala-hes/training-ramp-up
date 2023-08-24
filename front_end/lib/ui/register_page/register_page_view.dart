@@ -42,6 +42,17 @@ class RegisterScreen extends StatelessWidget {
                   padding: const EdgeInsets.all(10.0),
                   child: Column(
                     children: [
+                      const SizedBox(height: 10),
+                      const Text(
+                        'REGISTER',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 35,
+                          fontWeight: FontWeight.bold,
+                          color: Color.fromRGBO(137, 91, 215, 0.8),
+                        ),
+                      ),
+                      const SizedBox(height: 15),
                       TextField(
                         controller: nameController,
                         decoration: const InputDecoration(
