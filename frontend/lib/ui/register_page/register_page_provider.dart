@@ -9,6 +9,6 @@ class RegisterPageProvider extends BlocProvider<RegisterPageBloc> {
   }) : super(
           key: key,
           create: (context) => RegisterPageBloc(),
-          child: const RegisterPageView(),
+          child: RegisterPageView(),
         );
 }

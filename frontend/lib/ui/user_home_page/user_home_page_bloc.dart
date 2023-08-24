@@ -8,8 +8,7 @@ import 'package:frontend/repository/user_repository.dart';
 import 'package:frontend/ui/user_home_page/user_home_page_event.dart';
 import 'package:frontend/ui/user_home_page/user_home_page_state.dart';
 import 'package:frontend/util/encrypt_decrypt_util.dart';
-import 'package:frontend/util/show_toast.dart';
-import 'package:logger/logger.dart';
+import 'package:frontend/util/notification_util.dart';
 
 class UserHomePageBloc extends Bloc<UserHomePageEvent, UserHomePageState> {
   UserHomePageBloc(BuildContext context)
@@ -21,7 +20,7 @@ class UserHomePageBloc extends Bloc<UserHomePageEvent, UserHomePageState> {
     on<SignOutEvent>(_signOut);
     add(GetAllUsers());
     FirebaseMessaging.instance.getToken();
-    _configListener();
+    configListener();
   }
 
   UserRepository userRepository = UserRepository();
@@ -81,23 +80,5 @@ class UserHomePageBloc extends Bloc<UserHomePageEvent, UserHomePageState> {
     Emitter<UserHomePageState> emit,
   ) async {
     userRepository.signOut();
-  }
-
-  void _configListener() {
-    FirebaseMessaging.instance.getToken();
-
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      Logger().d('Got a message whilst in the foreground!');
-      Logger().d('Message data: ${message.data}');
-
-      if (message.notification != null) {
-        Logger().d(
-            'Message also contained a notification: ${message.notification?.title}');
-
-        Logger().d(
-            'Message also contained a notification: ${message.notification?.body}');
-        showToast(message.notification!.body!);
-      }
-    });
   }
 }

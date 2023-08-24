@@ -19,7 +19,7 @@ class ManageUserPageView extends StatelessWidget {
   }) {
     nameController.text = user.name;
     emailController.text = user.email;
-    passwordController.text = user.role;
+    passwordController.text = user.password;
   }
 
   final User user;

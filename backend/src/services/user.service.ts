@@ -18,7 +18,9 @@ export const getAllUsers = async (): Promise<Array<User>> => {
 
 export const saveUser = async (user: User): Promise<InsertResult> => {
   try {
-    return await dataSource.manager.insert(User, user);
+    const savedUser = await dataSource.manager.insert(User, user);
+    sendNotification('Successful', 'New Student Saved..!');
+    return savedUser;
   } catch (error) {
     throw error;
   }
@@ -41,6 +43,7 @@ export const updateUser = async (
 export const deleteUser = async (email: string): Promise<DeleteResult> => {
   try {
     const deletedUser = await dataSource.manager.delete(User, email);
+    sendNotification('Successful', 'New Student Deleted..!');
     return deletedUser;
   } catch (error) {
     throw error;

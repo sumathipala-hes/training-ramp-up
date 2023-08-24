@@ -1,12 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:frontend/model/user.dart';
+import 'package:frontend/ui/register_page/register_page_bloc.dart';
+import 'package:frontend/ui/register_page/register_page_event.dart';
 import 'package:frontend/ui/sign_in_page/sign_in_page_provider.dart';
 import 'package:frontend/ui/home_page/home_page_provider.dart';
 
 class RegisterPageView extends StatelessWidget {
-  const RegisterPageView({super.key});
-
+  RegisterPageView({super.key});
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController confirmController = TextEditingController();
   @override
   Widget build(BuildContext context) {
+    RegisterPageBloc registerPageBloc =
+        BlocProvider.of<RegisterPageBloc>(context);
     return Scaffold(
       body: SingleChildScrollView(
         child: Container(
@@ -37,8 +46,9 @@ class RegisterPageView extends StatelessWidget {
                   const SizedBox(
                     height: 20,
                   ),
-                  const TextField(
-                    decoration: InputDecoration(
+                  TextField(
+                    controller: nameController,
+                    decoration: const InputDecoration(
                       hintText: 'Full Name',
                       hintStyle: TextStyle(
                         color: Colors.white,
@@ -58,15 +68,16 @@ class RegisterPageView extends StatelessWidget {
                         ),
                       ),
                     ),
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Colors.white,
                     ),
                   ),
                   const SizedBox(
                     height: 20,
                   ),
-                  const TextField(
-                    decoration: InputDecoration(
+                  TextField(
+                    controller: emailController,
+                    decoration: const InputDecoration(
                       hintText: 'Email',
                       hintStyle: TextStyle(
                         color: Colors.white,
@@ -86,16 +97,17 @@ class RegisterPageView extends StatelessWidget {
                         ),
                       ),
                     ),
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Colors.white,
                     ),
                   ),
                   const SizedBox(
                     height: 20,
                   ),
-                  const TextField(
+                  TextField(
+                    controller: passwordController,
                     obscureText: true,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       hintText: 'Password',
                       hintStyle: TextStyle(
                         color: Colors.white,
@@ -115,16 +127,17 @@ class RegisterPageView extends StatelessWidget {
                         ),
                       ),
                     ),
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Colors.white,
                     ),
                   ),
                   const SizedBox(
                     height: 20,
                   ),
-                  const TextField(
+                  TextField(
+                    controller: confirmController,
                     obscureText: true,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       hintText: 'Confirm Password',
                       hintStyle: TextStyle(
                         color: Colors.white,
@@ -144,7 +157,7 @@ class RegisterPageView extends StatelessWidget {
                         ),
                       ),
                     ),
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Colors.white,
                     ),
                   ),
@@ -161,10 +174,15 @@ class RegisterPageView extends StatelessWidget {
                         backgroundColor: Colors.white,
                       ),
                       onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => HomePageProvider(),
+                        registerPageBloc.add(
+                          RegisterUserEvent(
+                            user: User(
+                              name: nameController.text,
+                              email: emailController.text,
+                              password: passwordController.text,
+                              role: 'User',
+                            ),
+                            confirmPassword: confirmController.text,
                           ),
                         );
                       },

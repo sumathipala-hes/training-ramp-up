@@ -3,8 +3,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/repository/student_repository.dart';
-import 'package:frontend/util/show_toast.dart';
-import 'package:logger/logger.dart';
+import 'package:frontend/util/notification_util.dart';
 import '../../model/student.dart';
 import 'student_home_page_event.dart';
 import 'student_home_page_state.dart';
@@ -19,7 +18,7 @@ class StudentHomePageBloc
     on<DeleteStudentEvent>(_deleteStudent);
     add(GetAllStudents());
     FirebaseMessaging.instance.getToken();
-    _configListener();
+    configListener();
   }
 
   StudentRepository studentRepository = StudentRepository();
@@ -77,23 +76,5 @@ class StudentHomePageBloc
         students: studentList,
       ),
     );
-  }
-
-  void _configListener() {
-    FirebaseMessaging.instance.getToken();
-
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      Logger().d('Got a message whilst in the foreground!');
-      Logger().d('Message data: ${message.data}');
-
-      if (message.notification != null) {
-        Logger().d(
-            'Message also contained a notification: ${message.notification?.title}');
-
-        Logger().d(
-            'Message also contained a notification: ${message.notification?.body}');
-        showToast(message.notification!.body!);
-      }
-    });
   }
 }
