@@ -19,6 +19,14 @@ class AdminHomeScreenBloc extends Bloc<AdminHomePageEvent, AdminHomeState> {
     add(
       GetAllStudents(),
     );
+
+    on<RegisterUser>(_onRegisterUser);
+    on<GetAllUsers>(_onGetAllUsers);
+    on<DeleteUser>(_onDeleteUser);
+    on<UpdateUser>(_onUpdateUser);
+    add(
+      GetAllUsers(),
+    );
     configListener();
   }
 
@@ -100,4 +108,16 @@ class AdminHomeScreenBloc extends Bloc<AdminHomePageEvent, AdminHomeState> {
       );
     }
   }
+
+  FutureOr<void> _onRegisterUser(
+      RegisterUser event, Emitter<AdminHomeState> emit) {}
+
+  FutureOr<void> _onGetAllUsers(
+      GetAllUsers event, Emitter<AdminHomeState> emit) {}
+
+  FutureOr<void> _onDeleteUser(
+      DeleteUser event, Emitter<AdminHomeState> emit) {}
+
+  FutureOr<void> _onUpdateUser(
+      UpdateUser event, Emitter<AdminHomeState> emit) {}
 }

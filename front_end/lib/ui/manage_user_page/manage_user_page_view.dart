@@ -1,24 +1,32 @@
 import 'package:flutter/material.dart';
-import 'package:front_end/ui/admin_home_page/admin_home_page_view.dart';
-import 'package:front_end/ui/sign_in_page/sign_in_page_provider.dart';
-import 'package:front_end/ui/user_home_page/user_home_page_provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:front_end/models/user.dart';
+import 'package:front_end/ui/admin_home_page/admin_home_page_bloc.dart';
+import 'package:front_end/ui/admin_home_page/admin_home_page_event.dart';
 
-class RegisterScreen extends StatelessWidget {
-  RegisterScreen({super.key});
+class ManageUserScreen extends StatelessWidget {
+  ManageUserScreen({super.key, required this.user}) {
+    nameController.text = user.userName;
+    emailController.text = user.userEmail;
+    passwordController.text = user.userPassword;
+  }
 
   final TextEditingController nameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController confirmPasswordController =
       TextEditingController();
+  final User user;
 
   @override
   Widget build(BuildContext context) {
+    AdminHomeScreenBloc rampUpHomeScreenBloc =
+        BlocProvider.of<AdminHomeScreenBloc>(context);
     return Scaffold(
       appBar: AppBar(
         elevation: 7,
         centerTitle: true,
-        title: const Text('R E G I S T E R'),
+        title: const Text('M A N A G E    U S E R'),
         toolbarHeight: MediaQuery.of(context).size.height * 0.1,
       ),
       body: Container(
@@ -96,73 +104,51 @@ class RegisterScreen extends StatelessWidget {
                           ),
                         ),
                       ),
-                      const SizedBox(height: 25),
-                      SizedBox(
-                        width: double.infinity,
-                        height: MediaQuery.of(context).size.height * 0.05,
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.deepPurple[400],
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15.0),
-                            ),
-                          ),
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                // builder: (context) => UserHomeScreenProvider(),
-                                builder: (context) => const AdminHomeScreen(),
-                              ),
-                            );
-                          },
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(
-                                'Register '.toUpperCase(),
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.w400,
-                                ),
-                              ),
-                              const Icon(
-                                Icons.arrow_forward,
-                                color: Colors.white,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
                       const SizedBox(height: 15),
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          Text(
-                            'Already A Register ? ',
-                            style: TextStyle(
-                              fontSize: 15.0,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black.withOpacity(0.6),
-                            ),
-                          ),
-                          TextButton(
+                          ElevatedButton(
                             onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => SignInPageProvider(),
+                              Navigator.of(context).pop();
+                              rampUpHomeScreenBloc.add(
+                                UpdateUser(
+                                  user: User(
+                                    role: 'user',
+                                    userName: nameController.text,
+                                    userEmail: emailController.text,
+                                    userPassword: passwordController.text,
+                                  ),
                                 ),
                               );
                             },
-                            child: Text(
-                              'Sign in'.toUpperCase(),
-                              style: TextStyle(
-                                fontSize: 16.0,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.deepPurple[400],
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.green,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8.0),
                               ),
+                              elevation: 4,
                             ),
+                            child: const Text("Update"),
+                          ),
+                          const SizedBox(width: 10.0),
+                          ElevatedButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                              rampUpHomeScreenBloc.add(
+                                DeleteUser(
+                                  email: user.userEmail,
+                                ),
+                              );
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.red[400],
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8.0),
+                              ),
+                              elevation: 4,
+                            ),
+                            child: const Text("Delete"),
                           ),
                         ],
                       ),
