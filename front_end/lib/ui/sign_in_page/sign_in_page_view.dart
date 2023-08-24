@@ -12,6 +12,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../theme/primary_theme.dart';
+import '../../util/notification_util.dart';
 
 class SignInPageView extends StatelessWidget {
   const SignInPageView({Key? key}) : super(key: key);
@@ -100,36 +101,53 @@ class SignInPageView extends StatelessWidget {
                                   ),
                                 ),
                                 onPressed: () async {
-                                  String password =
-                                      encryptPassword(passwordController.text);
+                                  if (emailController.text.trim().isEmpty ||
+                                      passwordController.text.trim().isEmpty) {
+                                    showFieldError(
+                                        'Text Field should not be empty.');
+                                  } else if (!RegExp(
+                                          r'^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$')
+                                      .hasMatch(emailController.text.trim())) {
+                                    showFieldError('Invalid Email.');
+                                  } else if (!RegExp(
+                                          r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{8,}$')
+                                      .hasMatch(
+                                          passwordController.text.trim())) {
+                                    showFieldError(
+                                        'Password must contain at least 8 characters, including UPPER/lowercase and numbers.');
+                                  } else {
+                                    String password = encryptPassword(
+                                        passwordController.text);
 
-                                  signInPageBloc.add(
-                                    SubmitLoginDetails(
-                                      email: emailController.text,
-                                      password: password,
-                                    ),
-                                  );
-
-                                  final prefs =
-                                      await SharedPreferences.getInstance();
-                                  final roleType = prefs.getString('roleType');
-
-                                  if (roleType == "ADMIN") {
-                                    // ignore: use_build_context_synchronously
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              const AdminHomePageView()),
+                                    signInPageBloc.add(
+                                      SubmitLoginDetails(
+                                        email: emailController.text,
+                                        password: password,
+                                      ),
                                     );
-                                  } else if (roleType == "USER") {
-                                    // ignore: use_build_context_synchronously
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              UserHomePageProvider()),
-                                    );
+
+                                    final prefs =
+                                        await SharedPreferences.getInstance();
+                                    final roleType =
+                                        prefs.getString('roleType');
+
+                                    if (roleType == "ADMIN") {
+                                      // ignore: use_build_context_synchronously
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                const AdminHomePageView()),
+                                      );
+                                    } else if (roleType == "USER") {
+                                      // ignore: use_build_context_synchronously
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                UserHomePageProvider()),
+                                      );
+                                    }
                                   }
                                 },
                                 child: Row(

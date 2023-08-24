@@ -12,6 +12,7 @@ import '../admin_home_page/admin_home_page_bloc.dart';
 import '../admin_home_page/admin_home_page_event.dart';
 import '../sign_in_page/sign_in_page_view.dart';
 import '../widget/student_card_details.dart';
+import '../widget/student_view_details.dart';
 
 class UserHomePageView extends StatelessWidget {
   UserHomePageView({super.key});
@@ -21,12 +22,23 @@ class UserHomePageView extends StatelessWidget {
   Widget _buildStudentCardView(BuildContext context, Student student) {
     return GestureDetector(
       onTap: () {
-        // navigateToAnotherUI(context, student);
+        navigateToAnotherUI(context, student);
       },
       child: StudentCard(
         id: student.id!,
         studentName: student.name,
         studentDOB: student.dob,
+      ),
+    );
+  }
+
+  void navigateToAnotherUI(BuildContext context, Student student) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => StudentPopupModalView(
+          student: student,
+        ),
       ),
     );
   }
@@ -44,8 +56,10 @@ class UserHomePageView extends StatelessWidget {
               BlocProvider.of<AdminHomePageBloc>(context).add(
                 SignOut(),
               );
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => const SignInPageView()));
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const SignInPageView()));
             },
             icon: const Icon(Icons.logout),
           ),
