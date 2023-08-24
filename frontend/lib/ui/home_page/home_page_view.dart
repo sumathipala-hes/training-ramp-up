@@ -110,11 +110,9 @@ class HomePageView extends StatelessWidget {
                   height: 20,
                 ),
                 FutureBuilder<SharedPreferences>(
-                  // Replace 'your_preference_key' with the actual key used to store the role in SharedPreferences
                   future: SharedPreferences.getInstance(),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
-                      // Return a loading indicator or placeholder if needed
                       return const CircularProgressIndicator();
                     }
 
@@ -166,7 +164,6 @@ class HomePageView extends StatelessWidget {
                         ),
                       );
                     } else {
-                      // Return an empty container or any other widget if the user is not an Admin
                       return Container();
                     }
                   },
