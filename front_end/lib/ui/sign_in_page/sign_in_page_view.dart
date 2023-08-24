@@ -101,7 +101,7 @@ class SignInPageView extends StatelessWidget {
                                 ),
                                 onPressed: () async {
                                   String password =
-                                     await encryptPassword(passwordController.text);
+                                      encryptPassword(passwordController.text);
 
                                   signInPageBloc.add(
                                     SubmitLoginDetails(

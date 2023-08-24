@@ -115,12 +115,12 @@ export const signIn: RequestHandler = async (
     if (user) {
       const accessToken = jwt.sign(
         { email: user.email, roleType: user.roleType },
-        jwtConfig.secretKey!,
+        jwtConfig.secretKey,
         { expiresIn: jwtConfig.expiresIn },
       );
       const refreshToken = jwt.sign(
         { email: user.email, roleType: user.roleType },
-        jwtConfig.refreshKey!,
+        jwtConfig.refreshKey,
         { expiresIn: '24h' },
       );
       res.cookie('refreshToken', refreshToken, {
@@ -151,11 +151,11 @@ export const generateNewAccessToken: RequestHandler = async (
     if (!refreshToken) {
       res.status(403).json({ message: 'Forbidden' });
     } else {
-      const payload = jwt.verify(refreshToken, jwtConfig.refreshKey!);
+      const payload = jwt.verify(refreshToken, jwtConfig.refreshKey);
       if (payload) {
         const accessToken = jwt.sign(
           { email: user.email, roleType: user.roleType },
-          jwtConfig.secretKey!,
+          jwtConfig.secretKey,
           { expiresIn: jwtConfig.expiresIn },
         );
         res.cookie('accessToken', accessToken, {
@@ -187,9 +187,9 @@ export const getDetails = async (
   res: Response,
 ): Promise<void> => {
   try {
-    const payload = jwt.verify(req.cookies.accessToken, jwtConfig.secretKey!);
+    const payload = jwt.verify(req.cookies.accessToken, jwtConfig.secretKey);
     if (payload) {
-      const user = jwt.sign(payload, jwtConfig.userKey!, {
+      const user = jwt.sign(payload, jwtConfig.userKey, {
         expiresIn: jwtConfig.expiresIn,
       });
       res.cookie('user', user, {

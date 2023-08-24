@@ -1,12 +1,10 @@
 import 'dart:convert';
+
 import 'package:encrypt/encrypt.dart' as encrypt;
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-Future<String> encryptPassword(String password) async {
-  await dotenv.load();
-
+String encryptPassword(String password) {
   final plainText = password;
-  final key = encrypt.Key.fromUtf8(dotenv.env['ENCRYPTION_KEY']!);
+  final key = encrypt.Key.fromUtf8('abcdEbGhIjKlMnOpQrStUwvWxYz12345');
   final iv = encrypt.IV.fromLength(16);
 
   final encrypter = encrypt.Encrypter(encrypt.AES(key));
@@ -16,7 +14,7 @@ Future<String> encryptPassword(String password) async {
 }
 
 String decryptPassword(String password) {
-  final key = encrypt.Key.fromUtf8(dotenv.env['ENCRYPTION_KEY']!);
+  final key = encrypt.Key.fromUtf8('abcdEbGhIjKlMnOpQrStUwvWxYz12345');
   final iv = encrypt.IV.fromLength(16);
 
   final encrypter = encrypt.Encrypter(encrypt.AES(key));

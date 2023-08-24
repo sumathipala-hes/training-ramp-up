@@ -342,8 +342,8 @@ class _UserPopupModalState extends State<UserPopupModal> {
           height: 40,
           child: ElevatedButton(
             onPressed: isSaveButtonEnabled
-                ? () async {
-                    final password = await encryptPassword(
+                ? () {
+                    final password = encryptPassword(
                       passwordController.text.trim(),
                     );
                     homePageBloc.add(
