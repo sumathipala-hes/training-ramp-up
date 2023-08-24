@@ -3,6 +3,8 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:front_end/models/user.dart';
+import 'package:front_end/repository/user_repository.dart';
 import 'package:front_end/ui/admin_home_page/admin_home_page_event.dart';
 import 'package:front_end/ui/admin_home_page/admin_home_page_state.dart';
 import 'package:front_end/util/firebase_messaging.dart';
@@ -113,7 +115,30 @@ class AdminHomeScreenBloc extends Bloc<AdminHomePageEvent, AdminHomeState> {
       RegisterUser event, Emitter<AdminHomeState> emit) {}
 
   FutureOr<void> _onGetAllUsers(
-      GetAllUsers event, Emitter<AdminHomeState> emit) {}
+      GetAllUsers event, Emitter<AdminHomeState> emit) async {
+    final response = await UserRepository().retrieveAllUsers();
+
+    if (response.statusCode == 200) {
+      try {
+        Map<String, dynamic> jsonData = jsonDecode(response.body);
+        final List<dynamic> userDataList = jsonData['data'];
+        final List<User> users = userDataList
+            .map(
+              (data) => User.fromJson(data),
+            )
+            .toList();
+        emit(
+          state.clone(
+            userEntries: users,
+          ),
+        );
+      } catch (e) {
+        throw Exception('Failed to decode students');
+      }
+    } else {
+      throw Exception('Failed to load students');
+    }
+  }
 
   FutureOr<void> _onDeleteUser(
       DeleteUser event, Emitter<AdminHomeState> emit) {}
