@@ -21,7 +21,11 @@ class RampUpApp extends StatelessWidget {
     return FutureBuilder<SharedPreferences>(
       future: SharedPreferences.getInstance(),
       builder: (context, snapshot) {
-        if (snapshot.hasError) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const CircularProgressIndicator(
+            color: Colors.red,
+          );
+        } else if (snapshot.hasError) {
           showFieldError("Error: ${snapshot.error}");
           return const Text('Error loading preferences');
         } else {
