@@ -1,6 +1,9 @@
+import { config } from "dotenv";
+config();
+
 export const jwtConfig = {
-  secretKey: 'my-secret-key',
-  refreshKey: 'my-refresh-key',
-  userKey: 'user-key',
-  expiresIn: '1h',
+  secretKey: process.env.SECRET_KEY,
+  refreshKey: process.env.REFRESH_KEY,
+  userKey: process.env.USER_KEY,
+  expiresIn: process.env.EXPIRES_IN,
 };
