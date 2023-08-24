@@ -8,6 +8,9 @@ import 'package:front_end/ui/user_home_page/user_home_page_state.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../model/student_model.dart';
+import '../admin_home_page/admin_home_page_bloc.dart';
+import '../admin_home_page/admin_home_page_event.dart';
+import '../sign_in_page/sign_in_page_view.dart';
 import '../widget/student_card_details.dart';
 
 class UserHomePageView extends StatelessWidget {
@@ -35,6 +38,18 @@ class UserHomePageView extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
+        actions: [
+          IconButton(
+            onPressed: () {
+              BlocProvider.of<AdminHomePageBloc>(context).add(
+                SignOut(),
+              );
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const SignInPageView()));
+            },
+            icon: const Icon(Icons.logout),
+          ),
+        ],
         title: Text(
           "  Student View",
           style: TextStyle(

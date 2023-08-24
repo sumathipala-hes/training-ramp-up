@@ -27,6 +27,7 @@ class AdminHomePageBloc extends Bloc<AdminHomePageEvent, AdminHomePageState> {
     on<SaveUser>(_saveUser);
     on<UpdateUser>(_updateUser);
     on<DeleteUser>(_deleteUser);
+    on<SignOut>(_signOut);
     add(
       GetAllStudent(),
     );
@@ -198,5 +199,9 @@ class AdminHomePageBloc extends Bloc<AdminHomePageEvent, AdminHomePageState> {
       DeleteUser event, Emitter<AdminHomePageState> emit) async {
     await UserRepository().deleteUser(event.email);
     add(GetAllUsers());
+  }
+
+  Future<void> _signOut(SignOut event, Emitter<AdminHomePageState> emit) async {
+    await UserRepository().SignOut();
   }
 }

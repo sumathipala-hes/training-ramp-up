@@ -96,3 +96,33 @@ export const deleteUser = async (id: string): Promise<DeleteResult> => {
     throw error;
   }
 };
+
+export const getUser = async (
+  email: string,
+  password: string,
+): Promise<User> => {
+  try {
+    const userRepo = appDataSource.manager.getRepository(User);
+    const user = await userRepo.findOne({
+      where: {
+        email: email,
+      },
+    });
+
+    console.log(user);
+    console.log(password);
+
+    if (user) {
+      const isMatch = user.password == password;
+      if (isMatch) {
+        return user;
+      } else {
+        throw new Error('Password not match');
+      }
+    } else {
+      throw new Error('User not found');
+    }
+  } catch (error) {
+    throw error;
+  }
+};

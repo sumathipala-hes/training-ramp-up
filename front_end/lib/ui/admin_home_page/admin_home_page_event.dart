@@ -61,3 +61,7 @@ class DeleteUser extends AdminHomePageEvent {
     required this.email,
   });
 }
+
+class SignOut extends AdminHomePageEvent {
+  SignOut();
+}

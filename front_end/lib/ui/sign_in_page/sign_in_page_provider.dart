@@ -8,7 +8,7 @@ class SignInPageProvider extends BlocProvider<SignInPageBloc> {
   SignInPageProvider({Key? key})
       : super(
           key: key,
-          create: (context) => SignInPageBloc(),
+          create: (context) => SignInPageBloc(context),
           child: const SignInPageView(),
         );
 }

@@ -9,11 +9,13 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../model/student_model.dart';
 import '../manage_student_page/manage_student_page_provider.dart';
 import '../manage_user_page/manage_user_page_provider.dart';
+import '../sign_in_page/sign_in_page_view.dart';
 import '../widget/student_card_details.dart';
 import '../widget/student_modal.dart';
 import '../widget/user_card_details.dart';
 import '../widget/user_modal.dart';
 import 'admin_home_page_bloc.dart';
+import 'admin_home_page_event.dart';
 import 'admin_home_page_state.dart';
 
 class AdminHomePageView extends StatelessWidget {
@@ -203,6 +205,20 @@ class AdminHomePageView extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           automaticallyImplyLeading: false,
+          actions: [
+            IconButton(
+              onPressed: () {
+                BlocProvider.of<AdminHomePageBloc>(context).add(
+                  SignOut(),
+                );
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const SignInPageView()));
+              },
+              icon: const Icon(Icons.logout),
+            ),
+          ],
           title: Text(
             "  Admin Home Page",
             style: TextStyle(

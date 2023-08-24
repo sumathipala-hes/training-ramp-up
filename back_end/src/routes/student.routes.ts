@@ -6,7 +6,7 @@ import {
   requestStudentsByOne,
   requestUpdateStudent,
 } from '../controllers/student.controller';
-import { validateStudent } from '../middleware/validateStudent';
+import { validateStudent } from '../middleware/validate.student.middleware';
 
 const router = express.Router();
 

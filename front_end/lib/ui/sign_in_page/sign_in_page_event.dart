@@ -7,8 +7,8 @@ class SubmitLoginDetails extends SignInPageEvent {
   final String email;
   final String password;
 
-  SubmitLoginDetails(
-    this.email,
-    this.password,
-  );
+  SubmitLoginDetails({
+    required this.email,
+    required this.password,
+  });
 }

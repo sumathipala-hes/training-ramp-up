@@ -1,6 +1,8 @@
 import 'dart:convert';
 
+import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:logger/logger.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../model/user_model.dart';
 import '../util/db_util.dart';
@@ -78,5 +80,51 @@ class UserRepository {
     } catch (error) {
       Logger().e('Error deleting user: $error');
     }
+  }
+
+  Future<void> signIn(String userEmail, String userPassword) async {
+    final res = await http.post(
+      Uri.parse('$baseUrl/users/signIn'),
+      headers: <String, String>{
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode({
+        "email": userEmail,
+        "password": userPassword,
+      }),
+    );
+
+    print(
+      jsonEncode({
+        "email": userEmail,
+        "password": userPassword,
+      }),
+    );
+
+    if (res.statusCode == 200) {
+      final Map<String, dynamic> jsonData = json.decode(res.body);
+      final accessToken = jsonData['accessToken'];
+      final refreshToken = jsonData['refreshToken'];
+
+      if (refreshToken != null) {
+        final prefs = await SharedPreferences.getInstance();
+        Map<String, dynamic> decodedToken = JwtDecoder.decode(accessToken);
+        prefs.setString('email', decodedToken['email']);
+        prefs.setString('roleType', decodedToken['roleType']);
+      }
+    }
+    if (res.statusCode == 500) {
+      showFieldError('Failed Login..!');
+    }
+  }
+
+  Future<void> SignOut() async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.remove('email');
+    prefs.remove('roleType');
+
+    await http.delete(
+      Uri.parse('$baseUrl/users/signOut'),
+    );
   }
 }
