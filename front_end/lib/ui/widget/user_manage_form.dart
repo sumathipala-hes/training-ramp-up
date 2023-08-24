@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:front_end/models/user.dart';
 import 'package:front_end/ui/admin_home_page/admin_home_page_bloc.dart';
 import 'package:front_end/ui/admin_home_page/admin_home_page_event.dart';
 
@@ -13,36 +13,41 @@ class UserPopupModel extends StatefulWidget {
 }
 
 class _PopupModelState extends State<UserPopupModel> {
+  final TextEditingController userTypeController = TextEditingController();
   final TextEditingController nameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController confirmPasswordController =
       TextEditingController();
+  List<String> role = ['ADMIN', 'USER'];
 
   void _saveForm() {
-    // final name = nameController.text.trim();
-    // final email = emailController.text.trim();
-    // final password = passwordController.text.trim();
-    // final confirmPassword = confirmPasswordController.text.trim();
+    final name = nameController.text.trim();
+    final email = emailController.text.trim();
+    final password = passwordController.text.trim();
+    final userType = userTypeController.text.trim();
 
-    // if (name.isEmpty ||
-    //     address.isEmpty ||
-    //     mobileNo.isEmpty ||
-    //     date.isEmpty ||
-    //     gender.isEmpty) {
-    //   ScaffoldMessenger.of(context).showSnackBar(
-    //     const SnackBar(
-    //       content: Text("Please fill all the fields"),
-    //     ),
-    //   );
-    // } else {
-    //   Navigator.of(context).pop();
-    //   AdminHomeScreenBloc bloc = BlocProvider.of<AdminHomeScreenBloc>(context);
+    if (name.isEmpty || email.isEmpty || password.isEmpty || userType.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Please fill all the fields"),
+        ),
+      );
+    } else {
+      Navigator.of(context).pop();
+      AdminHomeScreenBloc bloc = BlocProvider.of<AdminHomeScreenBloc>(context);
 
-    //   bloc.add(
-    //     RegisterUser(),
-    //   );
-    // }
+      bloc.add(
+        RegisterUser(
+          user: User(
+            userName: nameController.text.trim(),
+            userEmail: emailController.text.trim(),
+            userPassword: passwordController.text.trim(),
+            role: userTypeController.text.trim(),
+          ),
+        ),
+      );
+    }
   }
 
   @override
@@ -67,6 +72,27 @@ class _PopupModelState extends State<UserPopupModel> {
                   ),
                 ),
                 const SizedBox(height: 25),
+                // DropdownButton<String>(
+                //   value: userTypeController.text.trim(),
+                //   style: const TextStyle(
+                //     fontWeight: FontWeight.w600,
+                //   ),
+                //   onChanged: (newValue) {
+                //     setState(() {
+                //       userTypeController.text = newValue!;
+                //     });
+                //   },
+                //   items: role.map((String role) {
+                //     return DropdownMenuItem<String>(
+                //       value: role,
+                //       child: Padding(
+                //         padding: const EdgeInsets.symmetric(
+                //             vertical: 8.0), // Add vertical padding around text
+                //         child: Text(role),
+                //       ),
+                //     );
+                //   }).toList(),
+                // ),
                 TextField(
                   controller: nameController,
                   decoration: const InputDecoration(
