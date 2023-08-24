@@ -17,7 +17,7 @@ router.post('/signIn', signIn);
 router.post('/', addUsers);
 router.post('/new', generateNewAccessToken);
 router.post('/detail', authorization, signIn);
-router.put('/:id', updateUsers);
+router.put('/:email', updateUsers);
 router.delete('/:id', deleteUsers);
 router.delete('/signOut', authorization, signOut);
 

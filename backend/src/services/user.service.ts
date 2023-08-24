@@ -1,6 +1,7 @@
 import { DeleteResult, InsertResult, UpdateResult } from 'typeorm';
 import { dataSource } from '../configs/datasource.config';
 import { User } from '../models/user.model';
+import { sendNotification } from '../utils/notification.util';
 
 export const getAllUsers = async (): Promise<Array<User>> => {
   try {
@@ -29,8 +30,10 @@ export const updateUser = async (
 ): Promise<UpdateResult> => {
   try {
     const updatedUser = await dataSource.manager.update(User, email, user);
+    sendNotification('Successful', 'New Student Updated..!');
     return updatedUser;
   } catch (error) {
+    console.log(error);
     throw error;
   }
 };

@@ -25,5 +25,6 @@ class SignInPageBloc extends Bloc<SignInPageEvent, SignInPageState> {
       event.email,
       encryptPassword(event.password),
     );
+    emit(state.clone(isAuthenticate: true));
   }
 }

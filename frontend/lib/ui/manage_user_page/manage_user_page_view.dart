@@ -1,0 +1,210 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:frontend/model/user.dart';
+import 'package:frontend/ui/manage_user_page/manage_user_page_bloc.dart';
+import 'package:frontend/ui/manage_user_page/manage_user_page_event.dart';
+import 'package:frontend/ui/sign_in_page/sign_in_page_provider.dart';
+import 'package:frontend/ui/user_home_page/user_home_page_bloc.dart';
+import 'package:frontend/ui/user_home_page/user_home_page_event.dart';
+import '../theme/colors.dart';
+
+class ManageUserPageView extends StatelessWidget {
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+
+  ManageUserPageView({
+    super.key,
+    required this.user,
+  }) {
+    nameController.text = user.name;
+    emailController.text = user.email;
+    passwordController.text = user.role;
+  }
+
+  final User user;
+  final String selectedItem = 'User';
+  final List<String> roles = ['Admin', 'User'];
+
+  @override
+  Widget build(BuildContext context) {
+    ManageUserPageBloc userPageBloc =
+        BlocProvider.of<ManageUserPageBloc>(context);
+    UserHomePageBloc homePageBloc = BlocProvider.of<UserHomePageBloc>(context);
+
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: AppColors.mainColor,
+        elevation: 4,
+        title: const Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              'Manage Student',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 22,
+                color: Colors.white,
+              ),
+            ),
+          ],
+        ),
+        toolbarHeight: MediaQuery.of(context).size.height * 0.1,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout),
+            onPressed: () {
+              homePageBloc.add(
+                SignOutEvent(),
+              );
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => SignInPageProvider(),
+                ),
+              );
+            },
+          ),
+        ],
+      ),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(20, 40, 20, 40),
+          child: Card(
+            elevation: 4,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20.0),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(20, 40, 20, 40),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                    user.name,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      fontSize: 26,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.mainColor,
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 4,
+                  ),
+                  Text(
+                    user.email,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      fontSize: 16,
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  TextField(
+                    controller: nameController,
+                    decoration: const InputDecoration(
+                      border: UnderlineInputBorder(),
+                      labelText: 'Name',
+                      hintText: 'Enter Full Name',
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  TextField(
+                    controller: emailController,
+                    decoration: const InputDecoration(
+                      border: UnderlineInputBorder(),
+                      labelText: 'Email',
+                      hintText: 'Enter Email',
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  TextField(
+                    controller: passwordController,
+                    obscureText: true,
+                    decoration: const InputDecoration(
+                      border: UnderlineInputBorder(),
+                      labelText: 'Password',
+                      hintText: 'Enter Password',
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.9,
+                    child: DropdownButton<String>(
+                      value: selectedItem,
+                      onChanged: (newValue) {
+                        userPageBloc.add(SetRoleEvent(newValue!));
+                      },
+                      items: roles.map((String role) {
+                        return DropdownMenuItem<String>(
+                          value: role,
+                          child: Text(role),
+                        );
+                      }).toList(),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.25,
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.errorColor,
+                          ),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                            homePageBloc.add(
+                              DeleteUserEvent(
+                                email: user.email,
+                              ),
+                            );
+                          },
+                          child: const Text('DELETE'),
+                        ),
+                      ),
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.25,
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.successColor,
+                          ),
+                          onPressed: () async {
+                            Navigator.of(context).pop();
+                            homePageBloc.add(
+                              UpdateUserEvent(
+                                user: User(
+                                  name: nameController.text,
+                                  email: emailController.text,
+                                  password: passwordController.text,
+                                  role: selectedItem,
+                                ),
+                              ),
+                            );
+                          },
+                          child: const Text('UPDATE'),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}

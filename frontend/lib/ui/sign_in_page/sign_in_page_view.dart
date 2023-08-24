@@ -4,7 +4,6 @@ import 'package:frontend/ui/home_page/home_page_provider.dart';
 import 'package:frontend/ui/register_page/register_page_provider.dart';
 import 'package:frontend/ui/sign_in_page/sign_in_page_bloc.dart';
 import 'package:frontend/ui/sign_in_page/sign_in_page_event.dart';
-import 'package:logger/logger.dart';
 
 class SignInPageView extends StatelessWidget {
   const SignInPageView({super.key});
@@ -112,24 +111,20 @@ class SignInPageView extends StatelessWidget {
                       backgroundColor: Colors.white,
                     ),
                     onPressed: () {
-                      try {
-                        bloc.add(
-                          SignInEvent(
-                            email: emailController.text,
-                            password: passwordController.text,
-                          ),
-                        );
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) {
-                              return HomePageProvider();
-                            },
-                          ),
-                        );
-                      } catch (e) {
-                        Logger().e(e);
-                      }
+                      bloc.add(
+                        SignInEvent(
+                          email: emailController.text,
+                          password: passwordController.text,
+                        ),
+                      );
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) {
+                            return HomePageProvider();
+                          },
+                        ),
+                      );
                     },
                     child: const Padding(
                       padding: EdgeInsetsDirectional.fromSTEB(20, 10, 20, 10),
