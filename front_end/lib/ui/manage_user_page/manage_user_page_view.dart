@@ -3,12 +3,16 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:front_end/models/user.dart';
 import 'package:front_end/ui/admin_home_page/admin_home_page_bloc.dart';
 import 'package:front_end/ui/admin_home_page/admin_home_page_event.dart';
+import 'package:front_end/ui/manage_user_page/manage_user_page_bloc.dart';
+import 'package:front_end/ui/manage_user_page/manage_user_page_event.dart';
 
+// ignore: must_be_immutable
 class ManageUserScreen extends StatelessWidget {
   ManageUserScreen({super.key, required this.user}) {
     nameController.text = user.userName;
     emailController.text = user.userEmail;
     passwordController.text = user.userPassword;
+    confirmPasswordController.text = user.userPassword;
   }
 
   final TextEditingController nameController = TextEditingController();
@@ -17,9 +21,13 @@ class ManageUserScreen extends StatelessWidget {
   final TextEditingController confirmPasswordController =
       TextEditingController();
   final User user;
+  String selectedItem = 'ADMIN';
+  List<String> role = ['ADMIN', 'USER'];
 
   @override
   Widget build(BuildContext context) {
+    ManageUserScreenBloc manageUserScreenBloc =
+        BlocProvider.of<ManageUserScreenBloc>(context);
     AdminHomeScreenBloc rampUpHomeScreenBloc =
         BlocProvider.of<AdminHomeScreenBloc>(context);
     return Scaffold(
@@ -51,6 +59,32 @@ class ManageUserScreen extends StatelessWidget {
                   padding: const EdgeInsets.all(10.0),
                   child: Column(
                     children: [
+                      const SizedBox(height: 10),
+                      const Text(
+                        'MANAGE USER',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 35,
+                          fontWeight: FontWeight.bold,
+                          color: Color.fromRGBO(137, 91, 215, 0.8),
+                        ),
+                      ),
+                      DropdownButton<String>(
+                        value: selectedItem,
+                        onChanged: (newValue) {
+                          manageUserScreenBloc.add(
+                            SetRoleEvent(
+                              role: newValue!,
+                            ),
+                          );
+                        },
+                        items: role.map((String role) {
+                          return DropdownMenuItem<String>(
+                            value: role,
+                            child: Text(role),
+                          );
+                        }).toList(),
+                      ),
                       TextField(
                         controller: nameController,
                         decoration: const InputDecoration(
@@ -114,7 +148,7 @@ class ManageUserScreen extends StatelessWidget {
                               rampUpHomeScreenBloc.add(
                                 UpdateUser(
                                   user: User(
-                                    role: 'user',
+                                    role: selectedItem,
                                     userName: nameController.text,
                                     userEmail: emailController.text,
                                     userPassword: passwordController.text,
