@@ -3,9 +3,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/model/user.dart';
 import 'package:frontend/ui/manage_user_page/manage_user_page_bloc.dart';
 import 'package:frontend/ui/manage_user_page/manage_user_page_event.dart';
+import 'package:frontend/ui/manage_user_page/manage_user_page_state.dart';
 import 'package:frontend/ui/sign_in_page/sign_in_page_provider.dart';
 import 'package:frontend/ui/user_home_page/user_home_page_bloc.dart';
 import 'package:frontend/ui/user_home_page/user_home_page_event.dart';
+import 'package:frontend/util/validation_util.dart';
 import '../theme/colors.dart';
 
 class ManageUserPageView extends StatelessWidget {
@@ -31,6 +33,30 @@ class ManageUserPageView extends StatelessWidget {
     ManageUserPageBloc userPageBloc =
         BlocProvider.of<ManageUserPageBloc>(context);
     UserHomePageBloc homePageBloc = BlocProvider.of<UserHomePageBloc>(context);
+
+    void validateTextFields(bool isValid, String textField) {
+      String nameError = '';
+      String emailError = '';
+      String passwordError = '';
+      switch (textField) {
+        case 'name':
+          nameError = isValid ? '' : 'Invalid Name Ex. John Doe';
+          break;
+        case 'email':
+          emailError = isValid ? '' : 'Invalid Email Ex. abc@xyz.com';
+          break;
+        case 'password':
+          passwordError = isValid ? '' : 'Password is Not Strong';
+          break;
+      }
+      userPageBloc.add(
+        SetValidations(
+          nameError: nameError,
+          emailError: emailError,
+          passwordError: passwordError,
+        ),
+      );
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -110,6 +136,27 @@ class ManageUserPageView extends StatelessWidget {
                       labelText: 'Name',
                       hintText: 'Enter Full Name',
                     ),
+                    onChanged: (value) {
+                      validateTextFields(
+                        ValidationUtil.isValidExp(
+                          ValidationUtil.nameRegExp,
+                          value,
+                        ),
+                        'name',
+                      );
+                    },
+                  ),
+                  BlocBuilder<ManageUserPageBloc, ManageUserPageState>(
+                    buildWhen: (previous, current) =>
+                        current.nameError != previous.nameError,
+                    builder: (context, state) {
+                      return Text(
+                        state.nameError,
+                        style: const TextStyle(
+                          color: AppColors.errorColor,
+                        ),
+                      );
+                    },
                   ),
                   const SizedBox(
                     height: 20,
@@ -121,6 +168,27 @@ class ManageUserPageView extends StatelessWidget {
                       labelText: 'Email',
                       hintText: 'Enter Email',
                     ),
+                    onChanged: (value) {
+                      validateTextFields(
+                        ValidationUtil.isValidExp(
+                          ValidationUtil.emailRegExp,
+                          value,
+                        ),
+                        'email',
+                      );
+                    },
+                  ),
+                  BlocBuilder<ManageUserPageBloc, ManageUserPageState>(
+                    buildWhen: (previous, current) =>
+                        current.emailError != previous.emailError,
+                    builder: (context, state) {
+                      return Text(
+                        state.emailError,
+                        style: const TextStyle(
+                          color: AppColors.errorColor,
+                        ),
+                      );
+                    },
                   ),
                   const SizedBox(
                     height: 20,
@@ -133,6 +201,27 @@ class ManageUserPageView extends StatelessWidget {
                       labelText: 'Password',
                       hintText: 'Enter Password',
                     ),
+                    onChanged: (value) {
+                      validateTextFields(
+                        ValidationUtil.isValidExp(
+                          ValidationUtil.passwordRegExp,
+                          value,
+                        ),
+                        'password',
+                      );
+                    },
+                  ),
+                  BlocBuilder<ManageUserPageBloc, ManageUserPageState>(
+                    buildWhen: (previous, current) =>
+                        current.passwordError != previous.passwordError,
+                    builder: (context, state) {
+                      return Text(
+                        state.nameError,
+                        style: const TextStyle(
+                          color: AppColors.errorColor,
+                        ),
+                      );
+                    },
                   ),
                   const SizedBox(
                     height: 20,

@@ -15,10 +15,12 @@ class UserRepository {
       headers: <String, String>{
         'Content-Type': 'application/json',
       },
-      body: jsonEncode({
-        "email": email,
-        "password": password,
-      }),
+      body: jsonEncode(
+        {
+          "email": email,
+          "password": password,
+        },
+      ),
     );
     if (res.statusCode == 200) {
       final Map<String, dynamic> jsonData = json.decode(res.body);

@@ -78,6 +78,7 @@ export const getUser = async (
       throw new Error('User not found');
     }
   } catch (error) {
+    console.log(error);
     throw error;
   }
 };

@@ -8,6 +8,7 @@ class ManageUserPageBloc
     extends Bloc<ManageUserPageEvent, ManageUserPageState> {
   ManageUserPageBloc() : super(ManageUserPageState.initialState) {
     on<SetRoleEvent>(_changeRole);
+    on<SetValidations>(_setIsValidate);
   }
 
   FutureOr<void> _changeRole(
@@ -15,6 +16,19 @@ class ManageUserPageBloc
     emit(
       state.clone(
         role: event.role,
+      ),
+    );
+  }
+
+  void _setIsValidate(
+    SetValidations event,
+    Emitter<ManageUserPageState> emit,
+  ) {
+    emit(
+      state.clone(
+        nameError: event.nameError,
+        emailError: event.emailError,
+        passwordError: event.passwordError,
       ),
     );
   }

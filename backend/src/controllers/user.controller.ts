@@ -69,7 +69,7 @@ export const signIn: RequestHandler = async (
       const accessToken = jwt.sign(
         { email: user.email, role: user.role },
         jwtConfig.secretKey!,
-        { expiresIn: jwtConfig.expiresIn }
+        { expiresIn: '5h' }
       );
       const refreshToken = jwt.sign(
         { email: user.email, role: user.role },
@@ -88,6 +88,7 @@ export const signIn: RequestHandler = async (
       res.status(401).json({ message: 'Unauthorized' });
     }
   } catch (error) {    
+    console.log(error);
     res.status(500).json(error);
   }
 };
