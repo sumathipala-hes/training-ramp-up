@@ -10,6 +10,7 @@ import 'package:front_end/ui/sign_in_page/sign_in_page_provider.dart';
 import 'package:front_end/ui/widget/student_card.dart';
 import 'package:front_end/ui/widget/student_manage_form.dart';
 import 'package:front_end/ui/widget/user_card.dart';
+import 'package:front_end/ui/widget/user_manage_form.dart';
 
 class AdminHomeScreen extends StatefulWidget {
   const AdminHomeScreen({Key? key}) : super(key: key);
@@ -166,10 +167,10 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
                     ),
                   ),
                   onPressed: () {
-                    // showDialog(
-                    //   context: context,
-                    //   builder: (context) => const PopupModel(),
-                    // );
+                    showDialog(
+                      context: context,
+                      builder: (context) => const UserPopupModel(),
+                    );
                   },
                   child: const Text(
                     '+ ADD NEW USER',

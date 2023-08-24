@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:front_end/ui/admin_home_page/admin_home_page_view.dart';
 import 'package:front_end/ui/sign_in_page/sign_in_page_provider.dart';
-import 'package:front_end/ui/user_home_page/user_home_page_provider.dart';
 
 class RegisterScreen extends StatelessWidget {
   RegisterScreen({super.key});
