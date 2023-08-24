@@ -19,7 +19,7 @@ export const getAllUsers = async (): Promise<Array<User>> => {
 export const saveUser = async (user: User): Promise<InsertResult> => {
   try {
     const savedUser = await dataSource.manager.insert(User, user);
-    sendNotification('Successful', 'New Student Saved..!');
+    sendNotification('Successful', 'New User Saved..!');
     return savedUser;
   } catch (error) {
     throw error;
@@ -32,7 +32,7 @@ export const updateUser = async (
 ): Promise<UpdateResult> => {
   try {
     const updatedUser = await dataSource.manager.update(User, email, user);
-    sendNotification('Successful', 'New Student Updated..!');
+    sendNotification('Successful', 'New User Updated..!');
     return updatedUser;
   } catch (error) {
     console.log(error);
@@ -43,7 +43,7 @@ export const updateUser = async (
 export const deleteUser = async (email: string): Promise<DeleteResult> => {
   try {
     const deletedUser = await dataSource.manager.delete(User, email);
-    sendNotification('Successful', 'New Student Deleted..!');
+    sendNotification('Successful', 'New User Deleted..!');
     return deletedUser;
   } catch (error) {
     throw error;

@@ -73,7 +73,7 @@ class UserRepository {
       body: jsonEncode(user.toJson()),
     );
     if (res.statusCode == 500) {
-      showToast('Failed to Save Student');
+      showToast('Failed to Save User..!');
     }
   }
 
@@ -86,7 +86,7 @@ class UserRepository {
       body: jsonEncode(user.toJson()),
     );
     if (res.statusCode == 500) {
-      showToast('Failed to Update Student');
+      showToast('Failed to Update User..!');
     }
   }
 
@@ -95,7 +95,7 @@ class UserRepository {
       Uri.parse('$baseUrl/user/$email'),
     );
     if (res.statusCode == 500) {
-      showToast('Failed to Delete Student');
+      showToast('Failed to Delete User..!');
     }
   }
 
