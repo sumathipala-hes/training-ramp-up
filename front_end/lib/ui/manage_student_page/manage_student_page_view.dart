@@ -298,15 +298,19 @@ class StudentMangeView extends StatelessWidget {
                                     dateController.text.trim().isEmpty) {
                                   showFieldError(
                                       'Text Field should not be empty.');
-                                } else if (!RegExp(r'^[a-zA-Z ]+$')
-                                    .hasMatch(nameController.text.trim())) {
+                                } else if (!RegExp(r'^[a-zA-Z ]+$').hasMatch(
+                                  nameController.text.trim(),
+                                )) {
                                   showFieldError('Invalid Name.');
-                                } else if (!RegExp(r'^[a-zA-Z0-9 ]+$')
-                                    .hasMatch(addressController.text.trim())) {
+                                } else if (!RegExp(r'^[a-zA-Z0-9 ]+$').hasMatch(
+                                  addressController.text.trim(),
+                                )) {
                                   showFieldError('Invalid Address.');
                                 } else if (!RegExp(
                                         r'^(07(0|1|2|4|5|6|7|8)[0-9]{7})$')
-                                    .hasMatch(mobileNoController.text.trim())) {
+                                    .hasMatch(
+                                  mobileNoController.text.trim(),
+                                )) {
                                   showFieldError('Invalid Mobile No.');
                                 } else {
                                   homePageBloc.add(

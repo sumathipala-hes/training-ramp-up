@@ -356,8 +356,11 @@ class UserMangeView extends StatelessWidget {
                                     groupValue:
                                         userManageBloc.state.selectedGender,
                                     onChanged: (value) {
-                                      userManageBloc.add(SelectGender(
-                                          select: value.toString()));
+                                      userManageBloc.add(
+                                        SelectGender(
+                                          select: value.toString(),
+                                        ),
+                                      );
                                     },
                                   ),
                                   Text(
@@ -392,27 +395,35 @@ class UserMangeView extends StatelessWidget {
                                     passwordController.text.trim().isEmpty) {
                                   showFieldError(
                                       'Text Field should not be empty.');
-                                } else if (!RegExp(r'^[a-zA-Z ]+$')
-                                    .hasMatch(nameController.text.trim())) {
+                                } else if (!RegExp(r'^[a-zA-Z ]+$').hasMatch(
+                                  nameController.text.trim(),
+                                )) {
                                   showFieldError('Invalid Name.');
-                                } else if (!RegExp(r'^[a-zA-Z0-9 ]+$')
-                                    .hasMatch(addressController.text.trim())) {
+                                } else if (!RegExp(r'^[a-zA-Z0-9 ]+$').hasMatch(
+                                  addressController.text.trim(),
+                                )) {
                                   showFieldError('Invalid Address.');
                                 } else if (!RegExp(
                                         r'^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$')
-                                    .hasMatch(emailController.text.trim())) {
+                                    .hasMatch(
+                                  emailController.text.trim(),
+                                )) {
                                   showFieldError('Invalid Email.');
                                 } else if (!RegExp(
                                         r'^(07(0|1|2|4|5|6|7|8)[0-9]{7})$')
-                                    .hasMatch(mobileNoController.text.trim())) {
+                                    .hasMatch(
+                                  mobileNoController.text.trim(),
+                                )) {
                                   showFieldError('Invalid Mobile No.');
                                 } else if (!RegExp(
                                         r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{8,}$')
-                                    .hasMatch(passwordController.text.trim())) {
+                                    .hasMatch(
+                                  passwordController.text.trim(),
+                                )) {
                                   showFieldError(
                                       'Password should be at least 8 characters.');
                                 } else {
-                                  final password = await encryptPassword(
+                                  final password = encryptPassword(
                                     passwordController.text.trim(),
                                   );
 

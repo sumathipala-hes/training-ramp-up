@@ -325,31 +325,38 @@ class SignUpPageView extends StatelessWidget {
                                     dateController.text.trim().isEmpty) {
                                   showFieldError(
                                       'Text Field should not be empty.');
-                                } else if (!RegExp(r'^[a-zA-Z ]+$')
-                                    .hasMatch(nameController.text.trim())) {
+                                } else if (!RegExp(r'^[a-zA-Z ]+$').hasMatch(
+                                  nameController.text.trim(),
+                                )) {
                                   showFieldError('Invalid Name.');
-                                } else if (!RegExp(r'^[a-zA-Z0-9 ]+$')
-                                    .hasMatch(addressController.text.trim())) {
+                                } else if (!RegExp(r'^[a-zA-Z0-9 ]+$').hasMatch(
+                                  addressController.text.trim(),
+                                )) {
                                   showFieldError('Invalid Address.');
                                 } else if (!RegExp(
                                         r'^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$')
-                                    .hasMatch(emailController.text.trim())) {
+                                    .hasMatch(
+                                  emailController.text.trim(),
+                                )) {
                                   showFieldError('Invalid Email.');
                                 } else if (!RegExp(
                                         r'^(07(0|1|2|4|5|6|7|8)[0-9]{7})$')
-                                    .hasMatch(mobileNoController.text.trim())) {
+                                    .hasMatch(
+                                  mobileNoController.text.trim(),
+                                )) {
                                   showFieldError('Invalid Mobile No.');
                                 } else if (!RegExp(
                                         r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{8,}$')
                                     .hasMatch(
-                                        crPasswordController.text.trim())) {
+                                  crPasswordController.text.trim(),
+                                )) {
                                   showFieldError(
                                       'Password must contain at least 8 characters, including UPPER/lowercase and numbers.');
                                 } else if (crPasswordController.text.trim() !=
                                     coPasswordController.text.trim()) {
                                   showFieldError('Password not match.');
                                 } else {
-                                  final coPassword = await encryptPassword(
+                                  final coPassword = encryptPassword(
                                     coPasswordController.text.trim(),
                                   );
                                   adminPage.add(

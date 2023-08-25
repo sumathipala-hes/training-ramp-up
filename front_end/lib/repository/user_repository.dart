@@ -94,13 +94,6 @@ class UserRepository {
       }),
     );
 
-    print(
-      jsonEncode({
-        "email": userEmail,
-        "password": userPassword,
-      }),
-    );
-
     if (res.statusCode == 200) {
       final Map<String, dynamic> jsonData = json.decode(res.body);
       final accessToken = jsonData['accessToken'];
@@ -118,7 +111,7 @@ class UserRepository {
     }
   }
 
-  Future<void> SignOut() async {
+  Future<void> signOut() async {
     final prefs = await SharedPreferences.getInstance();
     prefs.remove('email');
     prefs.remove('roleType');

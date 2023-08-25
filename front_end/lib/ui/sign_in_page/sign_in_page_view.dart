@@ -131,23 +131,23 @@ class SignInPageView extends StatelessWidget {
                                     final roleType =
                                         prefs.getString('roleType');
 
-                                    if (roleType == "ADMIN") {
-                                      // ignore: use_build_context_synchronously
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                const AdminHomePageView()),
-                                      );
-                                    } else if (roleType == "USER") {
-                                      // ignore: use_build_context_synchronously
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                UserHomePageProvider()),
-                                      );
-                                    }
+                                    roleType == 'ADMIN'
+                                        // ignore: use_build_context_synchronously
+                                        ? Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    const AdminHomePageView()),
+                                          )
+                                        : roleType == 'USER'
+                                            // ignore: use_build_context_synchronously
+                                            ? Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        UserHomePageProvider()),
+                                              )
+                                            : Container();
                                   }
                                 },
                                 child: Row(

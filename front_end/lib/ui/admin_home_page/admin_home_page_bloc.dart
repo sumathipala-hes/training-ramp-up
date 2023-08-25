@@ -202,6 +202,6 @@ class AdminHomePageBloc extends Bloc<AdminHomePageEvent, AdminHomePageState> {
   }
 
   Future<void> _signOut(SignOut event, Emitter<AdminHomePageState> emit) async {
-    await UserRepository().SignOut();
+    await UserRepository().signOut();
   }
 }

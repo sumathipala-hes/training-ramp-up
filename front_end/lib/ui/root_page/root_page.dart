@@ -6,7 +6,6 @@ import 'package:front_end/ui/sign_in_page/sign_in_page_view.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../theme/primary_theme.dart';
-import '../../util/notification_util.dart';
 import '../admin_home_page/admin_home_page_bloc.dart';
 import '../user_home_page/user_home_page_bloc.dart';
 import '../sign_in_page/sign_in_page_bloc.dart';
@@ -22,35 +21,20 @@ class RampUpApp extends StatelessWidget {
       future: SharedPreferences.getInstance(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const CircularProgressIndicator(
-            color: Colors.red,
-          );
+          return const CircularProgressIndicator();
         } else if (snapshot.hasError) {
-          showFieldError("Error: ${snapshot.error}");
           return const Text('Error loading preferences');
         } else {
           final prefs = snapshot.data!;
           final roleType = prefs.getString('roleType');
 
-          Widget homePage;
-          if (isAuthenticate) {
-            if (roleType == 'USER') {
-              homePage = UserHomePageView();
-            } else if (roleType == 'ADMIN') {
-              homePage = const AdminHomePageView();
-            } else {
-              homePage = const SignInPageView();
-            }
-          } else {
-            homePage = const SignInPageView();
-          }
-
-          final materialApp = MaterialApp(
-            title: 'RampUp App',
-            theme: appThemeData,
-            debugShowCheckedModeBanner: false,
-            home: homePage,
-          );
+          final homePage = isAuthenticate
+              ? roleType == 'USER'
+                  ? UserHomePageView()
+                  : (roleType == 'ADMIN'
+                      ? const AdminHomePageView()
+                      : const SignInPageView())
+              : const SignInPageView();
 
           return MultiBlocProvider(
             providers: [
@@ -64,7 +48,12 @@ class RampUpApp extends StatelessWidget {
                 create: (context) => SignInPageBloc(context),
               ),
             ],
-            child: materialApp,
+            child: MaterialApp(
+              title: 'RampUp App',
+              theme: appThemeData,
+              debugShowCheckedModeBanner: false,
+              home: homePage,
+            ),
           );
         }
       },

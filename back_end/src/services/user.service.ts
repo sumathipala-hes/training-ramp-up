@@ -109,9 +109,6 @@ export const getUser = async (
       },
     });
 
-    console.log(user);
-    console.log(password);
-
     if (user) {
       const isMatch = user.password == password;
       if (isMatch) {
