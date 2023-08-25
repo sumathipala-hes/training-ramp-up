@@ -3,6 +3,8 @@ import 'package:front_end/models/user.dart';
 import 'package:front_end/util/db_util.dart';
 import 'package:front_end/util/toast_alert.dart';
 import 'package:http/http.dart' as http;
+import 'package:jwt_decoder/jwt_decoder.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class UserRepository {
   Future<http.Response> retrieveAllUsers() async {
@@ -52,5 +54,47 @@ class UserRepository {
     if (response.statusCode == 500) {
       toastAlert('Failed to update user');
     }
+  }
+
+    Future<bool> signIn(String userEmail, String userPassword) async {
+    final res = await http.post(
+      Uri.parse('$baseUrl/user/signIn'),
+      headers: <String, String>{
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode(
+        {
+          "userEmail": userEmail,
+          "userPassword": userPassword,
+        },
+      ),
+    );
+    if (res.statusCode == 200) {
+      final Map<String, dynamic> jsonData = json.decode(res.body);
+      final accessToken = jsonData['accessToken'];
+      final refreshToken = jsonData['refreshToken'];
+
+      if (refreshToken != null) {
+        final prefs = await SharedPreferences.getInstance();
+        Map<String, dynamic> decodedToken = JwtDecoder.decode(accessToken);
+        prefs.setString('userEmail', decodedToken['userEmail']);
+        prefs.setString('role', decodedToken['role']);
+        return true;
+      }
+    }
+    if (res.statusCode == 500) {
+      toastAlert('Failed Login..!');
+    }
+    return false;
+  }
+
+  Future<void> signOut() async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.remove('userEmail');
+    prefs.remove('role');
+
+    await http.delete(
+      Uri.parse('$baseUrl/user/signOut'),
+    );
   }
 }
