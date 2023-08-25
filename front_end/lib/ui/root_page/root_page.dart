@@ -36,8 +36,8 @@ class RampUpApp extends StatelessWidget {
                   ? const UserHomeScreen()
                   : role == 'ADMIN'
                       ? const AdminHomeScreen()
-                      : const SignInPageScreen()
-              : const SignInPageScreen();
+                      : SignInPageScreen()
+              : SignInPageScreen();
 
           final materialApp = MaterialApp(
             title: 'RampUp App',

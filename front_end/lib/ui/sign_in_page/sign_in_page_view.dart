@@ -11,14 +11,69 @@ import 'package:front_end/util/encrypted_decrypted_util.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SignInPageScreen extends StatelessWidget {
-  const SignInPageScreen({Key? key}) : super(key: key);
+  SignInPageScreen({Key? key}) : super(key: key);
+
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+
+  void _signInForm(context) async {
+    final email = emailController.text.trim();
+    final password = passwordController.text.trim();
+
+    if (email.isEmpty || password.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Please fill all the fields"),
+        ),
+      );
+    } else if (!RegExp(r'^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$').hasMatch(
+      emailController.text.trim(),
+    )) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Invalid Email."),
+        ),
+      );
+    } else if (password.length < 8) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+              "Password must be at least 8 characters Or check your password."),
+        ),
+      );
+    } else {
+      Navigator.of(context).pop();
+      SignInPageScreenBloc bloc =
+          BlocProvider.of<SignInPageScreenBloc>(context);
+      String encriptedPassword = PasswordEncryption.encryptPassword(
+        passwordController.text.trim(),
+      );
+      bloc.add(
+        Login(
+          userEmail: emailController.text,
+          userPassword: encriptedPassword,
+        ),
+      );
+
+      final prefs = await SharedPreferences.getInstance();
+      final role = prefs.getString('role');
+
+      // ignore: use_build_context_synchronously
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => role == "ADMIN"
+              ? const AdminHomeScreen()
+              : role == "USER"
+                  ? UserHomeScreenProvider()
+                  : Container(), // Handle the case when role is neither "ADMIN" nor "USER"
+        ),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    final TextEditingController emailController = TextEditingController();
-    final TextEditingController passwordController = TextEditingController();
-    SignInPageScreenBloc bloc = BlocProvider.of<SignInPageScreenBloc>(context);
-
     return Scaffold(
       body: Container(
         decoration: const BoxDecoration(
@@ -90,34 +145,37 @@ class SignInPageScreen extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(15.0),
                               ),
                             ),
-                            onPressed: () async {
-                              String password =
-                                  PasswordEncryption.encryptPassword(
-                                      passwordController.text);
-
-                              bloc.add(
-                                Login(
-                                  userEmail: emailController.text,
-                                  userPassword: password,
-                                ),
-                              );
-
-                              final prefs =
-                                  await SharedPreferences.getInstance();
-                              final role = prefs.getString('role');
-
-                              // ignore: use_build_context_synchronously
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => role == "ADMIN"
-                                      ? const AdminHomeScreen()
-                                      : role == "USER"
-                                          ? UserHomeScreenProvider()
-                                          : Container(), // Handle the case when role is neither "ADMIN" nor "USER"
-                                ),
-                              );
+                            onPressed: () {
+                              _signInForm(context);
                             },
+                            // onPressed: () async {
+                            //   String password =
+                            //       PasswordEncryption.encryptPassword(
+                            //           passwordController.text);
+
+                            //   bloc.add(
+                            //     Login(
+                            //       userEmail: emailController.text,
+                            //       userPassword: password,
+                            //     ),
+                            //   );
+
+                            //   final prefs =
+                            //       await SharedPreferences.getInstance();
+                            //   final role = prefs.getString('role');
+
+                            //   // ignore: use_build_context_synchronously
+                            //   Navigator.push(
+                            //     context,
+                            //     MaterialPageRoute(
+                            //       builder: (context) => role == "ADMIN"
+                            //           ? const AdminHomeScreen()
+                            //           : role == "USER"
+                            //               ? UserHomeScreenProvider()
+                            //               : Container(), // Handle the case when role is neither "ADMIN" nor "USER"
+                            //     ),
+                            //   );
+                            // },
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               mainAxisSize: MainAxisSize.min,
