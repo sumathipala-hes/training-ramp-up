@@ -155,29 +155,30 @@ export default class UserController {
   generateNewAccessToken: RequestHandler = async (
     req: Request,
     res: Response,
-  ): Promise<void> => {
+  ): Promise<Response> => {
     try {
       const refreshToken = req.cookies.refreshToken;
       const user = req.cookies.user;
       if (!refreshToken) {
-        res.status(403).json({ message: 'Forbidden' });
+        return res.status(403).json({ message: 'Forbidden' });
       } else {
         const payload = jwt.verify(refreshToken, jwtConfig.refreshKey);
         if (payload) {
           const accessToken = jwt.sign(
-            { email: user.email, roleType: user.roleType },
-            jwtConfig.secretKey,
+            { userEmail: user.userEmail, role: user.role },
+            jwtConfig.secretKey!,
             { expiresIn: jwtConfig.expiresIn },
           );
           res.cookie('accessToken', accessToken, {
             httpOnly: true,
           });
-          res.status(200).json({ accessToken });
+          return res.status(200).json({ accessToken });
         }
       }
     } catch (error) {
-      res.status(500).json(error);
+      return res.status(500).json(error);
     }
+    return res.status(500).json({ message: 'An error occurred' });
   };
 
   signOut: RequestHandler = async (
@@ -190,6 +191,25 @@ export default class UserController {
       return res.status(200).json({ message: 'Sign out successfully' });
     } catch (error) {
       console.log(error);
+      return res.status(500).json(error);
+    }
+  };
+
+  getDetails = async (req: Request, res: Response): Promise<Response> => {
+    try {
+      const payload = jwt.verify(req.cookies.accessToken, jwtConfig.secretKey!);
+      if (payload) {
+        const user = jwt.sign(payload, jwtConfig.userKey!, {
+          expiresIn: jwtConfig.expiresIn,
+        });
+        res.cookie('user', user, {
+          httpOnly: true,
+        });
+        return res.status(200).json({ user });
+      } else {
+        return res.status(401).json({ message: 'Unauthorized' });
+      }
+    } catch (error) {
       return res.status(500).json(error);
     }
   };

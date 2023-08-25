@@ -1,5 +1,6 @@
 import express, { Router } from 'express';
 import UserController from '../controllers/user.controller';
+import { authorization } from '../middleware/jwt.middleware';
 
 export default class UserRoutes {
   private router: Router = express.Router();
@@ -25,8 +26,14 @@ export default class UserRoutes {
     //POST /api/v1/user/signIn
     this.router.post('/signIn', this.userController.signIn);
 
-    //POST /api/v1/user/signOut
-    this.router.post('/signOut', this.userController.signOut);
+    //POST /api/v1/user/new
+    this.router.post('/new', this.userController.generateNewAccessToken);
+
+    //POST /api/v1/user/detail
+    this.router.post('/detail', authorization,this.userController.signIn);
+
+    //DELETE /api/v1/user/signOut
+    this.router.delete('/signOut', authorization,this.userController.signOut);
   };
 
   public getRouter = (): Router => {
