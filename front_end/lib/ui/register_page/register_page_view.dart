@@ -5,7 +5,6 @@ import 'package:front_end/ui/admin_home_page/admin_home_page_bloc.dart';
 import 'package:front_end/ui/admin_home_page/admin_home_page_event.dart';
 import 'package:front_end/ui/sign_in_page/sign_in_page_provider.dart';
 import 'package:front_end/util/encrypted_decrypted_util.dart';
-import 'package:front_end/util/toast_alert.dart';
 
 class RegisterScreen extends StatelessWidget {
   RegisterScreen({super.key});
