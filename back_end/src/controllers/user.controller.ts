@@ -129,7 +129,7 @@ export const signIn: RequestHandler = async (
       res.cookie('accessToken', accessToken, {
         httpOnly: true,
       });
-      console.log(accessToken, refreshToken);
+
       res.status(200).json({ accessToken, refreshToken });
     } else {
       res.status(401).json({ message: 'Unauthorized' });
