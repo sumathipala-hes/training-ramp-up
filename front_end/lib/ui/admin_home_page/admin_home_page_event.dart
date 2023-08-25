@@ -79,3 +79,7 @@ class UpdateUser extends AdminHomePageEvent {
     required this.user,
   });
 }
+
+class LogOut extends AdminHomePageEvent {
+  LogOut();
+}

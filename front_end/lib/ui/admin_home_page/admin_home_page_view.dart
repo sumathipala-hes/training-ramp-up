@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:front_end/models/student.dart';
 import 'package:front_end/models/user.dart';
 import 'package:front_end/ui/admin_home_page/admin_home_page_bloc.dart';
+import 'package:front_end/ui/admin_home_page/admin_home_page_event.dart';
 import 'package:front_end/ui/admin_home_page/admin_home_page_state.dart';
 import 'package:front_end/ui/manage_student_page/manage_student_page_provider.dart';
 import 'package:front_end/ui/manage_user_page/manage_user_page_provider.dart';
@@ -209,6 +210,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    AdminHomeScreenBloc block = BlocProvider.of<AdminHomeScreenBloc>(context);
     return Scaffold(
       appBar: AppBar(
         elevation: 7,
@@ -222,6 +224,9 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
           IconButton(
             icon: const Icon(Icons.logout),
             onPressed: () {
+              block.add(
+                LogOut(),
+              );
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => SignInPageProvider()),

@@ -26,6 +26,7 @@ class AdminHomeScreenBloc extends Bloc<AdminHomePageEvent, AdminHomeState> {
     on<GetAllUsers>(_onGetAllUsers);
     on<DeleteUser>(_onDeleteUser);
     on<UpdateUser>(_onUpdateUser);
+    on<LogOut>(_onLogOut);
     add(
       GetAllUsers(),
     );
@@ -171,5 +172,9 @@ class AdminHomeScreenBloc extends Bloc<AdminHomePageEvent, AdminHomeState> {
     add(
       GetAllUsers(),
     );
+  }
+
+  FutureOr<void> _onLogOut(LogOut event, Emitter<AdminHomeState> emit) async {
+    await UserRepository().signOut();
   }
 }
