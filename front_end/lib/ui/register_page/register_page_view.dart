@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:front_end/ui/admin_home_page/admin_home_page_view.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:front_end/models/user.dart';
+import 'package:front_end/ui/admin_home_page/admin_home_page_bloc.dart';
+import 'package:front_end/ui/admin_home_page/admin_home_page_event.dart';
 import 'package:front_end/ui/sign_in_page/sign_in_page_provider.dart';
+import 'package:front_end/util/encrypted_decrypted_util.dart';
 
 class RegisterScreen extends StatelessWidget {
   RegisterScreen({super.key});
@@ -10,6 +14,41 @@ class RegisterScreen extends StatelessWidget {
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController confirmPasswordController =
       TextEditingController();
+
+  void _registerForm(context) {
+    final name = nameController.text.trim();
+    final email = emailController.text.trim();
+    final password = passwordController.text.trim();
+    final confirmPassword = confirmPasswordController.text.trim();
+
+    if (name.isEmpty ||
+        email.isEmpty ||
+        password.isEmpty ||
+        confirmPassword.isEmpty ||
+        password != confirmPassword) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Please fill all the fields"),
+        ),
+      );
+    } else {
+      Navigator.of(context).pop();
+      AdminHomeScreenBloc bloc = BlocProvider.of<AdminHomeScreenBloc>(context);
+      String encriptedPassword = PasswordEncryption.encryptPassword(
+        passwordController.text.trim(),
+      );
+      bloc.add(
+        RegisterUser(
+          user: User(
+            userName: nameController.text.trim(),
+            userEmail: emailController.text.trim(),
+            userPassword: encriptedPassword,
+            role: 'USER',
+          ),
+        ),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -118,14 +157,17 @@ class RegisterScreen extends StatelessWidget {
                             ),
                           ),
                           onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                // builder: (context) => UserHomeScreenProvider(),
-                                builder: (context) => const AdminHomeScreen(),
-                              ),
-                            );
+                            _registerForm(context);
                           },
+                          // onPressed: () {
+                          //   Navigator.push(
+                          //     context,
+                          //     MaterialPageRoute(
+                          //       // builder: (context) => UserHomeScreenProvider(),
+                          //       builder: (context) => const AdminHomeScreen(),
+                          //     ),
+                          //   );
+                          // },
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             mainAxisSize: MainAxisSize.min,
