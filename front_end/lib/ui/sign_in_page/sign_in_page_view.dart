@@ -1,13 +1,24 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:front_end/ui/admin_home_page/admin_home_page_view.dart';
 import 'package:front_end/ui/register_page/register_page_provider.dart';
+import 'package:front_end/ui/sign_in_page/sign_in_page_bloc.dart';
+import 'package:front_end/ui/sign_in_page/sign_in_page_event.dart';
+import 'package:front_end/ui/user_home_page/user_home_page_provider.dart';
+import 'package:front_end/util/encrypted_decrypted_util.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SignInPageScreen extends StatelessWidget {
   const SignInPageScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final TextEditingController emailController = TextEditingController();
+    final TextEditingController passwordController = TextEditingController();
+    SignInPageScreenBloc bloc = BlocProvider.of<SignInPageScreenBloc>(context);
+
     return Scaffold(
       body: Container(
         decoration: const BoxDecoration(
@@ -43,8 +54,9 @@ class SignInPageScreen extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(height: 35),
-                        const TextField(
-                          decoration: InputDecoration(
+                        TextField(
+                          controller: emailController,
+                          decoration: const InputDecoration(
                             labelText: "Email :",
                             prefixIcon: Icon(Icons.email),
                             border: OutlineInputBorder(
@@ -55,8 +67,9 @@ class SignInPageScreen extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(height: 25.0),
-                        const TextField(
-                          decoration: InputDecoration(
+                        TextField(
+                          controller: passwordController,
+                          decoration: const InputDecoration(
                             labelText: "Password :",
                             prefixIcon: Icon(Icons.lock),
                             border: OutlineInputBorder(
@@ -77,7 +90,34 @@ class SignInPageScreen extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(15.0),
                               ),
                             ),
-                            onPressed: () {},
+                            onPressed: () async {
+                              String password =
+                                  PasswordEncryption.encryptPassword(
+                                      passwordController.text);
+
+                              bloc.add(
+                                Login(
+                                  userEmail: emailController.text,
+                                  userPassword: password,
+                                ),
+                              );
+
+                              final prefs =
+                                  await SharedPreferences.getInstance();
+                              final role = prefs.getString('role');
+
+                              // ignore: use_build_context_synchronously
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => role == "ADMIN"
+                                      ? const AdminHomeScreen()
+                                      : role == "USER"
+                                          ? UserHomeScreenProvider()
+                                          : Container(), // Handle the case when role is neither "ADMIN" nor "USER"
+                                ),
+                              );
+                            },
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               mainAxisSize: MainAxisSize.min,
@@ -111,11 +151,11 @@ class SignInPageScreen extends StatelessWidget {
                             TextButton(
                               onPressed: () {
                                 Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              RegisterScreenProvider()),
-                                    );
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          RegisterScreenProvider()),
+                                );
                               },
                               child: Text(
                                 'Sign up'.toUpperCase(),

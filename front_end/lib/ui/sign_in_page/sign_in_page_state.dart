@@ -1,24 +1,19 @@
 class SignInPageState {
-  final String email;
-  final String password;
+  final bool isAuthenticate;
 
   SignInPageState({
-    required this.email,
-    required this.password,
+    required this.isAuthenticate,
   });
 
   static SignInPageState get initialState => SignInPageState(
-        email: '',
-        password: '',
+        isAuthenticate: false,
       );
 
   SignInPageState clone({
-    String? email,
-    String? password,
+    bool? isAuthenticate,
   }) {
     return SignInPageState(
-      email: email ?? this.email,
-      password: password ?? this.password,
+      isAuthenticate: isAuthenticate ?? this.isAuthenticate,
     );
   }
 }
