@@ -5,6 +5,7 @@ import 'package:front_end/ui/admin_home_page/admin_home_page_bloc.dart';
 import 'package:front_end/ui/admin_home_page/admin_home_page_event.dart';
 import 'package:front_end/ui/sign_in_page/sign_in_page_provider.dart';
 import 'package:front_end/util/encrypted_decrypted_util.dart';
+import 'package:front_end/util/toast_alert.dart';
 
 class RegisterScreen extends StatelessWidget {
   RegisterScreen({super.key});
@@ -24,11 +25,33 @@ class RegisterScreen extends StatelessWidget {
     if (name.isEmpty ||
         email.isEmpty ||
         password.isEmpty ||
-        confirmPassword.isEmpty ||
-        password != confirmPassword) {
+        confirmPassword.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text("Please fill all the fields"),
+        ),
+      );
+    } else if (!RegExp(r'^[a-zA-Z ]+$').hasMatch(
+      nameController.text.trim(),
+    )) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Invalid Name."),
+        ),
+      );
+    } else if (!RegExp(r'^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$').hasMatch(
+      emailController.text.trim(),
+    )) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Invalid Email."),
+        ),
+      );
+    } else if (password != confirmPassword || password.length < 8) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+              "Password must be at least 8 characters Or check your password."),
         ),
       );
     } else {
