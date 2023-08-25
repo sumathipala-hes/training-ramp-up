@@ -216,7 +216,11 @@ class AdminHomePageView extends StatelessWidget {
                     MaterialPageRoute(
                         builder: (context) => const SignInPageView()));
               },
-              icon: const Icon(Icons.logout, color: Colors.white, size: 32),
+              icon: const Icon(
+                Icons.logout,
+                color: Colors.white,
+                size: 30,
+              ),
             ),
           ],
           title: Text(

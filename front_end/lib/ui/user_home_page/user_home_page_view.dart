@@ -61,7 +61,11 @@ class UserHomePageView extends StatelessWidget {
                   MaterialPageRoute(
                       builder: (context) => const SignInPageView()));
             },
-            icon: const Icon(Icons.logout),
+            icon: const Icon(
+              Icons.logout,
+              color: Colors.white,
+              size: 30,
+            ),
           ),
         ],
         title: Text(
