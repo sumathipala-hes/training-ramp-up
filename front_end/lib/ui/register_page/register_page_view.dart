@@ -159,15 +159,6 @@ class RegisterScreen extends StatelessWidget {
                           onPressed: () {
                             _registerForm(context);
                           },
-                          // onPressed: () {
-                          //   Navigator.push(
-                          //     context,
-                          //     MaterialPageRoute(
-                          //       // builder: (context) => UserHomeScreenProvider(),
-                          //       builder: (context) => const AdminHomeScreen(),
-                          //     ),
-                          //   );
-                          // },
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             mainAxisSize: MainAxisSize.min,
