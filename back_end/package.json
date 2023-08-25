@@ -4,7 +4,7 @@
   "description": "Node js backend with express+typescript.",
   "main": "index.js",
   "scripts": {
-    "test": "jest",
+    "test": "jest --watchAll --detectOpenHandles",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
     "start": "nodemon src/app.ts",

@@ -92,7 +92,7 @@ class AdminHomePageView extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const SizedBox(height: 30),
+              const SizedBox(height: 20),
               ElevatedButton(
                 style: popButton,
                 onPressed: () {
@@ -106,7 +106,7 @@ class AdminHomePageView extends StatelessWidget {
                   style: textButton,
                 ),
               ),
-              const SizedBox(height: 30),
+              const SizedBox(height: 20),
               Expanded(
                 child: SingleChildScrollView(
                   child: BlocBuilder<AdminHomePageBloc, AdminHomePageState>(
@@ -156,7 +156,7 @@ class AdminHomePageView extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const SizedBox(height: 30),
+              const SizedBox(height: 20),
               ElevatedButton(
                 style: popButton,
                 onPressed: () {
@@ -170,7 +170,7 @@ class AdminHomePageView extends StatelessWidget {
                   style: textButton,
                 ),
               ),
-              const SizedBox(height: 30),
+              const SizedBox(height: 20),
               Expanded(
                 child: SingleChildScrollView(
                   child: BlocBuilder<AdminHomePageBloc, AdminHomePageState>(
@@ -216,7 +216,7 @@ class AdminHomePageView extends StatelessWidget {
                     MaterialPageRoute(
                         builder: (context) => const SignInPageView()));
               },
-              icon: const Icon(Icons.logout),
+              icon: const Icon(Icons.logout, color: Colors.white, size: 32),
             ),
           ],
           title: Text(
@@ -226,13 +226,36 @@ class AdminHomePageView extends StatelessWidget {
               fontFamily: GoogleFonts.ubuntu().fontFamily,
             ),
           ),
-          bottom: TabBar(
-            labelStyle: textButton,
-            tabs: const [
+          bottom: const TabBar(
+            labelStyle: TextStyle(
+              color: Colors.white,
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+            ),
+            unselectedLabelStyle: TextStyle(
+              color: Colors.white,
+              fontSize: 18,
+              fontWeight: FontWeight.w700,
+            ),
+            indicatorColor: Colors.white,
+            labelColor: Colors.white,
+            labelPadding: EdgeInsets.only(bottom: 8),
+            tabs: [
               Tab(
                 text: "Users Manage",
+                icon: Icon(
+                  Icons.manage_accounts_rounded,
+                  color: Colors.white,
+                  size: 32,
+                ),
               ),
-              Tab(text: "Student Manage"),
+              Tab(
+                  text: "Student Manage",
+                  icon: Icon(
+                    Icons.person_add_alt_1_sharp,
+                    color: Colors.white,
+                    size: 32,
+                  )),
             ],
           ),
         ),

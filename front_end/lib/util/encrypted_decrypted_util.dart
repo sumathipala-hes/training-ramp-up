@@ -2,9 +2,11 @@ import 'dart:convert';
 
 import 'package:encrypt/encrypt.dart' as encrypt;
 
+const _encryption = 'abcdEbGhIjKlMnOpQrStUwvWxYz12345';
+
 String encryptPassword(String password) {
   final plainText = password;
-  final key = encrypt.Key.fromUtf8('abcdEbGhIjKlMnOpQrStUwvWxYz12345');
+  final key = encrypt.Key.fromUtf8(_encryption);
   final iv = encrypt.IV.fromLength(16);
 
   final encrypter = encrypt.Encrypter(encrypt.AES(key));
@@ -14,7 +16,7 @@ String encryptPassword(String password) {
 }
 
 String decryptPassword(String password) {
-  final key = encrypt.Key.fromUtf8('abcdEbGhIjKlMnOpQrStUwvWxYz12345');
+  final key = encrypt.Key.fromUtf8(_encryption);
   final iv = encrypt.IV.fromLength(16);
 
   final encrypter = encrypt.Encrypter(encrypt.AES(key));
