@@ -1,7 +1,7 @@
 import {Request} from 'express'; 
 import AppDataSource from "../config/dataSoure";
 import { Student } from '../models/student';
-import studentRepository from './studentRepo';
+import studentRepository from './repositories/studentRepo';
 
 //get student from the database
 function fetchStudents(){

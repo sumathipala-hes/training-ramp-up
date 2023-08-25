@@ -2,9 +2,8 @@
 import React, { useState } from "react";
 import { Card, TextField, Typography, Button, Grid, Link, Alert } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { isValidEmail, routePaths } from "../../utils";
-import { useDispatch, useSelector } from "react-redux";
-import { userActions } from "../../redux/users/userSlice";
+import { isValidEmail, routePaths, userRoles } from "../../utils";
+import axios from "axios";
 
 const cardStyles = {
     padding: "20px 50px",
@@ -15,21 +14,13 @@ const cardStyles = {
     maxWidth:"400px"
 };
 
-interface userData {
-    name:string ,
-    username: string ,
-    role: string ,
-  }
-  
 function Register(){
 
     const navigate = useNavigate();
-    const dispatch = useDispatch();
-
-    const users = useSelector((state: {user: any; users:userData[]} ) => state.user.users);
 
     const [errorEmail, setErrorEmail] = useState(false);
-    const [errorMessage, setError] = useState(false);
+    const [errorStatus, setError] = useState(false); //api error status
+    const [errorMessage, setErrorMsg] = useState(""); //api error message status
 
     const linkHnadler = (event: { preventDefault: () => void; }) => {
         event.preventDefault();
@@ -42,23 +33,38 @@ function Register(){
         }
     }
 
-    const submitHandler = (event: any) => {
+    const submitHandler = async (event: any) => {
         event.preventDefault();
         const name = event.target[0].value;
         const email =  event.target[2].value;
+        const password =  event.target[4].value;
         // const password = event.target[4].value;
         if(isValidEmail(email)){
             setErrorEmail(false);
-            const userExists = users.some((user: { username: any; }) => user.username === email);
-            if(userExists){
-                setError(true)
-            }else{
-                const registeredUser = {
-                    username : email,
-                    name : name
+            const registeredUser = {
+                username : email,
+                name : name,
+                password : password,
+                role : userRoles.user
+            }
+            try {
+                const response = await axios.post('http://localhost:4000/register', registeredUser, {
+                  headers: {
+                    'Content-Type': 'application/json',
+                  },
+                  withCredentials: true,
+                });
+        
+                if (response.data.status === 200) {
+                    setError(false);
+                  navigate(routePaths.home);
+                } else {
+                  setError(true);
+                  setErrorMsg(response.data.error)
                 }
-                dispatch(userActions.registerUser(registeredUser));
-                navigate(routePaths.signIn);
+            } catch (error:any) {
+                setError(true);
+                setErrorMsg(error.response.data.error)
             }
         }else{
             setErrorEmail(true);
@@ -81,8 +87,8 @@ function Register(){
                             <Link href="#" onClick ={linkHnadler} > SignIn</Link>
                             </Typography>
                         </Grid>
-                        {errorMessage &&
-                        <Alert severity="error">Already an account with the submitted username is exists</Alert>
+                        {errorStatus &&
+                        <Alert severity="error">{errorMessage}</Alert>
                         }
                         <Grid item xs={12}>
                             <TextField  size="small" label="Name" variant="outlined" InputProps={{ sx: { height: "45px"} }} fullWidth required />
