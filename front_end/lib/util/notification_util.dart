@@ -1,5 +1,7 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:logger/logger.dart';
 import '../theme/primary_theme.dart';
 
 Future<void> showFieldError(String message) async {
@@ -11,6 +13,11 @@ Future<void> showFieldError(String message) async {
       textColor: Colors.white,
       timeInSecForIosWeb: 1,
       fontSize: 16.0);
+}
+
+Future<void> generateToken() async {
+  final token = await FirebaseMessaging.instance.getToken();
+  Logger().d('Token: $token');
 }
 
 Future<bool?> showYesNoAlert(BuildContext context) async {

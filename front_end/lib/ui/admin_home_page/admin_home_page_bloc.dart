@@ -36,9 +36,6 @@ class AdminHomePageBloc extends Bloc<AdminHomePageEvent, AdminHomePageState> {
       GetAllUsers(),
     );
 
-    final token = FirebaseMessaging.instance.getToken();
-    Logger().d('Token: $token');
-
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       Logger().d('Got a message whilst in the foreground!');
 
