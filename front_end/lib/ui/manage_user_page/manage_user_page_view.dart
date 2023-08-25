@@ -5,6 +5,7 @@ import 'package:front_end/ui/admin_home_page/admin_home_page_bloc.dart';
 import 'package:front_end/ui/admin_home_page/admin_home_page_event.dart';
 import 'package:front_end/ui/manage_user_page/manage_user_page_bloc.dart';
 import 'package:front_end/ui/manage_user_page/manage_user_page_event.dart';
+import 'package:front_end/util/encrypted_decrypted_util.dart';
 
 // ignore: must_be_immutable
 class ManageUserScreen extends StatelessWidget {
@@ -23,6 +24,63 @@ class ManageUserScreen extends StatelessWidget {
   final User user;
   String selectedItem = 'ADMIN';
   List<String> role = ['ADMIN', 'USER'];
+
+  void _updateForm(context) {
+    final name = nameController.text.trim();
+    final email = emailController.text.trim();
+    final password = passwordController.text.trim();
+    final confirmPassword = confirmPasswordController.text.trim();
+
+    if (name.isEmpty ||
+        email.isEmpty ||
+        password.isEmpty ||
+        confirmPassword.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Please fill all the fields"),
+        ),
+      );
+    } else if (!RegExp(r'^[a-zA-Z ]+$').hasMatch(
+      nameController.text.trim(),
+    )) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Invalid Name."),
+        ),
+      );
+    } else if (!RegExp(r'^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$').hasMatch(
+      emailController.text.trim(),
+    )) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Invalid Email."),
+        ),
+      );
+    } else if (password != confirmPassword || password.length < 8) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+              "Password must be at least 8 characters Or check your password."),
+        ),
+      );
+    } else {
+      Navigator.of(context).pop();
+      AdminHomeScreenBloc bloc = BlocProvider.of<AdminHomeScreenBloc>(context);
+      String encriptedPassword = PasswordEncryption.encryptPassword(
+        passwordController.text.trim(),
+      );
+      bloc.add(
+        UpdateUser(
+          user: User(
+            role: selectedItem,
+            userName: nameController.text,
+            userEmail: emailController.text,
+            userPassword: encriptedPassword,
+          ),
+        ),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -143,18 +201,21 @@ class ManageUserScreen extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           ElevatedButton(
+                            // onPressed: () {
+                            //   Navigator.of(context).pop();
+                            //   rampUpHomeScreenBloc.add(
+                            //     UpdateUser(
+                            //       user: User(
+                            //         role: selectedItem,
+                            //         userName: nameController.text,
+                            //         userEmail: emailController.text,
+                            //         userPassword: passwordController.text,
+                            //       ),
+                            //     ),
+                            //   );
+                            // },
                             onPressed: () {
-                              Navigator.of(context).pop();
-                              rampUpHomeScreenBloc.add(
-                                UpdateUser(
-                                  user: User(
-                                    role: selectedItem,
-                                    userName: nameController.text,
-                                    userEmail: emailController.text,
-                                    userPassword: passwordController.text,
-                                  ),
-                                ),
-                              );
+                              _updateForm(context);
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.green,
