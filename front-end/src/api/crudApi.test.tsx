@@ -4,7 +4,7 @@ import {
   deleteStudentApi,
   updateStudentApi,
   createStudentApi,
-} from './apiService';
+} from './crudApi';
 
 // Mocking Axios for testing
 jest.mock('axios');

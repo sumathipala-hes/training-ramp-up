@@ -4,7 +4,7 @@ import {
   deleteStudentApi,
   getAllStudentsFromApi,
   updateStudentApi,
-} from '../api/apiService';
+} from '../api/crudApi';
 import {
   createStudentSuccess,
   getAllStudentsSuccess,

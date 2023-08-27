@@ -1,16 +1,11 @@
 import { Box, Button, TextField, Typography } from "@mui/material"
 import { useState } from "react";
 import { useNavigate } from "react-router-dom"
-import { addUser } from "../../redux/userSlice";
+import { setCurrentUser, setUserRole } from "../../redux/userSlice";
 import { useDispatch } from "react-redux";
-import { registerApi, userAuthenticatedApi } from "../../api/apiService";
+import { registerApi, userAuthenticatedApi } from "../../api/authApi";
 import jwt_decode from "jwt-decode"
-
-interface JwtPayload {
-    username: string;
-    id: number;
-    role: string;
-}
+import { JwtPayload } from "../LoginPage/LoginPage";
 
 export const SignUp = () => {
     const navigate = useNavigate();
@@ -26,43 +21,50 @@ export const SignUp = () => {
         const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
         return emailRegex.test(email);
     }
+    const role = 'user';
     
     const handleLoginClick = () => {
         navigate('/login')
     }
 
+
     const handleRegisterClick = async () => {
        if (isEmailValid(username)) {
             if (passwordsMatch) {
-                const newUser = {
-                    username,
-                    password,
-                    role: 'user'
-                };
+                if (password.length >= 6) {
+                    try {
+                        const response = await registerApi(username, password, role);
 
-                dispatch(addUser(newUser))
-
-                const response = await registerApi(username, password);
-
-                if (response) {
-                    console.log('api33')
-                    localStorage.setItem("token", response.data.token );
-        
-                    const isAuthenticated = await userAuthenticatedApi();
-                    if (isAuthenticated) {
-                        const decoded = jwt_decode(response.data.token) as JwtPayload;
-                        if (decoded.role === "user") {
-                            navigate('/main');
+                        if (response) {
+                            localStorage.setItem("token", response.data.token );
+                
+                            const isAuthenticated = await userAuthenticatedApi();
+                            if (isAuthenticated) {
+                                const decoded = jwt_decode(response.data.token) as JwtPayload;
+                                dispatch(setCurrentUser(decoded.username));
+                                dispatch(setUserRole('user'))
+                                navigate('/main');
+                            }
+                        }
+                    } catch (error) {
+                        if (error instanceof Error && error.message === 'User already exists') {
+                            alert('User already exists');
                         }
                     }
+                } else {
+                    alert('Password should contain at least 6 characters');
                 }
             } else {
                 alert('Passwords do not match')
             }
        } else {
-        alert ('Invalid email')
+            alert ('Invalid email')
        }
     }
+
+
+
+
         
     return (
         <Box sx={{ height: 'auto', backgroundColor: '#e1e8e8', alignItems:'flex-start', display: 'flex', padding: '20px', margin: '20px', flexDirection: 'column'}}>

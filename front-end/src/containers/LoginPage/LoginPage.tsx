@@ -1,10 +1,13 @@
 import { Box, Button, TextField, Typography } from "@mui/material"
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { loginApi, userAuthenticatedApi } from "../../api/apiService";
+import { loginApi, userAuthenticatedApi } from "../../api/authApi";
 import jwt_decode from "jwt-decode"
+import { useDispatch } from "react-redux";
+import { setCurrentUser, setUserRole } from "../../redux/userSlice";
+import { AxiosError } from "axios";
 
-interface JwtPayload {
+export interface JwtPayload {
     username: string;
     id: number;
     role: string;
@@ -13,6 +16,7 @@ interface JwtPayload {
 export const Login = () => {
 
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
@@ -23,7 +27,8 @@ export const Login = () => {
     }
 
     const handleLoginClick = async () => {
-
+        try {
+            
         const response = await loginApi(username, password);
         if (response) {
             localStorage.setItem("token", response.data.token );
@@ -31,13 +36,27 @@ export const Login = () => {
             const isAuthenticated = await userAuthenticatedApi();
             if (isAuthenticated) {
                 const decoded = jwt_decode(response.data.token) as JwtPayload;
+                dispatch(setCurrentUser(decoded.username));
                 if (decoded.role === "admin") {
+                    dispatch(setUserRole('admin'))
                     navigate('/admin');
                 } else if (decoded.role === "user") {
-                navigate('/main');
+                    dispatch(setUserRole('user'))
+                    navigate('/main');
                 }
             }
-        }   
+        }
+            
+        } catch (error) {
+            if (error instanceof AxiosError && error.response) {
+                const errorMessage = error.response.data || 'An error occurred during login.';
+                alert(`Login error: ${errorMessage}`);
+              } else {
+
+                alert('An error occurred during login. Please try again.');
+              }
+        }
+   
 
         //const users = useSelector((state: any) => state.user.users);
 

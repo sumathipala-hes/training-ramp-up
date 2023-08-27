@@ -20,9 +20,9 @@ import {
   setRowModesModel,
   setRows,
   updateStudent,
-} from '../redux/slice';
+} from '../../redux/slice';
 import { useEffect } from 'react';
-import { Student } from '../redux/slice';
+import { Student } from '../../redux/slice';
 import React from 'react';
 import Snackbar from '@mui/material/Snackbar';
 import { io } from 'socket.io-client';
@@ -40,6 +40,10 @@ const EditToolbar = (props: EditToolbarProps) => {
   const dispatch = useDispatch();
   const rows = useSelector((state: any) => state.data.records);
   const rowModesModel = useSelector((state: any) => state.data.rowModesModel);
+  const userRole = useSelector((state: any) => state.user.userRole);
+
+  const isAddDisabled = userRole=== 'user'
+
   const handleAddClick = () => {
     const id = 0;
     const newRow = {
@@ -68,6 +72,7 @@ const EditToolbar = (props: EditToolbarProps) => {
       <Button
         color="primary"
         onClick={handleAddClick}
+        disabled={isAddDisabled}
         sx={{ display: 'flex', justifyContent: 'flex-start' }}
       >
         Add New
@@ -80,6 +85,11 @@ export const DataTable = () => {
   const dispatch = useDispatch();
   const rows = useSelector((state: any) => state.data.records);
   const rowModesModel = useSelector((state: any) => state.data.rowModesModel);
+  const userRole = useSelector((state: any) => state.user.userRole);
+
+
+  const isEditDisabled = userRole=== 'user'
+  const isDeleteDisabled = userRole=== 'user'
 
   useEffect(() => {
     dispatch(getAllStudents());
@@ -297,6 +307,7 @@ export const DataTable = () => {
               color="error"
               size="small"
               onClick={handleEditClick(id)}
+              disabled={isEditDisabled}
             >
               Edit
             </Button>,
@@ -306,6 +317,7 @@ export const DataTable = () => {
               color="primary"
               size="small"
               onClick={handleDeleteClick(id)}
+              disabled={isDeleteDisabled}
             >
               Delete
             </Button>,

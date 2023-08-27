@@ -2,7 +2,7 @@ import React from 'react';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { DataTable } from './DataTable';
-import dataReducer from '../redux/slice';
+import dataReducer from '../../redux/slice';
 import { configureStore } from '@reduxjs/toolkit';
 
 const initialState = {
