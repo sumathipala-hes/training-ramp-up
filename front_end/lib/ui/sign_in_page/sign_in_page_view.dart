@@ -6,8 +6,12 @@ import 'package:front_end/ui/admin_home_page/admin_home_page_view.dart';
 import 'package:front_end/ui/register_page/register_page_provider.dart';
 import 'package:front_end/ui/sign_in_page/sign_in_page_bloc.dart';
 import 'package:front_end/ui/sign_in_page/sign_in_page_event.dart';
+import 'package:front_end/ui/sign_in_page/sign_in_page_provider.dart';
+import 'package:front_end/ui/user_home_page/user_home_page_bloc.dart';
+import 'package:front_end/ui/user_home_page/user_home_page_event.dart';
 import 'package:front_end/ui/user_home_page/user_home_page_view.dart';
 import 'package:front_end/util/encrypted_decrypted_util.dart';
+import 'package:logger/logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SignInPageScreen extends StatelessWidget {
@@ -17,6 +21,8 @@ class SignInPageScreen extends StatelessWidget {
   final TextEditingController passwordController = TextEditingController();
 
   void _signInForm(context) async {
+    UserHomeScreenBloc block = BlocProvider.of<UserHomeScreenBloc>(context);
+
     final email = emailController.text.trim();
     final password = passwordController.text.trim();
 
@@ -58,6 +64,8 @@ class SignInPageScreen extends StatelessWidget {
       final prefs = await SharedPreferences.getInstance();
       final role = prefs.getString('role');
 
+      Logger().e(role);
+
       print(role);
       role == "ADMIN"
           ? Navigator.push(
@@ -73,7 +81,12 @@ class SignInPageScreen extends StatelessWidget {
                     builder: (context) => const UserHomeScreen(),
                   ),
                 )
-              : Container();
+              : Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => SignInPageProvider(),
+                  ),
+                );
     }
   }
 
@@ -153,34 +166,6 @@ class SignInPageScreen extends StatelessWidget {
                             onPressed: () {
                               _signInForm(context);
                             },
-                            // onPressed: () async {
-                            //   String password =
-                            //       PasswordEncryption.encryptPassword(
-                            //           passwordController.text);
-
-                            //   bloc.add(
-                            //     Login(
-                            //       userEmail: emailController.text,
-                            //       userPassword: password,
-                            //     ),
-                            //   );
-
-                            //   final prefs =
-                            //       await SharedPreferences.getInstance();
-                            //   final role = prefs.getString('role');
-
-                            //   // ignore: use_build_context_synchronously
-                            //   Navigator.push(
-                            //     context,
-                            //     MaterialPageRoute(
-                            //       builder: (context) => role == "ADMIN"
-                            //           ? const AdminHomeScreen()
-                            //           : role == "USER"
-                            //               ? UserHomeScreenProvider()
-                            //               : Container(), // Handle the case when role is neither "ADMIN" nor "USER"
-                            //     ),
-                            //   );
-                            // },
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               mainAxisSize: MainAxisSize.min,

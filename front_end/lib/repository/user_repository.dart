@@ -56,7 +56,7 @@ class UserRepository {
     }
   }
 
-    Future<bool> signIn(String userEmail, String userPassword) async {
+    Future<void> signIn(String userEmail, String userPassword) async {
     final res = await http.post(
       Uri.parse('$baseUrl/user/signIn'),
       headers: <String, String>{
@@ -79,13 +79,11 @@ class UserRepository {
         Map<String, dynamic> decodedToken = JwtDecoder.decode(accessToken);
         prefs.setString('userEmail', decodedToken['userEmail']);
         prefs.setString('role', decodedToken['role']);
-        return true;
       }
     }
     if (res.statusCode == 500) {
       toastAlert('Failed Login..!');
     }
-    return false;
   }
 
   Future<void> signOut() async {

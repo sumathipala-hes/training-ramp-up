@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:front_end/ui/sign_in_page/sign_in_page_provider.dart';
 import 'package:front_end/ui/user_home_page/user_home_page_bloc.dart';
+import 'package:front_end/ui/user_home_page/user_home_page_event.dart';
 import 'package:front_end/ui/user_home_page/user_home_page_state.dart';
 import 'package:front_end/ui/widget/student_card.dart';
 
@@ -10,6 +11,7 @@ class UserHomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    UserHomeScreenBloc bloc = BlocProvider.of<UserHomeScreenBloc>(context);
     return Scaffold(
       appBar: AppBar(
         elevation: 7,
@@ -23,10 +25,12 @@ class UserHomeScreen extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.logout),
             onPressed: () {
+              bloc.add(
+                LogOut(),
+              );
               Navigator.push(
                 context,
-                MaterialPageRoute(
-                    builder: (context) => SignInPageProvider()),
+                MaterialPageRoute(builder: (context) => SignInPageProvider()),
               );
             },
           ),

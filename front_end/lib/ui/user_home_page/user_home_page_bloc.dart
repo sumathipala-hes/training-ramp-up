@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:front_end/repository/user_repository.dart';
 import 'package:front_end/ui/user_home_page/user_home_page_event.dart';
 import 'package:front_end/ui/user_home_page/user_home_page_state.dart';
 import 'package:front_end/util/firebase_messaging.dart';
@@ -12,6 +13,7 @@ import 'package:front_end/repository/student_repository.dart';
 class UserHomeScreenBloc extends Bloc<UserHomePageEvent, UserHomeState> {
   UserHomeScreenBloc(BuildContext context) : super(UserHomeState.initialState) {
     on<GetAllStudents>(_onGetAllStudents);
+    on<LogOut>(_onLogOut);
     add(
       GetAllStudents(),
     );
@@ -42,5 +44,9 @@ class UserHomeScreenBloc extends Bloc<UserHomePageEvent, UserHomeState> {
     } else {
       throw Exception('Failed to load students');
     }
+  }
+
+  FutureOr<void> _onLogOut(LogOut event, Emitter<UserHomeState> emit) async {
+    await UserRepository().signOut();
   }
 }

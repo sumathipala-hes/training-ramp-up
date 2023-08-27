@@ -194,23 +194,4 @@ export default class UserController {
       return res.status(500).json(error);
     }
   };
-
-  getDetails = async (req: Request, res: Response): Promise<Response> => {
-    try {
-      const payload = jwt.verify(req.cookies.accessToken, jwtConfig.secretKey!);
-      if (payload) {
-        const user = jwt.sign(payload, jwtConfig.userKey!, {
-          expiresIn: jwtConfig.expiresIn,
-        });
-        res.cookie('user', user, {
-          httpOnly: true,
-        });
-        return res.status(200).json({ user });
-      } else {
-        return res.status(401).json({ message: 'Unauthorized' });
-      }
-    } catch (error) {
-      return res.status(500).json(error);
-    }
-  };
 }
