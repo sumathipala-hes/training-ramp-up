@@ -6,7 +6,6 @@ import 'package:front_end/ui/admin_home_page/admin_home_page_view.dart';
 import 'package:front_end/ui/register_page/register_page_provider.dart';
 import 'package:front_end/ui/sign_in_page/sign_in_page_bloc.dart';
 import 'package:front_end/ui/sign_in_page/sign_in_page_event.dart';
-import 'package:front_end/ui/user_home_page/user_home_page_provider.dart';
 import 'package:front_end/ui/user_home_page/user_home_page_view.dart';
 import 'package:front_end/util/encrypted_decrypted_util.dart';
 import 'package:shared_preferences/shared_preferences.dart';
