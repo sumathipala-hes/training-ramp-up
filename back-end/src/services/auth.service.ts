@@ -15,14 +15,14 @@ export const createTokens = (user: User) => {
 }
 
 export const registerService = async (data: UserData) => {
-    const { username, password } = data;
+    const { username, password, role } = data;
 
     const hash = await bcrypt.hash(password, 10);
 
     const user = User.create({
         username: username,
         password: hash,
-        role: 'user',
+        role: role,
     });
 
     await user.save();
