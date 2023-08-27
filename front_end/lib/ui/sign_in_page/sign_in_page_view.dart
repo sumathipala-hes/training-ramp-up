@@ -7,6 +7,7 @@ import 'package:front_end/ui/register_page/register_page_provider.dart';
 import 'package:front_end/ui/sign_in_page/sign_in_page_bloc.dart';
 import 'package:front_end/ui/sign_in_page/sign_in_page_event.dart';
 import 'package:front_end/ui/user_home_page/user_home_page_provider.dart';
+import 'package:front_end/ui/user_home_page/user_home_page_view.dart';
 import 'package:front_end/util/encrypted_decrypted_util.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -58,17 +59,22 @@ class SignInPageScreen extends StatelessWidget {
       final prefs = await SharedPreferences.getInstance();
       final role = prefs.getString('role');
 
-      // ignore: use_build_context_synchronously
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => role == "ADMIN"
-              ? const AdminHomeScreen()
-              : role == "USER"
-                  ? UserHomeScreenProvider()
-                  : Container(), // Handle the case when role is neither "ADMIN" nor "USER"
-        ),
-      );
+      print(role);
+      role == "ADMIN"
+          ? Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const AdminHomeScreen(),
+              ),
+            )
+          : role == "USER"
+              ? Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const UserHomeScreen(),
+                  ),
+                )
+              : Container();
     }
   }
 

@@ -179,18 +179,18 @@ class RegisterScreen extends StatelessWidget {
                               borderRadius: BorderRadius.circular(15.0),
                             ),
                           ),
-                          // onPressed: () {
-                          //   _registerForm(context);
-                          // },
                           onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                // builder: (context) => UserHomeScreenProvider(),
-                                builder: (context) => const AdminHomeScreen(),
-                              ),
-                            );
+                            _registerForm(context);
                           },
+                          // onPressed: () {
+                          //   Navigator.push(
+                          //     context,
+                          //     MaterialPageRoute(
+                          //       // builder: (context) => UserHomeScreenProvider(),
+                          //       builder: (context) => const AdminHomeScreen(),
+                          //     ),
+                          //   );
+                          // },
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             mainAxisSize: MainAxisSize.min,
