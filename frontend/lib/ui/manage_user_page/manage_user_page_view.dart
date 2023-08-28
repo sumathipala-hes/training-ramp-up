@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:frontend/enum/role_enum.dart';
 import 'package:frontend/model/user.dart';
 import 'package:frontend/ui/manage_user_page/manage_user_page_bloc.dart';
 import 'package:frontend/ui/manage_user_page/manage_user_page_event.dart';
@@ -25,8 +26,11 @@ class ManageUserPageView extends StatelessWidget {
   }
 
   final User user;
-  final String selectedItem = 'User';
-  final List<String> roles = ['Admin', 'User'];
+  final String selectedItem = RoleEnum.user.toString();
+  final List<String> roles = [
+    RoleEnum.admin.toString(),
+    RoleEnum.user.toString()
+  ];
 
   @override
   Widget build(BuildContext context) {

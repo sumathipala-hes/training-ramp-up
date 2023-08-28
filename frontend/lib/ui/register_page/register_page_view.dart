@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:frontend/enum/role_enum.dart';
 import 'package:frontend/model/user.dart';
 import 'package:frontend/ui/register_page/register_page_bloc.dart';
 import 'package:frontend/ui/register_page/register_page_event.dart';
@@ -179,7 +180,7 @@ class RegisterPageView extends StatelessWidget {
                               name: nameController.text,
                               email: emailController.text,
                               password: passwordController.text,
-                              role: 'User',
+                              role: RoleEnum.user.toString(),
                             ),
                             confirmPassword: confirmController.text,
                           ),
