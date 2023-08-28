@@ -1,7 +1,6 @@
 import express from 'express';
 
 import {
-  generateNewAccessToken,
   requestCreateUser,
   requestDeleteUser,
   requestGetAllUsers,
@@ -21,9 +20,7 @@ router.post('/', validateUsers, requestCreateUser);
 router.put('/:id', validateUsers, requestUpdateUser);
 router.delete('/:id', requestDeleteUser);
 
-router.post('/signIn', signIn);
-router.post('/new', generateNewAccessToken);
-router.post('/detail', authorizationPermissions, signIn);
+router.post('/signIn', authorizationPermissions, signIn);
 router.delete('/signOut', authorizationPermissions, signOut);
 
 export default router;
