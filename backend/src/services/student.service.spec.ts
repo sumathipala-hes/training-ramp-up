@@ -8,7 +8,6 @@ import {
 } from '../services/student.service';
 import { sendNotification } from '../utils/notification.util';
 
-
 jest.mock('../utils/notification.util', () => ({
   sendNotification: jest.fn(),
 }));
@@ -53,7 +52,8 @@ describe('Student Controller Checked', () => {
       const data = await saveStudent(newStudent);
       expect(data).toEqual(newStudent);
       expect(sendNotification).toHaveBeenCalledWith(
-        'Successful', 'New Student Saved..!'
+        'Successful',
+        'New Student Saved..!'
       );
     });
     test('Save Student Fail', async () => {
@@ -77,7 +77,8 @@ describe('Student Controller Checked', () => {
       const data = await updateStudent('1', student);
       expect(data).toEqual(student);
       expect(sendNotification).toHaveBeenCalledWith(
-        'Successful', 'New Student Updated..!'
+        'Successful',
+        'New Student Updated..!'
       );
     });
 
@@ -94,7 +95,8 @@ describe('Student Controller Checked', () => {
       const data = await deleteStudent(id);
       expect(data).toEqual(id);
       expect(sendNotification).toHaveBeenCalledWith(
-        'Successful', 'New Student Deleted..!'
+        'Successful',
+        'New Student Deleted..!'
       );
     });
 

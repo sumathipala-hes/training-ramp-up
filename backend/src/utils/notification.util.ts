@@ -1,5 +1,5 @@
 import * as admin from 'firebase-admin';
-import {config} from 'dotenv';
+import { config } from 'dotenv';
 config();
 
 const token = process.env.FIREBASE_TOKEN!;

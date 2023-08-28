@@ -87,7 +87,7 @@ export const signIn: RequestHandler = async (
     } else {
       res.status(401).json({ message: 'Unauthorized' });
     }
-  } catch (error) {    
+  } catch (error) {
     console.log(error);
     res.status(500).json(error);
   }

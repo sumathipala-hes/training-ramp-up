@@ -38,9 +38,9 @@ export const authorization = (
   } else {
     try {
       const payload = jwt.verify(accessToken, jwtConfig.secretKey);
-      payload? next() : res.sendStatus(401);
+      payload ? next() : res.sendStatus(401);
     } catch {
       res.sendStatus(403);
     }
   }
-}
+};

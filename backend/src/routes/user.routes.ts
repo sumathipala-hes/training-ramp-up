@@ -7,11 +7,11 @@ import {
   updateUsers,
   signOut,
 } from '../controllers/user.controller';
-import {  authorization } from '../middleware/jwt.middleware';
+import { authorization } from '../middleware/jwt.middleware';
 
 const router: Router = express.Router();
 
-router.get('/',retriveAllUsers);
+router.get('/', retriveAllUsers);
 router.post('/signIn', signIn);
 router.post('/', addUsers);
 router.put('/:email', updateUsers);

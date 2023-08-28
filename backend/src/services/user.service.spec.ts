@@ -1,7 +1,13 @@
 import { dataSource } from '../configs/datasource.config';
 import { User } from '../models/user.model';
 import { sendNotification } from '../utils/notification.util';
-import { deleteUser, getAllUsers, getUser, saveUser, updateUser } from './user.service';
+import {
+  deleteUser,
+  getAllUsers,
+  getUser,
+  saveUser,
+  updateUser,
+} from './user.service';
 
 jest.mock('../utils/notification.util', () => ({
   sendNotification: jest.fn(),
@@ -12,12 +18,12 @@ describe('User Service Checked', () => {
 
   describe('Get All Users', () => {
     const allUsers = [
-        {
-            name: 'Dasun',
-            email: 'dasun@gmail.com',
-            password: '1234',
-            role: 'admin',
-        },
+      {
+        name: 'Dasun',
+        email: 'dasun@gmail.com',
+        password: '1234',
+        role: 'admin',
+      },
     ];
     test('Get All Users Success', async () => {
       userRepo.find = jest.fn().mockResolvedValue(allUsers);
@@ -32,10 +38,10 @@ describe('User Service Checked', () => {
 
   describe('Save User', () => {
     const newUser = {
-        name: 'Dasun',
-        email: 'dasun@gmail.com',
-        password: '1234',
-        role: 'admin',
+      name: 'Dasun',
+      email: 'dasun@gmail.com',
+      password: '1234',
+      role: 'admin',
     };
 
     test('Save User Success', async () => {
@@ -43,7 +49,8 @@ describe('User Service Checked', () => {
       const data = await saveUser(newUser);
       expect(data).toEqual(newUser);
       expect(sendNotification).toHaveBeenCalledWith(
-        'Successful', 'New User Saved..!'
+        'Successful',
+        'New User Saved..!'
       );
     });
     test('Save User Fail', async () => {
@@ -54,10 +61,10 @@ describe('User Service Checked', () => {
 
   describe('Update User', () => {
     const user: User = {
-        name: 'Dasun',
-        email: 'dasun@gmail.com',
-        password: '1234',
-        role: 'admin',
+      name: 'Dasun',
+      email: 'dasun@gmail.com',
+      password: '1234',
+      role: 'admin',
     };
 
     test('Update User Success', async () => {
@@ -65,7 +72,8 @@ describe('User Service Checked', () => {
       const data = await updateUser('1', user);
       expect(data).toEqual(user);
       expect(sendNotification).toHaveBeenCalledWith(
-        'Successful', 'New User Updated..!'
+        'Successful',
+        'New User Updated..!'
       );
     });
 
@@ -82,7 +90,8 @@ describe('User Service Checked', () => {
       const data = await deleteUser(email);
       expect(data).toEqual(email);
       expect(sendNotification).toHaveBeenCalledWith(
-        'Successful', 'New User Deleted..!'
+        'Successful',
+        'New User Deleted..!'
       );
     });
 
@@ -94,21 +103,22 @@ describe('User Service Checked', () => {
 
   describe('Get User', () => {
     const userRepo = dataSource.manager.getRepository(User);
-    const result:User = {
-        name: 'Dasun',
-        email: 'dasun@gmail.com',
-        password: '1234',
-        role: 'admin',
+    const result: User = {
+      name: 'Dasun',
+      email: 'dasun@gmail.com',
+      password: '1234',
+      role: 'admin',
     };
     test('Get Users Success', async () => {
       userRepo.findOne = jest.fn().mockResolvedValue(result);
-      const data = await getUser('dasun@gmail.com','1234');
+      const data = await getUser('dasun@gmail.com', '1234');
       expect(data).toEqual(result);
     });
     test('Get All Students Fail', async () => {
       userRepo.findOne = jest.fn().mockRejectedValue(new Error('Error'));
-      await expect(getUser('dasun@gmail.com','1234')).rejects.toThrowError('Error');
+      await expect(getUser('dasun@gmail.com', '1234')).rejects.toThrowError(
+        'Error'
+      );
     });
   });
 });
-
