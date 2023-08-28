@@ -10,6 +10,10 @@ export const getAllUsers = async (): Promise<Array<User>> => {
         email: 'DESC',
       },
     });
+    if (users.length == 0) {
+      sendNotification('Warning', 'No Users Found..!');
+      throw new Error('No Users Found..!');
+    }
     return users;
   } catch (error) {
     throw error;
