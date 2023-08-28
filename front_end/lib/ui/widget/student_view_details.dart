@@ -1,100 +1,52 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:front_end/model/student_model.dart';
 import 'package:intl/intl.dart';
 
 import '../../theme/primary_theme.dart';
-import '../admin_home_page/admin_home_page_bloc.dart';
-import '../admin_home_page/admin_home_page_event.dart';
 
-class StudentPopupModal extends StatefulWidget {
-  const StudentPopupModal({super.key});
+class StudentPopupModalView extends StatefulWidget {
+  const StudentPopupModalView({super.key, required this.student});
+  final Student student;
 
   @override
   // ignore: library_private_types_in_public_api
-  _StudentPopupModalState createState() => _StudentPopupModalState();
+  _StudentPopupModalViewState createState() => _StudentPopupModalViewState();
 }
 
-class _StudentPopupModalState extends State<StudentPopupModal> {
+class _StudentPopupModalViewState extends State<StudentPopupModalView> {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController addressController = TextEditingController();
   final TextEditingController mobileNoController = TextEditingController();
   final TextEditingController dateController = TextEditingController();
-  bool isSaveButtonEnabled = false;
-
-  static final RegExp _nameRegExp = RegExp(r'^[a-zA-Z ]+$');
-  static final RegExp _telNoRegExp = RegExp(r'^(07(0|1|2|4|5|6|7|8)[0-9]{7})$');
-  static final RegExp _addressRegExp = RegExp(r'^[a-zA-Z0-9 ]+$');
-
   String selectedGender = "Male";
-  DateTime dob = DateTime(DateTime.now().year - 18);
-
-  void clear() {
-    nameController.clear();
-    addressController.clear();
-    mobileNoController.clear();
-    dateController.clear();
-  }
-
-  Future<void> _selectDate(BuildContext context) async {
-    final DateTime? date = await showDatePicker(
-      context: context,
-      initialDate: DateTime(DateTime.now().year - 18),
-      firstDate: DateTime(DateTime.now().year - 28),
-      lastDate: DateTime(DateTime.now().year - 18),
-    );
-
-    dateController.text = DateFormat('EEE MMM d yyyy').format(
-      date ?? dob,
-    );
-    dob = date ?? dob;
-  }
-
-  bool isNumeric(String value) {
-    // ignore: unnecessary_null_comparison
-    if (value == null) {
-      return false;
-    }
-    return double.tryParse(value) != null;
-  }
+  int age = 0;
 
   @override
   void initState() {
     super.initState();
-    nameController.addListener(_updateSaveButton);
-    addressController.addListener(_updateSaveButton);
-    mobileNoController.addListener(_updateSaveButton);
-    dateController.addListener(_updateSaveButton);
+    nameController.text = widget.student.name;
+    addressController.text = widget.student.address;
+    mobileNoController.text = widget.student.mobileNumber;
+    dateController.text = DateFormat('EEE MMM d yyyy').format(
+      widget.student.dob,
+    );
+    selectedGender = widget.student.gender;
   }
 
-  void _updateSaveButton() {
-    final isAnyFieldEmpty = nameController.text.trim().isEmpty ||
-        addressController.text.trim().isEmpty ||
-        mobileNoController.text.trim().isEmpty ||
-        dateController.text.trim().isEmpty;
-
-    final isMobileNumberValid = isNumeric(mobileNoController.text.trim());
-
-    setState(() {
-      isSaveButtonEnabled = !isAnyFieldEmpty &&
-          isMobileNumberValid &&
-          _nameRegExp.hasMatch(
-            nameController.text.trim(),
-          ) &&
-          _addressRegExp.hasMatch(
-            addressController.text.trim(),
-          ) &&
-          _telNoRegExp.hasMatch(
-            mobileNoController.text.trim(),
-          );
-    });
+  int calculateAge() {
+    final DateTime birthDate = widget.student.dob;
+    final currentDate = DateTime.now();
+    age = currentDate.year - birthDate.year;
+    if (currentDate.month < birthDate.month ||
+        (currentDate.month == birthDate.month &&
+            currentDate.day < birthDate.day)) {
+      age--;
+    }
+    return age;
   }
 
   @override
   Widget build(BuildContext context) {
-    AdminHomePageBloc homePageBloc =
-        BlocProvider.of<AdminHomePageBloc>(context);
-
     return AlertDialog(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(15.0),
@@ -102,9 +54,20 @@ class _StudentPopupModalState extends State<StudentPopupModal> {
       title: SizedBox(
         width: MediaQuery.of(context).size.width * 0.8,
         child: Center(
-          child: Text(
-            "ADD NEW STUDENT",
-            style: headerText,
+          child: Column(
+            children: [
+              Text(
+                "${widget.student.name} Details",
+                style: headerText2,
+              ),
+              const SizedBox(
+                height: 5,
+              ),
+              Text(
+                age == 0 ? "Age: ${calculateAge()}" : "Age: $age",
+                style: headerText3,
+              ),
+            ],
           ),
         ),
       ),
@@ -113,6 +76,7 @@ class _StudentPopupModalState extends State<StudentPopupModal> {
         children: [
           const SizedBox(height: 10),
           TextField(
+            enabled: false,
             controller: nameController,
             decoration: InputDecoration(
               labelText: "Student Name",
@@ -132,6 +96,7 @@ class _StudentPopupModalState extends State<StudentPopupModal> {
           ),
           const SizedBox(height: 10),
           TextField(
+            enabled: false,
             controller: addressController,
             decoration: InputDecoration(
               labelText: "Student Address",
@@ -151,6 +116,7 @@ class _StudentPopupModalState extends State<StudentPopupModal> {
           ),
           const SizedBox(height: 10),
           TextField(
+            enabled: false,
             controller: mobileNoController,
             decoration: InputDecoration(
               labelText: "Mobile No",
@@ -172,10 +138,8 @@ class _StudentPopupModalState extends State<StudentPopupModal> {
             height: 10,
           ),
           TextFormField(
+            enabled: false,
             controller: dateController,
-            onTap: () {
-              _selectDate(context);
-            },
             decoration: InputDecoration(
               labelText: "DOB",
               labelStyle: labelText,
@@ -205,13 +169,7 @@ class _StudentPopupModalState extends State<StudentPopupModal> {
                 Radio(
                   value: "Male",
                   groupValue: selectedGender,
-                  onChanged: (value) {
-                    setState(
-                      () {
-                        selectedGender = value!;
-                      },
-                    );
-                  },
+                  onChanged: (value) {},
                 ),
                 Text(
                   "Male",
@@ -220,13 +178,7 @@ class _StudentPopupModalState extends State<StudentPopupModal> {
                 Radio(
                   value: "Female",
                   groupValue: selectedGender,
-                  onChanged: (value) {
-                    setState(
-                      () {
-                        selectedGender = value!;
-                      },
-                    );
-                  },
+                  onChanged: (value) {},
                 ),
                 Text(
                   "Female",
@@ -238,35 +190,6 @@ class _StudentPopupModalState extends State<StudentPopupModal> {
         ],
       ),
       actions: [
-        SizedBox(
-          width: 120,
-          height: 40,
-          child: ElevatedButton(
-            onPressed: isSaveButtonEnabled
-                ? () {
-                    homePageBloc.add(
-                      SaveStudent(
-                        student: Student(
-                          id: '',
-                          name: nameController.text.trim(),
-                          address: addressController.text.trim(),
-                          mobileNumber: mobileNoController.text.trim(),
-                          dob: dob,
-                          gender: selectedGender,
-                        ),
-                      ),
-                    );
-                    clear();
-                    Navigator.of(context).pop();
-                  }
-                : null,
-            style: saveButton,
-            child: Text(
-              "SAVE",
-              style: textButton,
-            ),
-          ),
-        ),
         SizedBox(
           width: 120,
           height: 40,

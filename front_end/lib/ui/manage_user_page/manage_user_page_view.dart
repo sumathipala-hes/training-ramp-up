@@ -9,7 +9,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 
 import '../../theme/primary_theme.dart';
-import '../../util/notification.util.dart';
+import '../../util/encrypted_decrypted_util.dart';
+import '../../util/notification_util.dart';
+import '../../util/validation_utils.dart';
 import '../admin_home_page/admin_home_page_bloc.dart';
 import '../admin_home_page/admin_home_page_event.dart';
 import 'manage_user_page_bloc.dart';
@@ -25,13 +27,14 @@ class UserMangeView extends StatelessWidget {
     dateController.text = DateFormat('EEE MMM d yyyy').format(user.dob);
     dob = user.dob;
     emailController.text = user.email;
-    passwordController.text = user.password;
     userTypeController.text = user.roleType;
+    passwordController.text = decryptPassword(user.password);
   }
 
   final TextEditingController nameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+
   final TextEditingController userTypeController = TextEditingController();
   final TextEditingController addressController = TextEditingController();
   final TextEditingController mobileNoController = TextEditingController();
@@ -231,6 +234,7 @@ class UserMangeView extends StatelessWidget {
                             ),
                             const SizedBox(height: 20),
                             TextField(
+                              enabled: false,
                               controller: userManageBloc.state.emailText.isEmpty
                                   ? emailController
                                   : TextEditingController(
@@ -353,8 +357,11 @@ class UserMangeView extends StatelessWidget {
                                     groupValue:
                                         userManageBloc.state.selectedGender,
                                     onChanged: (value) {
-                                      userManageBloc.add(SelectGender(
-                                          select: value.toString()));
+                                      userManageBloc.add(
+                                        SelectGender(
+                                          select: value.toString(),
+                                        ),
+                                      );
                                     },
                                   ),
                                   Text(
@@ -379,53 +386,61 @@ class UserMangeView extends StatelessWidget {
                             width: 140,
                             height: 45,
                             child: ElevatedButton(
-                              onPressed: () {
-                                if (userTypeController.text.trim().isEmpty ||
-                                    nameController.text.trim().isEmpty ||
-                                    addressController.text.trim().isEmpty ||
-                                    emailController.text.trim().isEmpty ||
-                                    mobileNoController.text.trim().isEmpty ||
-                                    dateController.text.trim().isEmpty ||
-                                    passwordController.text.trim().isEmpty) {
+                              onPressed: () async {
+                                if (ValidationUtils.isFieldEmpty(
+                                        userTypeController.text) ||
+                                    ValidationUtils.isFieldEmpty(
+                                        nameController.text) ||
+                                    ValidationUtils.isFieldEmpty(
+                                        addressController.text) ||
+                                    ValidationUtils.isFieldEmpty(
+                                        emailController.text) ||
+                                    ValidationUtils.isFieldEmpty(
+                                        mobileNoController.text) ||
+                                    ValidationUtils.isFieldEmpty(
+                                        dateController.text) ||
+                                    ValidationUtils.isFieldEmpty(
+                                        passwordController.text)) {
                                   showFieldError(
                                       'Text Field should not be empty.');
-                                } else if (!RegExp(r'^[a-zA-Z ]+$')
-                                    .hasMatch(nameController.text.trim())) {
+                                } else if (!ValidationUtils.isValidName(
+                                    nameController.text)) {
                                   showFieldError('Invalid Name.');
-                                } else if (!RegExp(r'^[a-zA-Z0-9 ]+$')
-                                    .hasMatch(addressController.text.trim())) {
+                                } else if (!ValidationUtils.isValidAddress(
+                                    addressController.text)) {
                                   showFieldError('Invalid Address.');
-                                } else if (!RegExp(
-                                        r'^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$')
-                                    .hasMatch(emailController.text.trim())) {
+                                } else if (!ValidationUtils.isValidEmail(
+                                    emailController.text)) {
                                   showFieldError('Invalid Email.');
-                                } else if (!RegExp(
-                                        r'^(07(0|1|2|4|5|6|7|8)[0-9]{7})$')
-                                    .hasMatch(mobileNoController.text.trim())) {
+                                } else if (!ValidationUtils.isValidMobileNumber(
+                                    mobileNoController.text)) {
                                   showFieldError('Invalid Mobile No.');
-                                } else if (!RegExp(
-                                        r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{8,}$')
-                                    .hasMatch(passwordController.text.trim())) {
+                                } else if (!ValidationUtils.isValidPassword(
+                                    passwordController.text)) {
                                   showFieldError(
                                       'Password should be at least 8 characters.');
                                 } else {
-                                  homePageBloc.add(SaveUser(
+                                  final password =
+                                      encryptPassword(passwordController.text);
+
+                                  homePageBloc.add(
+                                    UpdateUser(
                                       user: User(
-                                          roleType:
-                                              userTypeController.text.trim(),
-                                          name: nameController.text.trim(),
-                                          address:
-                                              addressController.text.trim(),
-                                          email: emailController.text.trim(),
-                                          mobileNumber:
-                                              mobileNoController.text.trim(),
-                                          dob: dob,
-                                          password:
-                                              passwordController.text.trim(),
-                                          gender: userManageBloc
-                                              .state.selectedGender)));
+                                        roleType: userTypeController.text,
+                                        name: nameController.text,
+                                        address: addressController.text,
+                                        email: emailController.text,
+                                        mobileNumber: mobileNoController.text,
+                                        dob: dob,
+                                        password: password,
+                                        gender:
+                                            userManageBloc.state.selectedGender,
+                                      ),
+                                    ),
+                                  );
                                   clear();
 
+                                  // ignore: use_build_context_synchronously
                                   Navigator.of(context).pop();
                                 }
                               },
@@ -444,7 +459,7 @@ class UserMangeView extends StatelessWidget {
                                 showYesNoAlert(context).then((confirmed) {
                                   if (confirmed != null && confirmed) {
                                     homePageBloc.add(
-                                      DeleteStudent(id: user.email),
+                                      DeleteUser(email: user.email),
                                     );
                                     Navigator.of(context).pop();
                                   }

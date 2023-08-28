@@ -9,10 +9,13 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../model/student_model.dart';
 import '../manage_student_page/manage_student_page_provider.dart';
 import '../manage_user_page/manage_user_page_provider.dart';
-import '../widget/card_details.dart';
+import '../sign_in_page/sign_in_page_view.dart';
+import '../widget/student_card_details.dart';
 import '../widget/student_modal.dart';
+import '../widget/user_card_details.dart';
 import '../widget/user_modal.dart';
 import 'admin_home_page_bloc.dart';
+import 'admin_home_page_event.dart';
 import 'admin_home_page_state.dart';
 
 class AdminHomePageView extends StatelessWidget {
@@ -36,10 +39,11 @@ class AdminHomePageView extends StatelessWidget {
       onTap: () {
         userNavigateToAnotherUI(context, user);
       },
-      child: StudentCard(
-        id: user.email,
-        studentName: user.name,
-        studentDOB: user.dob,
+      child: UserCard(
+        roleType: user.roleType,
+        email: user.email,
+        name: user.name,
+        dob: user.dob,
       ),
     );
   }
@@ -88,7 +92,7 @@ class AdminHomePageView extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const SizedBox(height: 30),
+              const SizedBox(height: 20),
               ElevatedButton(
                 style: popButton,
                 onPressed: () {
@@ -102,7 +106,7 @@ class AdminHomePageView extends StatelessWidget {
                   style: textButton,
                 ),
               ),
-              const SizedBox(height: 30),
+              const SizedBox(height: 20),
               Expanded(
                 child: SingleChildScrollView(
                   child: BlocBuilder<AdminHomePageBloc, AdminHomePageState>(
@@ -152,7 +156,7 @@ class AdminHomePageView extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const SizedBox(height: 30),
+              const SizedBox(height: 20),
               ElevatedButton(
                 style: popButton,
                 onPressed: () {
@@ -166,7 +170,7 @@ class AdminHomePageView extends StatelessWidget {
                   style: textButton,
                 ),
               ),
-              const SizedBox(height: 30),
+              const SizedBox(height: 20),
               Expanded(
                 child: SingleChildScrollView(
                   child: BlocBuilder<AdminHomePageBloc, AdminHomePageState>(
@@ -200,20 +204,62 @@ class AdminHomePageView extends StatelessWidget {
       length: 2,
       child: Scaffold(
         appBar: AppBar(
+          automaticallyImplyLeading: false,
+          actions: [
+            IconButton(
+              onPressed: () {
+                BlocProvider.of<AdminHomePageBloc>(context).add(
+                  SignOut(),
+                );
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const SignInPageView()));
+              },
+              icon: const Icon(
+                Icons.logout,
+                color: Colors.white,
+                size: 30,
+              ),
+            ),
+          ],
           title: Text(
-            "Admin Home Page",
+            "  Admin Home Page",
             style: TextStyle(
               fontWeight: FontWeight.bold,
               fontFamily: GoogleFonts.ubuntu().fontFamily,
             ),
           ),
-          bottom: TabBar(
-            labelStyle: textButton,
-            tabs: const [
+          bottom: const TabBar(
+            labelStyle: TextStyle(
+              color: Colors.white,
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+            ),
+            unselectedLabelStyle: TextStyle(
+              color: Colors.white,
+              fontSize: 18,
+              fontWeight: FontWeight.w700,
+            ),
+            indicatorColor: Colors.white,
+            labelColor: Colors.white,
+            labelPadding: EdgeInsets.only(bottom: 8),
+            tabs: [
               Tab(
                 text: "Users Manage",
+                icon: Icon(
+                  Icons.manage_accounts_rounded,
+                  color: Colors.white,
+                  size: 32,
+                ),
               ),
-              Tab(text: "Student Manage"),
+              Tab(
+                  text: "Student Manage",
+                  icon: Icon(
+                    Icons.person_add_alt_1_sharp,
+                    color: Colors.white,
+                    size: 32,
+                  )),
             ],
           ),
         ),

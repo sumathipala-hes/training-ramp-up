@@ -1,17 +1,29 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:front_end/ui/admin_home_page/admin_home_page_view.dart';
+import 'package:front_end/ui/sign_in_page/sign_in_page_bloc.dart';
+import 'package:front_end/ui/sign_in_page/sign_in_page_event.dart';
 import 'package:front_end/ui/sign_up_page/sign_up_page_provider.dart';
+import 'package:front_end/ui/user_home_page/user_home_page_provider.dart';
+import 'package:front_end/util/encrypted_decrypted_util.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../theme/primary_theme.dart';
+import '../../util/notification_util.dart';
+import '../../util/validation_utils.dart';
 
 class SignInPageView extends StatelessWidget {
   const SignInPageView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final TextEditingController emailController = TextEditingController();
+    final TextEditingController passwordController = TextEditingController();
+    SignInPageBloc signInPageBloc = BlocProvider.of<SignInPageBloc>(context);
+
     return Scaffold(
       body: Container(
         decoration: const BoxDecoration(
@@ -52,6 +64,7 @@ class SignInPageView extends StatelessWidget {
                             ),
                             const SizedBox(height: 30.0),
                             TextField(
+                              controller: emailController,
                               decoration: InputDecoration(
                                 border: const OutlineInputBorder(
                                   borderRadius: BorderRadius.all(
@@ -64,6 +77,7 @@ class SignInPageView extends StatelessWidget {
                             ),
                             const SizedBox(height: 20.0),
                             TextField(
+                              controller: passwordController,
                               obscureText: true,
                               decoration: InputDecoration(
                                 border: const OutlineInputBorder(
@@ -87,13 +101,55 @@ class SignInPageView extends StatelessWidget {
                                     borderRadius: BorderRadius.circular(15.0),
                                   ),
                                 ),
-                                onPressed: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            AdminHomePageView()),
-                                  );
+                                onPressed: () async {
+                                  if (emailController.text.trim().isEmpty ||
+                                      passwordController.text.trim().isEmpty) {
+                                    showFieldError(
+                                        'Text Field should not be empty.');
+                                  } else if (!ValidationUtils.isValidEmail(
+                                      emailController.text.trim())) {
+                                    showFieldError('Invalid Email.');
+                                  } else if (!ValidationUtils.isValidPassword(
+                                      passwordController.text.trim())) {
+                                    showFieldError(
+                                        'Password must contain at least 8 characters, including UPPER/lowercase and numbers.');
+                                  } else {
+                                    String password = encryptPassword(
+                                        passwordController.text);
+
+                                    signInPageBloc.add(
+                                      SubmitLoginDetails(
+                                        email: emailController.text,
+                                        password: password,
+                                      ),
+                                    );
+
+                                    await Future.delayed(
+                                        const Duration(seconds: 2));
+
+                                    final prefs =
+                                        await SharedPreferences.getInstance();
+                                    final roleType =
+                                        prefs.getString('roleType');
+
+                                    roleType == 'ADMIN'
+                                        // ignore: use_build_context_synchronously
+                                        ? Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    const AdminHomePageView()),
+                                          )
+                                        : roleType == 'USER'
+                                            // ignore: use_build_context_synchronously
+                                            ? Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        UserHomePageProvider()),
+                                              )
+                                            : Container();
+                                  }
                                 },
                                 child: Row(
                                   mainAxisAlignment:

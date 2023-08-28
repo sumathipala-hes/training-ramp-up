@@ -7,6 +7,11 @@ import {
   updateStudent,
 } from './student.service';
 import { DeleteResult, InsertResult, UpdateResult } from 'typeorm';
+import { sendNotification } from '../util/notification.util';
+
+jest.mock('../util/notification.util', () => ({
+  sendNotification: jest.fn(),
+}));
 
 describe('Student Service Checked', () => {
   const mockStudentData = [
@@ -78,6 +83,10 @@ describe('Student Service Checked', () => {
       expect(result).toBeInstanceOf(InsertResult);
       expect(mockGetRepository).toHaveBeenCalledWith(Student);
       expect(mockGetRepository().insert).toHaveBeenCalledWith(studentData);
+      expect(sendNotification).toHaveBeenCalledWith(
+        'New Student',
+        'A New Student has been Added to the Database.',
+      );
     });
 
     test('throws an error if creation fails', async () => {
@@ -97,6 +106,7 @@ describe('Student Service Checked', () => {
       await expect(createStudent(studentData)).rejects.toThrow(errorMessage);
       expect(mockGetRepository).toHaveBeenCalledWith(Student);
       expect(mockInsert).toHaveBeenCalledWith(studentData);
+      expect(sendNotification).not.toHaveBeenCalled();
     });
   });
 
@@ -119,6 +129,10 @@ describe('Student Service Checked', () => {
         '1',
         updateStudentData,
       );
+      expect(sendNotification).toHaveBeenCalledWith(
+        'Student Updated',
+        'A Student has been Updated in the Database.',
+      );
     });
 
     test('throws an error if update fails', async () => {
@@ -140,6 +154,7 @@ describe('Student Service Checked', () => {
       );
       expect(mockGetRepository).toHaveBeenCalledWith(Student);
       expect(mockUpdate).toHaveBeenCalledWith('1', updateStudentData);
+      expect(sendNotification).not.toHaveBeenCalled();
     });
   });
 
@@ -150,6 +165,10 @@ describe('Student Service Checked', () => {
       expect(result).toBeInstanceOf(DeleteResult);
       expect(mockGetRepository).toHaveBeenCalledWith(Student);
       expect(mockGetRepository().delete).toHaveBeenCalledWith('1');
+      expect(sendNotification).toHaveBeenCalledWith(
+        'Student Deleted',
+        'A Student has been Deleted from the Database.',
+      );
     });
 
     test('throws an error if delete fails', async () => {
@@ -160,6 +179,7 @@ describe('Student Service Checked', () => {
       await expect(deleteStudent('1')).rejects.toThrow(errorMessage);
       expect(mockGetRepository).toHaveBeenCalledWith(Student);
       expect(mockDelete).toHaveBeenCalledWith('1');
+      expect(sendNotification).not.toHaveBeenCalled();
     });
   });
 });

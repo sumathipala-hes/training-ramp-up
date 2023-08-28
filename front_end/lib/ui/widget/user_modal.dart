@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 
 import '../../model/user_model.dart';
 import '../../theme/primary_theme.dart';
+import '../../util/encrypted_decrypted_util.dart';
 import '../admin_home_page/admin_home_page_bloc.dart';
 import '../admin_home_page/admin_home_page_event.dart';
 
@@ -124,7 +125,7 @@ class _UserPopupModalState extends State<UserPopupModal> {
         width: MediaQuery.of(context).size.width * 0.8,
         child: Center(
           child: Text(
-            "ADD NEW User",
+            "ADD NEW USER",
             style: headerText,
           ),
         ),
@@ -342,17 +343,23 @@ class _UserPopupModalState extends State<UserPopupModal> {
           child: ElevatedButton(
             onPressed: isSaveButtonEnabled
                 ? () {
-                    homePageBloc.add(SaveUser(
+                    final password = encryptPassword(
+                      passwordController.text.trim(),
+                    );
+                    homePageBloc.add(
+                      SaveUser(
                         user: User(
-                      roleType: userTypeController.text.trim(),
-                      email: emailController.text.trim(),
-                      password: passwordController.text.trim(),
-                      name: nameController.text.trim(),
-                      address: addressController.text.trim(),
-                      mobileNumber: mobileNoController.text.trim(),
-                      dob: dob,
-                      gender: selectedGender,
-                    )));
+                          roleType: userTypeController.text.trim(),
+                          email: emailController.text.trim(),
+                          password: password,
+                          name: nameController.text.trim(),
+                          address: addressController.text.trim(),
+                          mobileNumber: mobileNoController.text.trim(),
+                          dob: dob,
+                          gender: selectedGender,
+                        ),
+                      ),
+                    );
                     clear();
                     Navigator.of(context).pop();
                   }

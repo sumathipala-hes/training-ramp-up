@@ -4,13 +4,17 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:front_end/model/user_model.dart';
+import 'package:front_end/ui/admin_home_page/admin_home_page_event.dart';
 import 'package:front_end/ui/sign_up_page/sign_up_page_bloc.dart';
 import 'package:front_end/ui/sign_up_page/sign_up_page_state.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 
 import '../../theme/primary_theme.dart';
-import '../../util/notification.util.dart';
+import '../../util/encrypted_decrypted_util.dart';
+import '../../util/notification_util.dart';
+import '../admin_home_page/admin_home_page_bloc.dart';
 import 'sign_up_page_event.dart';
 
 class SignUpPageView extends StatelessWidget {
@@ -49,6 +53,8 @@ class SignUpPageView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final signUpBloc = BlocProvider.of<SignUpPageBloc>(context);
+    final adminPage = BlocProvider.of<AdminHomePageBloc>(context);
+
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -310,7 +316,7 @@ class SignUpPageView extends StatelessWidget {
                             width: 140,
                             height: 45,
                             child: ElevatedButton(
-                              onPressed: () {
+                              onPressed: () async {
                                 if (nameController.text.trim().isEmpty ||
                                     addressController.text.trim().isEmpty ||
                                     mobileNoController.text.trim().isEmpty ||
@@ -319,42 +325,55 @@ class SignUpPageView extends StatelessWidget {
                                     dateController.text.trim().isEmpty) {
                                   showFieldError(
                                       'Text Field should not be empty.');
-                                } else if (!RegExp(r'^[a-zA-Z ]+$')
-                                    .hasMatch(nameController.text.trim())) {
+                                } else if (!RegExp(r'^[a-zA-Z ]+$').hasMatch(
+                                  nameController.text.trim(),
+                                )) {
                                   showFieldError('Invalid Name.');
-                                } else if (!RegExp(r'^[a-zA-Z0-9 ]+$')
-                                    .hasMatch(addressController.text.trim())) {
+                                } else if (!RegExp(r'^[a-zA-Z0-9 ]+$').hasMatch(
+                                  addressController.text.trim(),
+                                )) {
                                   showFieldError('Invalid Address.');
                                 } else if (!RegExp(
                                         r'^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$')
-                                    .hasMatch(emailController.text.trim())) {
+                                    .hasMatch(
+                                  emailController.text.trim(),
+                                )) {
                                   showFieldError('Invalid Email.');
                                 } else if (!RegExp(
                                         r'^(07(0|1|2|4|5|6|7|8)[0-9]{7})$')
-                                    .hasMatch(mobileNoController.text.trim())) {
+                                    .hasMatch(
+                                  mobileNoController.text.trim(),
+                                )) {
                                   showFieldError('Invalid Mobile No.');
                                 } else if (!RegExp(
                                         r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{8,}$')
                                     .hasMatch(
-                                        crPasswordController.text.trim())) {
+                                  crPasswordController.text.trim(),
+                                )) {
                                   showFieldError(
                                       'Password must contain at least 8 characters, including UPPER/lowercase and numbers.');
                                 } else if (crPasswordController.text.trim() !=
                                     coPasswordController.text.trim()) {
                                   showFieldError('Password not match.');
                                 } else {
-                                  signUpBloc.add(RegisterUser(
-                                      nameText: nameController.text.trim(),
-                                      addressText:
-                                          addressController.text.trim(),
-                                      emailText: emailController.text.trim(),
-                                      mobileNoText:
-                                          mobileNoController.text.trim(),
-                                      dateText: dob,
-                                      selectedGender:
-                                          signUpBloc.state.selectedGender,
-                                      passwordText:
-                                          crPasswordController.text.trim()));
+                                  final coPassword = encryptPassword(
+                                    coPasswordController.text.trim(),
+                                  );
+                                  adminPage.add(
+                                    SaveUser(
+                                      user: User(
+                                        roleType: 'USER',
+                                        name: nameController.text.trim(),
+                                        address: addressController.text.trim(),
+                                        email: emailController.text.trim(),
+                                        mobileNumber:
+                                            mobileNoController.text.trim(),
+                                        dob: dob,
+                                        gender: signUpBloc.state.selectedGender,
+                                        password: coPassword,
+                                      ),
+                                    ),
+                                  );
                                   clear();
 
                                   Navigator.of(context).pop();

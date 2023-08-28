@@ -27,6 +27,7 @@ class AdminHomePageBloc extends Bloc<AdminHomePageEvent, AdminHomePageState> {
     on<SaveUser>(_saveUser);
     on<UpdateUser>(_updateUser);
     on<DeleteUser>(_deleteUser);
+    on<SignOut>(_signOut);
     add(
       GetAllStudent(),
     );
@@ -34,9 +35,6 @@ class AdminHomePageBloc extends Bloc<AdminHomePageEvent, AdminHomePageState> {
     add(
       GetAllUsers(),
     );
-
-    final token = FirebaseMessaging.instance.getToken();
-    Logger().d('Token: $token');
 
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       Logger().d('Got a message whilst in the foreground!');
@@ -162,11 +160,45 @@ class AdminHomePageBloc extends Bloc<AdminHomePageEvent, AdminHomePageState> {
     }
   }
 
-  FutureOr<void> _saveUser(SaveUser event, Emitter<AdminHomePageState> emit) {}
+  Future<void> _saveUser(
+      SaveUser event, Emitter<AdminHomePageState> emit) async {
+    final user = User(
+      roleType: event.user.roleType,
+      name: event.user.name,
+      address: event.user.address,
+      email: event.user.email,
+      mobileNumber: event.user.mobileNumber,
+      dob: event.user.dob,
+      gender: event.user.gender,
+      password: event.user.password,
+    );
+    await UserRepository().saveUser(user);
+    add(GetAllUsers());
+  }
 
-  FutureOr<void> _updateUser(
-      UpdateUser event, Emitter<AdminHomePageState> emit) {}
+  Future<void> _updateUser(
+      UpdateUser event, Emitter<AdminHomePageState> emit) async {
+    final user = User(
+      roleType: event.user.roleType,
+      name: event.user.name,
+      address: event.user.address,
+      email: event.user.email,
+      mobileNumber: event.user.mobileNumber,
+      dob: event.user.dob,
+      gender: event.user.gender,
+      password: event.user.password,
+    );
+    await UserRepository().updateUser(user);
+    add(GetAllUsers());
+  }
 
-  FutureOr<void> _deleteUser(
-      DeleteUser event, Emitter<AdminHomePageState> emit) {}
+  Future<void> _deleteUser(
+      DeleteUser event, Emitter<AdminHomePageState> emit) async {
+    await UserRepository().deleteUser(event.email);
+    add(GetAllUsers());
+  }
+
+  Future<void> _signOut(SignOut event, Emitter<AdminHomePageState> emit) async {
+    await UserRepository().signOut();
+  }
 }

@@ -10,7 +10,7 @@ import 'package:logger/logger.dart';
 
 import '../../model/student_model.dart';
 import '../../repository/student_repository.dart';
-import '../../util/notification.util.dart';
+import '../../util/notification_util.dart';
 import 'user_home_page_event.dart';
 import 'user_home_page_state.dart';
 
