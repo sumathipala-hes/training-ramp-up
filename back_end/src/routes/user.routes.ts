@@ -20,7 +20,7 @@ router.post('/', validateUsers, requestCreateUser);
 router.put('/:id', validateUsers, requestUpdateUser);
 router.delete('/:id', requestDeleteUser);
 
-router.post('/signIn', authorizationPermissions, signIn);
+router.post('/signIn', signIn);
 router.delete('/signOut', authorizationPermissions, signOut);
 
 export default router;
