@@ -39,9 +39,9 @@ class ManageUserPageView extends StatelessWidget {
     UserHomePageBloc homePageBloc = BlocProvider.of<UserHomePageBloc>(context);
 
     void validateTextFields(bool isValid, String textField) {
-      String nameError = '';
-      String emailError = '';
-      String passwordError = '';
+      String nameError = userPageBloc.state.nameError;
+      String emailError = userPageBloc.state.emailError;
+      String passwordError = userPageBloc.state.passwordError;
       switch (textField) {
         case 'name':
           nameError = isValid ? '' : 'Invalid Name Ex. John Doe';

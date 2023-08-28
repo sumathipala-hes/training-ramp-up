@@ -21,9 +21,9 @@ class RegisterPageView extends StatelessWidget {
         BlocProvider.of<RegisterPageBloc>(context);
 
     void validateTextFields(bool isValid, String textField) {
-      String nameError = '';
-      String emailError = '';
-      String passwordError = '';
+      String nameError = registerPageBloc.state.nameError;
+      String emailError = registerPageBloc.state.emailError;
+      String passwordError = registerPageBloc.state.passwordError;
       switch (textField) {
         case 'name':
           nameError = isValid ? '' : 'Invalid Name Ex. John Doe';
@@ -109,9 +109,6 @@ class RegisterPageView extends StatelessWidget {
                       );
                     },
                   ),
-                  const SizedBox(
-                    height: 20,
-                  ),
                   BlocBuilder<RegisterPageBloc, RegisterPageState>(
                     buildWhen: (previous, current) =>
                         current.nameError != previous.nameError,
@@ -123,6 +120,9 @@ class RegisterPageView extends StatelessWidget {
                         ),
                       );
                     },
+                  ),
+                  const SizedBox(
+                    height: 20,
                   ),
                   TextField(
                     controller: emailController,
@@ -286,17 +286,6 @@ class RegisterPageView extends StatelessWidget {
                         backgroundColor: Colors.white,
                       ),
                       onPressed: () async {
-                        registerPageBloc.add(
-                          RegisterUserEvent(
-                            user: User(
-                              name: nameController.text,
-                              email: emailController.text,
-                              password: passwordController.text,
-                              role: RoleEnum.user.toString(),
-                            ),
-                            confirmPassword: confirmController.text,
-                          ),
-                        );
                         if (registerPageBloc.state.nameError == '' &&
                             registerPageBloc.state.emailError == '' &&
                             registerPageBloc.state.passwordError == '') {
