@@ -3,13 +3,6 @@ import { Request, Response, NextFunction } from 'express';
 import { jwtConfig } from '../configs/jwt.config';
 import { User } from '../models/user.model';
 
-export const generateToken = (userId: string): string => {
-  const token = jwt.sign({ sub: userId }, jwtConfig.secretKey, {
-    expiresIn: jwtConfig.expiresIn,
-  });
-  return token;
-};
-
 export const authenticatePermissions = (
   req: Request,
   res: Response,
