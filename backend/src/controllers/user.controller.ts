@@ -93,34 +93,6 @@ export const signIn: RequestHandler = async (
   }
 };
 
-export const generateNewAccessToken: RequestHandler = async (
-  req: Request,
-  res: Response
-): Promise<void> => {
-  try {
-    const refreshToken = req.cookies.refreshToken;
-    const user = req.cookies.user;
-    if (!refreshToken) {
-      res.status(403).json({ message: 'Forbidden' });
-    } else {
-      const payload = jwt.verify(refreshToken, jwtConfig.refreshKey!);
-      if (payload) {
-        const accessToken = jwt.sign(
-          { email: user.email, role: user.role },
-          jwtConfig.secretKey!,
-          { expiresIn: jwtConfig.expiresIn }
-        );
-        res.cookie('accessToken', accessToken, {
-          httpOnly: true,
-        });
-        res.status(200).json({ accessToken });
-      }
-    }
-  } catch (error) {
-    res.status(500).json(error);
-  }
-};
-
 export const signOut: RequestHandler = async (
   req: Request,
   res: Response
@@ -132,28 +104,4 @@ export const signOut: RequestHandler = async (
   } catch (error) {
     res.status(500).json(error);
   }
-}
-
-export const getDetails = async (
-  req: Request,
-  res: Response
-): Promise<void> => {
-  try {
-    const payload = jwt.verify(req.cookies.accessToken, jwtConfig.secretKey!);
-    if (payload) {
-      const user = jwt.sign(
-        payload,
-        jwtConfig.userKey!,
-        { expiresIn: jwtConfig.expiresIn }
-      );
-      res.cookie('user', user, {
-        httpOnly: true,
-      });
-      res.status(200).json({ user });
-    } else {
-      res.status(401).json({ message: 'Unauthorized' });
-    }
-  } catch (error) {
-    res.status(500).json(error);
-  }
-}
+};
