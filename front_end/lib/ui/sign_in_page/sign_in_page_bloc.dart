@@ -11,8 +11,8 @@ class SignInPageScreenBloc extends Bloc<SignInPageEvent, SignInPageState> {
     on<Login>(_onLogin);
   }
 
-  FutureOr<void> _onLogin(Login event, Emitter<SignInPageState> emit) {
-    UserRepository().signIn(
+  FutureOr<void> _onLogin(Login event, Emitter<SignInPageState> emit) async {
+    await UserRepository().signIn(
       event.userEmail,
       event.userPassword,
     );

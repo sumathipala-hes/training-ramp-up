@@ -6,9 +6,7 @@ import 'package:front_end/ui/admin_home_page/admin_home_page_view.dart';
 import 'package:front_end/ui/register_page/register_page_provider.dart';
 import 'package:front_end/ui/sign_in_page/sign_in_page_bloc.dart';
 import 'package:front_end/ui/sign_in_page/sign_in_page_event.dart';
-import 'package:front_end/ui/sign_in_page/sign_in_page_provider.dart';
 import 'package:front_end/ui/user_home_page/user_home_page_bloc.dart';
-import 'package:front_end/ui/user_home_page/user_home_page_event.dart';
 import 'package:front_end/ui/user_home_page/user_home_page_view.dart';
 import 'package:front_end/util/encrypted_decrypted_util.dart';
 import 'package:logger/logger.dart';
@@ -48,7 +46,6 @@ class SignInPageScreen extends StatelessWidget {
         ),
       );
     } else {
-      Navigator.of(context).pop();
       SignInPageScreenBloc bloc =
           BlocProvider.of<SignInPageScreenBloc>(context);
       String encriptedPassword = PasswordEncryption.encryptPassword(
@@ -67,26 +64,21 @@ class SignInPageScreen extends StatelessWidget {
       Logger().e(role);
 
       print(role);
-      role == "ADMIN"
-          ? Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const AdminHomeScreen(),
-              ),
-            )
-          : role == "USER"
-              ? Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const UserHomeScreen(),
-                  ),
-                )
-              : Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => SignInPageProvider(),
-                  ),
-                );
+      if (role == "ADMIN") {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const AdminHomeScreen(),
+          ),
+        );
+      } else if (role == "USER") {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const UserHomeScreen(),
+          ),
+        );
+      }
     }
   }
 
@@ -163,7 +155,7 @@ class SignInPageScreen extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(15.0),
                               ),
                             ),
-                            onPressed: () {
+                            onPressed: () async {
                               _signInForm(context);
                             },
                             child: Row(
