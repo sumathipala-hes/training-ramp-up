@@ -46,7 +46,7 @@ describe('User Controller Checked', () => {
     });
   });
 
-  describe('Get user', () => {
+  describe('Get user by One', () => {
     const email = '';
     const name = '';
     const address = '';

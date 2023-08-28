@@ -1,11 +1,13 @@
 import { appDataSource } from '../configs/datasource.config';
 
-import { DeleteResult, InsertResult, UpdateResult } from 'typeorm';
+import { DataSource, DeleteResult, InsertResult, UpdateResult } from 'typeorm';
 import { sendNotification } from '../util/notification.util';
 import {
   createUser,
   deleteUser,
   getAllUsers,
+  getUser,
+  getUserByOne,
   updateUser,
 } from './user.service';
 import { User } from '../models/user.models';
@@ -69,6 +71,36 @@ describe('User Service Checked', () => {
       await expect(getAllUsers()).rejects.toThrow(mockError);
       expect(mockGetRepository).toHaveBeenCalledWith(User);
       expect(mockFind).toHaveBeenCalledWith({ order: { email: 'DESC' } });
+    });
+  });
+
+  describe('Get User By One', () => {
+    test('should fetch and return a user', async () => {
+      const mockUser = { email: 'nimesh123@gmail.com', name: 'Nimesh' };
+      const mockFindOne = jest.fn(() => Promise.resolve(mockUser));
+      mockFindOne.mockResolvedValue(mockUser);
+      mockGetRepository().findOne = mockFindOne;
+
+      const result = await getUserByOne('Nimesh');
+
+      expect(result).toEqual(mockUser);
+    });
+
+    test('should throw an error if fetching user fails', async () => {
+      const mockError = new Error('Mocked error');
+      mockGetRepository().findOne = jest.fn().mockRejectedValue(mockError);
+
+      await expect(getUserByOne('Nimesh')).rejects.toThrow(mockError);
+    });
+
+    test('should throw an error if user not found', async () => {
+      const mockFindOne = jest.fn(() => Promise.resolve(null));
+      mockFindOne.mockResolvedValue(null);
+      mockGetRepository().findOne = mockFindOne;
+
+      await expect(getUserByOne('NonExistentUser')).rejects.toThrow(
+        'No user found',
+      );
     });
   });
 
@@ -200,6 +232,42 @@ describe('User Service Checked', () => {
       expect(mockGetRepository).toHaveBeenCalledWith(User);
       expect(mockDelete).toHaveBeenCalledWith('nimesh123@gmail.com');
       expect(sendNotification).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('get User', () => {
+    const userRepo = appDataSource.manager.getRepository(User);
+    const dataUser: User = {
+      roleType: 'ADMIN',
+      name: 'Nimesh',
+      address: 'Galle',
+      email: 'nimesh123@gmail.com',
+      mobileNumber: '0761234567',
+      dob: new Date('2001 - 12 - 15'),
+      gender: 'Male',
+      password: 'Nimesh12@345',
+    };
+
+    test('should fetch and return a user', async () => {
+      userRepo.findOne = jest.fn().mockResolvedValue(dataUser);
+      const data = await getUser('nimesh123@gmail.com', 'Nimesh12@345');
+      expect(data).toEqual(dataUser);
+    });
+
+    test('should throw an error if fetching user fails', async () => {
+      const mockError = new Error('Mocked error');
+      userRepo.findOne = jest.fn().mockRejectedValue(mockError);
+
+      await expect(
+        getUser('nimesh123@gmail.com', 'Nimesh12@345'),
+      ).rejects.toThrow('Mocked error');
+    });
+
+    test('should throw an error if user not found', async () => {
+      userRepo.findOne = jest.fn().mockResolvedValue(null);
+      await expect(
+        getUser('nimesh123@gmail.com', 'Nimesh12@345'),
+      ).rejects.toThrow('User not found');
     });
   });
 });

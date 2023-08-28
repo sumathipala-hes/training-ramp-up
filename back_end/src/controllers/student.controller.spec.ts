@@ -5,6 +5,7 @@ import {
   getAllStudents,
   updateStudent,
   deleteStudent,
+  getStudentByOne,
 } from '../services/student.service';
 import * as admin from 'firebase-admin';
 import serviceAccount from '../configs/serviceAccountKey.json';
@@ -41,6 +42,38 @@ describe('Student Controller Checked', () => {
         .fn()
         .mockRejectedValue(new Error('Error'));
       await expect(getAllStudents()).rejects.toThrowError('Error');
+    });
+  });
+
+  describe('Get student by One', () => {
+    const name = '';
+    const address = '';
+    const mobileNumber = '';
+
+    const student = {
+      id: 1,
+      name: 'Nimesh',
+      address: 'Galle',
+      mobileNumber: '0761234567',
+      dob: new Date('2001 - 12 - 15'),
+      gender: 'Male',
+    };
+
+    test('Get student success', async () => {
+      studentRepo.getRepository(Student).findOne = jest
+        .fn()
+        .mockResolvedValue(student);
+      const data = await getStudentByOne(name || address || mobileNumber);
+      expect(data).toEqual(student);
+    });
+
+    test('Get student fail', async () => {
+      studentRepo.getRepository(Student).findOne = jest
+        .fn()
+        .mockRejectedValue(new Error('Error'));
+      await expect(
+        getStudentByOne(name || address || mobileNumber),
+      ).rejects.toThrowError('Error');
     });
   });
 

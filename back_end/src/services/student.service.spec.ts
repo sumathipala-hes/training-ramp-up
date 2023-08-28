@@ -4,6 +4,7 @@ import {
   createStudent,
   deleteStudent,
   getAllStudents,
+  getStudentByOne,
   updateStudent,
 } from './student.service';
 import { DeleteResult, InsertResult, UpdateResult } from 'typeorm';
@@ -64,6 +65,36 @@ describe('Student Service Checked', () => {
       await expect(getAllStudents()).rejects.toThrow(mockError);
       expect(mockGetRepository).toHaveBeenCalledWith(Student);
       expect(mockFind).toHaveBeenCalledWith({ order: { id: 'DESC' } });
+    });
+  });
+
+  describe('Get Student By One', () => {
+    test('should fetch and return a student', async () => {
+      const mockStudent = { id: 1, name: 'Nimesh' };
+      const mockFindOne = jest.fn(() => Promise.resolve(mockStudent));
+      mockFindOne.mockResolvedValue(mockStudent);
+      mockGetRepository().findOne = mockFindOne;
+
+      const result = await getStudentByOne('Nimesh');
+
+      expect(result).toEqual(mockStudent);
+    });
+
+    test('should throw an error if fetching user fails', async () => {
+      const mockError = new Error('Mocked error');
+      mockGetRepository().findOne = jest.fn().mockRejectedValue(mockError);
+
+      await expect(getStudentByOne('Nimesh')).rejects.toThrow(mockError);
+    });
+
+    test('should throw an error if student not found', async () => {
+      const mockFindOne = jest.fn(() => Promise.resolve(null));
+      mockFindOne.mockResolvedValue(null);
+      mockGetRepository().findOne = mockFindOne;
+
+      await expect(getStudentByOne('NonExistentUser')).rejects.toThrow(
+        'No student found',
+      );
     });
   });
 
