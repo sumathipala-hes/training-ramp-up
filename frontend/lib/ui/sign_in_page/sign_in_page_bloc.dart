@@ -26,7 +26,6 @@ class SignInPageBloc extends Bloc<SignInPageEvent, SignInPageState> {
       event.email,
       encryptPassword(event.password),
     );
-    emit(state.clone(isAuthenticate: true));
     if (isSuccess) {
       // ignore: use_build_context_synchronously
       Navigator.push(

@@ -52,7 +52,7 @@ class _UserCardState extends State<UserCard> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  widget.user.role,
+                  widget.user.role.toUpperCase(),
                   style: const TextStyle(
                     fontSize: 20,
                     color: Colors.white,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/enum/role_enum.dart';
 
 @immutable
 class ManageUserPageState {
@@ -14,8 +15,8 @@ class ManageUserPageState {
     required this.passwordError,
   });
 
-  static ManageUserPageState get initialState => const ManageUserPageState(
-        role: 'User',
+  static ManageUserPageState get initialState => ManageUserPageState(
+        role: RoleEnum.user.toString().split('.').last,
         nameError: '',
         emailError: '',
         passwordError: '',

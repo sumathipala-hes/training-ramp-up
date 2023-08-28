@@ -3,7 +3,9 @@ abstract class ManageUserPageEvent {}
 class SetRoleEvent extends ManageUserPageEvent {
   final String role;
 
-  SetRoleEvent(this.role);
+  SetRoleEvent({
+    required this.role,
+  });
 }
 
 class SetValidations extends ManageUserPageEvent {

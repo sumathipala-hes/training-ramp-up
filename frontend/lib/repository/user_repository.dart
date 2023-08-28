@@ -66,7 +66,7 @@ class UserRepository {
 
   Future<void> addUsers(User user) async {
     final res = await http.post(
-      Uri.parse('$baseUrl/user'),
+      Uri.parse('$baseUrl/user/add'),
       headers: <String, String>{
         'Content-Type': 'application/json',
       },
@@ -92,7 +92,7 @@ class UserRepository {
 
   Future<void> deleteUsers(String email) async {
     final res = await http.delete(
-      Uri.parse('$baseUrl/user/$email'),
+      Uri.parse('$baseUrl/user/del/$email'),
     );
     if (res.statusCode == 500) {
       showToast('Failed to Delete User..!');

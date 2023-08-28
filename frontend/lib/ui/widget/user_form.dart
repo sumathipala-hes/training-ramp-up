@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:frontend/enum/role_enum.dart';
 import 'package:frontend/model/user.dart';
 import 'package:frontend/ui/theme/colors.dart';
 import 'package:frontend/ui/user_home_page/user_home_page_bloc.dart';
@@ -14,8 +15,11 @@ class UserForm extends StatefulWidget {
 }
 
 class _UserFormState extends State<UserForm> {
-  String selectedItem = 'User';
-  List<String> roles = ['Admin', 'User'];
+  String selectedItem = RoleEnum.user.toString().split('.').last;
+  List<String> roles = [
+    RoleEnum.admin.toString().split('.').last,
+    RoleEnum.user.toString().split('.').last,
+  ];
   final TextEditingController nameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
@@ -164,7 +168,7 @@ class _UserFormState extends State<UserForm> {
                     items: roles.map((String role) {
                       return DropdownMenuItem<String>(
                         value: role,
-                        child: Text(role),
+                        child: Text(role.toUpperCase()),
                       );
                     }).toList(),
                   ),

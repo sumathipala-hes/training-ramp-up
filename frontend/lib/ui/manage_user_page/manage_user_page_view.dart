@@ -26,10 +26,9 @@ class ManageUserPageView extends StatelessWidget {
   }
 
   final User user;
-  final String selectedItem = RoleEnum.user.toString();
   final List<String> roles = [
-    RoleEnum.admin.toString(),
-    RoleEnum.user.toString()
+    RoleEnum.admin.toString().split('.').last,
+    RoleEnum.user.toString().split('.').last
   ];
 
   @override
@@ -128,6 +127,18 @@ class ManageUserPageView extends StatelessWidget {
                     textAlign: TextAlign.center,
                     style: const TextStyle(
                       fontSize: 16,
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 4,
+                  ),
+                  Text(
+                    user.role.toUpperCase(),
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      fontSize: 12,
+                      color: Colors.black54,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                   const SizedBox(
@@ -230,21 +241,26 @@ class ManageUserPageView extends StatelessWidget {
                   const SizedBox(
                     height: 20,
                   ),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.9,
-                    child: DropdownButton<String>(
-                      value: selectedItem,
-                      onChanged: (newValue) {
-                        userPageBloc.add(SetRoleEvent(newValue!));
-                      },
-                      items: roles.map((String role) {
-                        return DropdownMenuItem<String>(
-                          value: role,
-                          child: Text(role),
+                  BlocBuilder<ManageUserPageBloc, ManageUserPageState>(
+                      buildWhen: (previous, current) =>
+                          current.role != previous.role,
+                      builder: (context, state) {
+                        return SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.9,
+                          child: DropdownButton<String>(
+                            value: state.role,
+                            onChanged: (newValue) {
+                              userPageBloc.add(SetRoleEvent(role: newValue!));
+                            },
+                            items: roles.map((String role) {
+                              return DropdownMenuItem<String>(
+                                value: role,
+                                child: Text(role.toUpperCase()),
+                              );
+                            }).toList(),
+                          ),
                         );
-                      }).toList(),
-                    ),
-                  ),
+                      }),
                   const SizedBox(
                     height: 20,
                   ),
@@ -285,7 +301,7 @@ class ManageUserPageView extends StatelessWidget {
                                     name: nameController.text,
                                     email: emailController.text,
                                     password: passwordController.text,
-                                    role: selectedItem,
+                                    role: userPageBloc.state.role,
                                   ),
                                 ),
                               );

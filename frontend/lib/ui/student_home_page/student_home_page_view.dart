@@ -23,7 +23,7 @@ class StudentHomePageView extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Ramp Up'),
+        title: const Text('Students'),
         toolbarHeight: MediaQuery.of(context).size.height * 0.1,
         backgroundColor: Colors.black87,
         actions: [
