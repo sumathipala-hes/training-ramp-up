@@ -1,20 +1,65 @@
 import { Box, Button, Container, TextField } from '@mui/material'
 import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded'
-import * as React from 'react'
-import { useDispatch } from 'react-redux'
-import { enteredEmail, enteredPassword } from './LogInSlice'
+import React, { useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { LogInState, logInSuccessfulState, logInUser } from './LogInSlice'
 import { useNavigate } from 'react-router-dom'
+import { RootState } from '../../store'
 export default function LogIn() {
+    const asyncLocalStorage = {
+        async setItem(key: string, value: string) {
+            await null
+            return localStorage.setItem(key, value)
+        },
+        async getItem(key: string) {
+            await null
+            return localStorage.getItem(key)
+        },
+    }
     const navigate = useNavigate()
-    const dispacth = useDispatch()
+    const dispatch = useDispatch()
 
     const [email, setEmail] = React.useState('')
     const [password, setPassword] = React.useState('')
 
+    const responseState = useSelector(
+        (store: RootState) => store.logIn.successState
+    )
+
+    const response = useSelector(
+        (store: RootState) => store.logIn.successMessage
+    )
+    if (response === 'USER') {
+        localStorage.setItem('Role', 'USER')
+    } else if (response === 'ADMIN') {
+        localStorage.setItem('Role', 'ADMIN')
+    }
+    useEffect(() => {
+        if (responseState) {
+            checkRoleAndNavigate()
+            dispatch(logInSuccessfulState(false))
+        }
+    }, [responseState])
+
+    const checkRoleAndNavigate = async () => {
+        const role = await asyncLocalStorage.getItem('Role')
+
+        if (role === 'USER') {
+            navigate('/student-table-plain')
+            localStorage.removeItem('AuthSuccess')
+            console.log('Now I will navigate to Uneditable Table')
+        } else if (role === 'ADMIN') {
+            navigate('/student-table')
+            localStorage.removeItem('AuthSuccess')
+            console.log('Now I will navigate to Editable Table')
+        }
+    }
     const handleClick = () => {
-        navigate('/student-table') // Navigate to the "/student-table" route
-        dispacth(enteredEmail(email))
-        dispacth(enteredPassword(password))
+        const newUser: LogInState = {
+            email: email,
+            password: password,
+        }
+        dispatch(logInUser(newUser))
     }
 
     const handleClick2 = () => {

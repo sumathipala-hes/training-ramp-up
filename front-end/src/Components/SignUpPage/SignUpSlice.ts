@@ -1,42 +1,38 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
-interface SignUpState {
+export interface SignUpState {
     email: string
     userName: string
     password: string
-    passwordConfirm: string
+}
+export interface SignUp {
+    users: SignUpState[]
+    successMessage: string
+    successState: boolean
 }
 
-const initialState: SignUpState = {
-    email: '',
-    userName: '',
-    password: '',
-    passwordConfirm: '',
+const initialState: SignUp = {
+    users: [],
+    successMessage: '',
+    successState: false,
 }
 
 const signInSlice = createSlice({
-    name: 'signIn',
+    name: 'signUp',
     initialState,
     reducers: {
-        enteredEmail: (state, action: PayloadAction<string>) => {
-            state.email = action.payload
+        signUpUser: (state, action: PayloadAction<SignUpState>) => {
+            state.users.push(action.payload)
         },
-        enteredUserName: (state, action: PayloadAction<string>) => {
-            state.userName = action.payload
+        signUpSuccessful: (state, action: PayloadAction<string>) => {
+            state.successMessage = action.payload
         },
-        enteredPassword: (state, action: PayloadAction<string>) => {
-            state.password = action.payload
-        },
-        enteredPasswordConfirm: (state, action: PayloadAction<string>) => {
-            state.passwordConfirm = action.payload
+        signUpSuccessfulState: (state, action: PayloadAction<boolean>) => {
+            state.successState = action.payload
         },
     },
 })
 
-export const {
-    enteredEmail,
-    enteredPassword,
-    enteredPasswordConfirm,
-    enteredUserName,
-} = signInSlice.actions
+export const { signUpUser, signUpSuccessful, signUpSuccessfulState } =
+    signInSlice.actions
 export default signInSlice.reducer

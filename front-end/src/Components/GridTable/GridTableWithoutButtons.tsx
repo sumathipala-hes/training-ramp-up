@@ -2,41 +2,26 @@
 import * as React from 'react'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
-import AddIcon from '@mui/icons-material/Add'
-import EditIcon from '@mui/icons-material/Edit'
-import DeleteIcon from '@mui/icons-material/DeleteOutlined'
-import SaveIcon from '@mui/icons-material/Save'
-import CancelIcon from '@mui/icons-material/Close'
 import { useDispatch, useSelector } from 'react-redux'
 import {
     DataGrid,
-    GridActionsCellItem,
     GridColDef,
     GridEditDateCell,
     GridEventListener,
     GridRenderCellParams,
     GridRowEditStopReasons,
-    GridRowId,
-    GridRowModel,
     GridRowModes,
     GridRowModesModel,
-    GridToolbarContainer,
     GridValidRowModel,
     GridValueGetterParams,
 } from '@mui/x-data-grid'
-import {
-    addRow,
-    updateRow,
-    deleteRow,
-    deleteRowTableOnly,
-    fetchRows,
-} from './GridSlice' // Import the actions
+import { updateRow, deleteRowTableOnly, fetchRows } from './GridSlice' // Import the actions
 import { RootState } from '../../store'
 import { minDate, maxDate } from './GridTableUtility/min_maxDate'
 import { socket } from '../../App'
-import randomInteger from 'random-int'
 import { useNavigate } from 'react-router-dom'
 import { useEffect } from 'react'
+
 // import { count } from '../../sagas'
 
 export default function FullFeaturedCrudGrid() {
@@ -48,6 +33,14 @@ export default function FullFeaturedCrudGrid() {
         async getItem(key: string) {
             await null
             return localStorage.getItem(key)
+        },
+        async clear() {
+            await null
+            return localStorage.clear()
+        },
+        async removeItem(key: string) {
+            await null
+            return localStorage.removeItem(key)
         },
     }
     const dispatch = useDispatch()
@@ -69,56 +62,22 @@ export default function FullFeaturedCrudGrid() {
         const successStatusMessage = await asyncLocalStorage.getItem(
             'AuthSuccessMessage'
         )
+        console.log('Got the success Status')
         if (successStatus === 'fail') {
+            console.log('Now you will be navigated to Log In Page')
             alert(successStatusMessage)
             navigate('/')
-            localStorage.clear()
+            await asyncLocalStorage.clear()
         }
     }
 
-    const handleClick2 = () => {
+    const handleClickSignUp = () => {
         navigate('/sign-up')
     }
+
     const handleClickLogOut = async () => {
         localStorage.clear()
         navigate('/')
-    }
-    // Initialize the addButtonDisabled state
-    const [addButtonDisabled, setAddButtonDisabled] = React.useState(false)
-
-    function EditToolbar() {
-        const dispatch = useDispatch()
-
-        const handleClick = () => {
-            const id = randomInteger(10, 100000)
-            console.log(id)
-            setAddButtonDisabled(true)
-            const newRow: GridRowModel = {
-                id,
-                isNew: true,
-            }
-
-            dispatch(addRow(newRow))
-            setRowModesModel((oldModel) => ({
-                [id]: { mode: GridRowModes.Edit, fieldToFocus: 'name' },
-                ...oldModel,
-            }))
-        }
-
-        return (
-            <GridToolbarContainer>
-                {
-                    <Button
-                        color="primary"
-                        startIcon={<AddIcon />}
-                        onClick={handleClick}
-                        disabled={addButtonDisabled}
-                    >
-                        Add record
-                    </Button>
-                }
-            </GridToolbarContainer>
-        )
     }
 
     const handleRowEditStop: GridEventListener<'rowEditStop'> = (
@@ -145,56 +104,6 @@ export default function FullFeaturedCrudGrid() {
                 ...rowModesModel,
                 [params.id]: { mode: GridRowModes.View },
             }))
-        }
-        setAddButtonDisabled(false)
-    }
-
-    const handleEditClick = (id: GridRowId) => () => {
-        setAddButtonDisabled(true)
-        setRowModesModel({
-            ...rowModesModel,
-            [id]: { mode: GridRowModes.Edit },
-        })
-    }
-
-    const handleSaveClick = (id: GridRowId) => () => {
-        const editedRow = rows.find((row) => row.id === id)
-        if (editedRow) {
-            // Dispatch the updateRow action with the edited row data
-            dispatch(updateRow(editedRow))
-
-            // Set the row mode to view mode
-            setRowModesModel((prevModesModel) => ({
-                ...prevModesModel,
-                [id]: { mode: GridRowModes.View },
-            }))
-        }
-
-        setAddButtonDisabled(false)
-    }
-
-    const handleDeleteClick = (id: GridRowId) => () => {
-        dispatch(deleteRow(id))
-        socket.emit('deleteStudent', 'A Student Deleted from Table')
-    }
-
-    const handleCancelClick = (id: GridRowId) => () => {
-        const editedRow = rows.find((row) => row.id === id)
-
-        if (editedRow) {
-            // If the row is in edit mode, update row mode to "View" and ignore modifications
-            setRowModesModel((prevModesModel) => ({
-                ...prevModesModel,
-                [id]: { mode: GridRowModes.View },
-            }))
-            setAddButtonDisabled(false)
-            if (editedRow.isNew) {
-                // If the row is a newly added row, remove it from the Redux store
-                dispatch(deleteRowTableOnly(id)) // Dispatch action to delete the row from the Redux store
-                // Enable the Add record button
-                console.log('handleCancelClick')
-                setAddButtonDisabled(false)
-            }
         }
     }
 
@@ -321,54 +230,6 @@ export default function FullFeaturedCrudGrid() {
             editable: true,
             type: 'string',
         },
-        {
-            field: 'actions',
-            type: 'actions',
-            headerName: 'Command',
-            width: 100,
-            cellClassName: 'actions',
-            getActions: ({ id }) => {
-                const isInEditMode =
-                    rowModesModel[id]?.mode === GridRowModes.Edit
-
-                if (isInEditMode) {
-                    return [
-                        <GridActionsCellItem
-                            icon={<SaveIcon />}
-                            label="Save"
-                            name="SaveButton"
-                            sx={{
-                                color: 'primary.main',
-                            }}
-                            onClick={handleSaveClick(id)}
-                        />,
-                        <GridActionsCellItem
-                            icon={<CancelIcon />}
-                            label="Cancel"
-                            className="textPrimary"
-                            onClick={handleCancelClick(id)}
-                            color="inherit"
-                        />,
-                    ]
-                }
-
-                return [
-                    <GridActionsCellItem
-                        icon={<EditIcon />}
-                        label="EditRow"
-                        className="textPrimary"
-                        onClick={handleEditClick(id)}
-                        color="inherit"
-                    />,
-                    <GridActionsCellItem
-                        icon={<DeleteIcon />}
-                        label="Delete"
-                        onClick={handleDeleteClick(id)}
-                        color="inherit"
-                    />,
-                ]
-            },
-        },
     ]
 
     return (
@@ -385,9 +246,6 @@ export default function FullFeaturedCrudGrid() {
             }}
         >
             <DataGrid
-                slots={{
-                    toolbar: EditToolbar,
-                }}
                 rows={rows}
                 columns={columns}
                 editMode="row"
@@ -405,7 +263,7 @@ export default function FullFeaturedCrudGrid() {
                 }}
                 disableVirtualization
             />
-            <Button variant="contained" onClick={handleClick2}>
+            <Button variant="contained" onClick={handleClickSignUp}>
                 Sign Up
             </Button>
             <Button variant="contained" onClick={handleClickLogOut}>

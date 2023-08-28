@@ -5,19 +5,16 @@ import { AppRoles } from '../util/Roles'
 @Entity('users')
 export class User extends BaseEntity {
   @PrimaryGeneratedColumn()
-  id?: number
+  id!: number
+
+  @Column({ unique: true })
+  email!: string
 
   @Column()
-  email?: string
-
-  @Column()
-  userName?: string
+  userName!: string
 
   @Column()
   password?: string
-
-  @Column()
-  passwordConfirm?: string
 
   @Column({
     type: 'enum',
@@ -25,12 +22,13 @@ export class User extends BaseEntity {
     array: true,
     default: [AppRoles.USER],
   })
-  roles?: AppRoles
+  roles!: AppRoles
 
   @BeforeInsert()
   async beforeInsert() {
     if (this.password) {
       this.password = await bcrypt.hash(this.password, 12) // Hash the password
+      //Delete Password Confirm Field
     }
   }
 

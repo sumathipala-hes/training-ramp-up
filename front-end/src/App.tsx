@@ -11,10 +11,6 @@ export const socket = io.connect('http://localhost:5000')
 
 function App() {
     const dispatch = useDispatch()
-    useEffect(() => {
-        // Dispatch the action to fetch rows when the component mounts
-        dispatch(fetchRows())
-    }, [dispatch])
 
     useEffect(() => {
         socket.on('recievedNewStudent', () => {

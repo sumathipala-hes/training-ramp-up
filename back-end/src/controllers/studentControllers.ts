@@ -41,7 +41,7 @@ const deleteStudent = async (req: Request, res: Response) => {
   const { studentId } = req.params
   const response = await deleteStudentDB(parseInt(studentId))
 
-  return res.json(response)
+  return res.json({ status: 'success', response })
 }
 
 export { createStudent, getAllStudents, updateStudent, deleteStudent }

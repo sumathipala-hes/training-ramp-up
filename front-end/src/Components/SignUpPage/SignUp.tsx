@@ -1,17 +1,27 @@
 import { Box, Button, Container, TextField } from '@mui/material'
-import * as React from 'react'
-import { useDispatch } from 'react-redux'
+import React, { useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { SignUpState, signUpSuccessfulState, signUpUser } from './SignUpSlice'
+import { RootState } from '../../store'
 import { useNavigate } from 'react-router-dom'
-import {
-    enteredEmail,
-    enteredPassword,
-    enteredPasswordConfirm,
-    enteredUserName,
-} from './SignUpSlice'
 
 export default function SignUp() {
-    const navigate = useNavigate()
+    const asyncLocalStorage = {
+        async setItem(key: string, value: string) {
+            await null
+            return localStorage.setItem(key, value)
+        },
+        async getItem(key: string) {
+            await null
+            return localStorage.getItem(key)
+        },
+        async removeItem(key: string) {
+            await null
+            return localStorage.removeItem(key)
+        },
+    }
     const dispacth = useDispatch()
+    const navigate = useNavigate()
 
     const [email, setEmail] = React.useState('')
     const [userName, setUserName] = React.useState('')
@@ -42,14 +52,54 @@ export default function SignUp() {
         setPasswordConfirm(event.target.value)
     }
 
-    const handleClick = () => {
-        navigate('/student-table') // Navigate to the "/other" route
-        dispacth(enteredEmail(email))
-        dispacth(enteredUserName(userName))
-        if (password === passwordConfirm) {
-            dispacth(enteredPassword(password))
-            dispacth(enteredPasswordConfirm(passwordConfirm))
+    const responseState = useSelector(
+        (store: RootState) => store.signUp.successState
+    )
+
+    const response = useSelector(
+        (store: RootState) => store.signUp.successMessage
+    )
+
+    if (response === 'USER') {
+        localStorage.setItem('Role', 'USER')
+    } else if (response === 'ADMIN') {
+        localStorage.setItem('Role', 'ADMIN')
+    }
+    useEffect(() => {
+        console.log(responseState)
+        if (responseState) {
+            checkRoleAndNavigate()
+            dispacth(signUpSuccessfulState(false))
         }
+    }, [responseState])
+
+    const checkRoleAndNavigate = async () => {
+        const role = await asyncLocalStorage.getItem('Role')
+
+        if (role === 'USER') {
+            navigate('/student-table-plain')
+            localStorage.removeItem('AuthSuccess')
+            console.log('Now I will navigate to Uneditable Table')
+        } else if (role === 'ADMIN') {
+            navigate('/student-table')
+            localStorage.removeItem('AuthSuccess')
+            console.log('Now I will navigate to Editable Table')
+        }
+    }
+
+    const handleClick = () => {
+        if (password === passwordConfirm) {
+            const newUser: SignUpState = {
+                email: email,
+                userName: userName,
+                password: password,
+            }
+            dispacth(signUpUser(newUser))
+        }
+    }
+
+    const handleClick2 = () => {
+        navigate('/')
     }
 
     return (
@@ -87,7 +137,7 @@ export default function SignUp() {
                     <Container>
                         <form>
                             <TextField
-                                id="outlined-basic"
+                                id="outlined-basic1"
                                 label="Your Email"
                                 variant="outlined"
                                 value={email}
@@ -99,7 +149,7 @@ export default function SignUp() {
                             ></TextField>
                             <div>
                                 <TextField
-                                    id="outlined-basic"
+                                    id="outlined-basic2"
                                     label="Enter Full Name"
                                     variant="outlined"
                                     value={userName}
@@ -112,8 +162,9 @@ export default function SignUp() {
                             </div>
                             <div>
                                 <TextField
-                                    id="outlined-basic"
+                                    id="outlined-basic3"
                                     label="Enter Password *"
+                                    type="password"
                                     variant="outlined"
                                     value={password}
                                     onChange={handleChangePassword}
@@ -125,8 +176,9 @@ export default function SignUp() {
                             </div>
                             <div>
                                 <TextField
-                                    id="outlined-basic"
+                                    id="outlined-basic4"
                                     label="Re Enter Your Password"
+                                    type="password"
                                     variant="outlined"
                                     value={passwordConfirm}
                                     onChange={handleChangePasswordConfirm}
@@ -142,6 +194,13 @@ export default function SignUp() {
                                     onClick={handleClick}
                                 >
                                     Sign Up
+                                </Button>
+                                <Button
+                                    variant="contained"
+                                    onClick={handleClick2}
+                                    sx={{ marginLeft: '40px' }}
+                                >
+                                    Log In
                                 </Button>
                             </div>
                         </form>

@@ -1,13 +1,13 @@
 import express, { Express } from 'express'
-import dotenv from 'dotenv'
 import { createConnection } from 'typeorm'
 import { userRouter } from './routes/userRouter'
 import cors from 'cors'
 import { Server } from 'socket.io'
 import http from 'http'
 import { connectionOptions } from './ormconfig'
-import 'dotenv/config'
-dotenv.config()
+import path from 'path'
+import dotenv from 'dotenv'
+dotenv.config({ path: path.resolve(__dirname, '../.env') })
 
 const app: Express = express()
 
