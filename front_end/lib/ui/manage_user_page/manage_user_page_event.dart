@@ -6,7 +6,7 @@ abstract class ManageUserScreenEvent {}
 class SetRoleEvent extends ManageUserScreenEvent {
   final String role;
 
-  SetRoleEvent({
-    required this.role,
-  });
+  SetRoleEvent(
+    this.role,
+  );
 }

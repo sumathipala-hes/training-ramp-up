@@ -18,6 +18,7 @@ class ManageUserScreen extends StatelessWidget {
     confirmPasswordController.text = PasswordEncryption.decryptPassword(
       user.userPassword,
     );
+    selectedItem = user.role;
   }
 
   final TextEditingController nameController = TextEditingController();
@@ -26,7 +27,7 @@ class ManageUserScreen extends StatelessWidget {
   final TextEditingController confirmPasswordController =
       TextEditingController();
   final User user;
-  String selectedItem = 'ADMIN';
+  String selectedItem ='';
   List<String> role = ['ADMIN', 'USER'];
 
   void _updateForm(context) {
@@ -134,11 +135,7 @@ class ManageUserScreen extends StatelessWidget {
                       DropdownButton<String>(
                         value: selectedItem,
                         onChanged: (newValue) {
-                          manageUserScreenBloc.add(
-                            SetRoleEvent(
-                              role: newValue!,
-                            ),
-                          );
+                          manageUserScreenBloc.add(SetRoleEvent(newValue!));
                         },
                         items: role.map((String role) {
                           return DropdownMenuItem<String>(
@@ -205,19 +202,6 @@ class ManageUserScreen extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           ElevatedButton(
-                            // onPressed: () {
-                            //   Navigator.of(context).pop();
-                            //   rampUpHomeScreenBloc.add(
-                            //     UpdateUser(
-                            //       user: User(
-                            //         role: selectedItem,
-                            //         userName: nameController.text,
-                            //         userEmail: emailController.text,
-                            //         userPassword: passwordController.text,
-                            //       ),
-                            //     ),
-                            //   );
-                            // },
                             onPressed: () {
                               _updateForm(context);
                             },
