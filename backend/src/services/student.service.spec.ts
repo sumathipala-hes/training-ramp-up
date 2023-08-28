@@ -8,9 +8,6 @@ import {
 } from '../services/student.service';
 import { sendNotification } from '../utils/notification.util';
 
-// jest.mock('../utils/notification.util', () => ({
-//   sendNotification: jest.fn(),
-// }));
 
 jest.mock('../utils/notification.util', () => ({
   sendNotification: jest.fn(),
