@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:frontend/enum/role_enum.dart';
 import 'package:frontend/ui/sign_in_page/sign_in_page_provider.dart';
 import 'package:frontend/ui/student_home_page/student_home_page_view.dart';
 import 'package:frontend/ui/user_home_page/user_home_page_bloc.dart';
@@ -119,7 +120,7 @@ class HomePageView extends StatelessWidget {
                     final sharedPreferences = snapshot.data;
                     final userRole = sharedPreferences?.getString('role');
 
-                    if (userRole == 'Admin') {
+                    if (userRole == RoleEnum.admin.toString()) {
                       return GestureDetector(
                         onTap: () {
                           Navigator.push(
