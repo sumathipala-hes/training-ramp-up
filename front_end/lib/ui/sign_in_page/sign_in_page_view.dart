@@ -13,6 +13,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../theme/primary_theme.dart';
 import '../../util/notification_util.dart';
+import '../../util/validation_utils.dart';
 
 class SignInPageView extends StatelessWidget {
   const SignInPageView({Key? key}) : super(key: key);
@@ -105,14 +106,11 @@ class SignInPageView extends StatelessWidget {
                                       passwordController.text.trim().isEmpty) {
                                     showFieldError(
                                         'Text Field should not be empty.');
-                                  } else if (!RegExp(
-                                          r'^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$')
-                                      .hasMatch(emailController.text.trim())) {
+                                  } else if (!ValidationUtils.isValidEmail(
+                                      emailController.text.trim())) {
                                     showFieldError('Invalid Email.');
-                                  } else if (!RegExp(
-                                          r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{8,}$')
-                                      .hasMatch(
-                                          passwordController.text.trim())) {
+                                  } else if (!ValidationUtils.isValidPassword(
+                                      passwordController.text.trim())) {
                                     showFieldError(
                                         'Password must contain at least 8 characters, including UPPER/lowercase and numbers.');
                                   } else {
@@ -125,6 +123,9 @@ class SignInPageView extends StatelessWidget {
                                         password: password,
                                       ),
                                     );
+
+                                    await Future.delayed(
+                                        const Duration(seconds: 2));
 
                                     final prefs =
                                         await SharedPreferences.getInstance();

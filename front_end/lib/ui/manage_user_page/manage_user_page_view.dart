@@ -11,6 +11,7 @@ import 'package:intl/intl.dart';
 import '../../theme/primary_theme.dart';
 import '../../util/encrypted_decrypted_util.dart';
 import '../../util/notification_util.dart';
+import '../../util/validation_utils.dart';
 import '../admin_home_page/admin_home_page_bloc.dart';
 import '../admin_home_page/admin_home_page_event.dart';
 import 'manage_user_page_bloc.dart';
@@ -386,57 +387,50 @@ class UserMangeView extends StatelessWidget {
                             height: 45,
                             child: ElevatedButton(
                               onPressed: () async {
-                                if (userTypeController.text.trim().isEmpty ||
-                                    nameController.text.trim().isEmpty ||
-                                    addressController.text.trim().isEmpty ||
-                                    emailController.text.trim().isEmpty ||
-                                    mobileNoController.text.trim().isEmpty ||
-                                    dateController.text.trim().isEmpty ||
-                                    passwordController.text.trim().isEmpty) {
+                                if (ValidationUtils.isFieldEmpty(
+                                        userTypeController.text) ||
+                                    ValidationUtils.isFieldEmpty(
+                                        nameController.text) ||
+                                    ValidationUtils.isFieldEmpty(
+                                        addressController.text) ||
+                                    ValidationUtils.isFieldEmpty(
+                                        emailController.text) ||
+                                    ValidationUtils.isFieldEmpty(
+                                        mobileNoController.text) ||
+                                    ValidationUtils.isFieldEmpty(
+                                        dateController.text) ||
+                                    ValidationUtils.isFieldEmpty(
+                                        passwordController.text)) {
                                   showFieldError(
                                       'Text Field should not be empty.');
-                                } else if (!RegExp(r'^[a-zA-Z ]+$').hasMatch(
-                                  nameController.text.trim(),
-                                )) {
+                                } else if (!ValidationUtils.isValidName(
+                                    nameController.text)) {
                                   showFieldError('Invalid Name.');
-                                } else if (!RegExp(r'^[a-zA-Z0-9 ]+$').hasMatch(
-                                  addressController.text.trim(),
-                                )) {
+                                } else if (!ValidationUtils.isValidAddress(
+                                    addressController.text)) {
                                   showFieldError('Invalid Address.');
-                                } else if (!RegExp(
-                                        r'^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$')
-                                    .hasMatch(
-                                  emailController.text.trim(),
-                                )) {
+                                } else if (!ValidationUtils.isValidEmail(
+                                    emailController.text)) {
                                   showFieldError('Invalid Email.');
-                                } else if (!RegExp(
-                                        r'^(07(0|1|2|4|5|6|7|8)[0-9]{7})$')
-                                    .hasMatch(
-                                  mobileNoController.text.trim(),
-                                )) {
+                                } else if (!ValidationUtils.isValidMobileNumber(
+                                    mobileNoController.text)) {
                                   showFieldError('Invalid Mobile No.');
-                                } else if (!RegExp(
-                                        r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{8,}$')
-                                    .hasMatch(
-                                  passwordController.text.trim(),
-                                )) {
+                                } else if (!ValidationUtils.isValidPassword(
+                                    passwordController.text)) {
                                   showFieldError(
                                       'Password should be at least 8 characters.');
                                 } else {
-                                  final password = encryptPassword(
-                                    passwordController.text.trim(),
-                                  );
+                                  final password =
+                                      encryptPassword(passwordController.text);
 
                                   homePageBloc.add(
                                     UpdateUser(
                                       user: User(
-                                        roleType:
-                                            userTypeController.text.trim(),
-                                        name: nameController.text.trim(),
-                                        address: addressController.text.trim(),
-                                        email: emailController.text.trim(),
-                                        mobileNumber:
-                                            mobileNoController.text.trim(),
+                                        roleType: userTypeController.text,
+                                        name: nameController.text,
+                                        address: addressController.text,
+                                        email: emailController.text,
+                                        mobileNumber: mobileNoController.text,
                                         dob: dob,
                                         password: password,
                                         gender:
