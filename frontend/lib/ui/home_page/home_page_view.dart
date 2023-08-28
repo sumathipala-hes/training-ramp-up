@@ -120,7 +120,12 @@ class HomePageView extends StatelessWidget {
                     final sharedPreferences = snapshot.data;
                     final userRole = sharedPreferences?.getString('role');
 
-                    if (userRole == RoleEnum.admin.toString()) {
+                    if (userRole ==
+                        RoleEnum.admin
+                            .toString()
+                            .split('.')
+                            .last
+                            .toLowerCase()) {
                       return GestureDetector(
                         onTap: () {
                           Navigator.push(

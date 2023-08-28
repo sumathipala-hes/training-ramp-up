@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:frontend/enum/role_enum.dart';
 import 'package:frontend/model/student.dart';
 import 'package:frontend/ui/sign_in_page/sign_in_page_provider.dart';
 import 'package:frontend/ui/student_home_page/student_home_page_bloc.dart';
@@ -68,7 +69,8 @@ class StudentHomePageView extends StatelessWidget {
                   final sharedPreferences = snapshot.data;
                   final userRole = sharedPreferences?.getString('role');
 
-                  if (userRole == 'Admin') {
+                  if (userRole ==
+                      RoleEnum.admin.toString().split('.').last.toLowerCase()) {
                     return SizedBox(
                       width: MediaQuery.of(context).size.width * 0.9,
                       child: ElevatedButton(

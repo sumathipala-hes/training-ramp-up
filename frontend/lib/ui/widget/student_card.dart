@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/enum/role_enum.dart';
 import 'package:frontend/model/student.dart';
 import 'package:frontend/ui/manage_student_page/manage_student_page_provider.dart';
 import 'package:frontend/ui/theme/colors.dart';
@@ -30,7 +31,8 @@ class _StudentCardState extends State<StudentCard> {
           onPressed: () async {
             final prefs = await SharedPreferences.getInstance();
             final role = prefs.getString('role');
-            if (role == 'Admin') {
+            if (role ==
+                RoleEnum.admin.toString().split('.').last.toLowerCase()) {
               // ignore: use_build_context_synchronously
               Navigator.push(
                 context,
