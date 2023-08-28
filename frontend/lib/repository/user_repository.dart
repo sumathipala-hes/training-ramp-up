@@ -32,7 +32,6 @@ class UserRepository {
         Map<String, dynamic> decodedToken = JwtDecoder.decode(accessToken);
         prefs.setString('email', decodedToken['email']);
         prefs.setString('role', decodedToken['role'].toLowerCase());
-        print(decodedToken['role'].toLowerCase());
         return true;
       }
     }

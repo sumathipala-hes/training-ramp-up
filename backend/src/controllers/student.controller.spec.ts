@@ -6,6 +6,14 @@ import {
   saveStudent,
   updateStudent,
 } from '../services/student.service';
+import * as admin from 'firebase-admin';
+import serviceAccount from '../configs/service.config.json';
+
+beforeAll(async () => {
+  admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount as admin.ServiceAccount),
+  });
+});
 
 describe('Student Controller Test', () => {
   const studentRepo = dataSource.manager;
