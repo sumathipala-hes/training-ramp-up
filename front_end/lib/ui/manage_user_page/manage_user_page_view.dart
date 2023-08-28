@@ -12,8 +12,12 @@ class ManageUserScreen extends StatelessWidget {
   ManageUserScreen({super.key, required this.user}) {
     nameController.text = user.userName;
     emailController.text = user.userEmail;
-    passwordController.text = user.userPassword;
-    confirmPasswordController.text = user.userPassword;
+    passwordController.text = PasswordEncryption.decryptPassword(
+      user.userPassword,
+    );
+    confirmPasswordController.text = PasswordEncryption.decryptPassword(
+      user.userPassword,
+    );
   }
 
   final TextEditingController nameController = TextEditingController();
