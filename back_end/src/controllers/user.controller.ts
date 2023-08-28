@@ -8,7 +8,6 @@ import {
 } from '../services/user.service';
 import jwt = require('jsonwebtoken');
 import { jwtConfig } from '../configs/jwt.config';
-import { generateToken } from '../middleware/jwt.middleware';
 
 export default class UserController {
   registerUser: RequestHandler = async (
@@ -150,35 +149,6 @@ export default class UserController {
       console.error(error);
       return res.status(500).json({ error: 'Internal server error' });
     }
-  };
-
-  generateNewAccessToken: RequestHandler = async (
-    req: Request,
-    res: Response,
-  ): Promise<Response> => {
-    try {
-      const refreshToken = req.cookies.refreshToken;
-      const user = req.cookies.user;
-      if (!refreshToken) {
-        return res.status(403).json({ message: 'Forbidden' });
-      } else {
-        const payload = jwt.verify(refreshToken, jwtConfig.refreshKey);
-        if (payload) {
-          const accessToken = jwt.sign(
-            { userEmail: user.userEmail, role: user.role },
-            jwtConfig.secretKey!,
-            { expiresIn: jwtConfig.expiresIn },
-          );
-          res.cookie('accessToken', accessToken, {
-            httpOnly: true,
-          });
-          return res.status(200).json({ accessToken });
-        }
-      }
-    } catch (error) {
-      return res.status(500).json(error);
-    }
-    return res.status(500).json({ message: 'An error occurred' });
   };
 
   signOut: RequestHandler = async (

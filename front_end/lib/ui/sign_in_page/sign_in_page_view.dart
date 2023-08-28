@@ -55,12 +55,12 @@ class SignInPageScreen extends StatelessWidget {
         ),
       );
 
+      await Future.delayed(const Duration(seconds: 2));
       final prefs = await SharedPreferences.getInstance();
       final role = prefs.getString('role');
 
       Logger().e(role);
 
-      print(role);
       if (role == "ADMIN") {
         Navigator.push(
           context,
@@ -131,6 +131,7 @@ class SignInPageScreen extends StatelessWidget {
                         const SizedBox(height: 25.0),
                         TextField(
                           controller: passwordController,
+                          obscureText: true,
                           decoration: const InputDecoration(
                             labelText: "Password :",
                             prefixIcon: Icon(Icons.lock),

@@ -26,12 +26,6 @@ export default class UserRoutes {
     //POST /api/v1/user/signIn
     this.router.post('/signIn', this.userController.signIn);
 
-    //POST /api/v1/user/new
-    this.router.post('/new', this.userController.generateNewAccessToken);
-
-    //POST /api/v1/user/detail
-    this.router.post('/detail', authorization,this.userController.signIn);
-
     //DELETE /api/v1/user/signOut
     this.router.delete('/signOut', authorization,this.userController.signOut);
   };
