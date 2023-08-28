@@ -1,7 +1,7 @@
 import { dataSource } from '../configs/datasource.config';
 import { User } from '../models/user.model';
 import { sendNotification } from '../utils/notification.util';
-import { deleteUser, getAllUsers, saveUser, updateUser } from './user.service';
+import { deleteUser, getAllUsers, getUser, saveUser, updateUser } from './user.service';
 
 jest.mock('../utils/notification.util', () => ({
   sendNotification: jest.fn(),
@@ -89,6 +89,25 @@ describe('User Service Checked', () => {
     test('Delete User Fail', async () => {
       userRepo.delete = jest.fn().mockRejectedValue(new Error('Error'));
       await expect(deleteUser(email)).rejects.toThrowError('Error');
+    });
+  });
+
+  describe('Get User', () => {
+    const userRepo = dataSource.manager.getRepository(User);
+    const result:User = {
+        name: 'Dasun',
+        email: 'dasun@gmail.com',
+        password: '1234',
+        role: 'admin',
+    };
+    test('Get Users Success', async () => {
+      userRepo.findOne = jest.fn().mockResolvedValue(result);
+      const data = await getUser('dasun@gmail.com','1234');
+      expect(data).toEqual(result);
+    });
+    test('Get All Students Fail', async () => {
+      userRepo.findOne = jest.fn().mockRejectedValue(new Error('Error'));
+      await expect(getUser('dasun@gmail.com','1234')).rejects.toThrowError('Error');
     });
   });
 });
