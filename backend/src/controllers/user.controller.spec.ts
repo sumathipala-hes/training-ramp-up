@@ -2,7 +2,8 @@ import { dataSource } from '../configs/datasource.config';
 import * as admin from 'firebase-admin';
 import serviceAccount from '../configs/service.config.json';
 import { User } from '../models/user.model';
-import { deleteUser, getAllUsers, saveUser, updateUser } from '../services/user.service';
+import { deleteUser, getAllUsers, getUser, saveUser, updateUser } from '../services/user.service';
+import e from 'express';
 
 beforeAll(async () => {
     admin.initializeApp({
@@ -93,6 +94,27 @@ describe('User Test', () => {
         test('Delete User Fail', async () => {
             userRepo.delete = jest.fn().mockRejectedValue(new Error('Error'));
             await expect(deleteUser(email)).rejects.toThrowError('Error');
+        });
+    });
+
+    describe('Sign In', () => {
+        const userRepo = dataSource.manager.getRepository(User);
+        const newUser = {
+            name: 'Dasun',
+            email: 'dasun@gmail.com',
+            password: '1234',
+            role: 'admin',
+        };
+
+        test('Sign In User Success', async () => {
+            userRepo.findOne = jest.fn().mockResolvedValue(newUser);
+            const data = await getUser(newUser.email, newUser.password);
+            expect(data).toEqual(newUser);
+        });
+
+        test('Sign In User Fail', async () => {
+            userRepo.insert = jest.fn().mockRejectedValue(new Error('Error'));
+            await expect(saveUser(newUser)).rejects.toThrowError('Error');
         });
     });
 });
