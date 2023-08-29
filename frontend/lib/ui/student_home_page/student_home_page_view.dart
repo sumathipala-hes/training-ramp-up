@@ -66,10 +66,7 @@ class StudentHomePageView extends StatelessWidget {
                     return const CircularProgressIndicator();
                   }
 
-                  final data = snapshot.data;
-                  final userRole = data;
-
-                  if (userRole ==
+                  if (snapshot.data ==
                       RoleEnum.admin.toString().split('.').last.toLowerCase()) {
                     return SizedBox(
                       width: MediaQuery.of(context).size.width * 0.9,

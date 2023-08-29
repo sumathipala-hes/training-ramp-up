@@ -1,6 +1,4 @@
 import 'dart:async';
-
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/model/user.dart';
@@ -19,7 +17,6 @@ class UserHomePageBloc extends Bloc<UserHomePageEvent, UserHomePageState> {
     on<DeleteUserEvent>(_deleteUser);
     on<SignOutEvent>(_signOut);
     add(GetAllUsers());
-    FirebaseMessaging.instance.getToken();
     configListener();
   }
 
