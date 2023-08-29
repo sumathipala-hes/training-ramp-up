@@ -5,6 +5,7 @@ import 'package:front_end/ui/user_home_page/user_home_page_view.dart';
 import 'package:front_end/ui/sign_in_page/sign_in_page_view.dart';
 import 'package:front_end/util/local_storage.dart';
 
+import '../../enum/role_type_enum.dart';
 import '../../theme/primary_theme.dart';
 import '../admin_home_page/admin_home_page_bloc.dart';
 import '../user_home_page/user_home_page_bloc.dart';
@@ -29,9 +30,15 @@ class RampUpApp extends StatelessWidget {
           final roleType = prefs;
 
           final homePage = isAuthenticate
-              ? roleType == 'USER'
+              ? roleType ==
+                      RoleEnum.user.toString().split('.').last.toUpperCase()
                   ? UserHomePageView()
-                  : (roleType == 'ADMIN'
+                  : (roleType ==
+                          RoleEnum.admin
+                              .toString()
+                              .split('.')
+                              .last
+                              .toUpperCase()
                       ? const AdminHomePageView()
                       : const SignInPageView())
               : const SignInPageView();

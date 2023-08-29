@@ -11,6 +11,7 @@ import 'package:front_end/util/encrypted_decrypted_util.dart';
 import 'package:front_end/util/local_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../enum/role_type_enum.dart';
 import '../../theme/primary_theme.dart';
 import '../../util/notification_util.dart';
 import '../../util/validation_utils.dart';
@@ -131,7 +132,12 @@ class SignInPageView extends StatelessWidget {
                                         .getCurrentLoginRoleType();
 
                                     // ignore: unrelated_type_equality_checks
-                                    role == 'ADMIN'
+                                    role ==
+                                            RoleEnum.admin
+                                                .toString()
+                                                .split('.')
+                                                .last
+                                                .toUpperCase()
                                         // ignore: use_build_context_synchronously
                                         ? Navigator.push(
                                             context,
@@ -141,7 +147,12 @@ class SignInPageView extends StatelessWidget {
                                           )
 
                                         // ignore: unrelated_type_equality_checks
-                                        : role == 'USER'
+                                        : role ==
+                                                RoleEnum.user
+                                                    .toString()
+                                                    .split('.')
+                                                    .last
+                                                    .toUpperCase()
                                             // ignore: use_build_context_synchronously
                                             ? Navigator.push(
                                                 context,
