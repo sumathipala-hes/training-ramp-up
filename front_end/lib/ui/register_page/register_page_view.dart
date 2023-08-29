@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:front_end/enum/role_enum.dart';
 import 'package:front_end/models/user.dart';
 import 'package:front_end/ui/admin_home_page/admin_home_page_bloc.dart';
 import 'package:front_end/ui/admin_home_page/admin_home_page_event.dart';
@@ -65,7 +66,7 @@ class RegisterScreen extends StatelessWidget {
             userName: nameController.text.trim(),
             userEmail: emailController.text.trim(),
             userPassword: encriptedPassword,
-            role: 'USER',
+            role: RoleEnum.user.toString().split('.').last,
           ),
         ),
       );

@@ -1,27 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:front_end/enum/role_enum.dart';
 
 @immutable
 class ManageUserScreenState {
   final String role;
-  final bool isPasswordVisible;
 
   const ManageUserScreenState({
     required this.role,
-    required this.isPasswordVisible,
   });
 
-  static ManageUserScreenState get initialState => const ManageUserScreenState(
-        role: 'USER',
-        isPasswordVisible: false,
+  static ManageUserScreenState get initialState => ManageUserScreenState(
+        role: RoleEnum.user.toString().split('.').last,
       );
 
   ManageUserScreenState clone({
     String? role,
-    bool? isPasswordVisible,
   }) {
     return ManageUserScreenState(
       role: this.role,
-      isPasswordVisible: isPasswordVisible ?? this.isPasswordVisible,
     );
   }
 }

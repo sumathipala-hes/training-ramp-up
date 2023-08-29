@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:front_end/enum/role_enum.dart';
 import 'package:front_end/ui/admin_home_page/admin_home_page_view.dart';
 import 'package:front_end/ui/register_page/register_page_provider.dart';
 import 'package:front_end/ui/sign_in_page/sign_in_page_bloc.dart';
@@ -61,14 +62,14 @@ class SignInPageScreen extends StatelessWidget {
 
       Logger().e(role);
 
-      if (role == "ADMIN") {
+      if (role == RoleEnum.admin.toString().split('.').last) {
         Navigator.push(
           context,
           MaterialPageRoute(
             builder: (context) => const AdminHomeScreen(),
           ),
         );
-      } else if (role == "USER") {
+      } else if (role == RoleEnum.user.toString().split('.').last) {
         Navigator.push(
           context,
           MaterialPageRoute(

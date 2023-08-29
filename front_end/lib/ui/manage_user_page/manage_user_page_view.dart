@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:front_end/enum/role_enum.dart';
 import 'package:front_end/models/user.dart';
 import 'package:front_end/ui/admin_home_page/admin_home_page_bloc.dart';
 import 'package:front_end/ui/admin_home_page/admin_home_page_event.dart';
@@ -28,7 +29,10 @@ class ManageUserScreen extends StatelessWidget {
       TextEditingController();
   final User user;
   String selectedItem ='';
-  List<String> role = ['ADMIN', 'USER'];
+  List<String> role = [
+    RoleEnum.admin.toString().split('.').last,
+    RoleEnum.user.toString().split('.').last
+  ];
 
   void _updateForm(context) {
     final name = nameController.text.trim();
