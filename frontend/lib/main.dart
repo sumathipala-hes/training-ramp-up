@@ -6,10 +6,9 @@ import 'package:frontend/ui/root_page/root_page.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  bool? isAuthenticate = await LocalStorage().getDetails();
   runApp(
     RampUpApp(
-      isAuthenticate: isAuthenticate,
+      isAuthenticate: await LocalStorage().getDetails(),
     ),
   );
 }
