@@ -10,7 +10,6 @@ import 'package:front_end/ui/user_home_page/user_home_page_provider.dart';
 import 'package:front_end/util/encrypted_decrypted_util.dart';
 import 'package:front_end/util/local_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../theme/primary_theme.dart';
 import '../../util/notification_util.dart';
