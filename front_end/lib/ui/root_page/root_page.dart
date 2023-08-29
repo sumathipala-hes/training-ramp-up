@@ -4,7 +4,6 @@ import 'package:front_end/ui/admin_home_page/admin_home_page_view.dart';
 import 'package:front_end/ui/user_home_page/user_home_page_view.dart';
 import 'package:front_end/ui/sign_in_page/sign_in_page_view.dart';
 import 'package:front_end/util/local_storage.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../theme/primary_theme.dart';
 import '../admin_home_page/admin_home_page_bloc.dart';
