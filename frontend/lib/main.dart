@@ -9,7 +9,7 @@ Future<void> main() async {
   bool? isAuthenticate = await LocalStorage().getDetails();
   runApp(
     RampUpApp(
-      isAuthenticate: isAuthenticate ?? false,
+      isAuthenticate: isAuthenticate,
     ),
   );
 }
