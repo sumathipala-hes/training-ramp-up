@@ -1,6 +1,7 @@
 import {Request} from 'express'; 
-import AppDataSource from "../services/dataSoure";
+import AppDataSource from "../config/dataSoure";
 import { Student } from '../models/student';
+import studentRepository from './studentRepo';
 
 //get student from the database
 function fetchStudents(){
@@ -27,29 +28,21 @@ async function saveStudent(req: Request){
     student.birthday = birthday;
     student.age = age;
     student.id = id;
-        await AppDataSource.manager.save(student);
-        try{
-            io.sockets.emit("addStudent","A new student has been added.")
-        } catch(error){
-            console.log(error); 
-        }
-        return true;
+    
+    await AppDataSource.manager.save(student);
+    io.sockets.emit("addStudent","A new student has been added.")
+    return true;
 }
 
 //detete student from the database
 async function deleteStudentDb(studentId:number, req: Request){
-    const studentRepository = AppDataSource.getRepository(Student);
     const io = req.app.get('io');
     const student = await studentRepository.findOneBy({
         id: studentId,
     });
     if(student !== null){
         await studentRepository.remove(student);
-        try{
-            io.sockets.emit("deleteStudent","A student has been removed");
-        } catch(error){
-            console.log(error) 
-        }
+        io.sockets.emit("deleteStudent","A student has been removed");
         return true;
     }else{
         return false;
@@ -67,7 +60,6 @@ async function updateStudentDb(req: Request){
     const age = req.body.age;
     const id = req.body.id;
 
-    const studentRepository = AppDataSource.getRepository(Student);
     const student = await studentRepository.findOneBy({
         id: id,
     });
@@ -80,11 +72,7 @@ async function updateStudentDb(req: Request){
         student.age = age;
 
         await studentRepository.save(student);
-        try{
-            io.sockets.emit("updateStudent","A student record has been updated");
-        } catch(error){
-           console.log(error) 
-        }
+        io.sockets.emit("updateStudent","A student record has been updated");
         return true;
     }else{
         return false;

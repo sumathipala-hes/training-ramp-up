@@ -1,9 +1,16 @@
 import request from "supertest";
 
 import app from "../app";
-import AppDataSource from "../services/dataSoure";
+import AppDataSource from "../config/dataSoure";
 
 describe("API TEST CASES", () => {
+  const mockIo = {
+    sockets: {
+      emit: jest.fn(),
+    },
+  };
+
+  app.set("io", mockIo);
           
   test("get all student data", async () => {
     await AppDataSource.initialize()
@@ -11,13 +18,13 @@ describe("API TEST CASES", () => {
     expect(res.statusCode).toEqual(200);
   });
 
-  test("Delete route with invalid student id", async () => {
+  test("Delete route with invalid student id and expect 400 response", async () => {
     const res = await request(app).post("/remove-student").send({"id" : 1000});
     expect(res.statusCode).toEqual(400);
     expect(res.body).toEqual({"status": 400,"error": "No Student data found"});
   });
 
-  test("Add student to the database", async () => {
+  test("Add student to the database and receive 200 status", async () => {
     const res = await request(app).post("/add-student").send(
         {
             "id": 100,
@@ -28,11 +35,11 @@ describe("API TEST CASES", () => {
             "birthday": "1999-08-01",
             "age": 24
         }
-    );
+    )
     expect(res.body).toEqual({"status": 200});
   });
 
-  test("Add invalid student to the database", async () => {
+  test("Add invalid student to the database and receive 400 status", async () => {
     const res = await request(app).post("/add-student").send(
         {
             "id": "100",
@@ -42,7 +49,7 @@ describe("API TEST CASES", () => {
     expect(res.statusCode).toEqual(400);
   });
 
-  test("Edit valid student using edit route", async () => {
+  test("Edit valid student using edit route and receive 200 status", async () => {
     const res = await request(app).post("/update-student").send(
         {
             "id": 100,
@@ -59,13 +66,13 @@ describe("API TEST CASES", () => {
   });
 
   
-  test("Delete route with valid student id", async () => {
+  test("Delete route with valid student id and receive 200 status", async () => {
     const res = await request(app).post("/remove-student").send({"id" : 100});
     expect(res.statusCode).toEqual(200);
     expect(res.body).toEqual({"status": 200});
   });
 
-  test("Edit invalid student using edit route", async () => {
+  test("Edit invalid student using edit route and receive 400 status", async () => {
     const res = await request(app).post("/update-student").send(
         {
             "id": 100,
