@@ -1,7 +1,7 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LocalStorage {
-  Future<bool?> getCurrentLoginRole() async {
+  Future<bool> getCurrentLoginRole() async {
     final prefs = await SharedPreferences.getInstance();
     final roleType = prefs.getString('roleType');
     return roleType != null;
@@ -17,15 +17,15 @@ class LocalStorage {
     prefs.setString('email', email);
   }
 
-  Future<String?> getCurrentLoginRoleType() async {
+  Future<String> getCurrentLoginRoleType() async {
     final prefs = await SharedPreferences.getInstance();
     final roleType = prefs.getString('roleType');
-    return roleType;
+    return roleType??'';
   }
 
-  Future<String?> getCurrentLoginEmail() async {
+  Future<String> getCurrentLoginEmail() async {
     final prefs = await SharedPreferences.getInstance();
     final email = prefs.getString('email');
-    return email;
+    return email??'';
   }
 }

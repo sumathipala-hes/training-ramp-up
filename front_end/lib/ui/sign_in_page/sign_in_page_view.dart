@@ -127,8 +127,11 @@ class SignInPageView extends StatelessWidget {
                                     await Future.delayed(
                                         const Duration(seconds: 2));
 
+                                    final role = await LocalStorage()
+                                        .getCurrentLoginRoleType();
+
                                     // ignore: unrelated_type_equality_checks
-                                    LocalStorage().getCurrentLoginRole() == 'ADMIN'
+                                    role == 'ADMIN'
                                         // ignore: use_build_context_synchronously
                                         ? Navigator.push(
                                             context,
@@ -136,8 +139,9 @@ class SignInPageView extends StatelessWidget {
                                                 builder: (context) =>
                                                     const AdminHomePageView()),
                                           )
+
                                         // ignore: unrelated_type_equality_checks
-                                        : LocalStorage().getCurrentLoginRole() == 'USER'
+                                        : role == 'USER'
                                             // ignore: use_build_context_synchronously
                                             ? Navigator.push(
                                                 context,

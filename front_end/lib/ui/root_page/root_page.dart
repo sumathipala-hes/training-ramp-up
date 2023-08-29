@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:front_end/ui/admin_home_page/admin_home_page_view.dart';
 import 'package:front_end/ui/user_home_page/user_home_page_view.dart';
 import 'package:front_end/ui/sign_in_page/sign_in_page_view.dart';
+import 'package:front_end/util/local_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../theme/primary_theme.dart';
@@ -17,8 +18,8 @@ class RampUpApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<SharedPreferences>(
-      future: SharedPreferences.getInstance(),
+    return FutureBuilder<String>(
+      future: LocalStorage().getCurrentLoginRoleType(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const CircularProgressIndicator();
@@ -26,7 +27,7 @@ class RampUpApp extends StatelessWidget {
           return const Text('Error loading preferences');
         } else {
           final prefs = snapshot.data!;
-          final roleType = prefs.getString('roleType');
+          final roleType = prefs;
 
           final homePage = isAuthenticate
               ? roleType == 'USER'
