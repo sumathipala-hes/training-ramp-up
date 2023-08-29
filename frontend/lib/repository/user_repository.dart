@@ -3,12 +3,14 @@ import 'dart:convert';
 import 'package:frontend/model/user.dart';
 import 'package:frontend/util/db_util.dart';
 import 'package:frontend/util/encrypt_decrypt_util.dart';
+import 'package:frontend/util/local_storage.dart';
 import 'package:frontend/util/show_toast.dart';
 import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 
 class UserRepository {
+  final localStorage = LocalStorage();
+
   Future<bool> signIn(String email, String password) async {
     final res = await http.post(
       Uri.parse('$baseUrl/user/signIn'),
@@ -28,10 +30,9 @@ class UserRepository {
       final refreshToken = jsonData['refreshToken'];
 
       if (refreshToken != null) {
-        final prefs = await SharedPreferences.getInstance();
         Map<String, dynamic> decodedToken = JwtDecoder.decode(accessToken);
-        prefs.setString('email', decodedToken['email']);
-        prefs.setString('role', decodedToken['role'].toLowerCase());
+        localStorage.setEmail(decodedToken['email']);
+        localStorage.setRole(decodedToken['role'].toLowerCase());
         return true;
       }
     }
@@ -100,9 +101,7 @@ class UserRepository {
   }
 
   Future<void> signOut() async {
-    final prefs = await SharedPreferences.getInstance();
-    prefs.remove('email');
-    prefs.remove('role');
+    await localStorage.clearDetails();
 
     await http.delete(
       Uri.parse('$baseUrl/user/signOut'),

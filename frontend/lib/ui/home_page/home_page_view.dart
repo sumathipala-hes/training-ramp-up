@@ -6,7 +6,7 @@ import 'package:frontend/ui/student_home_page/student_home_page_view.dart';
 import 'package:frontend/ui/user_home_page/user_home_page_bloc.dart';
 import 'package:frontend/ui/user_home_page/user_home_page_event.dart';
 import 'package:frontend/ui/user_home_page/user_home_page_view.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:frontend/util/local_storage.dart';
 
 class HomePageView extends StatelessWidget {
   const HomePageView({super.key});
@@ -110,15 +110,15 @@ class HomePageView extends StatelessWidget {
                 const SizedBox(
                   height: 20,
                 ),
-                FutureBuilder<SharedPreferences>(
-                  future: SharedPreferences.getInstance(),
+                FutureBuilder<String>(
+                  future: LocalStorage().getRole(),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return const CircularProgressIndicator();
                     }
 
-                    final sharedPreferences = snapshot.data;
-                    final userRole = sharedPreferences?.getString('role');
+                    final data = snapshot.data;
+                    final userRole = data.toString().toLowerCase();
 
                     if (userRole ==
                         RoleEnum.admin

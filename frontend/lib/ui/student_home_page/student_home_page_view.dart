@@ -8,7 +8,7 @@ import 'package:frontend/ui/student_home_page/student_home_page_state.dart';
 import 'package:frontend/ui/user_home_page/user_home_page_bloc.dart';
 import 'package:frontend/ui/user_home_page/user_home_page_event.dart';
 import 'package:frontend/ui/widget/student_form.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:frontend/util/local_storage.dart';
 import '../widget/student_card.dart';
 
 class StudentHomePageView extends StatelessWidget {
@@ -59,15 +59,15 @@ class StudentHomePageView extends StatelessWidget {
           padding: const EdgeInsetsDirectional.fromSTEB(10, 20, 10, 20),
           child: Column(
             children: [
-              FutureBuilder<SharedPreferences>(
-                future: SharedPreferences.getInstance(),
+              FutureBuilder<String>(
+                future: LocalStorage().getRole(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return const CircularProgressIndicator();
                   }
 
-                  final sharedPreferences = snapshot.data;
-                  final userRole = sharedPreferences?.getString('role');
+                  final data = snapshot.data;
+                  final userRole = data;
 
                   if (userRole ==
                       RoleEnum.admin.toString().split('.').last.toLowerCase()) {
