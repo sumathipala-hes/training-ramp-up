@@ -105,7 +105,8 @@ class UserRepository {
         String email = decodedToken['email'];
         String roleType = decodedToken['roleType'];
 
-        LocalStorage().setCurrentLoginRole(roleType, email);
+        LocalStorage().setCurrentLoginRole(roleType);
+        LocalStorage().setCurrentLoginEmail(email);
       }
     }
     if (res.statusCode == 500) {

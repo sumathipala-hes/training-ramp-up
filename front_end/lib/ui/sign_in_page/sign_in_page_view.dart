@@ -8,6 +8,7 @@ import 'package:front_end/ui/sign_in_page/sign_in_page_event.dart';
 import 'package:front_end/ui/sign_up_page/sign_up_page_provider.dart';
 import 'package:front_end/ui/user_home_page/user_home_page_provider.dart';
 import 'package:front_end/util/encrypted_decrypted_util.dart';
+import 'package:front_end/util/local_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -127,12 +128,8 @@ class SignInPageView extends StatelessWidget {
                                     await Future.delayed(
                                         const Duration(seconds: 2));
 
-                                    final prefs =
-                                        await SharedPreferences.getInstance();
-                                    final roleType =
-                                        prefs.getString('roleType');
-
-                                    roleType == 'ADMIN'
+                                    // ignore: unrelated_type_equality_checks
+                                    LocalStorage().getCurrentLoginRole() == 'ADMIN'
                                         // ignore: use_build_context_synchronously
                                         ? Navigator.push(
                                             context,
@@ -140,7 +137,8 @@ class SignInPageView extends StatelessWidget {
                                                 builder: (context) =>
                                                     const AdminHomePageView()),
                                           )
-                                        : roleType == 'USER'
+                                        // ignore: unrelated_type_equality_checks
+                                        : LocalStorage().getCurrentLoginRole() == 'USER'
                                             // ignore: use_build_context_synchronously
                                             ? Navigator.push(
                                                 context,
