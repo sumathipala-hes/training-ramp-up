@@ -6,6 +6,11 @@ import {
   updateStudent,
   deleteStudent,
 } from '../services/student.service';
+import { sendNotification } from '../utils/notification.util';
+
+jest.mock('../utils/notification.util', () => ({
+  sendNotification: jest.fn(),
+}));
 
 describe('Student Controller Checked', () => {
   const studentRepo = dataSource.manager;
@@ -46,6 +51,10 @@ describe('Student Controller Checked', () => {
       studentRepo.insert = jest.fn().mockResolvedValue(newStudent);
       const data = await saveStudent(newStudent);
       expect(data).toEqual(newStudent);
+      expect(sendNotification).toHaveBeenCalledWith(
+        'Successful',
+        'New Student Saved..!'
+      );
     });
     test('Save Student Fail', async () => {
       studentRepo.insert = jest.fn().mockRejectedValue(new Error('Error'));
@@ -67,6 +76,10 @@ describe('Student Controller Checked', () => {
       studentRepo.update = jest.fn().mockResolvedValue(student);
       const data = await updateStudent('1', student);
       expect(data).toEqual(student);
+      expect(sendNotification).toHaveBeenCalledWith(
+        'Successful',
+        'New Student Updated..!'
+      );
     });
 
     test('Update Student Fail', async () => {
@@ -81,6 +94,10 @@ describe('Student Controller Checked', () => {
       studentRepo.delete = jest.fn().mockResolvedValue(id);
       const data = await deleteStudent(id);
       expect(data).toEqual(id);
+      expect(sendNotification).toHaveBeenCalledWith(
+        'Successful',
+        'New Student Deleted..!'
+      );
     });
 
     test('Delete Student Fail', async () => {

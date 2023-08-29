@@ -7,7 +7,7 @@ class UserHomePageProvider extends BlocProvider<UserHomePageBloc> {
   UserHomePageProvider({Key? key})
       : super(
           key: key,
-          create: (context) => UserHomePageBloc(),
+          create: (context) => UserHomePageBloc(context),
           child: const UserHomePageView(),
         );
 }

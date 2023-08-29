@@ -10,6 +10,10 @@ export const getAllStudents = async (): Promise<Array<Student>> => {
         id: 'DESC',
       },
     });
+    if (students.length == 0) {
+      sendNotification('Warning', 'No Students Found..!');
+      throw new Error('No Students Found..!');
+    }
     return students;
   } catch (error) {
     throw error;

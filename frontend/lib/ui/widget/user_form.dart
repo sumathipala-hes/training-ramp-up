@@ -1,19 +1,59 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:frontend/enum/role_enum.dart';
+import 'package:frontend/model/user.dart';
 import 'package:frontend/ui/theme/colors.dart';
+import 'package:frontend/ui/user_home_page/user_home_page_bloc.dart';
+import 'package:frontend/ui/user_home_page/user_home_page_event.dart';
+import 'package:frontend/util/validation_util.dart';
 
 class UserForm extends StatefulWidget {
-  const UserForm({Key? key}) : super(key: key); // Corrected the syntax here
+  const UserForm({Key? key}) : super(key: key);
 
   @override
   State<UserForm> createState() => _UserFormState();
 }
 
 class _UserFormState extends State<UserForm> {
-  String selectedItem = 'User';
-  List<String> roles = ['Admin', 'User'];
+  String selectedItem = RoleEnum.user.toString().split('.').last;
+  List<String> roles = [
+    RoleEnum.admin.toString().split('.').last,
+    RoleEnum.user.toString().split('.').last,
+  ];
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  bool isSaveButtonEnabled = false;
+
+  String nameError = '';
+  String emailError = '';
+  String passwordError = '';
 
   @override
   Widget build(BuildContext context) {
+    UserHomePageBloc userHomePageBloc =
+        BlocProvider.of<UserHomePageBloc>(context);
+
+    void validateTextFields(bool isValid, String textField) {
+      setState(
+        () {
+          switch (textField) {
+            case 'name':
+              nameError = isValid ? '' : 'Invalid Name Ex. John Doe';
+              break;
+            case 'email':
+              emailError = isValid ? '' : 'Invalid email Ex. abc@xyz.com';
+              break;
+            case 'password':
+              passwordError = isValid ? '' : 'Invalid Password';
+              break;
+          }
+          isSaveButtonEnabled =
+              nameError == '' && emailError == '' && passwordError == '';
+        },
+      );
+    }
+
     return Dialog(
       backgroundColor: Colors.transparent,
       child: SingleChildScrollView(
@@ -38,35 +78,80 @@ class _UserFormState extends State<UserForm> {
                 ),
                 const SizedBox(height: 20),
                 TextField(
+                  controller: nameController,
                   decoration: const InputDecoration(
                     border: UnderlineInputBorder(),
                     labelText: 'Full Name',
                     hintText: 'Enter the Name',
                   ),
-                  onChanged: (value) {},
+                  onChanged: (value) {
+                    validateTextFields(
+                      ValidationUtil.isValidExp(
+                        ValidationUtil.nameRegExp,
+                        value,
+                      ),
+                      'name',
+                    );
+                  },
+                ),
+                Text(
+                  nameError,
+                  style: const TextStyle(
+                    color: AppColors.errorColor,
+                  ),
                 ),
                 const SizedBox(
                   height: 20,
                 ),
                 TextField(
+                  controller: emailController,
                   decoration: const InputDecoration(
                     border: UnderlineInputBorder(),
                     labelText: 'Email',
                     hintText: 'Enter the Email',
                   ),
-                  onChanged: (value) {},
+                  onChanged: (value) {
+                    validateTextFields(
+                      ValidationUtil.isValidExp(
+                        ValidationUtil.emailRegExp,
+                        value,
+                      ),
+                      'email',
+                    );
+                  },
+                ),
+                Text(
+                  emailError,
+                  style: const TextStyle(
+                    color: AppColors.errorColor,
+                  ),
                 ),
                 const SizedBox(
                   height: 20,
                 ),
                 TextField(
+                  controller: passwordController,
                   obscureText: true,
                   decoration: const InputDecoration(
                     border: UnderlineInputBorder(),
                     labelText: 'Password',
                     hintText: 'Enter the Password',
                   ),
-                  onChanged: (value) {},
+                  onChanged: (value) {
+                    validateTextFields(
+                      ValidationUtil.isValidExp(
+                        ValidationUtil.passwordRegExp,
+                        value,
+                      ),
+                      'password',
+                    );
+                  },
+                ),
+                Text(
+                  passwordError,
+                  style: const TextStyle(
+                    color: AppColors.errorColor,
+                  ),
                 ),
                 const SizedBox(
                   height: 20,
@@ -83,7 +168,7 @@ class _UserFormState extends State<UserForm> {
                     items: roles.map((String role) {
                       return DropdownMenuItem<String>(
                         value: role,
-                        child: Text(role),
+                        child: Text(role.toUpperCase()),
                       );
                     }).toList(),
                   ),
@@ -112,9 +197,20 @@ class _UserFormState extends State<UserForm> {
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppColors.successColor,
                         ),
-                        onPressed: () {
-                          // Add your logic for handling save button press
-                        },
+                        onPressed: isSaveButtonEnabled
+                            ? () {
+                                userHomePageBloc.add(
+                                  SaveUserEvent(
+                                    user: User(
+                                      name: nameController.text,
+                                      email: emailController.text,
+                                      password: passwordController.text,
+                                      role: selectedItem,
+                                    ),
+                                  ),
+                                );
+                              }
+                            : null,
                         child: const Text('SAVE'),
                       ),
                     ),

@@ -36,6 +36,4 @@ class ManageStudentPageState {
       mobileError: mobileError ?? this.mobileError,
     );
   }
-
-  void setGender(String gender) {}
 }

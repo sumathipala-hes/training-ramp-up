@@ -1,12 +1,49 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:frontend/enum/role_enum.dart';
+import 'package:frontend/model/user.dart';
+import 'package:frontend/ui/register_page/register_page_bloc.dart';
+import 'package:frontend/ui/register_page/register_page_event.dart';
+import 'package:frontend/ui/register_page/register_page_state.dart';
 import 'package:frontend/ui/sign_in_page/sign_in_page_provider.dart';
-import 'package:frontend/ui/home_page/home_page_provider.dart';
+import 'package:frontend/ui/theme/colors.dart';
+import 'package:frontend/util/validation_util.dart';
 
 class RegisterPageView extends StatelessWidget {
-  const RegisterPageView({super.key});
-
+  RegisterPageView({super.key});
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController confirmController = TextEditingController();
   @override
   Widget build(BuildContext context) {
+    RegisterPageBloc registerPageBloc =
+        BlocProvider.of<RegisterPageBloc>(context);
+
+    void validateTextFields(bool isValid, String textField) {
+      String nameError = registerPageBloc.state.nameError;
+      String emailError = registerPageBloc.state.emailError;
+      String passwordError = registerPageBloc.state.passwordError;
+      switch (textField) {
+        case 'name':
+          nameError = isValid ? '' : 'Invalid Name Ex. John Doe';
+          break;
+        case 'email':
+          emailError = isValid ? '' : 'Invalid Email Ex. abc@xyz.com';
+          break;
+        case 'password':
+          passwordError = isValid ? '' : 'Password is Not Strong';
+          break;
+      }
+      registerPageBloc.add(
+        SetValidations(
+          nameError: nameError,
+          emailError: emailError,
+          passwordError: passwordError,
+        ),
+      );
+    }
+
     return Scaffold(
       body: SingleChildScrollView(
         child: Container(
@@ -37,8 +74,9 @@ class RegisterPageView extends StatelessWidget {
                   const SizedBox(
                     height: 20,
                   ),
-                  const TextField(
-                    decoration: InputDecoration(
+                  TextField(
+                    controller: nameController,
+                    decoration: const InputDecoration(
                       hintText: 'Full Name',
                       hintStyle: TextStyle(
                         color: Colors.white,
@@ -58,15 +96,37 @@ class RegisterPageView extends StatelessWidget {
                         ),
                       ),
                     ),
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Colors.white,
                     ),
+                    onChanged: (value) {
+                      validateTextFields(
+                        ValidationUtil.isValidExp(
+                          ValidationUtil.nameRegExp,
+                          value,
+                        ),
+                        'name',
+                      );
+                    },
+                  ),
+                  BlocBuilder<RegisterPageBloc, RegisterPageState>(
+                    buildWhen: (previous, current) =>
+                        current.nameError != previous.nameError,
+                    builder: (context, state) {
+                      return Text(
+                        state.nameError,
+                        style: const TextStyle(
+                          color: AppColors.errorColor,
+                        ),
+                      );
+                    },
                   ),
                   const SizedBox(
                     height: 20,
                   ),
-                  const TextField(
-                    decoration: InputDecoration(
+                  TextField(
+                    controller: emailController,
+                    decoration: const InputDecoration(
                       hintText: 'Email',
                       hintStyle: TextStyle(
                         color: Colors.white,
@@ -86,16 +146,38 @@ class RegisterPageView extends StatelessWidget {
                         ),
                       ),
                     ),
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Colors.white,
                     ),
+                    onChanged: (value) {
+                      validateTextFields(
+                        ValidationUtil.isValidExp(
+                          ValidationUtil.emailRegExp,
+                          value,
+                        ),
+                        'email',
+                      );
+                    },
+                  ),
+                  BlocBuilder<RegisterPageBloc, RegisterPageState>(
+                    buildWhen: (previous, current) =>
+                        current.emailError != previous.emailError,
+                    builder: (context, state) {
+                      return Text(
+                        state.emailError,
+                        style: const TextStyle(
+                          color: AppColors.errorColor,
+                        ),
+                      );
+                    },
                   ),
                   const SizedBox(
                     height: 20,
                   ),
-                  const TextField(
+                  TextField(
+                    controller: passwordController,
                     obscureText: true,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       hintText: 'Password',
                       hintStyle: TextStyle(
                         color: Colors.white,
@@ -115,16 +197,38 @@ class RegisterPageView extends StatelessWidget {
                         ),
                       ),
                     ),
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Colors.white,
                     ),
+                    onChanged: (value) {
+                      validateTextFields(
+                        ValidationUtil.isValidExp(
+                          ValidationUtil.passwordRegExp,
+                          value,
+                        ),
+                        'password',
+                      );
+                    },
+                  ),
+                  BlocBuilder<RegisterPageBloc, RegisterPageState>(
+                    buildWhen: (previous, current) =>
+                        current.passwordError != previous.passwordError,
+                    builder: (context, state) {
+                      return Text(
+                        state.passwordError,
+                        style: const TextStyle(
+                          color: AppColors.errorColor,
+                        ),
+                      );
+                    },
                   ),
                   const SizedBox(
                     height: 20,
                   ),
-                  const TextField(
+                  TextField(
+                    controller: confirmController,
                     obscureText: true,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       hintText: 'Confirm Password',
                       hintStyle: TextStyle(
                         color: Colors.white,
@@ -144,9 +248,30 @@ class RegisterPageView extends StatelessWidget {
                         ),
                       ),
                     ),
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Colors.white,
                     ),
+                    onChanged: (value) {
+                      validateTextFields(
+                        ValidationUtil.isValidExp(
+                          ValidationUtil.passwordRegExp,
+                          value,
+                        ),
+                        'password',
+                      );
+                    },
+                  ),
+                  BlocBuilder<RegisterPageBloc, RegisterPageState>(
+                    buildWhen: (previous, current) =>
+                        current.passwordError != previous.passwordError,
+                    builder: (context, state) {
+                      return Text(
+                        state.passwordError,
+                        style: const TextStyle(
+                          color: AppColors.errorColor,
+                        ),
+                      );
+                    },
                   ),
                   const SizedBox(
                     height: 20,
@@ -160,11 +285,31 @@ class RegisterPageView extends StatelessWidget {
                         ),
                         backgroundColor: Colors.white,
                       ),
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => HomePageProvider(),
+                      onPressed: () async {
+                        if (registerPageBloc.state.nameError == '' &&
+                            registerPageBloc.state.emailError == '' &&
+                            registerPageBloc.state.passwordError == '') {
+                          Navigator.of(context).pop();
+                          registerPageBloc.add(
+                            RegisterUserEvent(
+                              user: User(
+                                name: nameController.text,
+                                email: emailController.text,
+                                password: passwordController.text,
+                                role: RoleEnum.user.toString().split('.').last,
+                              ),
+                              confirmPassword: confirmController.text,
+                            ),
+                          );
+                          return;
+                        }
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text(
+                              'Please Check Details Again..!',
+                              textAlign: TextAlign.center,
+                            ),
+                            backgroundColor: AppColors.errorColor,
                           ),
                         );
                       },

@@ -1,17 +1,42 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/ui/student_home_page/student_home_page_provider.dart';
-import 'package:frontend/ui/user_home_page/user_home_page_provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:frontend/enum/role_enum.dart';
+import 'package:frontend/ui/sign_in_page/sign_in_page_provider.dart';
+import 'package:frontend/ui/student_home_page/student_home_page_view.dart';
+import 'package:frontend/ui/user_home_page/user_home_page_bloc.dart';
+import 'package:frontend/ui/user_home_page/user_home_page_event.dart';
+import 'package:frontend/ui/user_home_page/user_home_page_view.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomePageView extends StatelessWidget {
   const HomePageView({super.key});
-
   @override
   Widget build(BuildContext context) {
+    UserHomePageBloc userHomePageBloc =
+        BlocProvider.of<UserHomePageBloc>(context);
+
     return Scaffold(
       body: Scaffold(
         appBar: AppBar(
           title: const Text("Home Page"),
           backgroundColor: Colors.black87,
+          automaticallyImplyLeading: false,
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.logout),
+              onPressed: () {
+                userHomePageBloc.add(
+                  SignOutEvent(),
+                );
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => SignInPageProvider(),
+                  ),
+                );
+              },
+            ),
+          ],
         ),
         body: Container(
           decoration: const BoxDecoration(
@@ -44,7 +69,7 @@ class HomePageView extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => StudentHomePageProvider(),
+                        builder: (context) => const StudentHomePageView(),
                       ),
                     );
                   },
@@ -85,48 +110,69 @@ class HomePageView extends StatelessWidget {
                 const SizedBox(
                   height: 20,
                 ),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => UserHomePageProvider(),
-                      ),
-                    );
-                  },
-                  child: Container(
-                    decoration: const BoxDecoration(
-                      color: Colors.black87,
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(10),
-                      ),
-                    ),
-                    child: const Padding(
-                      padding: EdgeInsets.fromLTRB(40, 20, 40, 20),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            'Manage Users',
-                            style: TextStyle(
-                              fontSize: 20,
-                              color: Colors.white,
+                FutureBuilder<SharedPreferences>(
+                  future: SharedPreferences.getInstance(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const CircularProgressIndicator();
+                    }
+
+                    final sharedPreferences = snapshot.data;
+                    final userRole = sharedPreferences?.getString('role');
+
+                    if (userRole ==
+                        RoleEnum.admin
+                            .toString()
+                            .split('.')
+                            .last
+                            .toLowerCase()) {
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const UserHomePageView(),
+                            ),
+                          );
+                        },
+                        child: Container(
+                          decoration: const BoxDecoration(
+                            color: Colors.black87,
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(10),
                             ),
                           ),
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              Icon(
-                                Icons.arrow_forward_ios,
-                                color: Colors.white,
-                              ),
-                            ],
+                          child: const Padding(
+                            padding: EdgeInsets.fromLTRB(40, 20, 40, 20),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  'Manage Users',
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    Icon(
+                                      Icons.arrow_forward_ios,
+                                      color: Colors.white,
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
                           ),
-                        ],
-                      ),
-                    ),
-                  ),
+                        ),
+                      );
+                    } else {
+                      return Container();
+                    }
+                  },
                 ),
               ],
             ),

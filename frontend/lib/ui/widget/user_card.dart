@@ -1,23 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/enum/role_enum.dart';
-import 'package:frontend/model/student.dart';
-import 'package:frontend/ui/manage_student_page/manage_student_page_provider.dart';
+import 'package:frontend/model/user.dart';
+import 'package:frontend/ui/manage_user_page/manage_user_page_provider.dart';
 import 'package:frontend/ui/theme/colors.dart';
-import 'package:intl/intl.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
-class StudentCard extends StatefulWidget {
-  final Student student;
-  const StudentCard({
+class UserCard extends StatefulWidget {
+  final User user;
+  const UserCard({
     Key? key,
-    required this.student,
+    required this.user,
   }) : super(key: key);
 
   @override
-  State<StudentCard> createState() => _StudentCardState();
+  State<UserCard> createState() => _UserCardState();
 }
 
-class _StudentCardState extends State<StudentCard> {
+class _UserCardState extends State<UserCard> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -28,21 +25,15 @@ class _StudentCardState extends State<StudentCard> {
           borderRadius: BorderRadius.circular(10),
         ),
         child: ElevatedButton(
-          onPressed: () async {
-            final prefs = await SharedPreferences.getInstance();
-            final role = prefs.getString('role');
-            if (role ==
-                RoleEnum.admin.toString().split('.').last.toLowerCase()) {
-              // ignore: use_build_context_synchronously
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => StudentPageProvider(
-                    student: widget.student,
-                  ),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ManageUserPageProvider(
+                  user: widget.user,
                 ),
-              );
-            }
+              ),
+            );
           },
           style: ButtonStyle(
             backgroundColor: MaterialStateProperty.all<Color>(
@@ -61,7 +52,7 @@ class _StudentCardState extends State<StudentCard> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  widget.student.id,
+                  widget.user.role.toUpperCase(),
                   style: const TextStyle(
                     fontSize: 20,
                     color: Colors.white,
@@ -71,7 +62,7 @@ class _StudentCardState extends State<StudentCard> {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     Text(
-                      widget.student.name,
+                      widget.user.name,
                       style: const TextStyle(
                         fontSize: 20,
                         color: Colors.white70,
@@ -81,11 +72,16 @@ class _StudentCardState extends State<StudentCard> {
                       height: 10,
                     ),
                     Text(
-                      DateFormat(
-                        'EEE MMM d yyyy',
-                      ).format(
-                        widget.student.dob,
+                      widget.user.email,
+                      style: const TextStyle(
+                        color: Colors.white60,
                       ),
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Text(
+                      widget.user.password,
                       style: const TextStyle(
                         color: Colors.white60,
                       ),

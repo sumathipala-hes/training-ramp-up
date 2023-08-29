@@ -1,29 +1,35 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/enum/role_enum.dart';
 
 @immutable
-class RegisterPageState {
+class ManageUserPageState {
+  final String role;
   final String nameError;
   final String emailError;
   final String passwordError;
 
-  const RegisterPageState({
+  const ManageUserPageState({
+    required this.role,
     required this.nameError,
     required this.emailError,
     required this.passwordError,
   });
 
-  static RegisterPageState get initialState => const RegisterPageState(
+  static ManageUserPageState get initialState => ManageUserPageState(
+        role: RoleEnum.user.toString().split('.').last,
         nameError: '',
         emailError: '',
         passwordError: '',
       );
 
-  RegisterPageState clone({
+  ManageUserPageState clone({
+    String? role,
     String? nameError,
     String? emailError,
     String? passwordError,
   }) {
-    return RegisterPageState(
+    return ManageUserPageState(
+      role: role ?? this.role,
       nameError: nameError ?? this.nameError,
       emailError: emailError ?? this.emailError,
       passwordError: passwordError ?? this.passwordError,
