@@ -27,12 +27,6 @@ export const userValidator: Array<
     .withMessage('Password is required')
     .isLength({ min: 8 })
     .withMessage('Password must be between 8 and 20 characters'),
-    body('role')
-      .notEmpty()
-      .withMessage('Role is required')
-      .isIn(['ADMIN', 'USER'])
-      .withMessage('Role must be either ADMIN or USER'),
-
   (req: Request, res: Response, next: NextFunction) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
