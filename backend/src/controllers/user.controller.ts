@@ -71,19 +71,11 @@ export const signIn: RequestHandler = async (
         jwtConfig.secretKey!,
         { expiresIn: '5h' }
       );
-      const refreshToken = jwt.sign(
-        { email: user.email, role: user.role },
-        jwtConfig.refreshKey!,
-        { expiresIn: '24h' }
-      );
-      res.cookie('refreshToken', refreshToken, {
-        httpOnly: true,
-      });
       res.cookie('accessToken', accessToken, {
         httpOnly: true,
       });
-      console.log(accessToken, refreshToken);
-      res.status(200).json({ accessToken, refreshToken });
+      console.log(accessToken);
+      res.status(200).json({ accessToken });
     } else {
       res.status(401).json({ message: 'Unauthorized' });
     }
