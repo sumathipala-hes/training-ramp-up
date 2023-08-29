@@ -49,7 +49,7 @@ function SignIn(){
           };
     
           try {
-            const response = await axios.post('http://localhost:4000/log-in', userData, {
+            const response = await axios.post('http://localhost:4000/login', userData, {
               headers: {
                 'Content-Type': 'application/json',
               },

@@ -1,6 +1,6 @@
 import dotenv from 'dotenv'
 import {Request, Response} from 'express'; 
-import { authenticateUser, fetchUsers, saveUser } from '../services/user';
+import { authenticateUser, fetchUser, fetchUsers, saveUser } from '../services/user';
 dotenv.config();
 
 //register a user
@@ -100,4 +100,37 @@ const logoutUser = (async (req: Request, res: Response) => {
     }
 });
 
-export {registerUser, getUsers, validateUser, logoutUser};
+//authenticate user
+const authUser = (async (req: Request, res: Response) => {
+    try {
+        const user = await fetchUser(req);
+        if(user){
+            res.status(200).json({
+                status: 200,
+                data:user
+            });
+        }else{
+            res.status(400).json({
+                status: 400,
+                error: "Access denied",
+            });
+        }
+
+    } catch (err) {
+        if (err instanceof Error) {
+            res.status(400).json({
+                status: 400,
+                error: err.message,
+            });
+        } else {
+            res.status(500).json({
+                status: 500,
+                error: "An unknown error occurred.",
+            });
+        }
+    }
+});
+
+
+
+export {registerUser, getUsers, validateUser, logoutUser, authUser};

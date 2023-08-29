@@ -33,6 +33,11 @@ async function saveUser(req: Request){
     }   
 }
 
+function fetchUser(req: Request){
+    const authUser = validateToken(req);
+    return authUser;
+}
+
 //get users from the database
 function fetchUsers(){
     const users = AppDataSource.manager.find(User);
@@ -73,9 +78,8 @@ function validateToken(req:Request){
     const token = req.cookies.token;
     const ip =  req.ip;
     const decoded = jwt.verify(token, process.env.JWT_SECRET + ip);
-    console.log(decoded)
-    return true;
+    return decoded;
 }
 
 
-export {saveUser, fetchUsers, authenticateUser, validateToken};
+export {saveUser, fetchUsers, authenticateUser, validateToken, fetchUser};

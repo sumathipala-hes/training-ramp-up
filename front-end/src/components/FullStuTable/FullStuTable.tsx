@@ -4,7 +4,7 @@ import { DataGrid, GridColDef, GridRowModes, GridRowModesModel,  GridRenderEditC
 import { useSelector,useDispatch } from 'react-redux';
 import { alerts, calculateAge, capitalizeFirstLetter, generateAutoIds, maxDate, minDate, renderBirthdayCell, validations } from "../../utils";
 import { tableActions } from "../../redux/tableData/tableSlice";
-import EditInputCell from "../../components/EditInputCell/EditInputCell";
+import EditInputCell from "../EditInputCell/EditInputCell";
 import socket from "../../config/socketIo";
 
 interface rowData {
@@ -21,7 +21,7 @@ function handleEditCell(params: GridRenderEditCellParams){
   return <EditInputCell {...params} />;
 }
 
-function DataTable(props: { isTesting: any; }) {
+function FullStuTable(props: { isTesting: any; }) {
   const dispatch = useDispatch();
 
   //initialize table's rows by getting student data from the database
@@ -39,7 +39,7 @@ function DataTable(props: { isTesting: any; }) {
   const [isUpdating, setUpdate] = useState(false);
   const [isDisabUpBtn, setDisableUp] = useState(false);
   const [isSnackOpen, setSnackOpen] = useState(false);
-  const [snackMessage, setSnackMessage] = useState("Test message")
+  const [snackMessage, setSnackMessage] = useState("")
 
     socket.on("deleteStudent", (arg) => {
       setSnackOpen(false);
@@ -312,4 +312,4 @@ const handleClose = (event: React.SyntheticEvent | Event, reason?: string) => {
     </Container>
   );
 }
-export default DataTable;
+export default FullStuTable;
