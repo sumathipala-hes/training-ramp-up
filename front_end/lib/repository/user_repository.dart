@@ -98,9 +98,8 @@ class UserRepository {
     if (res.statusCode == 200) {
       final Map<String, dynamic> jsonData = json.decode(res.body);
       final accessToken = jsonData['accessToken'];
-      final refreshToken = jsonData['refreshToken'];
 
-      if (refreshToken != null) {
+      if (accessToken != null) {
         Map<String, dynamic> decodedToken = JwtDecoder.decode(accessToken);
         String email = decodedToken['email'];
         String roleType = decodedToken['roleType'];
