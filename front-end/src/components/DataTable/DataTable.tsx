@@ -40,7 +40,7 @@ const EditToolbar = (props: EditToolbarProps) => {
   const dispatch = useDispatch();
   const rows = useSelector((state: any) => state.data.records);
   const rowModesModel = useSelector((state: any) => state.data.rowModesModel);
-  const userRole = useSelector((state: any) => state.user.userRole);
+  const userRole = useSelector((state: any) => state.user.currentUserRole);
 
   const isAddDisabled = userRole=== 'user'
 
@@ -85,7 +85,7 @@ export const DataTable = () => {
   const dispatch = useDispatch();
   const rows = useSelector((state: any) => state.data.records);
   const rowModesModel = useSelector((state: any) => state.data.rowModesModel);
-  const userRole = useSelector((state: any) => state.user.userRole);
+  const userRole = useSelector((state: any) => state.user.currentUserRole);
 
 
   const isEditDisabled = userRole=== 'user'

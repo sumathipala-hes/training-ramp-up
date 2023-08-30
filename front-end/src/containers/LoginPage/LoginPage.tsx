@@ -7,12 +7,11 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { loginApi, userAuthenticatedApi } from '../../api/authApi';
 import jwt_decode from 'jwt-decode';
-import { useDispatch } from 'react-redux';
-import { setCurrentUser, setUserRole } from '../../redux/userSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { authenticateUser, clearUserData, loginUser, setCurrentUsername, setCurrentUserRole } from '../../redux/userSlice';
 import React from 'react';
 
 export interface JwtPayload {
@@ -36,49 +35,46 @@ export const Login = () => {
   const [password, setPassword] = useState('');
   const isLoginDisabled = username.trim() === '' || password.trim() === '';
 
+  const response = useSelector((state: any) => state.user.responseData);
+  const error = useSelector((state: any) => state.user.errorData);
+  const isAuthenticated = useSelector((state: any) => state.user.authStatus);
+  
   const handleRegisterClick = () => {
     navigate('/');
   };
 
   const handleLoginClick = async () => {
-    try {
-      const response = await loginApi(username, password);
-      if (response) {
-        localStorage.setItem('token', response.data.token);
+    dispatch(loginUser({ username: username, password: password }))
+  };
 
-        const isAuthenticated = await userAuthenticatedApi();
-        if (isAuthenticated) {
-          const decoded = jwt_decode(response.data.token) as JwtPayload;
-          dispatch(setCurrentUser(decoded.username));
-          if (decoded.role === 'admin') {
-            dispatch(setUserRole('admin'));
-            navigate('/admin');
-          } else if (decoded.role === 'user') {
-            dispatch(setUserRole('user'));
-            navigate('/main');
-          }
-        }
-      }
-    } catch (error) {
-      if (
-        error instanceof Error &&
-        error.message ===
-          'The email address entered is not connected to an account'
-      ) {
+  useEffect(() => {
+    if (response) {
+      dispatch(authenticateUser())
+    } else if (error) {
+      if (error instanceof Error && error.message === 'The email address entered is not connected to an account') {
         setSnackbar({ children: error.message, severity: 'error' });
-      } else if (
-        error instanceof Error &&
-        error.message === 'Wrong Username and Password Combination'
-      ) {
+      } else if (error instanceof Error && error.message === 'Wrong Username and Password Combination') {
         setSnackbar({ children: error.message, severity: 'error' });
       } else {
-        setSnackbar({
-          children: 'An error occured. Please try again',
-          severity: 'error',
-        });
+        setSnackbar({ children: 'An error occured. Please try again', severity: 'error' });
       }
     }
-  };
+  }, [response, error, dispatch, setSnackbar]);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      const decoded = jwt_decode(response.data.token) as JwtPayload;
+      dispatch(setCurrentUsername(decoded.username));
+      dispatch(clearUserData());
+      if (decoded.role === 'admin') {
+        dispatch(setCurrentUserRole('admin'));
+        navigate('/admin');
+      } else if (decoded.role === 'user') {
+        dispatch(setCurrentUserRole('user'));
+        navigate('/main');
+      }
+    }
+});
 
   return (
     <Box

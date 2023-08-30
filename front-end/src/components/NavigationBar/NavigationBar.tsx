@@ -2,11 +2,12 @@ import { Box, Button, Typography } from "@mui/material"
 import { logoutApi } from "../../api/authApi";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { setAuthStatus } from "../../redux/userSlice";
 
 export const NavBar = () => {
     const navigate = useNavigate();
-    const userRole = useSelector((state: any) => state.user.userRole);
-    const currentUser = useSelector((state: any) => state.user.currentUser);
+    const userRole = useSelector((state: any) => state.user.currentuserRole);
+    const currentUser = useSelector((state: any) => state.user.currentUsername);
     
     const handleAddUsers = () => {
         navigate('/admin')
@@ -20,7 +21,8 @@ export const NavBar = () => {
         const response = await logoutApi();
         console.log(response.message)
         if (response) {
-            navigate('/login')
+            navigate('/login');
+            setAuthStatus(false)
         }
     }
 

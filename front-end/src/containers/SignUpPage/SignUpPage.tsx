@@ -7,11 +7,10 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { setCurrentUser, setUserRole } from '../../redux/userSlice';
-import { useDispatch } from 'react-redux';
-import { registerApi, userAuthenticatedApi } from '../../api/authApi';
+import { registerUser, authenticateUser, setCurrentUsername, setCurrentUserRole, clearUserData } from '../../redux/userSlice';
+import { useDispatch, useSelector } from 'react-redux';
 import jwt_decode from 'jwt-decode';
 import { JwtPayload } from '../LoginPage/LoginPage';
 import React from 'react';
@@ -31,16 +30,17 @@ export const SignUp = () => {
   const [password, setPassword] = useState('');
   const [confirmedPassword, setConfirmedPassword] = useState('');
 
-  const isRegisterDisabled =
-    username.trim() === '' ||
-    password.trim() === '' ||
-    confirmedPassword.trim() === '';
+  const response = useSelector((state: any) => state.user.responseData);
+  const error = useSelector((state: any) => state.user.errorData);
+  const isAuthenticated = useSelector((state: any) => state.user.authStatus);
+  
+  const isRegisterDisabled = username.trim() === '' || password.trim() === '' || confirmedPassword.trim() === '';
   const passwordsMatch = password === confirmedPassword;
+
   const isEmailValid = (email: string) => {
     const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
     return emailRegex.test(email);
   };
-  const role = 'user';
 
   const handleLoginClick = () => {
     navigate('/login');
@@ -50,36 +50,7 @@ export const SignUp = () => {
     if (isEmailValid(username)) {
       if (passwordsMatch) {
         if (password.length >= 6) {
-          try {
-            const response = await registerApi(username, password, role);
-
-            if (response) {
-              localStorage.setItem('token', response.data.token);
-
-              const isAuthenticated = await userAuthenticatedApi();
-              if (isAuthenticated) {
-                const decoded = jwt_decode(response.data.token) as JwtPayload;
-                dispatch(setCurrentUser(decoded.username));
-                dispatch(setUserRole('user'));
-                navigate('/main');
-              }
-            }
-          } catch (error) {
-            if (
-              error instanceof Error &&
-              error.message === 'User already exists'
-            ) {
-              setSnackbar({
-                children: 'User already exists',
-                severity: 'error',
-              });
-            } else {
-              setSnackbar({
-                children: 'An error occured. Please try again',
-                severity: 'error',
-              });
-            }
-          }
+          dispatch(registerUser({ username: username, password: password, role: 'user' }))
         } else {
           setSnackbar({
             children: 'Password should contain at least 6 characters',
@@ -96,6 +67,34 @@ export const SignUp = () => {
       });
     }
   };
+
+  useEffect(() => {
+    if (response) {
+      dispatch(authenticateUser())
+    } else if (error) {
+      if (error instanceof Error && error.message === 'User already exists') {
+        setSnackbar({
+          children: 'User already exists',
+          severity: 'error',
+        });
+      } else {
+        setSnackbar({
+          children: 'An error occurred. Please try again',
+          severity: 'error',
+        });
+      }
+    }
+}, [response, error, dispatch, setSnackbar]);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      const decoded = jwt_decode(response.data.token) as JwtPayload;
+      dispatch(setCurrentUsername(decoded.username));
+      dispatch(setCurrentUserRole(decoded.role));
+      dispatch(clearUserData());
+      navigate('/main');
+    }
+  });
 
   return (
     <Box
