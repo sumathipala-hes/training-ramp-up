@@ -2,6 +2,7 @@ import { DeleteResult, InsertResult, UpdateResult } from 'typeorm';
 import { appDataSource } from '../configs/datasource.config';
 import { sendNotification } from '../util/notification.util';
 import { User } from '../models/user.models';
+import { generateAccessToken } from '../middleware/jwt.middleware';
 
 export const getAllUsers = async (): Promise<Array<User>> => {
   try {
@@ -97,10 +98,10 @@ export const deleteUser = async (id: string): Promise<DeleteResult> => {
   }
 };
 
-export const getUser = async (
+export const signInUser = async (
   email: string,
   password: string,
-): Promise<User> => {
+): Promise<string | null> => {
   try {
     const userRepo = appDataSource.manager.getRepository(User);
     const user = await userRepo.findOne({
@@ -112,7 +113,8 @@ export const getUser = async (
     if (user) {
       const isMatch = user.password == password;
       if (isMatch) {
-        return user;
+        const accessToken = generateAccessToken(user);
+        return accessToken;
       } else {
         throw new Error('Password not match');
       }

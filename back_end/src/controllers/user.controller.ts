@@ -3,12 +3,10 @@ import {
   createUser,
   deleteUser,
   getAllUsers,
-  getUser,
   getUserByOne,
+  signInUser,
   updateUser,
 } from '../services/user.service';
-import jwt = require('jsonwebtoken');
-import { jwtConfig } from '../configs/jwt.config';
 
 export const requestGetAllUsers: RequestHandler = async (
   req: Request,
@@ -111,21 +109,13 @@ export const signIn: RequestHandler = async (
   res: Response,
 ): Promise<void> => {
   try {
-    const user = await getUser(req.body.email, req.body.password);
-    if (user) {
-      const accessToken = jwt.sign(
-        { email: user.email, roleType: user.roleType },
-        jwtConfig.secretKey,
-        { expiresIn: jwtConfig.expiresIn },
-      );
-      res.cookie('accessToken', accessToken, {
-        httpOnly: true,
-      });
+    const accessToken = await signInUser(req.body.email, req.body.password);
 
-      res.status(200).json({ accessToken });
-    } else {
-      res.status(401).json({ message: 'Unauthorized' });
-    }
+    res.cookie('accessToken', accessToken, {
+      httpOnly: true,
+    });
+
+    res.status(200).json({ accessToken });
   } catch (error) {
     console.log(error);
 

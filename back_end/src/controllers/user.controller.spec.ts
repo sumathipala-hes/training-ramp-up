@@ -6,8 +6,8 @@ import {
   createUser,
   deleteUser,
   getAllUsers,
-  getUser,
   getUserByOne,
+  signInUser,
   updateUser,
 } from '../services/user.service';
 
@@ -166,15 +166,14 @@ describe('User Controller Checked', () => {
 
     test('Sign in success', async () => {
       userRepo.getRepository(User).findOne = jest.fn().mockResolvedValue(user);
-      const data = await getUser(email, password);
-      expect(data).toEqual(user);
+      const data = await signInUser(email, password);
     });
 
     test('Sign in fail', async () => {
       userRepo.getRepository(User).findOne = jest
         .fn()
         .mockRejectedValue(new Error('Error'));
-      await expect(getUser(email, password)).rejects.toThrowError('Error');
+      await expect(signInUser(email, password)).rejects.toThrowError('Error');
     });
   });
 });

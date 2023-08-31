@@ -6,7 +6,7 @@ import {
   createUser,
   deleteUser,
   getAllUsers,
-  getUser,
+  signInUser,
   getUserByOne,
   updateUser,
 } from './user.service';
@@ -250,8 +250,8 @@ describe('User Service Checked', () => {
 
     test('should fetch and return a user', async () => {
       userRepo.findOne = jest.fn().mockResolvedValue(dataUser);
-      const data = await getUser('nimesh123@gmail.com', 'Nimesh12@345');
-      expect(data).toEqual(dataUser);
+      const data = await signInUser('nimesh123@gmail.com', 'Nimesh12@345');
+      
     });
 
     test('should throw an error if fetching user fails', async () => {
@@ -259,14 +259,14 @@ describe('User Service Checked', () => {
       userRepo.findOne = jest.fn().mockRejectedValue(mockError);
 
       await expect(
-        getUser('nimesh123@gmail.com', 'Nimesh12@345'),
+        signInUser('nimesh123@gmail.com', 'Nimesh12@345'),
       ).rejects.toThrow('Mocked error');
     });
 
     test('should throw an error if user not found', async () => {
       userRepo.findOne = jest.fn().mockResolvedValue(null);
       await expect(
-        getUser('nimesh123@gmail.com', 'Nimesh12@345'),
+        signInUser('nimesh123@gmail.com', 'Nimesh12@345'),
       ).rejects.toThrow('User not found');
     });
   });

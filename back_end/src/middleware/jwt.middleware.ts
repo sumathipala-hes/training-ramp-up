@@ -1,6 +1,7 @@
 import jwt from 'jsonwebtoken';
 import { Request, Response, NextFunction } from 'express';
 import { jwtConfig } from '../configs/jwt.config';
+import { User } from '../models/user.models';
 
 export const authorizationPermissions = (
   req: Request,
@@ -18,4 +19,13 @@ export const authorizationPermissions = (
       res.sendStatus(403);
     }
   }
+};
+
+export const generateAccessToken = (user: User): string => {
+  const accessToken = jwt.sign(
+    { email: user.email, roleType: user.roleType },
+    jwtConfig.secretKey,
+    { expiresIn: jwtConfig.expiresIn },
+  );
+  return accessToken;
 };
