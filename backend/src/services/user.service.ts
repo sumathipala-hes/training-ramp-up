@@ -4,6 +4,7 @@ import { User } from '../models/user.model';
 import { sendNotification } from '../utils/notification.util';
 import jwt = require('jsonwebtoken');
 import { jwtConfig } from '../configs/jwt.config';
+import { createCipheriv, createDecipheriv, randomBytes } from 'node:crypto';
 
 export const getAllUsers = async (): Promise<Array<User>> => {
   try {
@@ -16,6 +17,14 @@ export const getAllUsers = async (): Promise<Array<User>> => {
       sendNotification('Warning', 'No Users Found..!');
       throw new Error('No Users Found..!');
     }
+    users.forEach((user) => {
+      const encryptionKey = randomBytes(32);
+      const iv = randomBytes(16);
+      const decipher = createDecipheriv('aes-256-cbc', encryptionKey, iv);
+      let decryptedData = decipher.update(user.password, 'hex', 'utf-8');
+      decryptedData += decipher.final('utf-8');
+      user.password = decryptedData;
+    });
     return users;
   } catch (error) {
     throw error;
@@ -24,6 +33,15 @@ export const getAllUsers = async (): Promise<Array<User>> => {
 
 export const saveUser = async (user: User): Promise<InsertResult> => {
   try {
+    const encryptionKey = randomBytes(32);
+    const iv = randomBytes(16);
+    const cipher = createCipheriv('aes-256-cbc', encryptionKey, iv);
+
+    let encryptedData = cipher.update(user.password, 'utf-8', 'hex');
+    encryptedData += cipher.final('hex');
+
+    user.password = encryptedData;
+
     const savedUser = await dataSource.manager.insert(User, user);
     sendNotification('Successful', 'New User Saved..!');
     return savedUser;
