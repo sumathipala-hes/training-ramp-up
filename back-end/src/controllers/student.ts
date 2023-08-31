@@ -1,6 +1,5 @@
 import {Request, Response} from 'express'; 
 import { fetchStudents, saveStudent, deleteStudentDb, updateStudentDb } from '../services/student';
-import { calculateAge } from '../utils';
 
 //get all students
 const getStudents = (async (req: Request, res: Response) => {
@@ -30,10 +29,6 @@ const getStudents = (async (req: Request, res: Response) => {
 //add student data
 const addStudent = (async (req: Request, res: Response) => {
     try {
-        req.body.age = calculateAge(req.body.birthday);
-        if(req.body.age  <18){
-            throw new Error("age is less than 18");
-        }
         const isSaved = await saveStudent(req);
         if(isSaved){
             return res.status(200).json({
@@ -90,10 +85,6 @@ const deleteStudent = (async(req: Request, res: Response) => {
 //update student data
 const updateStudent = (async (req: Request, res: Response) => {
     try {
-        req.body.age = calculateAge(req.body.birthday);
-        if(req.body.age  <18){
-            throw new Error("age is less than 18");
-        }
         const isUpdated = await updateStudentDb(req);
         if(isUpdated){
             return res.status(200).json({

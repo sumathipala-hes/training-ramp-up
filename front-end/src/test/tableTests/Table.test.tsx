@@ -3,7 +3,7 @@ import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 import App from '../../App';
 import { Provider } from 'react-redux';
 import store from '../../redux/store';
-import DataTable from '../../containers/DataTable/DataTable';
+import FullStuTable from '../../components/FullStuTable/FullStuTable';
 
 test('Check initial status of add new button', () => {
   render(
@@ -42,7 +42,7 @@ test('Check the clicked status of add new button', () => {
 test('Edit row', async () => {
   render(
     <Provider store={store}>
-      <DataTable isTesting={true}/>
+      <FullStuTable isTesting={true}/>
     </Provider>
   )
   const fistRow = screen.getByRole('row', { name: "1 John male Jon 0715426257 32 15-08-1990" })
@@ -82,7 +82,7 @@ test('remove row', () => {
 test('add new row', async () => {
   render(
     <Provider store={store}>
-      <DataTable isTesting={true}/>
+      <FullStuTable isTesting={true}/>
     </Provider>
   )
   const addButton = screen.getByRole('button', { name: "Add new" });

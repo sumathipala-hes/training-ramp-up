@@ -1,9 +1,10 @@
 // import { useDispatch } from 'react-redux';
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Card, TextField, Typography, Button, Grid, Link, Alert } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { isValidEmail, routePaths, userRoles } from "../../utils";
-import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
+import { userActions } from "../../redux/user/userSlice";
 
 const cardStyles = {
     padding: "20px 50px",
@@ -17,10 +18,23 @@ const cardStyles = {
 function Register(){
 
     const navigate = useNavigate();
+    const dispatch = useDispatch();
+    useEffect(() =>{
+        dispatch(userActions.setErrorStatus(null))
+    },[]);
 
+    //initialize error status and msg for users
+    const errorStatus = useSelector((state: {users: any; errorStatus:boolean} ) => state.users.errorStatus);
+    const errorMessage = useSelector((state: {users: any; errorMsg:string | null} ) => state.users.errorMsg);
+
+    useEffect(() =>{
+        if(errorStatus === false){
+            dispatch(userActions.setErrorStatus(null))
+            navigate(routePaths.signIn);
+        }
+    },[ errorStatus, navigate, dispatch]);
+      
     const [errorEmail, setErrorEmail] = useState(false);
-    const [errorStatus, setError] = useState(false); //api error status
-    const [errorMessage, setErrorMsg] = useState(""); //api error message status
 
     const linkHandler = (event: { preventDefault: () => void; }) => {
         event.preventDefault();
@@ -47,25 +61,7 @@ function Register(){
                 password : password,
                 role : userRoles.user
             }
-            try {
-                const response = await axios.post('http://localhost:4000/register', registeredUser, {
-                  headers: {
-                    'Content-Type': 'application/json',
-                  },
-                  withCredentials: true,
-                });
-        
-                if (response.data.status === 200) {
-                    setError(false);
-                  navigate(routePaths.home);
-                } else {
-                  setError(true);
-                  setErrorMsg(response.data.error)
-                }
-            } catch (error:any) {
-                setError(true);
-                setErrorMsg(error.response.data.error)
-            }
+            dispatch(userActions.register(registeredUser));
         }else{
             setErrorEmail(true);
         }

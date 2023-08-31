@@ -2,6 +2,7 @@ import {Request} from 'express';
 import AppDataSource from "../config/dataSoure";
 import { Student } from '../models/student';
 import studentRepository from './repositories/studentRepo';
+import { calculateAge } from '../utils';
 
 //get student from the database
 function fetchStudents(){
@@ -18,7 +19,7 @@ async function saveStudent(req: Request){
     const address = req.body.address;
     const mobile = req.body.mobile;
     const birthday = req.body.birthday;
-    const age = req.body.age;
+    const age = calculateAge(req.body.birthday);
 
     const student = new Student()
     student.name = name;
@@ -57,8 +58,9 @@ async function updateStudentDb(req: Request){
     const address = req.body.address;
     const mobile = req.body.mobile;
     const birthday = req.body.birthday;
-    const age = req.body.age;
+    const age = calculateAge(req.body.birthday);
     const id = req.body.id;
+    
 
     const student = await studentRepository.findOneBy({
         id: id,

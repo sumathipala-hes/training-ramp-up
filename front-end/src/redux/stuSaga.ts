@@ -5,7 +5,11 @@ import axios from 'axios';
 
 interface ResponseType{
     status: number;
-    data: {status:number;data:TableData[];}
+    data: {
+        status:number;
+        data:TableData[];
+        error:string
+    }
 }
 
 
@@ -19,6 +23,7 @@ interface TableData {
     age : number;
     address : string;
 }
+
 //add student into the DB
 function* addStudent(action: PayloadAction<TableData>) {
     const { id, name, gender, mobile, birthday, age,address } = action.payload;
@@ -93,7 +98,7 @@ function* getStudents(action: PayloadAction<TableData>) {
     }
 }
 
-
+//stu saga func
 function* addStuSaga(){
     yield takeEvery(tableActions.dbAddStudent, addStudent);
 }

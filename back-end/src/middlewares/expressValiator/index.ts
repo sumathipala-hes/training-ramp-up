@@ -28,7 +28,9 @@ const stuValidRules = [
     
     body('birthday').notEmpty().escape().withMessage('Birthday is required.')
     .isDate({ format: 'YYYY-MM-DD' }).withMessage('Birthday must be in the format "YYYY-MM-DD".'),
-    
+
+    body('age').notEmpty().escape().withMessage('age is required.')
+    .isInt({ min: 18 }).withMessage('age must be greater than 18.'),
     (req:Request, res:Response, next: () => void) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {

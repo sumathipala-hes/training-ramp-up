@@ -33,6 +33,11 @@ async function saveUser(req: Request){
     }   
 }
 
+function fetchUser(req: Request){
+    const authUser = validateToken(req);
+    return authUser;
+}
+
 //get users from the database
 function fetchUsers(){
     const users = AppDataSource.manager.find(User);
@@ -52,11 +57,10 @@ async function authenticateUser(req:Request) {
         const passwordMatch = await bcrypt.compare(password, user.password);
         if (passwordMatch){
             const userData = {
-                username :user.username,
                 name:user.name,
                 role:user.role
             }
-            const token = jwt.sign(userData, process.env.JWT_SECRET + req.ip, { expiresIn: '6h' });
+            const token = jwt.sign(userData, process.env.JWT_SECRET as string, { expiresIn: '10m' });
             return token;
         }else{
             return false;
@@ -71,11 +75,9 @@ async function authenticateUser(req:Request) {
 //validate token
 function validateToken(req:Request){
     const token = req.cookies.token;
-    const ip =  req.ip;
-    const decoded = jwt.verify(token, process.env.JWT_SECRET + ip);
-    console.log(decoded)
-    return true;
+    const decoded = jwt.verify(token, process.env.JWT_SECRET as string);
+    return decoded;
 }
 
 
-export {saveUser, fetchUsers, authenticateUser, validateToken};
+export {saveUser, fetchUsers, authenticateUser, validateToken, fetchUser};
