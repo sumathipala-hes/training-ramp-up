@@ -11,7 +11,7 @@ Future<void> main() async {
 
   LocalStorage().getCurrentLoginRole().then((roleType) => runApp(
         RampUpApp(
-          isAuthenticate: roleType != null,
+          isRole: roleType != null,
         ),
       ));
 }
