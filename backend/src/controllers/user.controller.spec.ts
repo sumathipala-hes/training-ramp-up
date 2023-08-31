@@ -5,7 +5,7 @@ import { User } from '../models/user.model';
 import {
   deleteUser,
   getAllUsers,
-  getUser,
+  signInUser,
   saveUser,
   updateUser,
 } from '../services/user.service';
@@ -113,8 +113,8 @@ describe('User Test', () => {
 
     test('Sign In User Success', async () => {
       userRepo.findOne = jest.fn().mockResolvedValue(newUser);
-      const data = await getUser(newUser.email, newUser.password);
-      expect(data).toEqual(newUser);
+      const data = await signInUser(newUser.email, newUser.password);
+      expect(typeof data).toEqual('string');
     });
 
     test('Sign In User Fail', async () => {

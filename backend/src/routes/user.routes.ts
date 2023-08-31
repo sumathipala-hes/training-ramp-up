@@ -8,13 +8,14 @@ import {
   signOut,
 } from '../controllers/user.controller';
 import { authorization } from '../middleware/jwt.middleware';
+import { validateUser } from '../middleware/user.middleware';
 
 const router: Router = express.Router();
 
 router.get('/', retriveAllUsers);
 router.post('/signIn', signIn);
-router.post('/add', addUsers);
-router.put('/:email', updateUsers);
+router.post('/add', validateUser, addUsers);
+router.put('/:email', validateUser, updateUsers);
 router.delete('/del/:id', deleteUsers);
 router.delete('/signOut', authorization, signOut);
 

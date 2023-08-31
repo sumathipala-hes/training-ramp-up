@@ -2,6 +2,8 @@ import { DeleteResult, InsertResult, UpdateResult } from 'typeorm';
 import { dataSource } from '../configs/datasource.config';
 import { User } from '../models/user.model';
 import { sendNotification } from '../utils/notification.util';
+import jwt = require('jsonwebtoken');
+import { jwtConfig } from '../configs/jwt.config';
 
 export const getAllUsers = async (): Promise<Array<User>> => {
   try {
@@ -54,10 +56,10 @@ export const deleteUser = async (email: string): Promise<DeleteResult> => {
   }
 };
 
-export const getUser = async (
+export const signInUser = async (
   email: string,
   password: string
-): Promise<User> => {
+): Promise<String> => {
   try {
     const userRepo = dataSource.manager.getRepository(User);
     const user = await userRepo.findOne({
@@ -70,7 +72,12 @@ export const getUser = async (
       console.log(user.password);
       const isMatch = user.password == password;
       if (isMatch) {
-        return user;
+        const accessToken = jwt.sign(
+          { email: user.email, role: user.role },
+          jwtConfig.secretKey!,
+          { expiresIn: '5h' }
+        );
+        return accessToken;
       } else {
         throw new Error('Password not match');
       }

@@ -1,13 +1,15 @@
+import { Any } from 'typeorm';
 import { dataSource } from '../configs/datasource.config';
 import { User } from '../models/user.model';
 import { sendNotification } from '../utils/notification.util';
 import {
   deleteUser,
   getAllUsers,
-  getUser,
+  signInUser,
   saveUser,
   updateUser,
 } from './user.service';
+import jwt = require('jsonwebtoken');
 
 jest.mock('../utils/notification.util', () => ({
   sendNotification: jest.fn(),
@@ -109,14 +111,15 @@ describe('User Service Checked', () => {
       password: '1234',
       role: 'admin',
     };
+
     test('Get Users Success', async () => {
       userRepo.findOne = jest.fn().mockResolvedValue(result);
-      const data = await getUser('dasun@gmail.com', '1234');
-      expect(data).toEqual(result);
+      const data = await signInUser('dasun@gmail.com', '1234');
+      expect(typeof data).toEqual('string');
     });
-    test('Get All Students Fail', async () => {
+    test('Get User Fail', async () => {
       userRepo.findOne = jest.fn().mockRejectedValue(new Error('Error'));
-      await expect(getUser('dasun@gmail.com', '1234')).rejects.toThrowError(
+      await expect(signInUser('dasun@gmail.com', '1234')).rejects.toThrowError(
         'Error'
       );
     });
