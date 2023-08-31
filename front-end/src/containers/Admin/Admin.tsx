@@ -56,10 +56,12 @@ function Admin(){
 
     const submitHandler = async (event: any) => {
         event.preventDefault();
-        const name = event.target[0].value;
-        const email =  event.target[2].value;
-        const password = event.target[4].value;
-        const role = event.target[6].value;
+        const formData = new FormData(event.target);
+        const name = formData.get("name");
+        const email = formData.get("email") as string;
+        const role = formData.get("role");
+        const password = formData.get("password");
+        console.log(role)
         if(isValidEmail(email)){
             setErrorEmail(false);
                 const registeredUser = {
@@ -106,16 +108,16 @@ function Admin(){
                                 </Typography>
                             </Grid>
                             <Grid item xs={12}>
-                                <TextField  size="small" label="Name" variant="outlined" InputProps={{ sx: { height: "45px"} }} fullWidth required />
+                                <TextField  size="small" name="name" label="Name" variant="outlined" InputProps={{ sx: { height: "45px"} }} fullWidth required />
                             </Grid>
                             <Grid item xs={12}>
-                                <TextField error={errorEmail}  onChange={mailChangeHandler}   size="small" label="Email address" variant="outlined" InputProps={{ sx: { height: "45px"} }} fullWidth required />
+                                <TextField error={errorEmail} name="email"  onChange={mailChangeHandler}   size="small" label="Email address" variant="outlined" InputProps={{ sx: { height: "45px"} }} fullWidth required />
                             </Grid>
                             <Grid item xs={12}>
-                                <TextField   size="small" label="Password" type="password"  variant="outlined" InputProps={{ sx: { height: "45px"} }} fullWidth required />
+                                <TextField   size="small" name="password" label="Password" type="password"  variant="outlined" InputProps={{ sx: { height: "45px"} }} fullWidth required />
                             </Grid>
                             <Grid item xs={12}>
-                                <TextField select label="User Role" defaultValue={userRoles.user}  variant="outlined" InputProps={{ sx: {  height: "45px", minWidth:"225px"}}} fullWidth required >         
+                                <TextField select name="role" label="User Role" defaultValue={userRoles.user}  variant="outlined" InputProps={{ sx: {  height: "45px", minWidth:"225px"}}} fullWidth required >         
                                     <MenuItem value={userRoles.user}>User</MenuItem>
                                     <MenuItem value={userRoles.admin}>Admin</MenuItem>                       
                                 </TextField>
