@@ -46,9 +46,9 @@ function SignIn(){
 
     const submitHandler = (event: any) => {
         event.preventDefault();
-        console.log(event.target[2].value)
-        const email =  event.target[0].value;
-        const password = event.target[2].value;
+        const formData = new FormData(event.target);
+        const email = formData.get("email") as string;
+        const password = formData.get("password")
         if(isValidEmail(email)){
             setErrorEmail(false);
             const userExists = users.some((user: { username: any; }) => user.username === email);
@@ -87,10 +87,10 @@ function SignIn(){
                         <Alert severity="error">The provided username or password / both the inputs are invalid  </Alert>
                         }
                         <Grid item xs={12}>
-                            <TextField error={errorEmail}  onChange={mailChangeHandler}   size="small" label="Email address" variant="outlined" InputProps={{ sx: { height: "45px"} }} fullWidth required />
+                            <TextField name="email" error={errorEmail}  onChange={mailChangeHandler}   size="small" label="Email address" variant="outlined" InputProps={{ sx: { height: "45px"} }} fullWidth required />
                         </Grid>
                         <Grid item xs={12}>
-                            <TextField   size="small" label="Password" type="password"  variant="outlined" InputProps={{ sx: { height: "45px"} }} fullWidth required />
+                            <TextField name="password"   size="small" label="Password" type="password"  variant="outlined" InputProps={{ sx: { height: "45px"} }} fullWidth required />
                         </Grid>
                         <Grid item xs={12} alignContent={"center"}>
                             <Button type="submit" size="large" variant="contained" sx={{ borderRadius: "16px", marginTop: "30px" }} >
