@@ -3,8 +3,7 @@ import React, { useState } from "react";
 import { Card, TextField, Typography, Button, Grid, Link, Alert } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { isValidEmail, routePaths } from "../../utils";
-import { useDispatch, useSelector } from "react-redux";
-import { userActions } from "../../redux/users/userSlice";
+import axios from "axios";
 
 const cardStyles = {
     padding: "20px 50px",
@@ -16,21 +15,13 @@ const cardStyles = {
     maxWidth:"400px"
   };
 
-  interface userData {
-    name:string ,
-    username: string ,
-    role: string ,
-  }
-  
 function SignIn(){
 
     const navigate = useNavigate();
-    const dispatch = useDispatch();
-
-    const users = useSelector((state: {user: any; users:userData[]} ) => state.user.users);
 
     const [errorEmail, setErrorEmail] = useState(false);
-    const [errorMessage, setError] = useState(false);
+    const [errorStatus, setError] = useState(false);
+    const [errorMessage, setErrorMsg] = useState("");
 
     const linkHnadler = (event: { preventDefault: () => void; }) => {
         event.preventDefault();
@@ -44,28 +35,43 @@ function SignIn(){
         }
     }
 
-    const submitHandler = (event: any) => {
+    const submitHandler = async (event: any) => {
         event.preventDefault();
         const formData = new FormData(event.target);
         const email = formData.get("email") as string;
-        const password = formData.get("password")
-        if(isValidEmail(email)){
-            setErrorEmail(false);
-            const userExists = users.some((user: { username: any; }) => user.username === email);
-            if(userExists){
-                const signedUser = {
-                    username : email,
-                    password : password
-                }
-                dispatch(userActions.signUser(signedUser));
-                navigate(routePaths.home);
-            }else{
-                setError(true);
+        const password = formData.get("password");
+    
+        if (isValidEmail(email)) {
+          setErrorEmail(false);
+    
+          const userData = {
+            username: email,
+            password: password,
+          };
+    
+          try {
+            const response = await axios.post('http://localhost:4000/log-in', userData, {
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              withCredentials: true,
+            });
+    
+            if (response.data.status === 200) {
+                setError(false);
+              navigate(routePaths.home);
+            } else {
+              setError(true);
+              setErrorMsg(response.data.error)
             }
-        }else{
-            setErrorEmail(true);
+          } catch (error:any) {
+            setError(true);
+            setErrorMsg(error.response.data.error)
+          }
+        } else {
+          setErrorEmail(true);
         }
-    }
+      };
 
     return (
         <React.Fragment>
@@ -83,8 +89,8 @@ function SignIn(){
                             <Link href="#" onClick ={linkHnadler} > Register</Link>
                             </Typography>
                         </Grid>
-                        {errorMessage &&
-                        <Alert severity="error">The provided username or password / both the inputs are invalid  </Alert>
+                        {errorStatus &&
+                        <Alert severity="error">{errorMessage} </Alert>
                         }
                         <Grid item xs={12}>
                             <TextField name="email" error={errorEmail}  onChange={mailChangeHandler}   size="small" label="Email address" variant="outlined" InputProps={{ sx: { height: "45px"} }} fullWidth required />
