@@ -1,7 +1,7 @@
 import { InsertResult, UpdateResult, DeleteResult } from 'typeorm';
 
 import { Student } from '../../models/student.model';
-
+import { sendNotification } from '../../util/notification.util';
 import {
   retrieveAllStudents,
   saveStudent,
@@ -11,6 +11,10 @@ import {
 import { dataSource } from '../../configs/db.config';
 
 jest.mock('../../configs/db.config');
+
+jest.mock('../../util/notification.util', () => ({
+  sendNotification: jest.fn(),
+}));
 
 describe('Student Service', () => {
   describe('getAllStudents', () => {
@@ -73,6 +77,10 @@ describe('Student Service', () => {
       expect(result).toEqual(new InsertResult()); // Adjust this based on your mock response
       expect(dataSource.manager.getRepository).toHaveBeenCalledWith(Student);
       expect(mockInsert).toHaveBeenCalledWith(mockStudentData);
+      expect(sendNotification).toHaveBeenCalledWith(
+        'Success',
+        'student Saved..!',
+      );
     });
 
     it('should throw an error if creating a student fails', async () => {
@@ -132,6 +140,10 @@ describe('Student Service', () => {
       expect(result).toEqual(mockUpdateResult);
       expect(dataSource.manager.getRepository).toHaveBeenCalledWith(Student);
       expect(mockUpdate).toHaveBeenCalledWith(id, mockStudentData);
+      expect(sendNotification).toHaveBeenCalledWith(
+        'Success',
+        'student Updated..!',
+      );
     });
 
     test('should throw an error if student is not found', async () => {
@@ -178,7 +190,7 @@ describe('Student Service', () => {
       expect(mockUpdate).toHaveBeenCalledWith(id, mockStudentData);
     });
   });
-  
+
   describe('deleteStudent', () => {
     let mockDelete: jest.Mock;
 
@@ -206,6 +218,7 @@ describe('Student Service', () => {
       expect(result).toEqual(mockDeleteResult);
       expect(dataSource.manager.getRepository).toHaveBeenCalledWith(Student);
       expect(mockDelete).toHaveBeenCalledWith(id);
+      expect(sendNotification).toHaveBeenCalledWith('', 'student Deleted..!');
     });
 
     test('should throw an error if student is not found', async () => {
