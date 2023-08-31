@@ -42,6 +42,8 @@ export const getUserByOne = async (search: string): Promise<User | null> => {
       throw new Error('No user found');
     }
 
+    user.password = decrypt(user.password);
+
     return user;
   } catch (error) {
     throw error;

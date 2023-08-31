@@ -126,7 +126,6 @@ export const signIn: RequestHandler = async (
       refreshToken: token.refreshToken,
     });
   } catch (error) {
-    console.log(error);
 
     res.status(500).json(error);
   }
