@@ -8,6 +8,7 @@ import 'package:front_end/model/user_model.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 
+import '../../enum/role_type_enum.dart';
 import '../../theme/primary_theme.dart';
 import '../../util/encrypted_decrypted_util.dart';
 import '../../util/notification_util.dart';
@@ -41,7 +42,10 @@ class UserMangeView extends StatelessWidget {
   final TextEditingController dateController = TextEditingController();
   DateTime dob = DateTime(DateTime.now().year - 18);
   int age = 0;
-  List<String> roles = ['ADMIN', 'USER'];
+  final List<String> roles = [
+    RoleEnum.admin.toString().split('.').last.toUpperCase(),
+    RoleEnum.user.toString().split('.').last.toUpperCase(),
+  ];
 
   void clear() {
     nameController.clear();

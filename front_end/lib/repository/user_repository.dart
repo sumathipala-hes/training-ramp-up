@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:front_end/util/local_storage.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:logger/logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -97,13 +98,14 @@ class UserRepository {
     if (res.statusCode == 200) {
       final Map<String, dynamic> jsonData = json.decode(res.body);
       final accessToken = jsonData['accessToken'];
-      final refreshToken = jsonData['refreshToken'];
 
-      if (refreshToken != null) {
-        final prefs = await SharedPreferences.getInstance();
+      if (accessToken != null) {
         Map<String, dynamic> decodedToken = JwtDecoder.decode(accessToken);
-        prefs.setString('email', decodedToken['email']);
-        prefs.setString('roleType', decodedToken['roleType']);
+        String email = decodedToken['email'];
+        String roleType = decodedToken['roleType'];
+
+        LocalStorage().setCurrentLoginRole(roleType);
+        LocalStorage().setCurrentLoginEmail(email);
       }
     }
     if (res.statusCode == 500) {
