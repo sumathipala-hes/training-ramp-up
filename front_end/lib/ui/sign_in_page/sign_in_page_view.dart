@@ -1,10 +1,84 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:front_end/enum/role_enum.dart';
+import 'package:front_end/ui/admin_home_page/admin_home_page_view.dart';
 import 'package:front_end/ui/register_page/register_page_provider.dart';
+import 'package:front_end/ui/sign_in_page/sign_in_page_bloc.dart';
+import 'package:front_end/ui/sign_in_page/sign_in_page_event.dart';
+import 'package:front_end/ui/user_home_page/user_home_page_view.dart';
+import 'package:front_end/util/encrypted_decrypted_util.dart';
+import 'package:logger/logger.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SignInPageScreen extends StatelessWidget {
-  const SignInPageScreen({Key? key}) : super(key: key);
+  SignInPageScreen({Key? key}) : super(key: key);
+
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+
+  void _signInForm(context) async {
+    final email = emailController.text.trim();
+    final password = passwordController.text.trim();
+
+    if (email.isEmpty || password.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Please fill all the fields"),
+        ),
+      );
+    } else if (!RegExp(r'^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$').hasMatch(
+      emailController.text.trim(),
+    )) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Invalid Email."),
+        ),
+      );
+    } else if (password.length < 8) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+              "Password must be at least 8 characters Or check your password."),
+        ),
+      );
+    } else {
+      SignInPageScreenBloc bloc =
+          BlocProvider.of<SignInPageScreenBloc>(context);
+      String encriptedPassword = PasswordEncryption.encryptPassword(
+        passwordController.text.trim(),
+      );
+      bloc.add(
+        Login(
+          userEmail: emailController.text,
+          userPassword: encriptedPassword,
+        ),
+      );
+
+      await Future.delayed(const Duration(seconds: 2));
+      final prefs = await SharedPreferences.getInstance();
+      final role = prefs.getString('role');
+
+      Logger().e(role);
+
+      if (role == RoleEnum.admin.toString().split('.').last) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const AdminHomeScreen(),
+          ),
+        );
+      } else if (role == RoleEnum.user.toString().split('.').last) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const UserHomeScreen(),
+          ),
+        );
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,8 +117,9 @@ class SignInPageScreen extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(height: 35),
-                        const TextField(
-                          decoration: InputDecoration(
+                        TextField(
+                          controller: emailController,
+                          decoration: const InputDecoration(
                             labelText: "Email :",
                             prefixIcon: Icon(Icons.email),
                             border: OutlineInputBorder(
@@ -55,8 +130,10 @@ class SignInPageScreen extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(height: 25.0),
-                        const TextField(
-                          decoration: InputDecoration(
+                        TextField(
+                          controller: passwordController,
+                          obscureText: true,
+                          decoration: const InputDecoration(
                             labelText: "Password :",
                             prefixIcon: Icon(Icons.lock),
                             border: OutlineInputBorder(
@@ -77,7 +154,9 @@ class SignInPageScreen extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(15.0),
                               ),
                             ),
-                            onPressed: () {},
+                            onPressed: () async {
+                              _signInForm(context);
+                            },
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               mainAxisSize: MainAxisSize.min,
@@ -111,11 +190,11 @@ class SignInPageScreen extends StatelessWidget {
                             TextButton(
                               onPressed: () {
                                 Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              RegisterScreenProvider()),
-                                    );
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          RegisterScreenProvider()),
+                                );
                               },
                               child: Text(
                                 'Sign up'.toUpperCase(),

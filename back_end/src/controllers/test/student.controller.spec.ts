@@ -1,12 +1,17 @@
 import { DeleteResult, UpdateResult } from 'typeorm';
 import { dataSource } from '../../configs/db.config';
 import { Student } from '../../models/student.model';
+import { sendNotification } from '../../util/notification.util';
 import {
   retrieveAllStudents,
   saveStudent,
   updateStudent,
   deleteStudent,
 } from '../../services/student.service';
+
+jest.mock('../../util/notification.util', () => ({
+  sendNotification: jest.fn(),
+}));
 
 describe('Student Controller', () => {
   const studentRepo = dataSource.manager.getRepository(Student);
@@ -49,6 +54,10 @@ describe('Student Controller', () => {
       studentRepo.insert = jest.fn().mockResolvedValue(newStudent);
       const data = await saveStudent(newStudent);
       expect(data).toEqual(newStudent);
+      expect(sendNotification).toHaveBeenCalledWith(
+        'Success',
+        'student Saved..!',
+      );
     });
 
     test('should handle failure to create student', async () => {
@@ -73,23 +82,23 @@ describe('Student Controller', () => {
         raw: updatedStudent,
         generatedMaps: [],
       };
-      dataSource.manager.getRepository = jest
-        .fn()
-        .mockReturnValue({
-          update: jest.fn().mockResolvedValue(mockUpdateResult),
-        });
+      dataSource.manager.getRepository = jest.fn().mockReturnValue({
+        update: jest.fn().mockResolvedValue(mockUpdateResult),
+      });
 
       const result = await updateStudent('1', updatedStudent);
       expect(result).toEqual(mockUpdateResult);
+      expect(sendNotification).toHaveBeenCalledWith(
+        'Success',
+        'student Updated..!',
+      );
     });
 
     test('should handle failure to update student', async () => {
       const errorMessage = 'Error updating student.';
-      dataSource.manager.getRepository = jest
-        .fn()
-        .mockReturnValue({
-          update: jest.fn().mockRejectedValue(new Error(errorMessage)),
-        });
+      dataSource.manager.getRepository = jest.fn().mockReturnValue({
+        update: jest.fn().mockRejectedValue(new Error(errorMessage)),
+      });
 
       await expect(updateStudent('1', updatedStudent)).rejects.toThrowError(
         errorMessage,
@@ -111,6 +120,7 @@ describe('Student Controller', () => {
 
       const result = await deleteStudent(id);
       expect(result).toEqual(mockDeleteResult);
+      expect(sendNotification).toHaveBeenCalledWith('', 'student Deleted..!');
     });
 
     test('should handle failure to delete student', async () => {

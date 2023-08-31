@@ -4,19 +4,37 @@ import 'package:front_end/enum/role_enum.dart';
 import 'package:front_end/models/user.dart';
 import 'package:front_end/ui/admin_home_page/admin_home_page_bloc.dart';
 import 'package:front_end/ui/admin_home_page/admin_home_page_event.dart';
-import 'package:front_end/ui/sign_in_page/sign_in_page_provider.dart';
+import 'package:front_end/ui/manage_user_page/manage_user_page_bloc.dart';
+import 'package:front_end/ui/manage_user_page/manage_user_page_event.dart';
 import 'package:front_end/util/encrypted_decrypted_util.dart';
 
-class RegisterScreen extends StatelessWidget {
-  RegisterScreen({super.key});
+// ignore: must_be_immutable
+class ManageUserScreen extends StatelessWidget {
+  ManageUserScreen({super.key, required this.user}) {
+    nameController.text = user.userName;
+    emailController.text = user.userEmail;
+    passwordController.text = PasswordEncryption.decryptPassword(
+      user.userPassword,
+    );
+    confirmPasswordController.text = PasswordEncryption.decryptPassword(
+      user.userPassword,
+    );
+    selectedItem = user.role;
+  }
 
   final TextEditingController nameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController confirmPasswordController =
       TextEditingController();
+  final User user;
+  String selectedItem ='';
+  List<String> role = [
+    RoleEnum.admin.toString().split('.').last,
+    RoleEnum.user.toString().split('.').last
+  ];
 
-  void _registerForm(context) {
+  void _updateForm(context) {
     final name = nameController.text.trim();
     final email = emailController.text.trim();
     final password = passwordController.text.trim();
@@ -61,12 +79,12 @@ class RegisterScreen extends StatelessWidget {
         passwordController.text.trim(),
       );
       bloc.add(
-        RegisterUser(
+        UpdateUser(
           user: User(
-            userName: nameController.text.trim(),
-            userEmail: emailController.text.trim(),
+            role: selectedItem,
+            userName: nameController.text,
+            userEmail: emailController.text,
             userPassword: encriptedPassword,
-            role: RoleEnum.user.toString().split('.').last,
           ),
         ),
       );
@@ -75,11 +93,15 @@ class RegisterScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    ManageUserScreenBloc manageUserScreenBloc =
+        BlocProvider.of<ManageUserScreenBloc>(context);
+    AdminHomeScreenBloc rampUpHomeScreenBloc =
+        BlocProvider.of<AdminHomeScreenBloc>(context);
     return Scaffold(
       appBar: AppBar(
         elevation: 7,
         centerTitle: true,
-        title: const Text('R E G I S T E R'),
+        title: const Text('M A N A G E    U S E R'),
         toolbarHeight: MediaQuery.of(context).size.height * 0.1,
       ),
       body: Container(
@@ -106,7 +128,7 @@ class RegisterScreen extends StatelessWidget {
                     children: [
                       const SizedBox(height: 10),
                       const Text(
-                        'REGISTER',
+                        'MANAGE USER',
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 35,
@@ -114,7 +136,18 @@ class RegisterScreen extends StatelessWidget {
                           color: Color.fromRGBO(137, 91, 215, 0.8),
                         ),
                       ),
-                      const SizedBox(height: 15),
+                      DropdownButton<String>(
+                        value: selectedItem,
+                        onChanged: (newValue) {
+                          manageUserScreenBloc.add(SetRoleEvent(newValue!));
+                        },
+                        items: role.map((String role) {
+                          return DropdownMenuItem<String>(
+                            value: role,
+                            child: Text(role),
+                          );
+                        }).toList(),
+                      ),
                       TextField(
                         controller: nameController,
                         decoration: const InputDecoration(
@@ -168,67 +201,41 @@ class RegisterScreen extends StatelessWidget {
                           ),
                         ),
                       ),
-                      const SizedBox(height: 25),
-                      SizedBox(
-                        width: double.infinity,
-                        height: MediaQuery.of(context).size.height * 0.05,
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.deepPurple[400],
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15.0),
-                            ),
-                          ),
-                          onPressed: () {
-                            _registerForm(context);
-                          },
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(
-                                'Register '.toUpperCase(),
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.w400,
-                                ),
-                              ),
-                              const Icon(
-                                Icons.arrow_forward,
-                                color: Colors.white,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
                       const SizedBox(height: 15),
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          Text(
-                            'Already A Register ? ',
-                            style: TextStyle(
-                              fontSize: 15.0,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black.withOpacity(0.6),
-                            ),
-                          ),
-                          TextButton(
+                          ElevatedButton(
                             onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => SignInPageProvider(),
+                              _updateForm(context);
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.green,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8.0),
+                              ),
+                              elevation: 4,
+                            ),
+                            child: const Text("Update"),
+                          ),
+                          const SizedBox(width: 10.0),
+                          ElevatedButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                              rampUpHomeScreenBloc.add(
+                                DeleteUser(
+                                  email: user.userEmail,
                                 ),
                               );
                             },
-                            child: Text(
-                              'Sign in'.toUpperCase(),
-                              style: TextStyle(
-                                fontSize: 16.0,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.deepPurple[400],
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.red[400],
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8.0),
                               ),
+                              elevation: 4,
                             ),
+                            child: const Text("Delete"),
                           ),
                         ],
                       ),

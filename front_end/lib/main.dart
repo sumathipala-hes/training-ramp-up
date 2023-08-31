@@ -7,8 +7,10 @@ import 'package:front_end/ui/root_page/root_page.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-    FirebaseMessaging.onBackgroundMessage(
+  FirebaseMessaging.onBackgroundMessage(
     firebaseMessagingBackgroundHandler,
   );
-  runApp(const RampUpApp());
+  runApp(
+    const RampUpApp(),
+  );
 }

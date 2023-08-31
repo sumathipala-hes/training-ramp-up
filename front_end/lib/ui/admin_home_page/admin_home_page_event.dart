@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:front_end/models/user.dart';
 
 @immutable
 abstract class AdminHomePageEvent {}
@@ -49,4 +50,36 @@ class UpdateStudent extends AdminHomePageEvent {
     required this.studentDob,
     required this.studentGender,
   });
+}
+
+class RegisterUser extends AdminHomePageEvent {
+  final User user;
+
+  RegisterUser({
+    required this.user,
+  });
+}
+
+class GetAllUsers extends AdminHomePageEvent {
+  GetAllUsers();
+}
+
+class DeleteUser extends AdminHomePageEvent {
+  final String email;
+
+  DeleteUser({
+    required this.email,
+  });
+}
+
+class UpdateUser extends AdminHomePageEvent {
+  final User user;
+
+  UpdateUser({
+    required this.user,
+  });
+}
+
+class LogOut extends AdminHomePageEvent {
+  LogOut();
 }
