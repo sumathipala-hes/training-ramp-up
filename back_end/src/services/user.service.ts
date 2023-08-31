@@ -4,6 +4,7 @@ import { sendNotification } from '../util/notification.util';
 import { User } from '../models/user.models';
 import { jwtConfig } from '../configs/jwt.config';
 import jwt from 'jsonwebtoken';
+import { decrypt, encrypt } from '../util/encrypted.decrypted.util';
 
 export const getAllUsers = async (): Promise<Array<User>> => {
   try {
@@ -14,6 +15,10 @@ export const getAllUsers = async (): Promise<Array<User>> => {
     if (users.length === 0) {
       throw new Error('No students found');
     }
+
+    users.forEach(user => {
+      user.password = decrypt(user.password);
+    });
 
     return users;
   } catch (error) {
@@ -45,6 +50,8 @@ export const getUserByOne = async (search: string): Promise<User | null> => {
 
 export const createUser = async (userData: User): Promise<InsertResult> => {
   try {
+    userData.password = encrypt(userData.password);
+
     const newUser: InsertResult = await appDataSource.manager
       .getRepository(User)
       .insert(userData);
@@ -63,6 +70,8 @@ export const updateUser = async (
   userData: User,
 ): Promise<UpdateResult | null> => {
   try {
+    userData.password = encrypt(userData.password);
+
     const updatedUser: UpdateResult = await appDataSource.manager
       .getRepository(User)
       .update(email, userData);
@@ -105,11 +114,14 @@ export const signInUser = async (
 ): Promise<{ accessToken: string; refreshToken: string }> => {
   try {
     const userRepo = appDataSource.manager.getRepository(User);
+
     const user = await userRepo.findOne({
       where: {
         email: email,
       },
     });
+
+    password = encrypt(password);
 
     if (user) {
       const isMatch = user.password === password;
