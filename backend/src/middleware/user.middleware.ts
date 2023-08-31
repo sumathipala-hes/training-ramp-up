@@ -29,4 +29,3 @@ export const validateUser: RequestHandler = (
 
   next();
 };
-

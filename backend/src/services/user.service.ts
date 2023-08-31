@@ -59,7 +59,7 @@ export const deleteUser = async (email: string): Promise<DeleteResult> => {
 export const signInUser = async (
   email: string,
   password: string
-): Promise<String> => {
+): Promise<any> => {
   try {
     const userRepo = dataSource.manager.getRepository(User);
     const user = await userRepo.findOne({
@@ -77,7 +77,13 @@ export const signInUser = async (
           jwtConfig.secretKey!,
           { expiresIn: '5h' }
         );
-        return accessToken;
+        const refreshToken = jwt.sign(
+          { email: user.email },
+          jwtConfig.secretKey,
+          { expiresIn: '7d' }
+        );
+
+        return { accessToken: accessToken, refreshToken: refreshToken };
       } else {
         throw new Error('Password not match');
       }

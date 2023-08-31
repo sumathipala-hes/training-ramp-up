@@ -60,11 +60,21 @@ export const signIn: RequestHandler = async (
   res: Response
 ): Promise<void> => {
   try {
-    const accessToken = await signInUser(req.body.email, req.body.password);
-      res.cookie('accessToken', accessToken, {
-        httpOnly: true,
+    const tokens = await signInUser(req.body.email, req.body.password);
+    res.cookie('accessToken', tokens.accessToken, {
+      maxAge: 1000 * 60 * 5,
+      httpOnly: true,
+    });
+    res.cookie('refreshToken', tokens.refreshToken, {
+      maxAge: 60 * 60 * 24 * 1000,
+      httpOnly: true,
+    });
+    res
+      .status(200)
+      .json({
+        accessToken: tokens.accessToken,
+        refreshToken: tokens.refreshToken,
       });
-      res.status(200).json({ accessToken });
   } catch (error) {
     res.status(500).json(error);
   }
