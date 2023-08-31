@@ -251,7 +251,7 @@ describe('User Service Checked', () => {
     test('should fetch and return a user', async () => {
       userRepo.findOne = jest.fn().mockResolvedValue(dataUser);
       const data = await signInUser('nimesh123@gmail.com', 'Nimesh12@345');
-      
+      expect(typeof(data)).toEqual("string");
     });
 
     test('should throw an error if fetching user fails', async () => {

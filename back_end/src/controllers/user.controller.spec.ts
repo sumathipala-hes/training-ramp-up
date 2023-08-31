@@ -167,6 +167,7 @@ describe('User Controller Checked', () => {
     test('Sign in success', async () => {
       userRepo.getRepository(User).findOne = jest.fn().mockResolvedValue(user);
       const data = await signInUser(email, password);
+      expect(typeof(data)).toEqual("string");
     });
 
     test('Sign in fail', async () => {
