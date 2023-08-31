@@ -20,7 +20,7 @@ class UserRepository {
       body: jsonEncode(
         {
           "email": email,
-          "password": password,
+          "password": decryptPassword(password),
         },
       ),
     );

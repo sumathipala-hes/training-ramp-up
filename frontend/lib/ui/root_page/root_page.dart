@@ -23,7 +23,7 @@ class RampUpApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: isAuthenticate ? const HomePageView() : const SignInPageView(),
+      home: const SignInPageView(),
     );
 
     return MultiBlocProvider(
