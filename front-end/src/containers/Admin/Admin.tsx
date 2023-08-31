@@ -3,8 +3,9 @@ import React, { useEffect, useState } from "react";
 import { Card, TextField, Typography, Button, Grid, Alert, MenuItem, Snackbar, AlertColor } from "@mui/material";
 import { isValidEmail, routePaths, userRoles } from "../../utils";
 import Header from "../../components/Header/Header";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { userActions } from "../../redux/user/userSlice";
 
 const cardStyles = {
     padding: "20px 50px",
@@ -20,48 +21,31 @@ function Admin(){
     const navigate = useNavigate();
 
     const [errorEmail, setErrorEmail] = useState(false);
-    const [message, setMessage] = useState("");
     const [severity, setSeverity] = useState<AlertColor>("success");
-    const [isSnackOpen, setSnackOpen] = useState(false);
-    const [loading, setLoading] = useState(true); // Initialize as true
-    const [authenticated, setAuthenticated] = useState(false)
-  
-    useEffect(() => {
-      async function checkAuthentication() {
-        try {
-          const response= await axios.post(
-            'http://localhost:4000/auth',
-            {
-              // Request body
-            },
-            {
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              withCredentials: true,
-            }
-          );
-  
-          if (response.data.status === 200) {
-            if(response.data.data.role === userRoles.admin){
-                setAuthenticated(true);
-            }
-          } else {
-            setAuthenticated(false);
-          }
-        } catch (error) {
-          setAuthenticated(false);
-        } finally {
-          setLoading(false);
-        }
+    const [isSnackOpen, setSnackOpen] = useState(false); 
+
+    const dispatch = useDispatch();
+
+    //initialize error status and msg for users
+    const authenticated = useSelector((state: {users: any; authenticated:boolean} ) => state.users.authenticated);
+    const user = useSelector((state: {users: any; user:boolean} ) => state.users.user);
+    
+    //initialize error status and msg for users
+    const errorStatus = useSelector((state: {users: any; errorStatus:boolean} ) => state.users.errorStatus);
+    const message = useSelector((state: {users: any; errorMsg:string | null} ) => state.users.errorMsg);
+    
+    useEffect(() =>{
+      dispatch(userActions.setErrorStatus(null));
+      dispatch(userActions.processAutho());
+     },[]);
+
+     useEffect(() =>{
+      if(errorStatus){
+        setSeverity("error");
+      }else{
+        setSeverity("success");
       }
-  
-      checkAuthentication();
-    }, []);
-  
-    if (loading) {
-      return null; 
-    }
+     },[errorStatus]);
 
     const mailChangeHandler = (event: { target: { value: string } }) => {
         const email =  event.target.value;
@@ -84,28 +68,8 @@ function Admin(){
                     role : role,
                     password: password,
                 }
-                try {
-                    const response = await axios.post('http://localhost:4000/register', registeredUser, {
-                      headers: {
-                        'Content-Type': 'application/json',
-                      },
-                      withCredentials: true,
-                    });
-            
-                    if (response.data.status === 200) {
-                        setSeverity("success");
-                        setMessage("user successfully added")
-                        setSnackOpen(true);
-                    } else {
-                      setSeverity("error");
-                      setMessage(response.data.error)
-                      setSnackOpen(true);
-                    }
-                } catch (error:any) {
-                    setSeverity("error");
-                    setMessage(error)
-                    setSnackOpen(true);
-                }
+                dispatch(userActions.register(registeredUser));
+                setSnackOpen(true);
         }else{
             setErrorEmail(true);
         }
@@ -122,7 +86,7 @@ function Admin(){
         navigate(routePaths.home);
     };
 
-    if(!authenticated){
+    if(!authenticated || user.role === userRoles.user){
         return(
             <Card variant="outlined" sx={cardStyles}>
                 <Typography variant="h4" align="center" >The page is protected. Administrator access is required for entry.</Typography>    
@@ -174,6 +138,4 @@ function Admin(){
     );
     }
 }
-
-
 export default Admin;

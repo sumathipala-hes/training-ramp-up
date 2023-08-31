@@ -1,30 +1,18 @@
 import { AppBar, Avatar, Box, Button, Toolbar, Typography } from "@mui/material";
 import { deepOrange } from "@mui/material/colors";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { routePaths } from "../../utils";
+import { useDispatch } from "react-redux";
+import { userActions } from "../../redux/user/userSlice";
 
 function Header(props:{name: string, isAdmin: boolean}){
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   
   //handle logout process
   async function logoutHandler(){
-    try {
-      const response = await axios.get('http://localhost:4000/log-out',{
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        withCredentials: true,
-      });
-
-      if (response.data.status === 200) {
-        navigate(routePaths.signIn);
-      } else {
-        console.log(response.data.error);
-      }
-    } catch (error:any) {
-      console.log(error);
-    }
+    dispatch(userActions.processLogOut());
+    navigate(routePaths.signIn);
   }
 
   //navigate to admin page

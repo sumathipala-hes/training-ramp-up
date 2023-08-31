@@ -184,7 +184,7 @@ function FullStuTable(props: { isTesting: any; }) {
       address: "",
       mobile: "",
       birthday:"yy-mm-dd",
-      age: 0,
+      age: 19,
     };
 
     dispatch(tableActions.addStudent(newEditableRow));

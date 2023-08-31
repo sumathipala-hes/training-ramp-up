@@ -1,5 +1,6 @@
 import { all } from 'redux-saga/effects';
-import {addStuSaga, getStuSaga, removeStuSaga, updateStuSaga} from './saga';
+import {addStuSaga, getStuSaga, removeStuSaga, updateStuSaga} from './stuSaga';
+import { authUserSaga, authoUserSaga, logOutUserSaga, registerUserSaga } from './userSaga';
 
 //set sagas
 export default function* rootSaga() {
@@ -8,5 +9,9 @@ export default function* rootSaga() {
     updateStuSaga(),
     removeStuSaga(),
     getStuSaga(),
+    authUserSaga(),
+    authoUserSaga(),
+    registerUserSaga(),
+    logOutUserSaga(),
   ]);
 }
