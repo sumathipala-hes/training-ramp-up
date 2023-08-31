@@ -37,19 +37,10 @@ import { socket } from '../../App'
 import randomInteger from 'random-int'
 import { useNavigate } from 'react-router-dom'
 import { useEffect } from 'react'
+import { logInSuccessfull } from '../LogInPage/LogInSlice'
 // import { count } from '../../sagas'
 
 export default function FullFeaturedCrudGrid() {
-    const asyncLocalStorage = {
-        async setItem(key: string, value: string) {
-            await null
-            return localStorage.setItem(key, value)
-        },
-        async getItem(key: string) {
-            await null
-            return localStorage.getItem(key)
-        },
-    }
     const dispatch = useDispatch()
     const rows = useSelector((state: RootState) => state.grid.rows)
     const navigate = useNavigate()
@@ -58,30 +49,31 @@ export default function FullFeaturedCrudGrid() {
         {}
     )
 
+    const responseStatus = useSelector(
+        (store: RootState) => store.logIn.successMessage
+    )
+    console.log(responseStatus)
+    if (responseStatus === 'fail') {
+        alert(`Please Log In and try again`)
+        navigate('/')
+    }
+
     useEffect(() => {
         // Dispatch the action to fetch rows when the component mounts
         dispatch(fetchRows())
-        checkAuthStatusAndNavigate()
     }, [dispatch])
-
-    const checkAuthStatusAndNavigate = async () => {
-        const successStatus = await asyncLocalStorage.getItem('AuthSuccess')
-        const successStatusMessage = await asyncLocalStorage.getItem(
-            'AuthSuccessMessage'
-        )
-        if (successStatus === 'fail') {
-            alert(successStatusMessage)
-            navigate('/')
-            localStorage.clear()
-        }
-    }
 
     const handleClick2 = () => {
         navigate('/sign-up')
     }
     const handleClickLogOut = async () => {
         localStorage.clear()
+        dispatch(logInSuccessfull('fail'))
         navigate('/')
+    }
+
+    const handleClickNavigateToUsers = async () => {
+        navigate('/users-list')
     }
     // Initialize the addButtonDisabled state
     const [addButtonDisabled, setAddButtonDisabled] = React.useState(false)
@@ -405,11 +397,26 @@ export default function FullFeaturedCrudGrid() {
                 }}
                 disableVirtualization
             />
-            <Button variant="contained" onClick={handleClick2}>
+            <Button
+                variant="contained"
+                onClick={handleClick2}
+                sx={{ marginRight: '20px', marginTop: '80px' }}
+            >
                 Sign Up
             </Button>
-            <Button variant="contained" onClick={handleClickLogOut}>
+            <Button
+                variant="contained"
+                onClick={handleClickLogOut}
+                sx={{ marginRight: '20px', marginTop: '80px' }}
+            >
                 Log Out
+            </Button>
+            <Button
+                variant="contained"
+                onClick={handleClickNavigateToUsers}
+                sx={{ marginTop: '80px' }}
+            >
+                Users
             </Button>
         </Box>
     )

@@ -21,28 +21,11 @@ import { minDate, maxDate } from './GridTableUtility/min_maxDate'
 import { socket } from '../../App'
 import { useNavigate } from 'react-router-dom'
 import { useEffect } from 'react'
+import { logInSuccessfull } from '../LogInPage/LogInSlice'
 
 // import { count } from '../../sagas'
 
 export default function FullFeaturedCrudGrid() {
-    const asyncLocalStorage = {
-        async setItem(key: string, value: string) {
-            await null
-            return localStorage.setItem(key, value)
-        },
-        async getItem(key: string) {
-            await null
-            return localStorage.getItem(key)
-        },
-        async clear() {
-            await null
-            return localStorage.clear()
-        },
-        async removeItem(key: string) {
-            await null
-            return localStorage.removeItem(key)
-        },
-    }
     const dispatch = useDispatch()
     const rows = useSelector((state: RootState) => state.grid.rows)
     const navigate = useNavigate()
@@ -51,25 +34,19 @@ export default function FullFeaturedCrudGrid() {
         {}
     )
 
+    const responseStatus = useSelector(
+        (store: RootState) => store.logIn.successMessage
+    )
+    console.log(responseStatus)
+    if (responseStatus === 'fail') {
+        alert(`Please Log In and try again`)
+        navigate('/')
+    }
+
     useEffect(() => {
         // Dispatch the action to fetch rows when the component mounts
         dispatch(fetchRows())
-        checkAuthStatusAndNavigate()
     }, [dispatch])
-
-    const checkAuthStatusAndNavigate = async () => {
-        const successStatus = await asyncLocalStorage.getItem('AuthSuccess')
-        const successStatusMessage = await asyncLocalStorage.getItem(
-            'AuthSuccessMessage'
-        )
-        console.log('Got the success Status')
-        if (successStatus === 'fail') {
-            console.log('Now you will be navigated to Log In Page')
-            alert(successStatusMessage)
-            navigate('/')
-            await asyncLocalStorage.clear()
-        }
-    }
 
     const handleClickSignUp = () => {
         navigate('/sign-up')
@@ -77,6 +54,7 @@ export default function FullFeaturedCrudGrid() {
 
     const handleClickLogOut = async () => {
         localStorage.clear()
+        dispatch(logInSuccessfull('fail'))
         navigate('/')
     }
 
@@ -263,10 +241,18 @@ export default function FullFeaturedCrudGrid() {
                 }}
                 disableVirtualization
             />
-            <Button variant="contained" onClick={handleClickSignUp}>
+            <Button
+                variant="contained"
+                onClick={handleClickSignUp}
+                sx={{ marginRight: '20px', marginTop: '80px' }}
+            >
                 Sign Up
             </Button>
-            <Button variant="contained" onClick={handleClickLogOut}>
+            <Button
+                variant="contained"
+                onClick={handleClickLogOut}
+                sx={{ marginTop: '80px' }}
+            >
                 Log Out
             </Button>
         </Box>

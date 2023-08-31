@@ -78,11 +78,9 @@ export default function SignUp() {
 
         if (role === 'USER') {
             navigate('/student-table-plain')
-            localStorage.removeItem('AuthSuccess')
             console.log('Now I will navigate to Uneditable Table')
         } else if (role === 'ADMIN') {
             navigate('/student-table')
-            localStorage.removeItem('AuthSuccess')
             console.log('Now I will navigate to Editable Table')
         }
     }
