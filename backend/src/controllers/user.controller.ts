@@ -90,7 +90,6 @@ export const signOut: RequestHandler = async (
 ): Promise<void> => {
   try {
     res.clearCookie('accessToken');
-    res.clearCookie('refreshToken');
     res.status(200).json({ message: 'Sign Out successfully' });
   } catch (error) {
     res.status(500).json(error);
