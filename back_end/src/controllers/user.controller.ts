@@ -109,13 +109,22 @@ export const signIn: RequestHandler = async (
   res: Response,
 ): Promise<void> => {
   try {
-    const accessToken = await signInUser(req.body.email, req.body.password);
+    const token = await signInUser(req.body.email, req.body.password);
 
-    res.cookie('accessToken', accessToken, {
+    res.cookie('accessToken', token.accessToken, {
       httpOnly: true,
     });
 
-    res.status(200).json({ accessToken });
+    res.cookie('refreshToken', token.refreshToken, {
+      httpOnly: true,
+    });
+
+    res
+      .status(200)
+      .json({
+        accessToken: token.accessToken,
+        refreshToken: token.refreshToken,
+      });
   } catch (error) {
     console.log(error);
 

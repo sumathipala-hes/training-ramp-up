@@ -102,7 +102,7 @@ export const deleteUser = async (id: string): Promise<DeleteResult> => {
 export const signInUser = async (
   email: string,
   password: string,
-): Promise<string | null> => {
+): Promise<{ accessToken: string; refreshToken: string }> => {
   try {
     const userRepo = appDataSource.manager.getRepository(User);
     const user = await userRepo.findOne({
@@ -112,14 +112,21 @@ export const signInUser = async (
     });
 
     if (user) {
-      const isMatch = user.password == password;
+      const isMatch = user.password === password;
       if (isMatch) {
         const accessToken = jwt.sign(
           { email: user.email, roleType: user.roleType },
           jwtConfig.secretKey,
-          { expiresIn: jwtConfig.expiresIn },
+          { expiresIn: jwtConfig.accessExpiresIn },
         );
-        return accessToken;
+
+        const refreshToken = jwt.sign(
+          { email: user.email },
+          jwtConfig.refreshKey,
+          { expiresIn: jwtConfig.refreshExpiresIn },
+        );
+
+        return { accessToken, refreshToken };
       } else {
         throw new Error('Password not match');
       }
