@@ -4,18 +4,18 @@ const createStudentDB = async (
   id: number,
   name: string,
   age: string,
-  dateofbirth: Date,
+  date_of_birth: Date,
   gender: string,
-  mobilenumber: number,
+  mobile_number: number,
   address: string,
 ) => {
   const student = Student.create({
     id,
     name,
     age,
-    dateofbirth,
+    date_of_birth,
     gender,
-    mobilenumber,
+    mobile_number,
     address,
   })
 

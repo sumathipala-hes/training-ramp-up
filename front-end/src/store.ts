@@ -1,6 +1,7 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import gridReducer from './Components/GridTable/GridSlice'
-
+import signUpReducer from './Components/SignUpPage/SignUpSlice'
+import logInReducer from './Components/LogInPage/LogInSlice'
 import createSagaMiddleware from 'redux-saga'
 import rootSaga from './rootsaga'
 
@@ -8,6 +9,8 @@ const sagaMiddleware = createSagaMiddleware()
 
 const rootReducer = combineReducers({
     grid: gridReducer,
+    signUp: signUpReducer,
+    logIn: logInReducer,
 })
 
 export const store = configureStore({

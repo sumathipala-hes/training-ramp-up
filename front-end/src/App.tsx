@@ -3,17 +3,14 @@ import { useDispatch } from 'react-redux'
 
 import './App.css'
 import { Container } from '@mui/material'
-import GridTable from './Components/GridTable/GridTable'
+// import GridTable from './Components/GridTable/GridTable'
 import * as io from 'socket.io-client'
 import { fetchRows } from './Components/GridTable/GridSlice'
+import AppRouter from './Router/AppRouter'
 export const socket = io.connect('http://localhost:5000')
 
 function App() {
     const dispatch = useDispatch()
-    useEffect(() => {
-        // Dispatch the action to fetch rows when the component mounts
-        dispatch(fetchRows())
-    }, [dispatch])
 
     useEffect(() => {
         socket.on('recievedNewStudent', () => {
@@ -32,7 +29,7 @@ function App() {
 
     return (
         <Container maxWidth={false}>
-            <GridTable />
+            <AppRouter />
         </Container>
     )
 }

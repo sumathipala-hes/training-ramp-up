@@ -1,13 +1,14 @@
 import express, { Express } from 'express'
-import dotenv from 'dotenv'
 import { createConnection } from 'typeorm'
-import { createStudentRouter } from './routes/createStudent'
+import { userRouter } from './routes/userRouter'
 import cors from 'cors'
 import { Server } from 'socket.io'
 import http from 'http'
 import { connectionOptions } from './ormconfig'
+import path from 'path'
+import dotenv from 'dotenv'
+dotenv.config({ path: path.resolve(__dirname, '../.env') })
 
-dotenv.config({ path: '../config.env' })
 const app: Express = express()
 
 const main = async () => {
@@ -17,7 +18,7 @@ const main = async () => {
     //Middleware
     app.use(cors())
     app.use(express.json())
-    app.use(createStudentRouter)
+    app.use(userRouter)
 
     const server = http.createServer(app)
 

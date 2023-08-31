@@ -1,7 +1,19 @@
 import { all } from 'redux-saga/effects'
-import { addStuSaga, deleteStuSaga, fetchStuSaga } from './sagas'
+import {
+    addStuSaga,
+    addUserSagaToRoot,
+    deleteStuSaga,
+    fetchStuSaga,
+    logUserSagaToRoot,
+} from './sagas'
 
 //set sagas
 export default function* rootSaga() {
-    yield all([addStuSaga(), deleteStuSaga(), fetchStuSaga()])
+    yield all([
+        addStuSaga(),
+        deleteStuSaga(),
+        fetchStuSaga(),
+        addUserSagaToRoot(),
+        logUserSagaToRoot(),
+    ])
 }
