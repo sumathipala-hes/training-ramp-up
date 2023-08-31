@@ -1,7 +1,9 @@
 import { createCipheriv, createDecipheriv } from 'node:crypto';
+import dotenv from 'dotenv';
+dotenv.config();
 
-const encryptionKey = '12345678901234567890123456789012';
-const iv = '1234567890123456';
+const encryptionKey = process.env.ENCRYPTION_KEY!;
+const iv = process.env.IV!;
 
 export const encrypt = (data: string): string => {
   const cipher = createCipheriv('aes-256-cbc', encryptionKey, iv);
