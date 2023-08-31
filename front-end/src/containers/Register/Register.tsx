@@ -22,7 +22,7 @@ function Register(){
     const [errorStatus, setError] = useState(false); //api error status
     const [errorMessage, setErrorMsg] = useState(""); //api error message status
 
-    const linkHnadler = (event: { preventDefault: () => void; }) => {
+    const linkHandler = (event: { preventDefault: () => void; }) => {
         event.preventDefault();
         navigate(routePaths.signIn);
     }
@@ -35,10 +35,10 @@ function Register(){
 
     const submitHandler = async (event: any) => {
         event.preventDefault();
-        const name = event.target[0].value;
-        const email =  event.target[2].value;
-        const password =  event.target[4].value;
-        // const password = event.target[4].value;
+        const formData = new FormData(event.target);
+        const name = formData.get("name");
+        const email = formData.get("email") as string;
+        const password = formData.get("password");
         if(isValidEmail(email)){
             setErrorEmail(false);
             const registeredUser = {
@@ -84,20 +84,20 @@ function Register(){
                         <Grid item xs={12}>
                             <Typography variant="body1" align="center" sx={{ marginBottom: "30px" }}>
                             Do you have an account?
-                            <Link href="#" onClick ={linkHnadler} > SignIn</Link>
+                            <Link href="#" onClick ={linkHandler} > SignIn</Link>
                             </Typography>
                         </Grid>
                         {errorStatus &&
                         <Alert severity="error">{errorMessage}</Alert>
                         }
                         <Grid item xs={12}>
-                            <TextField  size="small" label="Name" variant="outlined" InputProps={{ sx: { height: "45px"} }} fullWidth required />
+                            <TextField name="name"  size="small" label="Name" variant="outlined" InputProps={{ sx: { height: "45px"} }} fullWidth required />
                         </Grid>
                         <Grid item xs={12}>
-                            <TextField error={errorEmail}  onChange={mailChangeHandler}   size="small" label="Email address" variant="outlined" InputProps={{ sx: { height: "45px"} }} fullWidth required />
+                            <TextField name="email" error={errorEmail}  onChange={mailChangeHandler}   size="small" label="Email address" variant="outlined" InputProps={{ sx: { height: "45px"} }} fullWidth required />
                         </Grid>
                         <Grid item xs={12}>
-                            <TextField   size="small" label="Password" type="password"  variant="outlined" InputProps={{ sx: { height: "45px"} }} fullWidth required />
+                            <TextField name="password"  size="small" label="Password" type="password"  variant="outlined" InputProps={{ sx: { height: "45px"} }} fullWidth required />
                         </Grid>
                         <Grid item xs={12} alignContent={"center"}>
 

@@ -39,10 +39,10 @@ function Admin(){
 
     const submitHandler = (event: any) => {
         event.preventDefault();
-        const name = event.target[0].value;
-        const email =  event.target[2].value;
-        // const password = event.target[4].value;
-        const role = event.target[6].value;
+        const formData = new FormData(event.target);
+        const name = formData.get("name");
+        const email = formData.get("email") as string;
+        const role = formData.get("role");
         console.log(role)
         if(isValidEmail(email)){
             setErrorEmail(false);
@@ -84,16 +84,16 @@ function Admin(){
                         <Alert severity="error">Already an account with the submitted username is exists</Alert>
                         }
                         <Grid item xs={12}>
-                            <TextField  size="small" label="Name" variant="outlined" InputProps={{ sx: { height: "45px"} }} fullWidth required />
+                            <TextField  name="name" size="small" label="Name" variant="outlined" InputProps={{ sx: { height: "45px"} }} fullWidth required />
                         </Grid>
                         <Grid item xs={12}>
-                            <TextField error={errorEmail}  onChange={mailChangeHandler}   size="small" label="Email address" variant="outlined" InputProps={{ sx: { height: "45px"} }} fullWidth required />
+                            <TextField name="email" error={errorEmail}  onChange={mailChangeHandler}   size="small" label="Email address" variant="outlined" InputProps={{ sx: { height: "45px"} }} fullWidth required />
                         </Grid>
                         <Grid item xs={12}>
-                            <TextField   size="small" label="Password" type="password"  variant="outlined" InputProps={{ sx: { height: "45px"} }} fullWidth required />
+                            <TextField   name="password" size="small" label="Password" type="password"  variant="outlined" InputProps={{ sx: { height: "45px"} }} fullWidth required />
                         </Grid>
                         <Grid item xs={12}>
-                            <TextField select label="User Role" defaultValue={userRoles.user}  variant="outlined" InputProps={{ sx: {  height: "45px", minWidth:"225px"}}} fullWidth required >         
+                            <TextField select name="role" label="User Role" defaultValue={userRoles.user}  variant="outlined" InputProps={{ sx: {  height: "45px", minWidth:"225px"}}} fullWidth required >         
                                 <MenuItem value={userRoles.user}>User</MenuItem>
                                 <MenuItem value={userRoles.admin}>Admin</MenuItem>                       
                             </TextField>
