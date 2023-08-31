@@ -2,7 +2,8 @@ import { DeleteResult, InsertResult, UpdateResult } from 'typeorm';
 import { appDataSource } from '../configs/datasource.config';
 import { sendNotification } from '../util/notification.util';
 import { User } from '../models/user.models';
-import { generateAccessToken } from '../middleware/jwt.middleware';
+import { jwtConfig } from '../configs/jwt.config';
+import jwt from 'jsonwebtoken';
 
 export const getAllUsers = async (): Promise<Array<User>> => {
   try {
@@ -113,7 +114,11 @@ export const signInUser = async (
     if (user) {
       const isMatch = user.password == password;
       if (isMatch) {
-        const accessToken = generateAccessToken(user);
+        const accessToken = jwt.sign(
+          { email: user.email, roleType: user.roleType },
+          jwtConfig.secretKey,
+          { expiresIn: jwtConfig.expiresIn },
+        );
         return accessToken;
       } else {
         throw new Error('Password not match');
