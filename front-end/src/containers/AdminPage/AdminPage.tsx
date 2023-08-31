@@ -13,39 +13,43 @@ import Snackbar from '@mui/material/Snackbar';
 import { useEffect, useState } from 'react';
 import { NavBar } from '../../components/NavigationBar/NavigationBar';
 import React from 'react';
-import { registerUser, setAxiosError, setCreatedUserStatus } from '../../redux/userSlice';
+import {
+  registerUser,
+  setCreateUserError,
+  setCreatedUserStatus,
+} from '../../redux/userSlice';
 import { useDispatch, useSelector } from 'react-redux';
+import { isEmailValid, isPasswordValid } from '../../utils/UserValidations';
 
 export const Admin = () => {
   const [snackbar, setSnackbar] = React.useState<Pick<
     AlertProps,
     'children' | 'severity'
   > | null>(null);
-
   const handleCloseSnackbar = () => setSnackbar(null);
 
   const dispatch = useDispatch();
 
-  const isCreatedUser = useSelector((state: any) => state.user.isCreatedUser);
-  const error = useSelector((state: any) => state.user.errorData);
-  setAxiosError(null)
-  
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [role, setRole] = useState('');
-  
-  
+
+  const isCreatedUser = useSelector((state: any) => state.user.isCreatedUser);
+  const error = useSelector((state: any) => state.user.createUserError);
+
   const isCreateUserDisabled =
     username.trim() === '' || password.trim() === '' || role === '';
-  const isEmailValid = (email: string) => {
-    const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
-    return emailRegex.test(email);
-  };
 
   const handleCreateUserClick = async () => {
     if (isEmailValid(username)) {
-      if (password.length >= 6) {
-        dispatch(registerUser({ username: username, password: password, role: role }))
+      if (isPasswordValid(password)) {
+        dispatch(
+          registerUser({ 
+            username: username, 
+            password: password, 
+            role: role 
+          }),
+        );
       } else {
         setSnackbar({
           children: 'Password should contain at least 6 characters',
@@ -63,14 +67,19 @@ export const Admin = () => {
   useEffect(() => {
     if (isCreatedUser) {
       setSnackbar({ children: 'Successfully added user', severity: 'success' });
-      setCreatedUserStatus(false)
+      dispatch(setCreatedUserStatus(false));
     } else if (error) {
       if (error instanceof Error && error.message === 'User already exists') {
         setSnackbar({ children: 'User already exists', severity: 'error' });
       } else {
-        setSnackbar({ children: 'An error occured. Please try again', severity: 'error',});
+        setSnackbar({
+          children: 'An error occured. Please try again',
+          severity: 'error',
+        });
       }
-  }}, [isCreatedUser, error, dispatch, setSnackbar]);
+      dispatch(setCreateUserError(false));
+    }
+  },[isCreatedUser, error]);
 
   return (
     <>

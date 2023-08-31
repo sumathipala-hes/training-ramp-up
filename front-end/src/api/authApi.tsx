@@ -48,7 +48,8 @@ export const loginApi = async (username: String, password: String) => {
 export const authenticateApi = async () => {
   try {
     const response = await apiInstance.get('/userAuth', {
-      headers: { 'access-token': localStorage.getItem('token') },
+      headers: { 'Content-Type': 'application/json' },
+      withCredentials: true
     });
     console.log(response);
     return response;

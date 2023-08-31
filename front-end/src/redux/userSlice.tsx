@@ -11,6 +11,7 @@ interface UserState {
   currentUserRole: string;
   authStatus: boolean;
   isCreatedUser: boolean;
+  createUserError: any;
 }
 
 const initialState: UserState = {
@@ -23,19 +24,30 @@ const initialState: UserState = {
   currentUserRole: '',
   authStatus: false,
   isCreatedUser: false,
-}
+  createUserError: null,
+};
 
 const userSlice = createSlice({
   name: 'user',
   initialState: initialState,
   reducers: {
-    registerUser: (state, action: PayloadAction<{ username:string; password: string; role: string }>) => {
-      const { username, password, role} = action.payload;
+    registerUser: (
+      state,
+      action: PayloadAction<{
+        username: string;
+        password: string;
+        role: string;
+      }>,
+    ) => {
+      const { username, password, role } = action.payload;
       state.userEmail = username;
       state.userPassword = password;
       state.userRole = role;
     },
-    loginUser: (state, action: PayloadAction<{ username:string; password: string; }>) => {
+    loginUser: (
+      state,
+      action: PayloadAction<{ username: string; password: string }>,
+    ) => {
       const { username, password } = action.payload;
       state.userEmail = username;
       state.userPassword = password;
@@ -46,9 +58,7 @@ const userSlice = createSlice({
     setAxiosError: (state, action) => {
       state.errorData = action.payload;
     },
-    authenticateUser: () => {
-      
-    },
+    authenticateUser: () => {},
     setAuthStatus: (state, action) => {
       state.authStatus = action.payload;
     },
@@ -65,10 +75,29 @@ const userSlice = createSlice({
     },
     setCreatedUserStatus: (state, action) => {
       state.isCreatedUser = action.payload;
-    }
+    },
+    setCreateUserError: (state, action) => {
+      state.createUserError = action.payload;
+    },
+    logoutUser: (state) => {
+      return { ...initialState };
+    },
   },
 });
 
-export const { registerUser, loginUser, setAxiosResponse, setAxiosError, authenticateUser, setAuthStatus, setCurrentUsername, setCurrentUserRole, clearUserData, setCreatedUserStatus } = userSlice.actions;
+export const {
+  registerUser,
+  loginUser,
+  setAxiosResponse,
+  setAxiosError,
+  authenticateUser,
+  setAuthStatus,
+  setCurrentUsername,
+  setCurrentUserRole,
+  clearUserData,
+  setCreatedUserStatus,
+  setCreateUserError,
+  logoutUser
+} = userSlice.actions;
 
 export default userSlice.reducer;

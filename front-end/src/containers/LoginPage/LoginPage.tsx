@@ -11,7 +11,14 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import jwt_decode from 'jwt-decode';
 import { useDispatch, useSelector } from 'react-redux';
-import { authenticateUser, clearUserData, loginUser, setCurrentUsername, setCurrentUserRole } from '../../redux/userSlice';
+import {
+  authenticateUser,
+  clearUserData,
+  loginUser,
+  setAxiosError,
+  setCurrentUsername,
+  setCurrentUserRole,
+} from '../../redux/userSlice';
 import React from 'react';
 
 export interface JwtPayload {
@@ -25,7 +32,6 @@ export const Login = () => {
     AlertProps,
     'children' | 'severity'
   > | null>(null);
-
   const handleCloseSnackbar = () => setSnackbar(null);
 
   const navigate = useNavigate();
@@ -33,33 +39,45 @@ export const Login = () => {
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const isLoginDisabled = username.trim() === '' || password.trim() === '';
 
   const response = useSelector((state: any) => state.user.responseData);
   const error = useSelector((state: any) => state.user.errorData);
   const isAuthenticated = useSelector((state: any) => state.user.authStatus);
-  
+
+  const isLoginDisabled = 
+    username.trim() === '' || password.trim() === '';
+
   const handleRegisterClick = () => {
     navigate('/');
   };
 
   const handleLoginClick = async () => {
-    dispatch(loginUser({ username: username, password: password }))
+    dispatch(loginUser({ username: username, password: password }));
   };
 
   useEffect(() => {
     if (response) {
-      dispatch(authenticateUser())
+      dispatch(authenticateUser());
     } else if (error) {
-      if (error instanceof Error && error.message === 'The email address entered is not connected to an account') {
+      if (
+        error instanceof Error &&
+        error.message ===
+          'The email address entered is not connected to an account'
+      ) {
         setSnackbar({ children: error.message, severity: 'error' });
-      } else if (error instanceof Error && error.message === 'Wrong Username and Password Combination') {
+      } else if (
+        error instanceof Error &&
+        error.message === 'Wrong Username and Password Combination'
+      ) {
         setSnackbar({ children: error.message, severity: 'error' });
       } else {
-        setSnackbar({ children: 'An error occured. Please try again', severity: 'error' });
+        setSnackbar({
+          children: 'An error occured. Please try again',
+          severity: 'error',
+        });
       }
     }
-  }, [response, error, dispatch, setSnackbar]);
+  }, [response, error]);
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -74,7 +92,7 @@ export const Login = () => {
         navigate('/main');
       }
     }
-});
+  }, [isAuthenticated]);
 
   return (
     <Box
