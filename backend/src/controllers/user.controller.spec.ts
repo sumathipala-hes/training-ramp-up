@@ -77,7 +77,7 @@ describe('User Test', () => {
 
     test('Update User Success', async () => {
       userRepo.update = jest.fn().mockResolvedValue(user);
-      const data = await updateUser('1', user);
+      const data = await updateUser('dasun@gmail.com', user);
       expect(data).toEqual(user);
     });
 

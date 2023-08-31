@@ -4,8 +4,6 @@ import { User } from '../models/user.model';
 import { sendNotification } from '../utils/notification.util';
 import jwt = require('jsonwebtoken');
 import { jwtConfig } from '../configs/jwt.config';
-import { createCipheriv, createDecipheriv, randomBytes } from 'node:crypto';
-import { compare } from 'bcrypt';
 import { decrypt, encrypt } from '../utils/password.util';
 
 export const getAllUsers = async (): Promise<Array<User>> => {
@@ -19,12 +17,10 @@ export const getAllUsers = async (): Promise<Array<User>> => {
       sendNotification('Warning', 'No Users Found..!');
       throw new Error('No Users Found..!');
     }
-
     users.forEach((user) => {
       user.password = decrypt(user.password);
       
     });
-
     return users;
   } catch (error) {
     throw error;
@@ -33,8 +29,7 @@ export const getAllUsers = async (): Promise<Array<User>> => {
 
 export const saveUser = async (user: User): Promise<InsertResult> => {
   try {
-    let encryptedData = encrypt(user.password);
-    user.password = encryptedData;
+    user.password = encrypt(user.password);
     const savedUser = await dataSource.manager.insert(User, user);
     sendNotification('Successful', 'New User Saved..!');
     return savedUser;
@@ -48,11 +43,11 @@ export const updateUser = async (
   user: User
 ): Promise<UpdateResult> => {
   try {
+    user.password = encrypt(user.password);
     const updatedUser = await dataSource.manager.update(User, email, user);
     sendNotification('Successful', 'New User Updated..!');
     return updatedUser;
   } catch (error) {
-    console.log(error);
     throw error;
   }
 };
@@ -78,10 +73,10 @@ export const signInUser = async (
         email: email,
       },
     });
-
     password = encrypt(password);
 
     if (user) {
+      console.log(user.password);
       if (user.password == password) {
         const accessToken = jwt.sign(
           { email: user.email, role: user.role },
@@ -102,7 +97,6 @@ export const signInUser = async (
       throw new Error('User not found');
     }
   } catch (error) {
-    console.log(error);
     throw error;
   }
 };
