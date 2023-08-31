@@ -97,4 +97,24 @@ const validations = {
   address:address,
 }
 
-export {generateAutoIds, calculateAge,  validations, maxDate, minDate, alerts, changeDateFormat, renderBirthdayCell, capitalizeFirstLetter};
+//route paths variables
+const routePaths = {
+  home : "/",
+  signIn : "/login",
+  register : "/register",
+  admin : "/admin"
+};
+
+const userRoles = {
+  user: "user",
+  admin: "admin"
+}
+
+function isValidEmail(email:string) {
+  // Regular expression for email validation
+  const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+
+  return emailRegex.test(email);
+}
+
+export {generateAutoIds, calculateAge,  validations, maxDate, minDate, alerts, changeDateFormat, renderBirthdayCell, capitalizeFirstLetter, routePaths, isValidEmail, userRoles};
