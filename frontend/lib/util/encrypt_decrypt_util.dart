@@ -5,7 +5,6 @@ String encryptPassword(String password) {
   final plainText = password;
   final key = encrypt.Key.fromUtf8('my 32 length key................');
   final iv = encrypt.IV.fromLength(16);
-
   final encrypter = encrypt.Encrypter(encrypt.AES(key));
 
   final encrypted = encrypter.encrypt(plainText, iv: iv);
@@ -14,9 +13,7 @@ String encryptPassword(String password) {
 
 String decryptPassword(String password) {
   final key = encrypt.Key.fromUtf8('my 32 length key................');
-
   final iv = encrypt.IV.fromLength(16);
-
   final encrypter = encrypt.Encrypter(encrypt.AES(key));
 
   final decryptedBytes = encrypter.decryptBytes(
@@ -25,6 +22,5 @@ String decryptPassword(String password) {
   );
 
   final decrypted = utf8.decode(decryptedBytes);
-
   return decrypted;
 }

@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:frontend/model/user.dart';
 import 'package:frontend/util/db_util.dart';
-import 'package:frontend/util/encrypt_decrypt_util.dart';
 import 'package:frontend/util/local_storage.dart';
 import 'package:frontend/util/show_toast.dart';
 import 'package:http/http.dart' as http;
@@ -54,9 +53,7 @@ class UserRepository {
         (studentData) => User.fromJson(
           {
             ...studentData,
-            'password': decryptPassword(
-              studentData['password'],
-            ),
+            'password': studentData['password'],
           },
         ),
       ),
