@@ -7,7 +7,6 @@ import 'package:front_end/ui/sign_in_page/sign_in_page_bloc.dart';
 import 'package:front_end/ui/sign_in_page/sign_in_page_event.dart';
 import 'package:front_end/ui/sign_up_page/sign_up_page_provider.dart';
 import 'package:front_end/ui/user_home_page/user_home_page_provider.dart';
-import 'package:front_end/util/encrypted_decrypted_util.dart';
 import 'package:front_end/util/local_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -115,13 +114,11 @@ class SignInPageView extends StatelessWidget {
                                     showFieldError(
                                         'Password must contain at least 8 characters, including UPPER/lowercase and numbers.');
                                   } else {
-                                    String password = encryptPassword(
-                                        passwordController.text);
-
                                     signInPageBloc.add(
                                       SubmitLoginDetails(
-                                        email: emailController.text,
-                                        password: password,
+                                        email: emailController.text.trim(),
+                                        password:
+                                            passwordController.text.trim(),
                                       ),
                                     );
 
