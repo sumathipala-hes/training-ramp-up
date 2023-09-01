@@ -6,19 +6,14 @@ import 'package:front_end/ui/admin_home_page/admin_home_page_bloc.dart';
 import 'package:front_end/ui/admin_home_page/admin_home_page_event.dart';
 import 'package:front_end/ui/manage_user_page/manage_user_page_bloc.dart';
 import 'package:front_end/ui/manage_user_page/manage_user_page_event.dart';
-import 'package:front_end/util/encrypted_decrypted_util.dart';
 
 // ignore: must_be_immutable
 class ManageUserScreen extends StatelessWidget {
   ManageUserScreen({super.key, required this.user}) {
     nameController.text = user.userName;
     emailController.text = user.userEmail;
-    passwordController.text = PasswordEncryption.decryptPassword(
-      user.userPassword,
-    );
-    confirmPasswordController.text = PasswordEncryption.decryptPassword(
-      user.userPassword,
-    );
+    passwordController.text = user.userPassword;
+    confirmPasswordController.text = user.userPassword;
     selectedItem = user.role;
   }
 
@@ -28,7 +23,7 @@ class ManageUserScreen extends StatelessWidget {
   final TextEditingController confirmPasswordController =
       TextEditingController();
   final User user;
-  String selectedItem ='';
+  String selectedItem = '';
   List<String> role = [
     RoleEnum.admin.toString().split('.').last,
     RoleEnum.user.toString().split('.').last
@@ -75,16 +70,13 @@ class ManageUserScreen extends StatelessWidget {
     } else {
       Navigator.of(context).pop();
       AdminHomeScreenBloc bloc = BlocProvider.of<AdminHomeScreenBloc>(context);
-      String encriptedPassword = PasswordEncryption.encryptPassword(
-        passwordController.text.trim(),
-      );
       bloc.add(
         UpdateUser(
           user: User(
             role: selectedItem,
             userName: nameController.text,
             userEmail: emailController.text,
-            userPassword: encriptedPassword,
+            userPassword: passwordController.text,
           ),
         ),
       );
