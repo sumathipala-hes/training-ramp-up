@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-const token = process.env.FIREBASE_TOKEN;
+const token = process.env.FIREBASE_TOKEN!;
 
 export const sendNotification = async (title: string, body: string) => {
   const message = {

@@ -2,13 +2,27 @@ import { DeleteResult, InsertResult, UpdateResult } from 'typeorm';
 import { dataSource } from '../configs/db.config';
 import { User } from '../models/user.model';
 import { sendNotification } from '../util/notification.util';
+import jwt = require('jsonwebtoken');
+import { jwtConfig } from '../configs/jwt.config';
+import { decryptPassword, encryptPassword } from '../util/encrypted.decrypted.util';
 
 const registerUser = async (user: User): Promise<InsertResult> => {
   try {
+    const encryptedPassword = encryptPassword(
+      user.userPassword,
+    );
+
+    // Create a new user object with the encrypted password
+    const userWithEncryptedPassword = {
+      ...user,
+      userPassword: encryptedPassword,
+    };
+
+    // Register the user with the encrypted password
     const newUser: InsertResult = await dataSource.manager
       .getRepository(User)
-      .insert(user);
-    sendNotification('Success', 'User Registerd..!');
+      .insert(userWithEncryptedPassword);
+    sendNotification('Success', 'User Registered..!');
     return newUser;
   } catch (error) {
     // Handle and rethrow the error
@@ -21,6 +35,9 @@ const retrieveAllUsers = async (): Promise<User[]> => {
     const users: User[] = await dataSource.manager
       .getRepository(User)
       .find({ order: { userEmail: 'DESC' } });
+    users.forEach(user => {
+      user.userPassword = decryptPassword(user.userPassword);
+    });
     return users;
   } catch (error) {
     // Handle and rethrow the error
@@ -30,6 +47,8 @@ const retrieveAllUsers = async (): Promise<User[]> => {
 
 const updateUser = async (id: string, user: User): Promise<UpdateResult> => {
   try {
+    user.userPassword = encryptPassword(user.userPassword);
+
     const updatedUser: UpdateResult = await dataSource.manager
       .getRepository(User)
       .update(id, user);
@@ -66,7 +85,7 @@ const deleteUser = async (id: string): Promise<DeleteResult> => {
 const signInUser = async (
   userEmail: string,
   userPassword: string,
-): Promise<User> => {
+): Promise<{ accessToken: string; refreshToken: string }> => {
   try {
     const user = await dataSource.manager.getRepository(User).findOne({
       where: {
@@ -78,13 +97,31 @@ const signInUser = async (
     console.log(userPassword);
 
     if (user) {
-      console.log(user.userPassword);
-      const isMatch = user.userPassword == userPassword;
-      return isMatch
-        ? user
-        : (() => {
-            throw new Error('Password not match');
-          })();
+      // Decrypt the stored password
+      const storedEncryptedPassword = user.userPassword;
+      console.log(storedEncryptedPassword);
+
+      // Decrypt the stored password and compare it with the password provided
+      const decryptedPassword = decryptPassword(
+        storedEncryptedPassword,
+      );
+
+      // Return the user if the password matches
+      const isMatch = userPassword == decryptedPassword;
+      if (isMatch) {
+        const tokenPayload = { userEmail: user.userEmail, role: user.role };
+        const accessToken = jwt.sign(tokenPayload, jwtConfig.secretKey!, {
+          expiresIn: '5h',
+        });
+        const refreshToken = jwt.sign(tokenPayload, jwtConfig.refreshKey!, {
+          expiresIn: '24h',
+        });
+
+        return { accessToken, refreshToken };
+        // return user;
+      } else {
+        throw new Error('Password not match');
+      }
     } else {
       throw new Error('User not found');
     }

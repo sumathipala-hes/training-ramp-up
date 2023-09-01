@@ -6,10 +6,14 @@ import express from 'express';
 import cors from 'cors';
 import routes from './routes';
 import { dataSource } from './configs/db.config';
-import * as admin from 'firebase-admin';
-import serviceAccount from './configs/pushnotification.firebase.config.json';
+// import * as admin from 'firebase-admin';
+// import serviceAccount from '../configs/pushnotification.firebase.config.json';
+// const serviceAccount = require('./configs/pushnotification.firebase.config.json');
+var admin = require("firebase-admin");
 
-// Create the express app
+var serviceAccount = require("./configs/pushnotification.firebase.config.json");
+
+// Create the express appy
 const app = express();
 
 // Allow all CORS origins
@@ -30,6 +34,10 @@ app.listen(process.env.PORT, () => {
 });
 
 // Initialize Firebase Admin SDK
+// admin.initializeApp({
+//   credential: admin.credential.cert(serviceAccount),
+// });
+
 admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount as admin.ServiceAccount),
+  credential: admin.credential.cert(serviceAccount)
 });
