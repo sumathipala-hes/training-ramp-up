@@ -1,6 +1,6 @@
 import { appDataSource } from '../configs/datasource.config';
 
-import { DataSource, DeleteResult, InsertResult, UpdateResult } from 'typeorm';
+import { DeleteResult, InsertResult, UpdateResult } from 'typeorm';
 import { sendNotification } from '../util/notification.util';
 import {
   createUser,
@@ -11,9 +11,15 @@ import {
   updateUser,
 } from './user.service';
 import { User } from '../models/user.models';
+import { encrypt } from '../util/encrypted.decrypted.util';
 
 jest.mock('../util/notification.util', () => ({
   sendNotification: jest.fn(),
+}));
+
+jest.mock('../util/encrypted.decrypted.util', () => ({
+  encrypt: jest.fn().mockReturnValue('encrypted'),
+  decrypt: jest.fn().mockReturnValue('decrypted'),
 }));
 
 describe('User Service Checked', () => {
@@ -235,7 +241,7 @@ describe('User Service Checked', () => {
     });
   });
 
-  describe('get User', () => {
+  describe('SignIn User', () => {
     const userRepo = appDataSource.manager.getRepository(User);
     const dataUser: User = {
       roleType: 'ADMIN',
@@ -245,13 +251,16 @@ describe('User Service Checked', () => {
       mobileNumber: '0761234567',
       dob: new Date('2001 - 12 - 15'),
       gender: 'Male',
-      password: 'Nimesh12@345',
+      password: encrypt('Nimesh12@345'),
     };
+
+    const password = 'Nimesh12@345';
+    const enPassword = encrypt(password);
 
     test('should fetch and return a user', async () => {
       userRepo.findOne = jest.fn().mockResolvedValue(dataUser);
-      const data = await signInUser('nimesh123@gmail.com', 'Nimesh12@345');
-      expect(typeof(data)).toEqual("string");
+      const result = await signInUser('nimesh123@gmail.com', enPassword);
+      expect(typeof result).toEqual('object');
     });
 
     test('should throw an error if fetching user fails', async () => {

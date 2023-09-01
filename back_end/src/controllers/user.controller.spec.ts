@@ -10,12 +10,18 @@ import {
   signInUser,
   updateUser,
 } from '../services/user.service';
+import { encrypt } from '../util/encrypted.decrypted.util';
 
 beforeAll(async () => {
   admin.initializeApp({
     credential: admin.credential.cert(serviceAccount as admin.ServiceAccount),
   });
 });
+
+jest.mock('../util/encrypted.decrypted.util', () => ({
+  encrypt: jest.fn().mockReturnValue('encrypted'),
+  decrypt: jest.fn().mockReturnValue('decrypted'),
+}));
 
 describe('User Controller Checked', () => {
   const userRepo = appDataSource.manager;
@@ -36,6 +42,9 @@ describe('User Controller Checked', () => {
     test('Get All users success', async () => {
       userRepo.getRepository(User).find = jest.fn().mockResolvedValue(allUsers);
       const data = await getAllUsers();
+      data.forEach(user => {
+        user.password = 'decrypted';
+      });
       expect(data).toEqual(allUsers);
     });
     test('Get All users fail', async () => {
@@ -152,7 +161,7 @@ describe('User Controller Checked', () => {
 
   describe('Sign in', () => {
     const email = 'nimesh12@gmail.com';
-    const password = 'Nimesh12@345';
+    let password = encrypt('Nimesh12@345');
     const user = {
       roleType: 'ADMIN',
       name: 'Nimesh',
@@ -161,13 +170,13 @@ describe('User Controller Checked', () => {
       mobileNumber: '0761234567',
       dob: new Date('2001 - 12 - 15'),
       gender: 'Male',
-      password: 'Nimesh12@345',
+      password: encrypt('Nimesh12@345'),
     };
 
     test('Sign in success', async () => {
       userRepo.getRepository(User).findOne = jest.fn().mockResolvedValue(user);
       const data = await signInUser(email, password);
-      expect(typeof(data)).toEqual("string");
+      expect(typeof data).toEqual('object');
     });
 
     test('Sign in fail', async () => {
