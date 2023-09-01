@@ -19,7 +19,6 @@ export const getAllUsers = async (): Promise<Array<User>> => {
     }
     users.forEach((user) => {
       user.password = decrypt(user.password);
-      
     });
     return users;
   } catch (error) {
@@ -29,8 +28,10 @@ export const getAllUsers = async (): Promise<Array<User>> => {
 
 export const saveUser = async (user: User): Promise<InsertResult> => {
   try {
-    user.password = encrypt(user.password);
-    const savedUser = await dataSource.manager.insert(User, user);
+    const savedUser = await dataSource.manager.insert(User, {
+      ...user,
+      password: encrypt(user.password),
+    });
     sendNotification('Successful', 'New User Saved..!');
     return savedUser;
   } catch (error) {
@@ -43,8 +44,10 @@ export const updateUser = async (
   user: User
 ): Promise<UpdateResult> => {
   try {
-    user.password = encrypt(user.password);
-    const updatedUser = await dataSource.manager.update(User, email, user);
+    const updatedUser = await dataSource.manager.update(User, email, {
+      ...user,
+      password: encrypt(user.password),
+    });
     sendNotification('Successful', 'New User Updated..!');
     return updatedUser;
   } catch (error) {
