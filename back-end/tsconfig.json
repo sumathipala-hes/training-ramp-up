@@ -108,5 +108,6 @@
   },
   "include": [
     "src/**/*.ts" // or any other patterns that match your source files
-  ]
+  ],
+  "exclude": ["src/__tests__"]
 }

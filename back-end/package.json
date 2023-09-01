@@ -31,7 +31,6 @@
     "yup": "^1.2.0"
   },
   "devDependencies": {
-    "@babel/preset-typescript": "^7.22.5",
     "@types/cookie-parser": "^1.4.3",
     "@types/cors": "^2.8.13",
     "@types/express": "^4.17.17",
@@ -53,14 +52,5 @@
     "supertest": "^6.3.3",
     "ts-jest": "^29.1.1",
     "typescript": "^4.9.4"
-  },
-  "jest": {
-    "collectCoverageFrom": [
-      "src/routes/createStudent.ts",
-      "src/services/studentServices.ts",
-      "src/controllers/studentControllers.ts",
-      "src/services/authService.ts",
-      "src/controllers/authController.ts"
-    ]
   }
 }

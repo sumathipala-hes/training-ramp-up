@@ -177,4 +177,4 @@ const deleteUser = async (req: Request, res: Response) => {
   }
 }
 
-export { signUp, logIn, protect, getAllUsers, deleteUser, updateUserRole }
+export { signUp, logIn, protect, getAllUsers, deleteUser, updateUserRole, createSendToken }
