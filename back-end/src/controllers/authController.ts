@@ -1,15 +1,10 @@
 import { NextFunction, Request, Response } from 'express'
 import { User } from '../entities/user'
-import jwt, { JwtPayload, verify } from 'jsonwebtoken'
+import { JwtPayload, verify } from 'jsonwebtoken'
 import { validationResult } from 'express-validator'
-// import { promisify } from 'util'
 import jwt_decode from 'jwt-decode'
 import { AppRoles } from '../util/Roles'
-import { createUser, findAllUsers, findUserByEmail, findUserById } from '../services/authService'
-
-const jwtSecret = process.env.JWT_SECRET || `Couldn't Find the config.env`
-const jwtExpiresIn = process.env.JWT_EXPIRES_IN || '90d'
-// const jwtCookieExpiresIn = process.env.JWT_COOKIE_EXPIRES_IN || '90'
+import { createSendToken, createUser, findAllUsers, findUserByEmail, findUserById } from '../services/authService'
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
@@ -20,35 +15,7 @@ declare global {
   }
 }
 
-const signToken = (id: number) => {
-  console.log(jwtSecret)
-  return jwt.sign({ id }, jwtSecret, {
-    expiresIn: jwtExpiresIn,
-  })
-}
-
-const createSendToken = (user: User, res: Response) => {
-  const token = signToken(user.id)
-
-  const cookieOptions = {
-    expires: new Date(Date.now() + 1000 * 60 * 10),
-    httpOnly: true,
-    secure: false,
-  }
-
-  res.cookie('token', token, cookieOptions)
-
-  //Remove the Password from output
-  user.password = undefined
-
-  res.status(200).json({
-    status: 'success',
-    token,
-    data: {
-      user,
-    },
-  })
-}
+const jwtSecret = process.env.JWT_SECRET || `Couldn't Find the config.env`
 
 const signUp = async (req: Request, res: Response) => {
   try {
@@ -60,11 +27,9 @@ const signUp = async (req: Request, res: Response) => {
     }
 
     const newUser = await createUser(req.body.email, req.body.userName, req.body.password)
-    console.log(newUser)
+
     //If Everythin is Ok Send a Token
-    if (newUser) {
-      createSendToken(newUser, res)
-    }
+    createSendToken(newUser, res)
   } catch (err) {
     console.log(`Couldn't Sign up with details that has given, ${err}`)
   }
@@ -155,7 +120,7 @@ const updateUserRole = async (req: Request, res: Response) => {
     const { userId } = req.params
     const newRole: AppRoles = await req.body.userRole
 
-    const user = await User.findOneById(userId)
+    const user = await findUserById(parseInt(userId))
     if (!user) {
       return res.status(404).json({ message: 'User not found' })
     }
