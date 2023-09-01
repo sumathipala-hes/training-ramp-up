@@ -9,12 +9,18 @@ import {
   saveUser,
   updateUser,
 } from '../services/user.service';
+import { encrypt } from '../utils/password.util';
 
 beforeAll(async () => {
   admin.initializeApp({
     credential: admin.credential.cert(serviceAccount as admin.ServiceAccount),
   });
 });
+
+jest.mock('../utils/password.util', () => ({
+  encrypt: jest.fn().mockReturnValue('encrypted'),
+  decrypt: jest.fn().mockReturnValue('decrypted'),
+}));
 
 describe('User Test', () => {
   const userRepo = dataSource.manager;
@@ -107,14 +113,14 @@ describe('User Test', () => {
     const newUser = {
       name: 'Dasun',
       email: 'dasun@gmail.com',
-      password: '1234',
+      password: encrypt('1234'),
       role: 'admin',
     };
 
     test('Sign In User Success', async () => {
       userRepo.findOne = jest.fn().mockResolvedValue(newUser);
       const data = await signInUser(newUser.email, newUser.password);
-      expect(typeof data).toEqual('string');
+      expect(typeof data).toEqual('object');
     });
 
     test('Sign In User Fail', async () => {
