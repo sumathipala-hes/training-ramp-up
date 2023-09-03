@@ -1,8 +1,7 @@
 import { call, put, takeLatest } from 'redux-saga/effects';
-import { authenticateApi, loginApi, logoutApi, registerApi } from '../api/authApi';
+import { authenticateApi, loginApi, logoutApi, registerApi } from '../api/AuthApi/AuthApi';
 import {
   registerUser,
-  authenticateUser,
   setAuthStatus,
   setAxiosError,
   setAxiosResponse,
@@ -17,6 +16,8 @@ function* registerUserSaga( action: ReturnType<typeof registerUser> ): Generator
   const { username: userEmail, password: userPassword, role: userRole } = action.payload;
   try {
     const response = yield call(registerApi, userEmail, userPassword, userRole);
+    const isAuthenticated = yield call(authenticateApi);
+    yield put(setAuthStatus(isAuthenticated));
     yield put(setAxiosResponse(response));
   } catch (error) {
     yield put(setAxiosError(error));
@@ -27,9 +28,12 @@ function* loginUserSaga( action: ReturnType<typeof loginUser> ): Generator<any, 
   const { username: userEmail, password: userPassword } = action.payload;
   try {
     const response = yield call(loginApi, userEmail, userPassword);
+    const isAuthenticated = yield call(authenticateApi);
+    yield put(setAuthStatus(isAuthenticated));
     yield put(setAxiosResponse(response));
   } catch (error) {
     yield put(setAxiosError(error));
+    yield put(setAuthStatus(false));
   }
 }
 
@@ -43,15 +47,6 @@ function* createByAdminSaga( action: ReturnType<typeof registerUser> ): Generato
   }
 }
 
-function* authenticateUserSaga(): Generator<any, void, AxiosResponse> {
-  try {
-    const isAuthenticated = yield call(authenticateApi);
-    yield put(setAuthStatus(isAuthenticated));
-  } catch (error) {
-    yield put(setAuthStatus(false));
-  }
-}
-
 function* logoutUserSaga(): Generator<any, void, AxiosResponse> {
   try {
     yield call(logoutApi);
@@ -60,11 +55,9 @@ function* logoutUserSaga(): Generator<any, void, AxiosResponse> {
   }
 }
 
-
 export default function* userSaga() {
-  yield takeLatest(registerUser.type, registerUserSaga);
-  yield takeLatest(loginUser.type, loginUserSaga);
-  yield takeLatest(registerUser.type, createByAdminSaga);
-  yield takeLatest(authenticateUser.type, authenticateUserSaga);
-  yield takeLatest(logoutUser.type, logoutUserSaga);
+  yield takeLatest(registerUser, registerUserSaga);
+  yield takeLatest(loginUser, loginUserSaga);
+  yield takeLatest(registerUser, createByAdminSaga);
+  yield takeLatest(logoutUser, logoutUserSaga);
 }

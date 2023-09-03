@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { logoutUser } from '../../redux/userSlice';
 
-export const NavBar = () => {
+export default function NavBar() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   
@@ -19,7 +19,6 @@ export const NavBar = () => {
 
   const handleLogOutClick = async () => {
     dispatch(logoutUser())
-    localStorage.removeItem('token');
     navigate('/');
   };
 

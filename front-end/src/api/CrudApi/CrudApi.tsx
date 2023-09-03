@@ -1,4 +1,4 @@
-import { Student } from '../redux/slice';
+import { Student } from '../../redux/slice';
 import axios from 'axios';
 
 const apiInstance = axios.create({
@@ -41,5 +41,5 @@ export const createStudentApi = async (studentData: Student) => {
     withCredentials: true
   });
 
-  return response.data;
+  return response.data as Student;
 };

@@ -56,8 +56,17 @@ export const Login = () => {
   };
 
   useEffect(() => {
-    if (response) {
-      dispatch(authenticateUser());
+    if (isAuthenticated) {
+      const decoded = jwt_decode(response.data.token) as JwtPayload;
+      dispatch(setCurrentUsername(decoded.username));
+      dispatch(clearUserData());
+      if (decoded.role === 'admin') {
+        dispatch(setCurrentUserRole('admin'));
+        navigate('/admin');
+      } else if (decoded.role === 'user') {
+        dispatch(setCurrentUserRole('user'));
+        navigate('/main');
+      }
     } else if (error) {
       if (
         error instanceof Error &&
@@ -77,22 +86,7 @@ export const Login = () => {
         });
       }
     }
-  }, [response, error]);
-
-  useEffect(() => {
-    if (isAuthenticated) {
-      const decoded = jwt_decode(response.data.token) as JwtPayload;
-      dispatch(setCurrentUsername(decoded.username));
-      dispatch(clearUserData());
-      if (decoded.role === 'admin') {
-        dispatch(setCurrentUserRole('admin'));
-        navigate('/admin');
-      } else if (decoded.role === 'user') {
-        dispatch(setCurrentUserRole('user'));
-        navigate('/main');
-      }
-    }
-  }, [isAuthenticated]);
+  }, [isAuthenticated, error]);
 
   return (
     <Box

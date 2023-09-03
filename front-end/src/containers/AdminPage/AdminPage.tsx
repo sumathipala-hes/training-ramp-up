@@ -11,7 +11,7 @@ import {
 } from '@mui/material';
 import Snackbar from '@mui/material/Snackbar';
 import { useEffect, useState } from 'react';
-import { NavBar } from '../../components/NavigationBar/NavigationBar';
+import NavBar from '../../components/NavigationBar/NavigationBar';
 import React from 'react';
 import {
   registerUser,

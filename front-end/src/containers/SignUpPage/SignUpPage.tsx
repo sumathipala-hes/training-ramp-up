@@ -11,7 +11,6 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   registerUser,
-  authenticateUser,
   setCurrentUsername,
   setCurrentUserRole,
   clearUserData,
@@ -80,8 +79,12 @@ export const SignUp = () => {
   };
 
   useEffect(() => {
-    if (response) {
-      dispatch(authenticateUser());
+    if (isAuthenticated) {
+      const decoded = jwt_decode(response.data.token) as JwtPayload;
+      dispatch(setCurrentUsername(decoded.username));
+      dispatch(setCurrentUserRole(decoded.role));
+      dispatch(clearUserData());
+      navigate('/main');
     } else if (error) {
       if (error instanceof Error && error.message === 'User already exists') {
         setSnackbar({
@@ -95,17 +98,7 @@ export const SignUp = () => {
         });
       }
     }
-  }, [response, error]);
-
-  useEffect(() => {
-    if (isAuthenticated) {
-      const decoded = jwt_decode(response.data.token) as JwtPayload;
-      dispatch(setCurrentUsername(decoded.username));
-      dispatch(setCurrentUserRole(decoded.role));
-      dispatch(clearUserData());
-      navigate('/main');
-    }
-  }, [isAuthenticated]);
+  }, [isAuthenticated, error]);
 
   return (
     <Box

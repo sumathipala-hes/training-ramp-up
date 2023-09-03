@@ -2,6 +2,7 @@ import axios, { AxiosError } from 'axios';
 
 const apiInstance = axios.create({
   baseURL: 'http://localhost:4000',
+  withCredentials: true
 });
 
 export const registerApi = async (
@@ -15,7 +16,6 @@ export const registerApi = async (
       password,
       role,
     });
-    console.log(response.data.message);
     return response;
   } catch (error) {
     const axiosError = error as AxiosError;
@@ -33,7 +33,6 @@ export const loginApi = async (username: String, password: String) => {
       username,
       password,
     });
-    console.log(response.data.message);
     return response;
   } catch (error) {
     const axiosError = error as AxiosError;
@@ -47,11 +46,7 @@ export const loginApi = async (username: String, password: String) => {
 
 export const authenticateApi = async () => {
   try {
-    const response = await apiInstance.get('/userAuth', {
-      headers: { 'Content-Type': 'application/json' },
-      withCredentials: true
-    });
-    console.log(response);
+    const response = await apiInstance.get('/userAuth');
     return response;
   } catch (error) {
     console.error('API Error:', error);

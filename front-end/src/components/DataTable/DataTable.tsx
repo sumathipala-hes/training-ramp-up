@@ -81,7 +81,7 @@ const EditToolbar = (props: EditToolbarProps) => {
   );
 };
 
-export const DataTable = () => {
+export default function DataTable() {
   const dispatch = useDispatch();
   const rows = useSelector((state: any) => state.data.records);
   const rowModesModel = useSelector((state: any) => state.data.rowModesModel);
