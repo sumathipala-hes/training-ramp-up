@@ -2,7 +2,6 @@ import { Request, Response } from 'express';
 import { loginService, registerService } from '../services/user.service';
 import { LoginData, RegisterData } from '../interfaces/user.interface';
 
-
 export const register = async (req: Request, res: Response) => {
     try {
         const registerData: RegisterData = req.body;

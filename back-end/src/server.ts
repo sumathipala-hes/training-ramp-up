@@ -5,7 +5,7 @@ import userRoutes from './routes/user.route';
 import cors from 'cors';
 import { Server } from 'socket.io';
 import { createServer } from 'http';
-import AppDataSource from './database';
+import AppDataSource from './config/database';
 import cookieParser from 'cookie-parser';
 
 const app = express();
