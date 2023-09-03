@@ -20,7 +20,7 @@ describe('API Functions', () => {
     expect(response.body).toHaveProperty('message', 'LOGGED IN');
   });
 
-  it.skip('registers a new user', async () => {
+  it('registers a new user', async () => {
     const response = await request(app)
       .post('/register')
       .send({ username: 'testuser5@google.com', password: 'password123', role: 'user' });
@@ -119,10 +119,10 @@ describe('API Functions', () => {
     .send(updatedStudentData)
   expect(putFailResponse.statusCode).toEqual(400);
 
-    // const deleteResponse = await request(app)
-    //   .delete('/students/30')
-    //   .set('Cookie', `access-token=${accessToken}`)
-    // expect(deleteResponse.statusCode).toEqual(204);
+    const deleteResponse = await request(app)
+      .delete('/students/30')
+      .set('Cookie', `access-token=${accessToken}`)
+    expect(deleteResponse.statusCode).toEqual(204);
 
     const deleteFailResponse = await request(app)
       .delete('/students/9999')
