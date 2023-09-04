@@ -9,6 +9,7 @@ import {
   deleteUser,
   updateUserRole,
   restrictToAdmin,
+  logOut,
 } from '../controllers/authController'
 const router = express.Router()
 
@@ -20,6 +21,7 @@ router.post('/api/user/log-in', logIn)
 router.get('/api/user', protect, restrictToAdmin, getAllUsers)
 router.delete('/api/user/:userId', protect, restrictToAdmin, deleteUser)
 router.put('/api/user/:userId', protect, restrictToAdmin, updateUserRole)
+router.post('/api/user/log-out', logOut)
 
 router
   .route('/api/student')

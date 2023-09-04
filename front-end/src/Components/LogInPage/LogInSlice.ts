@@ -34,6 +34,9 @@ const signInSlice = createSlice({
         logInSuccessfulState: (state, action: PayloadAction<boolean>) => {
             state.successState = action.payload
         },
+        logOutInvoke: () => {
+            console.log('Log Out Invoked')
+        },
     },
 })
 
@@ -42,5 +45,6 @@ export const {
     logInSuccessfull,
     logInSuccessfulState,
     logInAssignRole,
+    logOutInvoke,
 } = signInSlice.actions
 export default signInSlice.reducer

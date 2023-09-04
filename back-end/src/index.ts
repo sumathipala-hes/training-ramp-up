@@ -19,6 +19,7 @@ const main = async () => {
     console.log('Connected to postgres')
     //Middleware
     app.use(cookieParser())
+
     //
     app.use(express.json())
     //
@@ -30,6 +31,8 @@ const main = async () => {
     //
 
     app.use(cors({ credentials: true, origin: 'http://localhost:3000' }))
+    //
+
     //
     app.use(userRouter)
 

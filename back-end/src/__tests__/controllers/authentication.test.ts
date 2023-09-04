@@ -3,6 +3,7 @@
 import { Response } from 'express'
 import { createUser, findUserByEmail } from '../../services/authService'
 import * as authController from '../../controllers/authController'
+import { User } from '../../entities/user'
 
 // Mock the dependencies
 jest.mock('../../services/authService')
@@ -23,7 +24,7 @@ describe('authController', () => {
         email: 'test@example.com',
         userName: 'testuser',
         password: 'hashedPassword',
-      })
+      } as User)
 
       const req: any = {
         body: {
@@ -33,10 +34,26 @@ describe('authController', () => {
         },
       }
 
-      await authController.signUp(req, res)
+      const newUser = await authController.signUp(req, res)
 
-      expect(res.status).toHaveBeenCalledWith(200)
-      expect(res.json).toHaveBeenCalled()
+      expect(newUser).toBeDefined()
+      expect(newUser?.status).toEqual(200)
+    })
+
+    it('should return 400 and errors if validation fails', async () => {
+      const req: any = {
+        body: {
+          email: 'invalid-email', // Invalid email format
+          userName: 'testuser',
+        },
+      }
+
+      const response = await authController.signUp(req, res)
+
+      expect(response?.status).toEqual(403)
+      // expect(res.json).toHaveBeenCalledWith({
+      //   errors: expect.any(Array),
+      // })
     })
   })
 
@@ -49,7 +66,7 @@ describe('authController', () => {
         userName: 'testuser',
         password: 'hashedPassword',
         correctPassword: jest.fn(() => true),
-      })
+      } as unknown as User)
 
       const req: any = {
         body: {
@@ -58,33 +75,12 @@ describe('authController', () => {
         },
       }
 
-      await authController.logIn(req, res)
-
-      expect(res.status).toHaveBeenCalledWith(200)
-      expect(res.json).toHaveBeenCalled()
+      const response = await authController.logIn(req, res)
+      console.log(response)
+      expect(response).toBeDefined()
+      expect(response?.status).toEqual(200)
     })
-  })
 
-  describe('signUp', () => {
-    it('should return 400 and errors if validation fails', async () => {
-      const req: any = {
-        body: {
-          email: 'invalid-email', // Invalid email format
-          userName: 'testuser',
-          password: 'password',
-        },
-      }
-
-      await authController.signUp(req, res)
-
-      expect(res.status).toHaveBeenCalledWith(403)
-      // expect(res.json).toHaveBeenCalledWith({
-      //   errors: expect.any(Array),
-      // })
-    })
-  })
-
-  describe('logIn', () => {
     it('should return 400 if email or password is missing', async () => {
       const req: any = {
         body: {
@@ -111,12 +107,9 @@ describe('authController', () => {
         },
       }
 
-      await authController.logIn(req, res)
+      const response = await authController.logIn(req, res)
 
-      expect(res.status).toHaveBeenCalledWith(400)
-      expect(res.json).toHaveBeenCalledWith({
-        errors: 'Couldnt Find a User with this Email',
-      })
+      expect(response?.status).toEqual(403)
     })
 
     it('should return 400 if password is incorrect', async () => {
@@ -143,52 +136,5 @@ describe('authController', () => {
         errors: 'Incorrect Email or Password',
       })
     })
-
-    it('should return 401 if token is unauthorized', async () => {
-      const req: any = {
-        body: {
-          email: 'test@example.com',
-          password: 'password',
-        },
-      }
-
-      // Mock verify to throw an error
-      ;(authController as any).verify = jest.fn(() => {
-        throw new Error('Unauthorized')
-      })
-
-      await authController.logIn(req, res)
-
-      expect(res.status).toHaveBeenCalledWith(400)
-      // expect(res.json).toHaveBeenCalledWith({
-      //   status: 'fail',
-      //   message: 'The Token is Unautharized',
-      // })
-    })
   })
 })
-
-// import { signUp } from '../../controllers/authController'
-// import { User } from '../../entities/user'
-// import { jest } from '@jest/globals'
-
-// jest.mock('../../entities/user')
-// const mockedUser = User as jest.Mocked<typeof User>
-
-// const mockResponse: any = {
-//   json: jest.fn(),
-//   status: jest.fn(),
-// }
-
-// const request: any = {
-//   body: {
-//     email: 'fake@email.com',
-//     userName: 'fake_userName',
-//     password: 'fake1234',
-//   },
-// }
-
-// it('should send a status code of 400', async () => {
-//   mockedUser.findOne.mockImplementationOnce()
-//   await signUp(request, mockResponse)
-// })

@@ -12,6 +12,7 @@ import {
     logInSuccessfulState,
     logInSuccessfull,
     logInUser,
+    logOutInvoke,
 } from '../../Components/LogInPage/LogInSlice'
 import { put, takeEvery } from 'redux-saga/effects'
 
@@ -71,6 +72,17 @@ function* logInSaga(
     }
 }
 
+function* logOutSaga(): Generator<any, any, any> {
+    try {
+        yield fetch(`${API_BASE_URL}/api/user/log-out`, {
+            method: 'POST',
+            credentials: 'include',
+        })
+    } catch (err) {
+        console.log(err)
+    }
+}
+
 function* addUserSagaToRoot() {
     yield takeEvery(signUpUser, addUserSaga)
 }
@@ -79,4 +91,8 @@ function* logUserSagaToRoot() {
     yield takeEvery(logInUser, logInSaga)
 }
 
-export { addUserSagaToRoot, logUserSagaToRoot }
+function* logOutSagaToRoot() {
+    yield takeEvery(logOutInvoke, logOutSaga)
+}
+
+export { addUserSagaToRoot, logUserSagaToRoot, logOutSagaToRoot }

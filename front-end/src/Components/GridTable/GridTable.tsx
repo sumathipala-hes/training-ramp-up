@@ -37,7 +37,7 @@ import { socket } from '../../App'
 import randomInteger from 'random-int'
 import { useNavigate } from 'react-router-dom'
 import { useEffect } from 'react'
-import { logInSuccessfull } from '../LogInPage/LogInSlice'
+import { logInSuccessfull, logOutInvoke } from '../LogInPage/LogInSlice'
 // import { count } from '../../sagas'
 
 export default function FullFeaturedCrudGrid() {
@@ -68,6 +68,7 @@ export default function FullFeaturedCrudGrid() {
     }
     const handleClickLogOut = async () => {
         localStorage.clear()
+        dispatch(logOutInvoke())
         dispatch(logInSuccessfull('fail'))
         navigate('/')
     }

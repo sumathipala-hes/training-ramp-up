@@ -9,7 +9,11 @@ import {
     deleteUserSagaToRoot,
     fetchUsersSagaToRoot,
 } from './util/sagas/userSaga'
-import { addUserSagaToRoot, logUserSagaToRoot } from './util/sagas/authSagas'
+import {
+    addUserSagaToRoot,
+    logOutSagaToRoot,
+    logUserSagaToRoot,
+} from './util/sagas/authSagas'
 
 //set sagas
 export default function* rootSaga() {
@@ -22,5 +26,6 @@ export default function* rootSaga() {
         deleteUserSagaToRoot(),
         changeUserRoleSagaToRoot(),
         fetchUsersSagaToRoot(),
+        logOutSagaToRoot(),
     ])
 }

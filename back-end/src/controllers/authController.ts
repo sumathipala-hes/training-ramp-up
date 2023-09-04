@@ -27,9 +27,15 @@ const signUp = async (req: Request, res: Response) => {
     }
 
     const newUser = await createUser(req.body.email, req.body.userName, req.body.password)
-
+    console.log(newUser)
     //If Everythin is Ok Send a Token
+    newUser.password = undefined
     createSendToken(newUser, res)
+    if (newUser) {
+      return { newUser, status: 200 }
+    } else {
+      return { status: 403 }
+    }
   } catch (err) {
     console.log(`Couldn't Sign up with details that has given, ${err}`)
   }
@@ -52,33 +58,55 @@ const logIn = async (req: Request, res: Response) => {
       if (!user || !(await user.correctPassword(password, user.password))) {
         return res.status(400).json({ errors: 'Incorrect Email or Password' })
       }
-    } else {
-      console.log('Couldnt Find a User with this Email')
     }
 
     //3)If Everything is Ok,Send Token to the Client
     if (user) {
+      user.password = undefined
       createSendToken(user, res)
+      return { user, status: 200 }
+    } else {
+      return { status: 403 }
     }
   } catch (err) {
     console.log(`Couldn't Log in ,${err}`)
   }
 }
 
-const protect = async (req: Request, res: Response, next: NextFunction) => {
-  const token = req.cookies.token
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const logOut = async (req: Request, res: Response) => {
+  console.log('Log Out Controller Reached Successfully')
+  // Set the expiration time of both access and refresh tokens to "right now."
+  res.cookie('accessToken', '', { expires: new Date(0), httpOnly: true, secure: false })
 
-  if (!token) {
+  // Expire the refresh token cookie
+  res.cookie('refreshToken', '', { expires: new Date(0), httpOnly: true, secure: false })
+  return res.status(200).json({ message: 'Logged out successfully' })
+}
+
+const protect = async (req: Request, res: Response, next: NextFunction) => {
+  const accessToken = req.cookies.accessToken
+  const refreshToken = req.cookies.refreshToken
+
+  if (!accessToken && !refreshToken) {
     return res.status(401).json({ status: 'fail', error: `You're Not Logged In, Please Log in and Try agin` })
   }
 
   try {
+    let verifiedJWT
     //2) Validate Token (Verification)
-    const verifiedJWT = verify(token, jwtSecret)
+    if (accessToken) {
+      verifiedJWT = verify(accessToken, jwtSecret)
+    } else {
+      verifiedJWT = verify(refreshToken, jwtSecret)
+    }
     if (verifiedJWT) {
-      const decoded = jwt_decode(token) as JwtPayload
+      const decoded = jwt_decode(accessToken) as JwtPayload
       // //3)Check if user still exists
-      const currentUser = await findUserById(decoded.id)
+      let currentUser = await findUserById(decoded.id)
+      if (!currentUser) {
+        currentUser = await findUserById(decoded.email)
+      }
 
       if (!currentUser) {
         return res.status(401).json({ status: 'fail', message: `The User belonging to this token No Longer Exists` })
@@ -142,4 +170,4 @@ const deleteUser = async (req: Request, res: Response) => {
   }
 }
 
-export { signUp, logIn, protect, getAllUsers, deleteUser, updateUserRole, createSendToken }
+export { signUp, logIn, protect, getAllUsers, deleteUser, updateUserRole, createSendToken, logOut }
