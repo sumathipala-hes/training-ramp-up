@@ -1,6 +1,5 @@
 import dotenv from 'dotenv'
 import {Request} from 'express'; 
-import AppDataSource from "../config/dataSoure";
 import bcrypt from "bcrypt";
 import { User } from '../models/user';
 import userRepository from './repositories/userRepo';
@@ -36,12 +35,6 @@ async function saveUser(req: Request){
 function fetchUser(req: Request){
     const authUser = validateToken(req);
     return authUser;
-}
-
-//get users from the database
-function fetchUsers(){
-    const users = AppDataSource.manager.find(User);
-    return users;
 }
 
 //authenticate user 
@@ -80,4 +73,4 @@ function validateToken(req:Request){
 }
 
 
-export {saveUser, fetchUsers, authenticateUser, validateToken, fetchUser};
+export {saveUser, authenticateUser, validateToken, fetchUser};
