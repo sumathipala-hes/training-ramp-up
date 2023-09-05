@@ -12,7 +12,8 @@ import { encrypt } from '../utils/password.util';
 
 jest.mock('../utils/notification.util', () => ({
   sendNotification: jest.fn(),
-}));jest.mock('../utils/password.util', () => ({
+}));
+jest.mock('../utils/password.util', () => ({
   encrypt: jest.fn().mockReturnValue('encrypted'),
   decrypt: jest.fn().mockReturnValue('decrypted'),
 }));
@@ -80,7 +81,7 @@ describe('User Service Checked', () => {
     test('Update User Success', async () => {
       userRepo.update = jest.fn().mockResolvedValue(user);
       const data = await updateUser('dasun@gmail.com', user);
-      user.password=encrypt('1234');
+      user.password = encrypt('1234');
       expect(data).toEqual(user);
       expect(sendNotification).toHaveBeenCalledWith(
         'Successful',

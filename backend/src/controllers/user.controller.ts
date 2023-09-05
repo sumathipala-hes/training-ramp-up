@@ -24,7 +24,6 @@ export const addUsers: RequestHandler = async (
   res: Response
 ): Promise<void> => {
   try {
-    
     const user = await saveUser(req.body);
     res.status(200).json(user);
   } catch (error) {

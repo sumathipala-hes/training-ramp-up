@@ -26,19 +26,21 @@ export const authPermissions = (
   res: Response,
   next: NextFunction
 ) => {
-  const role = req.headers.cookie?.split('=')[1];
-  console.log(role);
-  if (!role) {
-      return res.sendStatus(403)
+  const accessToken = req.headers.cookie?.split('=')[1];
+  console.log(accessToken);
+  if (!accessToken) {
+    return res.sendStatus(403);
   } else {
-      try {
-          if (role == 'admin') {
-              return next()
-          } else {
-              return res.sendStatus(403)
-          }
-      } catch {
-          return res.sendStatus(500)
+    try {
+      const payload = jwt.verify(accessToken, jwtConfig.secretKey);
+
+      if ((payload as { role: string }).role == 'admin') {
+        return next();
+      } else {
+        return res.sendStatus(403);
       }
+    } catch {
+      return res.sendStatus(500);
+    }
   }
 };

@@ -31,6 +31,7 @@ class UserRepository {
         Map<String, dynamic> decodedToken = JwtDecoder.decode(accessToken);
         localStorage.setEmail(decodedToken['email']);
         localStorage.setRole(decodedToken['role'].toLowerCase());
+        localStorage.setAcessToken(accessToken);
         return true;
       }
     }
@@ -62,11 +63,12 @@ class UserRepository {
   }
 
   Future<void> addUsers(User user) async {
+    String token = await localStorage.getAccessToken();
     final res = await http.post(
       Uri.parse('$baseUrl/user/add'),
       headers: <String, String>{
         'Content-Type': 'application/json',
-        'Cookie': 'role=admin',
+        'Cookie': 'accessToken=$token',
       },
       body: jsonEncode(user.toJson()),
     );
@@ -76,11 +78,12 @@ class UserRepository {
   }
 
   Future<void> updateUsers(User user) async {
+    String token = await localStorage.getAccessToken();
     final res = await http.put(
       Uri.parse('$baseUrl/user/${user.email}'),
       headers: <String, String>{
         'Content-Type': 'application/json',
-        'Cookie': 'role=admin',
+        'Cookie': 'accessToken=$token',
       },
       body: jsonEncode(user.toJson()),
     );
@@ -90,10 +93,11 @@ class UserRepository {
   }
 
   Future<void> deleteUsers(String email) async {
+    String token = await localStorage.getAccessToken();
     final res = await http.delete(
       Uri.parse('$baseUrl/user/del/$email'),
       headers: <String, String>{
-        'Cookie': 'role=admin',
+        'Cookie': 'accessToken=$token',
       },
     );
     if (res.statusCode == 500) {

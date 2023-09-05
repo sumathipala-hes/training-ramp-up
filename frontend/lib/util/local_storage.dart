@@ -17,6 +17,14 @@ class LocalStorage {
     );
   }
 
+  Future<void> setAcessToken(String token) async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setString(
+      'accessToken',
+      token,
+    );
+  }
+
   Future<bool> getDetails() async {
     final prefs = await SharedPreferences.getInstance();
     final email = prefs.getString('email');
@@ -36,5 +44,10 @@ class LocalStorage {
   Future<String> getRole() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString('role') ?? '';
+  }
+
+  Future<String> getAccessToken() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('accessToken') ?? '';
   }
 }
