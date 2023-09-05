@@ -33,23 +33,21 @@ export const authPermissions = (
   next: NextFunction,
 ) => {
   const roleType = req.headers.authorization?.split(':')[1];
-  console.log(roleType);
 
   if (!roleType) {
     return res.sendStatus(403);
   }
 
   try {
-    if (req.method === 'GET') {
+    if (req.method === process.env.GET_REQUEST) {
       return next();
     }
 
-    const payload = jwt.verify(roleType, jwtConfig.userKey);
+    const payload = jwt.verify(roleType, jwtConfig.secretKey);
 
     const userType = payload as { roleType: string };
     const role = userType.roleType;
-    console.log(role);
-    if (role === 'ADMIN') {
+    if (role === process.env.ADMIN_ROLE) {
       return next();
     } else {
       return res.sendStatus(401);

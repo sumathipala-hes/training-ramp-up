@@ -42,7 +42,7 @@ class UserRepository {
         Uri.parse('$baseUrl/users'),
         headers: <String, String>{
           'Content-Type': 'application/json',
-         'Authorization': 'Bearer:$token',
+          'Authorization': 'Bearer:$token',
         },
         body: jsonEncode(user.toJson()),
       );
@@ -64,7 +64,7 @@ class UserRepository {
         Uri.parse('$baseUrl/users/${user.email}'),
         headers: <String, String>{
           'Content-Type': 'application/json',
-         'Authorization': 'Bearer:$token',
+          'Authorization': 'Bearer:$token',
         },
         body: jsonEncode(user.toJson()),
       );
@@ -129,7 +129,7 @@ class UserRepository {
   }
 
   Future<void> signOut() async {
-     final token = await LocalStorage().getAccessToken();
+    final token = await LocalStorage().getAccessToken();
     final prefs = await SharedPreferences.getInstance();
     prefs.remove('email');
     prefs.remove('roleType');
@@ -137,9 +137,9 @@ class UserRepository {
     await http.delete(
       Uri.parse('$baseUrl/users/signOut'),
       headers: <String, String>{
-          'Content-Type': 'application/json',
-           'Authorization': 'Bearer:$token',
-        },
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer:$token',
+      },
     );
   }
 }

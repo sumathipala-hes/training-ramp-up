@@ -17,8 +17,8 @@ import {
 
 const router = express.Router();
 
-router.get('/', requestGetAllUsers);
-router.get('/:search', requestUsersByOne);
+router.get('/', authPermissions,requestGetAllUsers);
+router.get('/:search', authPermissions,requestUsersByOne);
 router.post('/', authPermissions, validateUsers, requestCreateUser);
 router.put('/:id', authPermissions, validateUsers, requestUpdateUser);
 router.delete('/:id', authPermissions, requestDeleteUser);
