@@ -66,6 +66,7 @@ class UserRepository {
       Uri.parse('$baseUrl/user/add'),
       headers: <String, String>{
         'Content-Type': 'application/json',
+        'Cookie': 'role=admin',
       },
       body: jsonEncode(user.toJson()),
     );
@@ -79,6 +80,7 @@ class UserRepository {
       Uri.parse('$baseUrl/user/${user.email}'),
       headers: <String, String>{
         'Content-Type': 'application/json',
+        'Cookie': 'role=admin',
       },
       body: jsonEncode(user.toJson()),
     );
@@ -90,6 +92,9 @@ class UserRepository {
   Future<void> deleteUsers(String email) async {
     final res = await http.delete(
       Uri.parse('$baseUrl/user/del/$email'),
+      headers: <String, String>{
+        'Cookie': 'role=admin',
+      },
     );
     if (res.statusCode == 500) {
       showToast('Failed to Delete User..!');
