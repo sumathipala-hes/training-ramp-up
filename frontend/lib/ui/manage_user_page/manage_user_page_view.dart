@@ -69,7 +69,7 @@ class ManageUserPageView extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              'Manage Student',
+              'Manage User',
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 22,
