@@ -21,7 +21,7 @@ function Header(props:{name: string, isAdmin: boolean}){
   }
   
   return(
-    <Box sx={{ flexGrow: 1, width:"100%", position:"fixed", top:"0", right:"0" }}>
+    <Box sx={{ flexGrow: 1, width:"100%", position:"fixed", top:"0", right:"0", zIndex:10 }}>
       <AppBar position="static">
         <Toolbar>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>

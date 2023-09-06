@@ -30,10 +30,11 @@ const registerUser = (async (req: Request, res: Response) => {
 //authenticate user
 const validateUser = (async (req: Request, res: Response) => {
     try {
-        const token = await authenticateUser(req);
-        if(token){
+        const tokens = await authenticateUser(req);
+        if(tokens){
             // Set the HTTP-only cookie
-            res.cookie('token', token, { httpOnly: true, secure: true, sameSite: 'strict' });
+            res.cookie('token', tokens.token, { httpOnly: true, secure: true, sameSite: 'strict' });
+            res.cookie('refreshToken', tokens.refreshToken, { httpOnly: true, secure: true, sameSite: 'strict' });
             res.status(200).json({
                 status: 200,
             });
@@ -64,6 +65,7 @@ const logoutUser = (async (req: Request, res: Response) => {
     try {
         // Clear the token cookie by setting it to an empty value and expiring it immediately
         res.cookie('token', '', { httpOnly: true, secure: true, sameSite: 'strict', expires: new Date(0) });
+        res.cookie('refreshToken', '', { httpOnly: true, secure: true, sameSite: 'strict', expires: new Date(0) });
         res.status(200).json({
             status: 200,
             message: 'Logged out successfully.',
@@ -79,16 +81,17 @@ const logoutUser = (async (req: Request, res: Response) => {
 //authenticate user
 const authUser = (async (req: Request, res: Response) => {
     try {
-        const user = await fetchUser(req);
-        if(user){
+        const token = await fetchUser(req);
+        if(token.status == 200){
             res.status(200).json({
                 status: 200,
-                data:user
+                data:token.data
             });
         }else{
-            res.status(400).json({
-                status: 400,
-                error: "Access denied",
+            res.cookie('token', token.token, { httpOnly: true, secure: true, sameSite: 'strict' });
+            res.status(200).json({
+                status: 200,
+                data:token.data
             });
         }
 

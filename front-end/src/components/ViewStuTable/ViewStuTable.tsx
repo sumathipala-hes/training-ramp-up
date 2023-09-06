@@ -95,7 +95,7 @@ function ViewStuTable(props: { isTesting: any; }) {
       }
     ];
   return (
-    <Container maxWidth="xl" sx={{display: "flex",justifyContent:"start", flexDirection:"column", alignItems: "center",minHeight: "100vh", padding:"80px 20px"}}>
+    <Container maxWidth="xl" sx={{display: "flex",justifyContent:"start", flexDirection:"column", alignItems: "center",minHeight: "100vh", padding:"120px 20px"}}>
       <Container sx={{display: "flex" , justifyContent:"center", overflow:"hidden"}}>
       <DataGrid
       disableVirtualization

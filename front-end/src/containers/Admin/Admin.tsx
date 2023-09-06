@@ -61,7 +61,6 @@ function Admin(){
         const email = formData.get("email") as string;
         const role = formData.get("role");
         const password = formData.get("password");
-        console.log(role)
         if(isValidEmail(email)){
             setErrorEmail(false);
                 const registeredUser = {
@@ -136,6 +135,7 @@ function Admin(){
                         </Alert>
                     </Snackbar>
             </Card>
+            <Button   onClick={() => {navigate(routePaths.home)}} variant="contained" sx={{ borderRadius: "16px", marginTop: "50px" }} >Go Back Home</Button>
         </React.Fragment>
     );
     }

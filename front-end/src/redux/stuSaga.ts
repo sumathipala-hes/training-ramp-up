@@ -2,6 +2,7 @@ import {call, put, takeEvery} from 'redux-saga/effects';
 import { PayloadAction } from '@reduxjs/toolkit';
 import {tableActions} from './tableData/tableSlice';
 import axios from 'axios';
+import { calculateAge } from '../utils';
 
 interface ResponseType{
     status: number;
@@ -34,8 +35,8 @@ function* addStudent(action: PayloadAction<TableData>) {
         gender,
         mobile,
         birthday,
-        age,
         address,
+        age : calculateAge(new Date(birthday))
     };
     try {
         yield call(axios.post, 'http://localhost:4000/add-student', studentData, {
