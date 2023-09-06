@@ -18,7 +18,11 @@ export class StudentsService {
   }
 
   findAll(): Promise<Array<Student>> {
-    return this.studentRepository.find();
+    const students = this.studentRepository.find({ order: { id: 'DESC' } });
+    if (!students) {
+      throw new Error('No students found');
+    }
+    return students;
   }
 
   update(id: number, updateStudentDto: UpdateStudentDto): Promise<UpdateResult> {
