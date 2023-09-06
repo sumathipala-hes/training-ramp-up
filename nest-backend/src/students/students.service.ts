@@ -7,11 +7,10 @@ import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class StudentsService {
-
   constructor(
     @InjectRepository(Student)
-    private studentRepository: Repository<Student>
-  ) { }
+    private studentRepository: Repository<Student>,
+  ) {}
 
   create(createStudentDto: CreateStudentDto): Promise<InsertResult> {
     return this.studentRepository.insert(createStudentDto as Student);
@@ -20,12 +19,15 @@ export class StudentsService {
   findAll(): Promise<Array<Student>> {
     const students = this.studentRepository.find({ order: { id: 'DESC' } });
     if (!students) {
-      throw new Error('No students found');
+      throw new Error('No Students Found');
     }
     return students;
   }
 
-  update(id: number, updateStudentDto: UpdateStudentDto): Promise<UpdateResult> {
+  update(
+    id: number,
+    updateStudentDto: UpdateStudentDto,
+  ): Promise<UpdateResult> {
     return this.studentRepository.update(id, updateStudentDto as Student);
   }
 

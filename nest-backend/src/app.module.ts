@@ -7,8 +7,8 @@ import { UsersModule } from './users/users.module';
 import typeOrmConfig from './config/typeorm.config';
 
 @Module({
-  imports: [StudentsModule, TypeOrmModule.forRoot(typeOrmConfig), UsersModule,],
+  imports: [StudentsModule, TypeOrmModule.forRoot(typeOrmConfig), UsersModule],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule { }
+export class AppModule {}

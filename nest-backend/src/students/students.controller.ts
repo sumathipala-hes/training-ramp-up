@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Body, Param, Delete, Put } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Delete,
+  Put,
+} from '@nestjs/common';
 import { StudentsService } from './students.service';
 import { CreateStudentDto } from './dto/create-student.dto';
 import { UpdateStudentDto } from './dto/update-student.dto';
@@ -6,7 +14,7 @@ import { DeleteResult, InsertResult, UpdateResult } from 'typeorm';
 
 @Controller('api/v1/student')
 export class StudentsController {
-  constructor(private readonly studentsService: StudentsService) { }
+  constructor(private readonly studentsService: StudentsService) {}
 
   @Post()
   create(@Body() createStudentDto: CreateStudentDto): Promise<InsertResult> {
@@ -19,7 +27,10 @@ export class StudentsController {
   }
 
   @Put(':id')
-  update(@Param('id') id: string, @Body() updateStudentDto: UpdateStudentDto): Promise<UpdateResult> {
+  update(
+    @Param('id') id: string,
+    @Body() updateStudentDto: UpdateStudentDto,
+  ): Promise<UpdateResult> {
     return this.studentsService.update(+id, updateStudentDto);
   }
 
