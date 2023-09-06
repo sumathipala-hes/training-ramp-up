@@ -1,6 +1,6 @@
 import express, { Router } from 'express';
 import UserController from '../controllers/user.controller';
-import { authorization } from '../middleware/jwt.middleware';
+import { authenticatePermissions, authorization } from '../middleware/jwt.middleware';
 import { userValidator } from '../middleware/validate.user';
 
 export default class UserRoutes {
@@ -19,10 +19,10 @@ export default class UserRoutes {
     this.router.get('/', this.userController.retrieveAllUsers);
 
     //PUT /api/v1/user/:id
-    this.router.put('/:id', userValidator,this.userController.updateUser);
+    this.router.put('/:id', authenticatePermissions,userValidator,this.userController.updateUser);
 
     //DELETE /api/v1/user/:id
-    this.router.delete('/:id', this.userController.deleteUser);
+    this.router.delete('/:id', authenticatePermissions,this.userController.deleteUser);
 
     //POST /api/v1/user/signIn
     this.router.post('/signIn', this.userController.signIn);
