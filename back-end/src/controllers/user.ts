@@ -1,6 +1,6 @@
 import dotenv from 'dotenv'
 import {Request, Response} from 'express'; 
-import { authenticateUser, fetchUser, fetchUsers, saveUser } from '../services/user';
+import { authenticateUser, fetchUser, saveUser } from '../services/user';
 dotenv.config();
 
 //register a user
@@ -27,36 +27,14 @@ const registerUser = (async (req: Request, res: Response) => {
 
 });
 
-//get all users
-const getUsers = (async (req: Request, res: Response) => {
-    try {
-        const users = await fetchUsers();
-            return res.status(200).json({
-                status: 200,
-                data:users
-            });
-    } catch (err) {
-        if (err instanceof Error) {
-            return res.status(400).json({
-                status: 400,
-                error: err.message,
-            });
-        } else {
-            return res.status(500).json({
-                status: 500,
-                error: "An unknown error occurred.",
-            });
-        }
-    }
-});
-
 //authenticate user
 const validateUser = (async (req: Request, res: Response) => {
     try {
-        const token = await authenticateUser(req);
-        if(token){
+        const tokens = await authenticateUser(req);
+        if(tokens){
             // Set the HTTP-only cookie
-            res.cookie('token', token, { httpOnly: true, secure: true, sameSite: 'strict' });
+            res.cookie('token', tokens.token, { httpOnly: true, secure: true, sameSite: 'strict' });
+            res.cookie('refreshToken', tokens.refreshToken, { httpOnly: true, secure: true, sameSite: 'strict' });
             res.status(200).json({
                 status: 200,
             });
@@ -85,9 +63,9 @@ const validateUser = (async (req: Request, res: Response) => {
 //logout user
 const logoutUser = (async (req: Request, res: Response) => {
     try {
-        
         // Clear the token cookie by setting it to an empty value and expiring it immediately
         res.cookie('token', '', { httpOnly: true, secure: true, sameSite: 'strict', expires: new Date(0) });
+        res.cookie('refreshToken', '', { httpOnly: true, secure: true, sameSite: 'strict', expires: new Date(0) });
         res.status(200).json({
             status: 200,
             message: 'Logged out successfully.',
@@ -103,16 +81,17 @@ const logoutUser = (async (req: Request, res: Response) => {
 //authenticate user
 const authUser = (async (req: Request, res: Response) => {
     try {
-        const user = await fetchUser(req);
-        if(user){
+        const token = await fetchUser(req);
+        if(token.status == 200){
             res.status(200).json({
                 status: 200,
-                data:user
+                data:token.data
             });
         }else{
-            res.status(400).json({
-                status: 400,
-                error: "Access denied",
+            res.cookie('token', token.token, { httpOnly: true, secure: true, sameSite: 'strict' });
+            res.status(200).json({
+                status: 200,
+                data:token.data
             });
         }
 
@@ -133,4 +112,4 @@ const authUser = (async (req: Request, res: Response) => {
 
 
 
-export {registerUser, getUsers, validateUser, logoutUser, authUser};
+export {registerUser, validateUser, logoutUser, authUser};

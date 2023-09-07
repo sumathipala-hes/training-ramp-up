@@ -35,6 +35,27 @@ function Register(){
     },[ errorStatus, navigate, dispatch]);
       
     const [errorEmail, setErrorEmail] = useState(false);
+    const [password, setPassword] = useState("");
+    const [passErrorStat, setPassErrorStat] = useState("success");
+    const [passError, setPassError] = useState(true);
+    const [focused, setFocused] = useState(false);
+    const [errorValidate,setValidate] = useState(false);
+
+    function confirmPassHandler(event: { target: { value: string } }) {
+        setFocused(true)
+        if (event.target.value === password) {
+            setPassErrorStat("success");
+            setPassError(false);
+            setValidate(false);
+        } else {
+            setPassErrorStat("error");
+            setPassError(true);
+        }
+    }
+
+    function passHandler(event: { target: { value: string } }) {
+        setPassword(event.target.value);
+    }
 
     const linkHandler = (event: { preventDefault: () => void; }) => {
         event.preventDefault();
@@ -53,8 +74,9 @@ function Register(){
         const name = formData.get("name");
         const email = formData.get("email") as string;
         const password = formData.get("password");
-        if(isValidEmail(email)){
+        if(isValidEmail(email) && !passError){
             setErrorEmail(false);
+            setValidate(false);
             const registeredUser = {
                 username : email,
                 name : name,
@@ -63,7 +85,12 @@ function Register(){
             }
             dispatch(userActions.register(registeredUser));
         }else{
-            setErrorEmail(true);
+            if(!isValidEmail(email)){
+                setErrorEmail(true);
+            }
+            if(passError){
+                setValidate(true);
+            }
         }
     }
 
@@ -90,10 +117,13 @@ function Register(){
                             <TextField name="name"  size="small" label="Name" variant="outlined" InputProps={{ sx: { height: "45px"} }} fullWidth required />
                         </Grid>
                         <Grid item xs={12}>
-                            <TextField name="email" error={errorEmail}  onChange={mailChangeHandler}   size="small" label="Email address" variant="outlined" InputProps={{ sx: { height: "45px"} }} fullWidth required />
+                            <TextField name="email" error={errorEmail}  helperText={errorEmail ? "Enter a valid email address" : ""}  onChange={mailChangeHandler}   size="small" label="Email address" variant="outlined" InputProps={{ sx: { height: "45px"} }} fullWidth required />
                         </Grid>
                         <Grid item xs={12}>
-                            <TextField name="password"  size="small" label="Password" type="password"  variant="outlined" InputProps={{ sx: { height: "45px"} }} fullWidth required />
+                            <TextField name="password" onChange={passHandler}  focused={false} size="small" label="Password" type="password"  variant="outlined" InputProps={{ sx: { height: "45px"} }} fullWidth required />
+                        </Grid>
+                        <Grid item xs={12}>
+                            <TextField name="repass" error={errorValidate} helperText={errorValidate ? "Passwords are not matching" : ""} onChange={confirmPassHandler} focused={focused} color={passErrorStat as "error" | "success"}  size="small" label=" Confirm password" type="password"  variant="outlined" InputProps={{ sx: { height: "45px"} }} fullWidth required />
                         </Grid>
                         <Grid item xs={12} alignContent={"center"}>
 

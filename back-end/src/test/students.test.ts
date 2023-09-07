@@ -3,7 +3,7 @@ import request from "supertest";
 import app from "../app";
 import AppDataSource from "../config/dataSoure";
 
-describe("API TEST CASES", () => {
+describe("STUDENT API TEST CASES", () => {
   const mockIo = {
     sockets: {
       emit: jest.fn(),
@@ -43,10 +43,50 @@ describe("API TEST CASES", () => {
     const res = await request(app).post("/add-student").send(
         {
             "id": "100",
-            "age": 24
+            "age": 24,
+            "name": "John",
+            "gender": "male",
+            "address": "Jon",
         }
     );
-    expect(res.statusCode).toEqual(400);
+    expect(res.body).toEqual({
+      "status": 400,
+      "errors": [
+          {
+              "type": "field",
+              "msg": "Mobile is required.",
+              "path": "mobile",
+              "location": "body"
+          },
+          {
+              "type": "field",
+              "value": "",
+              "msg": "Invalid value",
+              "path": "mobile",
+              "location": "body"
+          },
+          {
+              "type": "field",
+              "value": "",
+              "msg": "Mobile must be exactly 10 numbers.",
+              "path": "mobile",
+              "location": "body"
+          },
+          {
+              "type": "field",
+              "msg": "Birthday is required.",
+              "path": "birthday",
+              "location": "body"
+          },
+          {
+              "type": "field",
+              "value": "",
+              "msg": "Birthday must be in the format \"YYYY-MM-DD\".",
+              "path": "birthday",
+              "location": "body"
+          }
+      ]
+  });
   });
 
   test("Edit valid student using edit route and receive 200 status", async () => {

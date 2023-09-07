@@ -184,7 +184,7 @@ function FullStuTable(props: { isTesting: any; }) {
       address: "",
       mobile: "",
       birthday:"yy-mm-dd",
-      age: 19,
+      age: 0,
     };
 
     dispatch(tableActions.addStudent(newEditableRow));
@@ -248,7 +248,7 @@ function FullStuTable(props: { isTesting: any; }) {
       address: newRow.address,
       mobile: newRow.mobile,
       birthday: `${year}-${month}-${day}`,
-      age: 1,
+      age: 18,
     };
     if(oldRow.name ===  '' && oldRow.mobile ===  '' && isNaN(oldRow.birthday) && oldRow.age === 0){
       dispatch(tableActions.dbAddStudent(newRows));
@@ -274,7 +274,7 @@ const handleClose = (event: React.SyntheticEvent | Event, reason?: string) => {
 };
 
   return (
-    <Container maxWidth="xl" sx={{display: "flex",justifyContent:"start", flexDirection:"column", alignItems: "center",minHeight: "100vh", padding:"80px 20px"}}>
+    <Container maxWidth="xl" sx={{display: "flex",justifyContent:"start", flexDirection:"column", alignItems: "center",minHeight: "100vh", padding:"120px 20px"}}>
       <Button onClick={addRowHandler} disabled={isAddDisabled} variant="contained" sx={{marginBottom:"20px"}}> Add new</Button>
       <Container sx={{display: "flex" , justifyContent:"center", overflow:"hidden"}}>
       <DataGrid
