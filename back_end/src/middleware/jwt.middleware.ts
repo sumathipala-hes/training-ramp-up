@@ -4,7 +4,7 @@ import { jwtConfig } from '../configs/jwt.config';
 import { User } from '../models/user.model';
 
 enum UserRole {
-  Admin = 'ADMIN',
+  Admin = 'admin',
 }
 
 export const generateToken = (userEmail: string): string => {
@@ -17,27 +17,34 @@ export const generateToken = (userEmail: string): string => {
 export const authenticatePermissions = (
   req: Request,
   res: Response,
-  next: NextFunction,
-): void => {
-  const userCookie = req.cookies.user;
-
-  if (!userCookie) {
-    res.sendStatus(403);
-    return;
+  next: NextFunction
+) => {
+  const cookies = req.headers.cookie;
+  
+  if (!cookies) {
+    return res.sendStatus(403);
   }
+  
+  const cookieArray = cookies.split(';');
+  const roleCookie = cookieArray.find(cookie => cookie.trim().startsWith('role='));
+
+  if (!roleCookie) {
+    return res.sendStatus(403);
+  }
+  
+  const accessToken = roleCookie.split('=')[1].trim();
 
   try {
-    const payload = jwt.verify(userCookie, jwtConfig.secretKey);
-    const user = payload as User;
-    const role = user.role;
-
-    req.method === 'GET' || role === UserRole.Admin
-      ? next()
-      : res.sendStatus(401);
-  } catch (error) {
-    res.sendStatus(403);
+    if (accessToken == UserRole.Admin) {
+      return next();
+    } else {
+      return res.sendStatus(403);
+    }
+  } catch {
+    return res.sendStatus(403);
   }
 };
+
 
 export const authorization = (
   req: Request,

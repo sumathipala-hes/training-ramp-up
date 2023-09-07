@@ -5,7 +5,6 @@ import 'package:front_end/models/user.dart';
 import 'package:front_end/ui/admin_home_page/admin_home_page_bloc.dart';
 import 'package:front_end/ui/admin_home_page/admin_home_page_event.dart';
 import 'package:front_end/ui/sign_in_page/sign_in_page_provider.dart';
-import 'package:front_end/util/encrypted_decrypted_util.dart';
 
 class RegisterScreen extends StatelessWidget {
   RegisterScreen({super.key});
@@ -57,15 +56,12 @@ class RegisterScreen extends StatelessWidget {
     } else {
       Navigator.of(context).pop();
       AdminHomeScreenBloc bloc = BlocProvider.of<AdminHomeScreenBloc>(context);
-      String encriptedPassword = PasswordEncryption.encryptPassword(
-        passwordController.text.trim(),
-      );
       bloc.add(
         RegisterUser(
           user: User(
             userName: nameController.text.trim(),
             userEmail: emailController.text.trim(),
-            userPassword: encriptedPassword,
+            userPassword: passwordController.text.trim(),
             role: RoleEnum.user.toString().split('.').last,
           ),
         ),

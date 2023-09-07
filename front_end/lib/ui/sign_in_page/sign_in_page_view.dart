@@ -8,7 +8,6 @@ import 'package:front_end/ui/register_page/register_page_provider.dart';
 import 'package:front_end/ui/sign_in_page/sign_in_page_bloc.dart';
 import 'package:front_end/ui/sign_in_page/sign_in_page_event.dart';
 import 'package:front_end/ui/user_home_page/user_home_page_view.dart';
-import 'package:front_end/util/encrypted_decrypted_util.dart';
 import 'package:logger/logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -46,13 +45,10 @@ class SignInPageScreen extends StatelessWidget {
     } else {
       SignInPageScreenBloc bloc =
           BlocProvider.of<SignInPageScreenBloc>(context);
-      String encriptedPassword = PasswordEncryption.encryptPassword(
-        passwordController.text.trim(),
-      );
       bloc.add(
         Login(
           userEmail: emailController.text,
-          userPassword: encriptedPassword,
+          userPassword: passwordController.text,
         ),
       );
 

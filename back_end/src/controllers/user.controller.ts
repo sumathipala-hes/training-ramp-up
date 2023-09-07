@@ -6,8 +6,6 @@ import {
   signInUser,
   updateUser,
 } from '../services/user.service';
-import jwt = require('jsonwebtoken');
-import { jwtConfig } from '../configs/jwt.config';
 
 export default class UserController {
   registerUser: RequestHandler = async (
@@ -127,24 +125,21 @@ export default class UserController {
 
       const user = await signInUser(userEmail, userPassword);
 
-      if (user) {
-        const tokenPayload = { userEmail: user.userEmail, role: user.role };
-        const accessToken = jwt.sign(tokenPayload, jwtConfig.secretKey!, {
-          expiresIn: '5h',
-        });
-        const refreshToken = jwt.sign(tokenPayload, jwtConfig.refreshKey!, {
-          expiresIn: '24h',
-        });
+      res.cookie('refreshToken', user.refreshToken, {
+        httpOnly: true,
+        secure: true,
+      });
+      res.cookie('accessToken', user.accessToken, {
+        httpOnly: true,
+        secure: true,
+      });
 
-        res.cookie('refreshToken', refreshToken, { httpOnly: true });
-        res.cookie('accessToken', accessToken, { httpOnly: true });
+      console.log(user.accessToken, user.refreshToken);
 
-        console.log(accessToken, refreshToken);
-
-        return res.status(200).json({ accessToken, refreshToken });
-      } else {
-        return res.status(401).json({ message: 'Unauthorized' });
-      }
+      return res.status(200).json({
+        accessToken: user.accessToken,
+        refreshToken: user.refreshToken,
+      });
     } catch (error) {
       console.error(error);
       return res.status(500).json({ error: 'Internal server error' });

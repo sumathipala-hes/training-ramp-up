@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:front_end/enum/role_enum.dart';
 import 'package:front_end/models/user.dart';
 import 'package:front_end/ui/admin_home_page/admin_home_page_bloc.dart';
 import 'package:front_end/ui/admin_home_page/admin_home_page_event.dart';
-import 'package:front_end/util/encrypted_decrypted_util.dart';
 
 class UserPopupModel extends StatefulWidget {
   const UserPopupModel({Key? key}) : super(key: key);
@@ -19,8 +19,11 @@ class _PopupModelState extends State<UserPopupModel> {
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController confirmPasswordController =
       TextEditingController();
-  String selectedItem = 'USER';
-  List<String> role = ['ADMIN', 'USER'];
+  String selectedItem = RoleEnum.user.toString().split('.').last;
+  List<String> role = [
+    RoleEnum.admin.toString().split('.').last,
+    RoleEnum.user.toString().split('.').last,
+  ];
 
   void _saveForm() {
     final name = nameController.text.trim();
@@ -63,15 +66,12 @@ class _PopupModelState extends State<UserPopupModel> {
     } else {
       Navigator.of(context).pop();
       AdminHomeScreenBloc bloc = BlocProvider.of<AdminHomeScreenBloc>(context);
-      String encriptedPassword = PasswordEncryption.encryptPassword(
-        passwordController.text.trim(),
-      );
       bloc.add(
         RegisterUser(
           user: User(
             userName: nameController.text.trim(),
             userEmail: emailController.text.trim(),
-            userPassword: encriptedPassword,
+            userPassword: passwordController.text.trim(),
             role: selectedItem,
           ),
         ),
