@@ -13,6 +13,7 @@ interface tokenData {
     token:null |string, 
     data:{name:string, role:string}
 }
+
 //add user to the database
 async function saveUser(req: Request){
     const username = req.body.username
@@ -46,8 +47,8 @@ async function saveUser(req: Request){
     }   
 }
 
+//return authorized user data
 async function fetchUser(req: Request){
-
     const authUser = await validateToken(req) as tokenData;
     return authUser;
 }

@@ -33,12 +33,14 @@ function Admin(){
     //initialize error status and msg for users
     const errorStatus = useSelector((state: {users: any; errorStatus:boolean} ) => state.users.errorStatus);
     const message = useSelector((state: {users: any; errorMsg:string | null} ) => state.users.errorMsg);
-    
+
+    //reset error status
     useEffect(() =>{
       dispatch(userActions.setErrorStatus(null));
       dispatch(userActions.processAutho());
      },[]);
 
+     //set error netofication type
      useEffect(() =>{
       if(errorStatus){
         setSeverity("error");
@@ -47,6 +49,7 @@ function Admin(){
       }
      },[errorStatus]);
 
+    //mail field validation
     const mailChangeHandler = (event: { target: { value: string } }) => {
         const email =  event.target.value;
         if(isValidEmail(email)){
@@ -54,6 +57,7 @@ function Admin(){
         }
     }
 
+    //submit form validation and pass data
     const submitHandler = async (event: any) => {
         event.preventDefault();
         const formData = new FormData(event.target);
@@ -83,6 +87,7 @@ function Admin(){
         setSnackOpen(false);
     };
 
+    //home button handler
     const homeHandler = () => {
         navigate(routePaths.home);
     };

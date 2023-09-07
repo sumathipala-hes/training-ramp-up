@@ -14,9 +14,12 @@ function Home() {
 
   //initialize error status and msg for users
   const authenticated = useSelector((state: {users: any; authenticated:boolean} ) => state.users.authenticated);
+  
+  //authorize user
   useEffect(() =>{
     dispatch(userActions.processAutho());
    },[]);
+   
   const user = useSelector((state: {users: any; user:boolean} ) => state.users.user);
 
   if (authenticated) {
