@@ -6,12 +6,14 @@ export interface LogInState {
 }
 export interface LogIn {
     users: LogInState[]
+    successRole: string
     successMessage: string
     successState: boolean
 }
 
 const initialState: LogIn = {
     users: [],
+    successRole: '',
     successMessage: '',
     successState: false,
 }
@@ -26,12 +28,23 @@ const signInSlice = createSlice({
         logInSuccessfull: (state, action: PayloadAction<string>) => {
             state.successMessage = action.payload
         },
+        logInAssignRole: (state, action: PayloadAction<string>) => {
+            state.successRole = action.payload
+        },
         logInSuccessfulState: (state, action: PayloadAction<boolean>) => {
             state.successState = action.payload
+        },
+        logOutInvoke: () => {
+            console.log('Log Out Invoked')
         },
     },
 })
 
-export const { logInUser, logInSuccessfull, logInSuccessfulState } =
-    signInSlice.actions
+export const {
+    logInUser,
+    logInSuccessfull,
+    logInSuccessfulState,
+    logInAssignRole,
+    logOutInvoke,
+} = signInSlice.actions
 export default signInSlice.reducer

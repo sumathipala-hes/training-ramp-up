@@ -5,22 +5,14 @@ import {
     fetchRows,
     updateRow,
     setFetchedRows,
-} from './Components/GridTable/GridSlice'
+} from '../../Components/GridTable/GridSlice'
 import { put } from 'redux-saga/effects'
 import { PayloadAction } from '@reduxjs/toolkit'
 import { takeEvery } from 'redux-saga/effects'
 import {
-    SignUpState,
-    signUpSuccessful,
-    signUpSuccessfulState,
-    signUpUser,
-} from './Components/SignUpPage/SignUpSlice'
-import {
-    LogInState,
-    logInSuccessfulState,
+    logInAssignRole,
     logInSuccessfull,
-    logInUser,
-} from './Components/LogInPage/LogInSlice'
+} from '../../Components/LogInPage/LogInSlice'
 // import { useNavigate } from 'react-router-dom'
 
 const API_BASE_URL = 'http://localhost:5000'
@@ -126,40 +118,26 @@ function* addRowSaga(
 
 function* fetchRowsSaga(): Generator<any, any, any> {
     try {
-        const jwtToken = localStorage.getItem('jwtToken')
-        if (!jwtToken) {
-            localStorage.setItem('AuthSuccess', 'fail')
-            localStorage.setItem(
-                'AuthSuccessMessage',
-                `You're Not Authenticated to Access this Page,Please Log In and Try Again`
-            )
-            return
-        }
-        // Use an empty string as a default
-        const headers = { Authorization: jwtToken }
-
         const response = yield fetch(`${API_BASE_URL}/api/student`, {
             method: 'GET',
-            headers,
+            credentials: 'include',
         })
+
         const data = yield response.json()
+        console.log(data)
+
         if (yield data.status === 'fail') {
-            yield localStorage.clear()
-            yield localStorage.setItem('AuthSuccess', 'fail')
-            yield localStorage.setItem(
-                'AuthSuccessMessage',
-                `User Is Not Found`
-            )
+            yield put(logInSuccessfull(data.status))
+            yield put(logInAssignRole(data.data.user.roles[0]))
+
             console.log(
                 'Authentication Failed Now I will be navigating you to log in page'
             )
             return
-        } else {
-            localStorage.setItem('AuthSuccess', 'success')
         }
-        // const dataDate = new Date(data.dateofbirth)
+
         // Modify the data properties
-        const modifiedData = data.map(
+        const modifiedData = yield data.map(
             (item: {
                 id: any
                 name: any
@@ -181,6 +159,7 @@ function* fetchRowsSaga(): Generator<any, any, any> {
 
         console.log(modifiedData)
         yield put(setFetchedRows(modifiedData))
+        return
     } catch (error) {
         yield localStorage.setItem('AuthSuccess', 'fail')
         yield localStorage.setItem(
@@ -195,23 +174,11 @@ function* deleteRowSaga(
     action: PayloadAction<GridRowId>
 ): Generator<any, any, any> {
     try {
-        const jwtToken = localStorage.getItem('jwtToken')
-        if (!jwtToken) {
-            localStorage.setItem('AuthSuccess', 'fail')
-            localStorage.setItem(
-                'AuthSuccessMessage',
-                `You're Not Authenticated to Access this Page,Please Log In and Try Again`
-            )
-            return
-        }
-        // Use an empty string as a default
-        const headers = { Authorization: jwtToken }
-
         const response = yield fetch(
             `${API_BASE_URL}/api/student/${action.payload}`,
             {
                 method: 'DELETE',
-                headers,
+                credentials: 'include',
             }
         )
         console.log('Row is Deleted And User is an Admin')
@@ -222,64 +189,6 @@ function* deleteRowSaga(
     } catch (error) {
         console.error('Error deleting row:', error)
     }
-}
-
-function* addUserSaga(
-    action: PayloadAction<SignUpState>
-): Generator<any, any, any> {
-    try {
-        const response = yield fetch(`${API_BASE_URL}/api/user/sign-up`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(action.payload),
-        })
-        const data = yield response.json()
-        if (data.status === 'success') {
-            yield put(signUpSuccessful(data.data.user.roles[0]))
-            yield put(signUpSuccessfulState(true))
-            const jwtToken = data.token
-            console.log(jwtToken)
-            yield localStorage.setItem('jwtToken', 'Bearer ' + jwtToken)
-        }
-        console.log(data)
-    } catch (error) {
-        console.error('Error Adding User:', error)
-    }
-}
-
-function* logInSaga(
-    action: PayloadAction<LogInState>
-): Generator<any, any, any> {
-    try {
-        const response = yield fetch(`${API_BASE_URL}/api/user/log-in`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(action.payload),
-        })
-        const data = yield response.json()
-        if (data.status === 'success') {
-            yield put(logInSuccessfull(data.data.user.roles[0]))
-            yield put(logInSuccessfulState(true))
-            const jwtToken = data.token
-            console.log(jwtToken)
-            yield localStorage.setItem('jwtToken', 'Bearer ' + jwtToken)
-        }
-        console.log(data)
-    } catch (err) {
-        console.error('Error Logging In User:', err)
-    }
-}
-
-function* addUserSagaToRoot() {
-    yield takeEvery(signUpUser, addUserSaga)
-}
-
-function* logUserSagaToRoot() {
-    yield takeEvery(logInUser, logInSaga)
 }
 
 function* addStuSaga() {
@@ -294,10 +203,4 @@ function* deleteStuSaga() {
     yield takeEvery(deleteRow, deleteRowSaga)
 }
 
-export {
-    addStuSaga,
-    fetchStuSaga,
-    deleteStuSaga,
-    addUserSagaToRoot,
-    logUserSagaToRoot,
-}
+export { addStuSaga, fetchStuSaga, deleteStuSaga }

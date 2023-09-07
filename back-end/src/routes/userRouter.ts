@@ -9,8 +9,19 @@ import {
   deleteUser,
   updateUserRole,
   restrictToAdmin,
+  logOut,
 } from '../controllers/authController'
 const router = express.Router()
+
+/////USER ROUTES
+router
+  .route('/api/user/sign-up')
+  .post([check('email').isEmail(), check('userName').notEmpty(), check('password').notEmpty()], signUp)
+router.post('/api/user/log-in', logIn)
+router.get('/api/user', protect, restrictToAdmin, getAllUsers)
+router.delete('/api/user/:userId', protect, restrictToAdmin, deleteUser)
+router.put('/api/user/:userId', protect, restrictToAdmin, updateUserRole)
+router.post('/api/user/log-out', logOut)
 
 router
   .route('/api/student')
@@ -18,14 +29,5 @@ router
   .get(protect, getAllStudents)
 
 router.route('/api/student/:studentId').put(updateStudent).delete(protect, restrictToAdmin, deleteStudent)
-
-/////USER ROUTES
-router
-  .route('/api/user/sign-up')
-  .post([check('email').isEmail(), check('userName').notEmpty(), check('password').notEmpty()], signUp)
-router.post('/api/user/log-in', logIn)
-router.get('/api/user', getAllUsers)
-router.delete('/api/user/:userId', deleteUser)
-router.put('/api/user/:userId', updateUserRole)
 
 export { router as userRouter }

@@ -1,14 +1,10 @@
 import { NextFunction, Request, Response } from 'express'
 import { User } from '../entities/user'
-import jwt, { JwtPayload, verify } from 'jsonwebtoken'
+import { JwtPayload, verify } from 'jsonwebtoken'
 import { validationResult } from 'express-validator'
-// import { promisify } from 'util'
 import jwt_decode from 'jwt-decode'
 import { AppRoles } from '../util/Roles'
-
-const jwtSecret = process.env.JWT_SECRET || `Couldn't Find the config.env`
-const jwtExpiresIn = process.env.JWT_EXPIRES_IN || '90d'
-const jwtCookieExpiresIn = process.env.JWT_COOKIE_EXPIRES_IN || '90'
+import { createSendToken, createUser, findAllUsers, findUserByEmail, findUserById } from '../services/authService'
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
@@ -19,39 +15,7 @@ declare global {
   }
 }
 
-const signToken = (id: number) => {
-  console.log(jwtSecret)
-  return jwt.sign({ id }, jwtSecret, {
-    expiresIn: jwtExpiresIn,
-  })
-}
-
-const createSendToken = (user: User, res: Response) => {
-  const token = signToken(user.id)
-
-  const cookieOptions = {
-    expires: new Date(Date.now() + parseInt(jwtCookieExpiresIn) * 24 * 60 * 60 * 1000),
-    httpOnly: true,
-    secure: false,
-  }
-
-  if (process.env.NODE_ENV === 'production') {
-    cookieOptions.secure = true
-  }
-
-  res.cookie('jwt', token, cookieOptions)
-
-  //Remove the Password from output
-  user.password = undefined
-
-  res.status(200).json({
-    status: 'success',
-    token,
-    data: {
-      user,
-    },
-  })
-}
+const jwtSecret = process.env.JWT_SECRET || `Couldn't Find the config.env`
 
 const signUp = async (req: Request, res: Response) => {
   try {
@@ -62,17 +26,15 @@ const signUp = async (req: Request, res: Response) => {
       return res.status(400).json({ errors: errors.array() })
     }
 
-    const newUser = User.create({
-      email: req.body.email,
-      userName: req.body.userName,
-      password: req.body.password,
-    })
-
-    await newUser.save()
-
+    const newUser = await createUser(req.body.email, req.body.userName, req.body.password)
+    console.log(newUser)
     //If Everythin is Ok Send a Token
-    if (newUser.id) {
-      createSendToken(newUser, res)
+    newUser.password = undefined
+    createSendToken(newUser, res)
+    if (newUser) {
+      return { newUser, status: 200 }
+    } else {
+      return { status: 403 }
     }
   } catch (err) {
     console.log(`Couldn't Sign up with details that has given, ${err}`)
@@ -90,56 +52,65 @@ const logIn = async (req: Request, res: Response) => {
     }
 
     //2)Check if User Exists and Password is Correct
-    const user = await User.findOneBy({ email })
+    const user = await findUserByEmail(email)
+
     if (user?.password) {
       if (!user || !(await user.correctPassword(password, user.password))) {
-        console.log('Incorrect Email or Password')
         return res.status(400).json({ errors: 'Incorrect Email or Password' })
       }
-    } else {
-      console.log('Couldnt Find a User with this Email')
     }
 
-    //If Everything is Ok,Send Token to the Client
-    if (user?.id) {
-      const token = signToken(user.id)
-      res.status(200).json({
-        status: 'success',
-        token,
-        data: {
-          user,
-        },
-      })
+    //3)If Everything is Ok,Send Token to the Client
+    if (user) {
+      user.password = undefined
+      createSendToken(user, res)
+      return { user, status: 200 }
+    } else {
+      return { status: 403 }
     }
   } catch (err) {
     console.log(`Couldn't Log in ,${err}`)
   }
 }
 
-const protect = async (req: Request, res: Response, next: NextFunction) => {
-  //1) Getting token and check if it's there
-  let token
-  if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
-    token = req.headers.authorization.split(' ')[1]
-  }
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const logOut = async (req: Request, res: Response) => {
+  console.log('Log Out Controller Reached Successfully')
+  // Set the expiration time of both access and refresh tokens to "right now."
+  res.cookie('accessToken', '', { expires: new Date(0), httpOnly: true, secure: false })
 
-  if (!token) {
+  // Expire the refresh token cookie
+  res.cookie('refreshToken', '', { expires: new Date(0), httpOnly: true, secure: false })
+  return res.status(200).json({ message: 'Logged out successfully' })
+}
+
+const protect = async (req: Request, res: Response, next: NextFunction) => {
+  const accessToken = req.cookies.accessToken
+  const refreshToken = req.cookies.refreshToken
+
+  if (!accessToken && !refreshToken) {
     return res.status(401).json({ status: 'fail', error: `You're Not Logged In, Please Log in and Try agin` })
   }
-  console.log('Token is Here')
 
   try {
+    let verifiedJWT
     //2) Validate Token (Verification)
-    const verifiedJWT = verify(token, jwtSecret)
-    console.log(verifiedJWT)
+    if (accessToken) {
+      verifiedJWT = verify(accessToken, jwtSecret)
+    } else {
+      verifiedJWT = verify(refreshToken, jwtSecret)
+    }
     if (verifiedJWT) {
-      const decoded = jwt_decode(token) as JwtPayload
+      const decoded = jwt_decode(accessToken) as JwtPayload
       // //3)Check if user still exists
-      const currentUser = await User.findOneById(decoded.id)
+      let currentUser = await findUserById(decoded.id)
+      if (!currentUser) {
+        currentUser = await findUserById(decoded.email)
+      }
+
       if (!currentUser) {
         return res.status(401).json({ status: 'fail', message: `The User belonging to this token No Longer Exists` })
       } else {
-        console.log(`Token is Verified`)
         req.user = currentUser
         return next()
       }
@@ -153,21 +124,19 @@ const protect = async (req: Request, res: Response, next: NextFunction) => {
 
 export const restrictToAdmin = (req: Request, res: Response, next: NextFunction) => {
   if (req.user) {
-    console.log(req.user)
-    const userRole = req.user.roles // Assuming you have a middleware that attaches the user object to the request
-    console.log(userRole)
+    const userRole = req.user.roles
+
     if (userRole[0] !== 'ADMIN') {
-      console.log('You do not have permission to perform this action')
       return res.status(403).json({ error: 'You do not have permission to perform this action' })
     }
 
-    next() // Move on to the next middleware/route
+    next()
   }
 }
 
 const getAllUsers = async (req: Request, res: Response) => {
   try {
-    const users = await User.find()
+    const users = await findAllUsers()
     return res.json(users)
   } catch (err) {
     console.error('Error No Students')
@@ -177,9 +146,9 @@ const getAllUsers = async (req: Request, res: Response) => {
 const updateUserRole = async (req: Request, res: Response) => {
   try {
     const { userId } = req.params
-    const newRole: AppRoles = req.body.role
-    console.log(newRole)
-    const user = await User.findOneById(userId)
+    const newRole: AppRoles = await req.body.userRole
+
+    const user = await findUserById(parseInt(userId))
     if (!user) {
       return res.status(404).json({ message: 'User not found' })
     }
@@ -201,4 +170,4 @@ const deleteUser = async (req: Request, res: Response) => {
   }
 }
 
-export { signUp, logIn, protect, getAllUsers, deleteUser, updateUserRole }
+export { signUp, logIn, protect, getAllUsers, deleteUser, updateUserRole, createSendToken, logOut }

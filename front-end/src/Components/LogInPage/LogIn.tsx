@@ -26,9 +26,8 @@ export default function LogIn() {
         (store: RootState) => store.logIn.successState
     )
 
-    const response = useSelector(
-        (store: RootState) => store.logIn.successMessage
-    )
+    const response = useSelector((store: RootState) => store.logIn.successRole)
+
     if (response === 'USER') {
         localStorage.setItem('Role', 'USER')
     } else if (response === 'ADMIN') {
@@ -46,11 +45,9 @@ export default function LogIn() {
 
         if (role === 'USER') {
             navigate('/student-table-plain')
-            localStorage.removeItem('AuthSuccess')
             console.log('Now I will navigate to Uneditable Table')
         } else if (role === 'ADMIN') {
             navigate('/student-table')
-            localStorage.removeItem('AuthSuccess')
             console.log('Now I will navigate to Editable Table')
         }
     }
@@ -126,6 +123,7 @@ export default function LogIn() {
                                 <TextField
                                     id="outlined-basic"
                                     label="Enter Password *"
+                                    type="password"
                                     variant="outlined"
                                     value={password}
                                     onChange={handleChangePassword}
