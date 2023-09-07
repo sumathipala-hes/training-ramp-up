@@ -4,6 +4,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 import { DeleteResult, InsertResult, Repository, UpdateResult } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
+import { decrypt, encrypt } from 'src/util/encrypted.decrypted.util';
 
 @Injectable()
 export class UsersService {
@@ -14,6 +15,7 @@ export class UsersService {
 
   async createUser(createUserDto: CreateUserDto): Promise<InsertResult> {
     try {
+      createUserDto.password = encrypt(createUserDto.password);
       const newUser: InsertResult =
         await this.userRepository.insert(createUserDto);
       return newUser;
@@ -31,6 +33,10 @@ export class UsersService {
       if (users.length === 0) {
         throw new Error('No users found.');
       }
+
+      users.forEach((user) => {
+        user.password = decrypt(user.password);
+      });
 
       return users;
     } catch (err) {
@@ -53,6 +59,8 @@ export class UsersService {
         throw new Error('No user found.');
       }
 
+      user.password = decrypt(user.password);
+
       return user;
     } catch (err) {
       throw new Error('Failed to fetch user.');
@@ -64,6 +72,8 @@ export class UsersService {
     updateUserDto: UpdateUserDto,
   ): Promise<UpdateResult> {
     try {
+      updateUserDto.password = encrypt(updateUserDto.password);
+
       const updatedUser: UpdateResult = await this.userRepository.update(
         email,
         updateUserDto,
