@@ -9,18 +9,23 @@ import {
 } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { registerUser, authenticateUser, setCurrentUsername, setCurrentUserRole, clearUserData } from '../../redux/userSlice';
+import {
+  registerUser,
+  setCurrentUsername,
+  setCurrentUserRole,
+  clearUserData,
+} from '../../redux/userSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import jwt_decode from 'jwt-decode';
 import { JwtPayload } from '../LoginPage/LoginPage';
 import React from 'react';
+import { isEmailValid, isPasswordConfirmed, isPasswordValid } from '../../utils/UserValidations';
 
 export const SignUp = () => {
   const [snackbar, setSnackbar] = React.useState<Pick<
     AlertProps,
     'children' | 'severity'
   > | null>(null);
-
   const handleCloseSnackbar = () => setSnackbar(null);
 
   const navigate = useNavigate();
@@ -33,14 +38,11 @@ export const SignUp = () => {
   const response = useSelector((state: any) => state.user.responseData);
   const error = useSelector((state: any) => state.user.errorData);
   const isAuthenticated = useSelector((state: any) => state.user.authStatus);
-  
-  const isRegisterDisabled = username.trim() === '' || password.trim() === '' || confirmedPassword.trim() === '';
-  const passwordsMatch = password === confirmedPassword;
 
-  const isEmailValid = (email: string) => {
-    const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
-    return emailRegex.test(email);
-  };
+  const isRegisterDisabled =
+    username.trim() === '' ||
+    password.trim() === '' ||
+    confirmedPassword.trim() === '';
 
   const handleLoginClick = () => {
     navigate('/login');
@@ -48,9 +50,15 @@ export const SignUp = () => {
 
   const handleRegisterClick = async () => {
     if (isEmailValid(username)) {
-      if (passwordsMatch) {
-        if (password.length >= 6) {
-          dispatch(registerUser({ username: username, password: password, role: 'user' }))
+      if (isPasswordConfirmed(password, confirmedPassword)) {
+        if (isPasswordValid(password)) {
+          dispatch(
+            registerUser({
+              username: username,
+              password: password,
+              role: 'user',
+            }),
+          );
         } else {
           setSnackbar({
             children: 'Password should contain at least 6 characters',
@@ -58,7 +66,9 @@ export const SignUp = () => {
           });
         }
       } else {
-        setSnackbar({ children: 'Passwords do not match', severity: 'error' });
+        setSnackbar({ 
+          children: 'Passwords do not match', 
+          severity: 'error' });
       }
     } else {
       setSnackbar({
@@ -69,8 +79,12 @@ export const SignUp = () => {
   };
 
   useEffect(() => {
-    if (response) {
-      dispatch(authenticateUser())
+    if (isAuthenticated) {
+      const decoded = jwt_decode(response.data.token) as JwtPayload;
+      dispatch(setCurrentUsername(decoded.username));
+      dispatch(setCurrentUserRole(decoded.role));
+      dispatch(clearUserData());
+      navigate('/main');
     } else if (error) {
       if (error instanceof Error && error.message === 'User already exists') {
         setSnackbar({
@@ -84,17 +98,7 @@ export const SignUp = () => {
         });
       }
     }
-}, [response, error, dispatch, setSnackbar]);
-
-  useEffect(() => {
-    if (isAuthenticated) {
-      const decoded = jwt_decode(response.data.token) as JwtPayload;
-      dispatch(setCurrentUsername(decoded.username));
-      dispatch(setCurrentUserRole(decoded.role));
-      dispatch(clearUserData());
-      navigate('/main');
-    }
-  });
+  }, [isAuthenticated, error]);
 
   return (
     <Box

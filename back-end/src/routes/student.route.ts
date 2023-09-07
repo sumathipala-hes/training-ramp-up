@@ -5,15 +5,17 @@ import {
   getStudents,
   updateStudent,
 } from '../controllers/student.controller';
+import { verifyJWT } from '../middlewares/UserValidations';
+import { createStudentValidationRules, validateCreateStudent } from '../middlewares/StudentValidations';
 
 const router = Router();
 
-router.post('/students', createStudent);
+router.post('/students', verifyJWT, createStudentValidationRules, validateCreateStudent, createStudent);
 
-router.get('/students', getStudents);
+router.get('/students', verifyJWT, getStudents);
 
-router.put('/students/:id', updateStudent);
+router.put('/students/:id', verifyJWT, updateStudent);
 
-router.delete('/students/:id', deleteStudent);
+router.delete('/students/:id', verifyJWT, deleteStudent);
 
 export default router;

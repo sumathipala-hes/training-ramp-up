@@ -1,5 +1,5 @@
-import { DataTable } from '../../components/DataTable/DataTable';
-import { NavBar } from '../../components/NavigationBar/NavigationBar';
+import DataTable from '../../components/DataTable/DataTable';
+import NavBar from '../../components/NavigationBar/NavigationBar';
 
 export const Main = () => {
 

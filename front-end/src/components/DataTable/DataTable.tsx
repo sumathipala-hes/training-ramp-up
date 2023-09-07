@@ -42,7 +42,7 @@ const EditToolbar = (props: EditToolbarProps) => {
   const rowModesModel = useSelector((state: any) => state.data.rowModesModel);
   const userRole = useSelector((state: any) => state.user.currentUserRole);
 
-  const isAddDisabled = userRole=== 'user'
+  const isAddDisabled = userRole === 'user';
 
   const handleAddClick = () => {
     const id = 0;
@@ -81,15 +81,14 @@ const EditToolbar = (props: EditToolbarProps) => {
   );
 };
 
-export const DataTable = () => {
+export default function DataTable() {
   const dispatch = useDispatch();
   const rows = useSelector((state: any) => state.data.records);
   const rowModesModel = useSelector((state: any) => state.data.rowModesModel);
   const userRole = useSelector((state: any) => state.user.currentUserRole);
 
-
-  const isEditDisabled = userRole=== 'user'
-  const isDeleteDisabled = userRole=== 'user'
+  const isEditDisabled = userRole === 'user';
+  const isDeleteDisabled = userRole === 'user';
 
   useEffect(() => {
     dispatch(getAllStudents());
