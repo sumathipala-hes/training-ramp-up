@@ -6,11 +6,13 @@ import {
   Param,
   Delete,
   Put,
+  Res,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { AuthService } from 'src/auth/auth.service';
+import { Response } from 'express';
 
 @Controller('api/v1/user')
 export class UsersController {
@@ -21,12 +23,12 @@ export class UsersController {
 
   @Post('/add')
   async create(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.create(createUserDto);
+    return await this.usersService.create(createUserDto);
   }
 
   @Get()
   async findAll(): Promise<Array<CreateUserDto>> {
-    return this.usersService.findAll();
+    return await this.usersService.findAll();
   }
 
   @Put(':email')
@@ -34,19 +36,29 @@ export class UsersController {
     @Param('email') email: string,
     @Body() updateUserDto: UpdateUserDto,
   ) {
-    return this.usersService.update(email, updateUserDto);
+    return await this.usersService.update(email, updateUserDto);
   }
 
   @Delete('del/:id')
   async remove(@Param('id') email: string) {
-    return this.usersService.remove(email);
+    return await this.usersService.remove(email);
   }
 
   @Post('signIn')
-  async signIn(@Body() createUserDto: CreateUserDto): Promise<any> {
-    return await this.authService.signIn(createUserDto);
+  async signIn(
+    @Body() createUserDto: CreateUserDto,
+    @Res({ passthrough: true }) res: Response,
+  ): Promise<any> {
+    const tokens = await this.authService.signIn(createUserDto);
+    res.cookie('accessToken', tokens.accessToken, { httpOnly: true });
+    res.cookie('refreshToken', tokens.refreshToken, { httpOnly: true });
+    return res.send(tokens);
   }
 
   @Delete('signOut')
-  async signOut() {}
+  async signOut(@Res({ passthrough: true }) res: Response) {
+    res.clearCookie('accessToken');
+    res.clearCookie('refreshToken');
+    return { message: 'Sign Out Successfully' };
+  }
 }
