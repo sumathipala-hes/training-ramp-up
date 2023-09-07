@@ -22,7 +22,7 @@ export class StudentsController {
   }
 
   @Get()
-  findAll(): Promise<Array<CreateStudentDto>> {
+  async findAll(): Promise<Array<CreateStudentDto>> {
     return this.studentsService.findAll();
   }
 

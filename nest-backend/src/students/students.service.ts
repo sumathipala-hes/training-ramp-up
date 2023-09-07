@@ -16,12 +16,18 @@ export class StudentsService {
     return this.studentRepository.insert(createStudentDto as Student);
   }
 
-  findAll(): Promise<Array<Student>> {
-    const students = this.studentRepository.find({ order: { id: 'DESC' } });
-    if (!students) {
-      throw new Error('No Students Found');
+  async findAll(): Promise<Array<CreateStudentDto>> {
+    try {
+      const students = await this.studentRepository.find({
+        order: { id: 'DESC' },
+      });
+      if (!students) {
+        throw new Error('No Students Found');
+      }
+      return students;
+    } catch (error) {
+      throw new Error(error.message);
     }
-    return students;
   }
 
   update(
