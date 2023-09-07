@@ -3,7 +3,8 @@ class ValidationUtil {
   static final RegExp addressRegExp = RegExp(r'^[0-9/A-z. ,]{5,}$');
   static final RegExp mobileRegExp = RegExp(r'^[0-9]+$');
   static final RegExp dobRegExp = RegExp(r'^[A-Za-z ]+$');
-  static final RegExp emailRegExp = RegExp(r'^[A-z0-9@.]+$');
+  static final RegExp emailRegExp =
+      RegExp(r'^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-]+)(\.[a-zA-Z]{2,5}){1,2}$');
   static final RegExp passwordRegExp = RegExp(r'^[A-z0-9@.]+$');
 
   static bool isValidExp(

@@ -2,6 +2,9 @@ import { DeleteResult, InsertResult, UpdateResult } from 'typeorm';
 import { dataSource } from '../configs/datasource.config';
 import { User } from '../models/user.model';
 import { sendNotification } from '../utils/notification.util';
+import jwt = require('jsonwebtoken');
+import { jwtConfig } from '../configs/jwt.config';
+import { decrypt, encrypt } from '../utils/password.util';
 
 export const getAllUsers = async (): Promise<Array<User>> => {
   try {
@@ -14,6 +17,9 @@ export const getAllUsers = async (): Promise<Array<User>> => {
       sendNotification('Warning', 'No Users Found..!');
       throw new Error('No Users Found..!');
     }
+    users.forEach((user) => {
+      user.password = decrypt(user.password);
+    });
     return users;
   } catch (error) {
     throw error;
@@ -22,7 +28,10 @@ export const getAllUsers = async (): Promise<Array<User>> => {
 
 export const saveUser = async (user: User): Promise<InsertResult> => {
   try {
-    const savedUser = await dataSource.manager.insert(User, user);
+    const savedUser = await dataSource.manager.insert(User, {
+      ...user,
+      password: encrypt(user.password),
+    });
     sendNotification('Successful', 'New User Saved..!');
     return savedUser;
   } catch (error) {
@@ -35,11 +44,13 @@ export const updateUser = async (
   user: User
 ): Promise<UpdateResult> => {
   try {
-    const updatedUser = await dataSource.manager.update(User, email, user);
+    const updatedUser = await dataSource.manager.update(User, email, {
+      ...user,
+      password: encrypt(user.password),
+    });
     sendNotification('Successful', 'New User Updated..!');
     return updatedUser;
   } catch (error) {
-    console.log(error);
     throw error;
   }
 };
@@ -54,10 +65,10 @@ export const deleteUser = async (email: string): Promise<DeleteResult> => {
   }
 };
 
-export const getUser = async (
+export const signInUser = async (
   email: string,
   password: string
-): Promise<User> => {
+): Promise<any> => {
   try {
     const userRepo = dataSource.manager.getRepository(User);
     const user = await userRepo.findOne({
@@ -65,12 +76,23 @@ export const getUser = async (
         email: email,
       },
     });
+    password = encrypt(password);
 
     if (user) {
       console.log(user.password);
-      const isMatch = user.password == password;
-      if (isMatch) {
-        return user;
+      if (user.password == password) {
+        const accessToken = jwt.sign(
+          { email: user.email, role: user.role },
+          jwtConfig.secretKey!,
+          { expiresIn: '5h' }
+        );
+        const refreshToken = jwt.sign(
+          { email: user.email },
+          jwtConfig.secretKey,
+          { expiresIn: '7d' }
+        );
+
+        return { accessToken: accessToken, refreshToken: refreshToken };
       } else {
         throw new Error('Password not match');
       }
@@ -78,7 +100,6 @@ export const getUser = async (
       throw new Error('User not found');
     }
   } catch (error) {
-    console.log(error);
     throw error;
   }
 };

@@ -199,6 +199,7 @@ class _UserFormState extends State<UserForm> {
                         ),
                         onPressed: isSaveButtonEnabled
                             ? () {
+                                Navigator.of(context).pop();
                                 userHomePageBloc.add(
                                   SaveUserEvent(
                                     user: User(

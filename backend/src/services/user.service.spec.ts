@@ -4,13 +4,23 @@ import { sendNotification } from '../utils/notification.util';
 import {
   deleteUser,
   getAllUsers,
-  getUser,
+  signInUser,
   saveUser,
   updateUser,
 } from './user.service';
+import { encrypt } from '../utils/password.util';
 
 jest.mock('../utils/notification.util', () => ({
   sendNotification: jest.fn(),
+}));
+jest.mock('../utils/password.util', () => ({
+  encrypt: jest.fn().mockReturnValue('encrypted'),
+  decrypt: jest.fn().mockReturnValue('decrypted'),
+}));
+
+jest.mock('../utils/password.util', () => ({
+  encrypt: jest.fn().mockReturnValue('encrypted'),
+  decrypt: jest.fn().mockReturnValue('decrypted'),
 }));
 
 describe('User Service Checked', () => {
@@ -47,6 +57,7 @@ describe('User Service Checked', () => {
     test('Save User Success', async () => {
       userRepo.insert = jest.fn().mockResolvedValue(newUser);
       const data = await saveUser(newUser);
+      newUser.password = encrypt('1234');
       expect(data).toEqual(newUser);
       expect(sendNotification).toHaveBeenCalledWith(
         'Successful',
@@ -69,7 +80,8 @@ describe('User Service Checked', () => {
 
     test('Update User Success', async () => {
       userRepo.update = jest.fn().mockResolvedValue(user);
-      const data = await updateUser('1', user);
+      const data = await updateUser('dasun@gmail.com', user);
+      user.password = encrypt('1234');
       expect(data).toEqual(user);
       expect(sendNotification).toHaveBeenCalledWith(
         'Successful',
@@ -106,17 +118,18 @@ describe('User Service Checked', () => {
     const result: User = {
       name: 'Dasun',
       email: 'dasun@gmail.com',
-      password: '1234',
+      password: encrypt('1234'),
       role: 'admin',
     };
+
     test('Get Users Success', async () => {
       userRepo.findOne = jest.fn().mockResolvedValue(result);
-      const data = await getUser('dasun@gmail.com', '1234');
-      expect(data).toEqual(result);
+      const data = await signInUser('dasun@gmail.com', '1234');
+      expect(typeof data).toEqual('object');
     });
-    test('Get All Students Fail', async () => {
+    test('Get User Fail', async () => {
       userRepo.findOne = jest.fn().mockRejectedValue(new Error('Error'));
-      await expect(getUser('dasun@gmail.com', '1234')).rejects.toThrowError(
+      await expect(signInUser('dasun@gmail.com', '1234')).rejects.toThrow(
         'Error'
       );
     });

@@ -3,8 +3,8 @@ import 'package:frontend/enum/role_enum.dart';
 import 'package:frontend/model/student.dart';
 import 'package:frontend/ui/manage_student_page/manage_student_page_provider.dart';
 import 'package:frontend/ui/theme/colors.dart';
+import 'package:frontend/util/local_storage.dart';
 import 'package:intl/intl.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class StudentCard extends StatefulWidget {
   final Student student;
@@ -29,8 +29,8 @@ class _StudentCardState extends State<StudentCard> {
         ),
         child: ElevatedButton(
           onPressed: () async {
-            final prefs = await SharedPreferences.getInstance();
-            final role = prefs.getString('role');
+            final localStorage = LocalStorage();
+            final role = await localStorage.getRole();
             if (role ==
                 RoleEnum.admin.toString().split('.').last.toLowerCase()) {
               // ignore: use_build_context_synchronously

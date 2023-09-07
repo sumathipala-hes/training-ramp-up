@@ -1,9 +1,7 @@
 import 'dart:async';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/repository/student_repository.dart';
-import 'package:frontend/util/notification_util.dart';
 import '../../model/student.dart';
 import 'student_home_page_event.dart';
 import 'student_home_page_state.dart';
@@ -17,8 +15,6 @@ class StudentHomePageBloc
     on<UpdateStudentEvent>(_updateStudent);
     on<DeleteStudentEvent>(_deleteStudent);
     add(GetAllStudents());
-    FirebaseMessaging.instance.getToken();
-    configListener();
   }
 
   StudentRepository studentRepository = StudentRepository();

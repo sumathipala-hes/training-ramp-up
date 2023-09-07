@@ -1,13 +1,10 @@
 import 'dart:async';
-
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/model/user.dart';
 import 'package:frontend/repository/user_repository.dart';
 import 'package:frontend/ui/user_home_page/user_home_page_event.dart';
 import 'package:frontend/ui/user_home_page/user_home_page_state.dart';
-import 'package:frontend/util/encrypt_decrypt_util.dart';
 import 'package:frontend/util/notification_util.dart';
 
 class UserHomePageBloc extends Bloc<UserHomePageEvent, UserHomePageState> {
@@ -19,7 +16,6 @@ class UserHomePageBloc extends Bloc<UserHomePageEvent, UserHomePageState> {
     on<DeleteUserEvent>(_deleteUser);
     on<SignOutEvent>(_signOut);
     add(GetAllUsers());
-    FirebaseMessaging.instance.getToken();
     configListener();
   }
 
@@ -32,7 +28,7 @@ class UserHomePageBloc extends Bloc<UserHomePageEvent, UserHomePageState> {
     final User user = User(
       name: event.user.name,
       email: event.user.email,
-      password: encryptPassword(event.user.password),
+      password: event.user.password,
       role: event.user.role,
     );
     await userRepository.addUsers(user);
@@ -58,7 +54,7 @@ class UserHomePageBloc extends Bloc<UserHomePageEvent, UserHomePageState> {
     final User user = User(
       name: event.user.name,
       email: event.user.email,
-      password: encryptPassword(event.user.password),
+      password: event.user.password,
       role: event.user.role,
     );
     await userRepository.updateUsers(user);

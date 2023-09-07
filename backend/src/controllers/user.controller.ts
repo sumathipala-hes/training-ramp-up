@@ -2,12 +2,10 @@ import { RequestHandler, Request, Response } from 'express';
 import {
   deleteUser,
   getAllUsers,
-  getUser,
   saveUser,
+  signInUser,
   updateUser,
 } from '../services/user.service';
-import jwt = require('jsonwebtoken');
-import { jwtConfig } from '../configs/jwt.config';
 
 export const retriveAllUsers: RequestHandler = async (
   req: Request,
@@ -29,7 +27,6 @@ export const addUsers: RequestHandler = async (
     const user = await saveUser(req.body);
     res.status(200).json(user);
   } catch (error) {
-    console.log(error);
     res.status(500).json(error);
   }
 };
@@ -63,30 +60,19 @@ export const signIn: RequestHandler = async (
   res: Response
 ): Promise<void> => {
   try {
-    console.log(req.body);
-    const user = await getUser(req.body.email, req.body.password);
-    if (user) {
-      const accessToken = jwt.sign(
-        { email: user.email, role: user.role },
-        jwtConfig.secretKey!,
-        { expiresIn: '5h' }
-      );
-      const refreshToken = jwt.sign(
-        { email: user.email, role: user.role },
-        jwtConfig.refreshKey!,
-        { expiresIn: '24h' }
-      );
-      res.cookie('refreshToken', refreshToken, {
-        httpOnly: true,
-      });
-      res.cookie('accessToken', accessToken, {
-        httpOnly: true,
-      });
-      console.log(accessToken, refreshToken);
-      res.status(200).json({ accessToken, refreshToken });
-    } else {
-      res.status(401).json({ message: 'Unauthorized' });
-    }
+    const tokens = await signInUser(req.body.email, req.body.password);
+    res.cookie('accessToken', tokens.accessToken, {
+      maxAge: 1000 * 60 * 5,
+      httpOnly: true,
+    });
+    res.cookie('refreshToken', tokens.refreshToken, {
+      maxAge: 60 * 60 * 24 * 1000,
+      httpOnly: true,
+    });
+    res.status(200).json({
+      accessToken: tokens.accessToken,
+      refreshToken: tokens.refreshToken,
+    });
   } catch (error) {
     res.status(500).json(error);
   }
@@ -98,7 +84,6 @@ export const signOut: RequestHandler = async (
 ): Promise<void> => {
   try {
     res.clearCookie('accessToken');
-    res.clearCookie('refreshToken');
     res.status(200).json({ message: 'Sign Out successfully' });
   } catch (error) {
     res.status(500).json(error);

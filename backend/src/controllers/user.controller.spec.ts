@@ -5,16 +5,22 @@ import { User } from '../models/user.model';
 import {
   deleteUser,
   getAllUsers,
-  getUser,
+  signInUser,
   saveUser,
   updateUser,
 } from '../services/user.service';
+import { encrypt } from '../utils/password.util';
 
 beforeAll(async () => {
   admin.initializeApp({
     credential: admin.credential.cert(serviceAccount as admin.ServiceAccount),
   });
 });
+
+jest.mock('../utils/password.util', () => ({
+  encrypt: jest.fn().mockReturnValue('encrypted'),
+  decrypt: jest.fn().mockReturnValue('decrypted'),
+}));
 
 describe('User Test', () => {
   const userRepo = dataSource.manager;
@@ -77,7 +83,7 @@ describe('User Test', () => {
 
     test('Update User Success', async () => {
       userRepo.update = jest.fn().mockResolvedValue(user);
-      const data = await updateUser('1', user);
+      const data = await updateUser('dasun@gmail.com', user);
       expect(data).toEqual(user);
     });
 
@@ -107,14 +113,14 @@ describe('User Test', () => {
     const newUser = {
       name: 'Dasun',
       email: 'dasun@gmail.com',
-      password: '1234',
+      password: encrypt('1234'),
       role: 'admin',
     };
 
     test('Sign In User Success', async () => {
       userRepo.findOne = jest.fn().mockResolvedValue(newUser);
-      const data = await getUser(newUser.email, newUser.password);
-      expect(data).toEqual(newUser);
+      const data = await signInUser(newUser.email, newUser.password);
+      expect(typeof data).toEqual('object');
     });
 
     test('Sign In User Fail', async () => {
