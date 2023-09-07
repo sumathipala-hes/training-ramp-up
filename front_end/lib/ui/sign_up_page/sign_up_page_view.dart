@@ -12,7 +12,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 
 import '../../theme/primary_theme.dart';
-import '../../util/encrypted_decrypted_util.dart';
 import '../../util/notification_util.dart';
 import '../admin_home_page/admin_home_page_bloc.dart';
 import 'sign_up_page_event.dart';
@@ -356,9 +355,6 @@ class SignUpPageView extends StatelessWidget {
                                     coPasswordController.text.trim()) {
                                   showFieldError('Password not match.');
                                 } else {
-                                  final coPassword = encryptPassword(
-                                    coPasswordController.text.trim(),
-                                  );
                                   adminPage.add(
                                     SaveUser(
                                       user: User(
@@ -370,7 +366,8 @@ class SignUpPageView extends StatelessWidget {
                                             mobileNoController.text.trim(),
                                         dob: dob,
                                         gender: signUpBloc.state.selectedGender,
-                                        password: coPassword,
+                                        password:
+                                            coPasswordController.text.trim(),
                                       ),
                                     ),
                                   );

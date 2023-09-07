@@ -17,10 +17,21 @@ class LocalStorage {
     prefs.setString('email', email);
   }
 
+  Future<void> setAccessToken(String accessToken) async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setString('accessToken', accessToken);
+  }
+
   Future<String> getCurrentLoginRoleType() async {
     final prefs = await SharedPreferences.getInstance();
     final roleType = prefs.getString('roleType');
     return roleType??'';
+  }
+
+  Future<String> getAccessToken() async {
+    final prefs = await SharedPreferences.getInstance();
+    final accessToken = prefs.getString('accessToken');
+    return accessToken??'';
   }
 
   Future<String> getCurrentLoginEmail() async {

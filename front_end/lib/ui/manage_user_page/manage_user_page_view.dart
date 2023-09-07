@@ -10,7 +10,6 @@ import 'package:intl/intl.dart';
 
 import '../../enum/role_type_enum.dart';
 import '../../theme/primary_theme.dart';
-import '../../util/encrypted_decrypted_util.dart';
 import '../../util/notification_util.dart';
 import '../../util/validation_utils.dart';
 import '../admin_home_page/admin_home_page_bloc.dart';
@@ -29,7 +28,7 @@ class UserMangeView extends StatelessWidget {
     dob = user.dob;
     emailController.text = user.email;
     userTypeController.text = user.roleType;
-    passwordController.text = decryptPassword(user.password);
+    passwordController.text = user.password;
   }
 
   final TextEditingController nameController = TextEditingController();
@@ -424,9 +423,6 @@ class UserMangeView extends StatelessWidget {
                                   showFieldError(
                                       'Password should be at least 8 characters.');
                                 } else {
-                                  final password =
-                                      encryptPassword(passwordController.text);
-
                                   homePageBloc.add(
                                     UpdateUser(
                                       user: User(
@@ -436,7 +432,8 @@ class UserMangeView extends StatelessWidget {
                                         email: emailController.text,
                                         mobileNumber: mobileNoController.text,
                                         dob: dob,
-                                        password: password,
+                                        password:
+                                            passwordController.text.trim(),
                                         gender:
                                             userManageBloc.state.selectedGender,
                                       ),

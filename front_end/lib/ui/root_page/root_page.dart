@@ -12,9 +12,9 @@ import '../user_home_page/user_home_page_bloc.dart';
 import '../sign_in_page/sign_in_page_bloc.dart';
 
 class RampUpApp extends StatelessWidget {
-  const RampUpApp({Key? key, required this.isAuthenticate}) : super(key: key);
+  const RampUpApp({Key? key, required this.isRole}) : super(key: key);
 
-  final bool isAuthenticate;
+  final bool isRole;
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +29,7 @@ class RampUpApp extends StatelessWidget {
           final prefs = snapshot.data!;
           final roleType = prefs;
 
-          final homePage = isAuthenticate
+          final homePage = isRole
               ? roleType ==
                       RoleEnum.user.toString().split('.').last.toUpperCase()
                   ? UserHomePageView()
