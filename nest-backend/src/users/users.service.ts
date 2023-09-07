@@ -4,16 +4,14 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 import { DeleteResult, InsertResult, Repository, UpdateResult } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { encrypt } from 'src/utils/password.util';
+import { decrypt, encrypt } from 'src/utils/password.util';
 import { JwtService } from '@nestjs/jwt';
-import { jwtConfig } from 'src/config/jwt.config';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,
-    private jwtService: JwtService,
   ) {}
 
   async create(createUserDto: CreateUserDto): Promise<InsertResult> {
@@ -36,7 +34,7 @@ export class UsersService {
         throw new Error('No Users Found');
       }
       users.forEach((user) => {
-        user.password = encrypt(user.password);
+        user.password = decrypt(user.password);
       });
       return users;
     } catch (error) {
@@ -71,37 +69,5 @@ export class UsersService {
       }
       return await this.userRepository.delete(email);
     } catch (error) {}
-  }
-
-  async signInUser(email: string, password: string): Promise<any> {
-    try {
-      const user = await this.userRepository.findOne({
-        where: {
-          email: email,
-        },
-      });
-      password = encrypt(password);
-
-      if (user) {
-        if (user.password == password) {
-          const accessToken = this.jwtService.sign(
-            { email: user.email, role: user.role },
-            { secret: jwtConfig.secretKey!, expiresIn: '5h' },
-          );
-          const refreshToken = this.jwtService.sign(
-            { email: user.email },
-            { secret: jwtConfig.secretKey, expiresIn: '7d' },
-          );
-
-          return { accessToken: accessToken, refreshToken: refreshToken };
-        } else {
-          throw new Error('Password not match');
-        }
-      } else {
-        throw new Error('User not found');
-      }
-    } catch (error) {
-      throw error;
-    }
   }
 }

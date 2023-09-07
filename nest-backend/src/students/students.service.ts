@@ -12,8 +12,12 @@ export class StudentsService {
     private studentRepository: Repository<Student>,
   ) {}
 
-  create(createStudentDto: CreateStudentDto): Promise<InsertResult> {
-    return this.studentRepository.insert(createStudentDto as Student);
+  async create(createStudentDto: CreateStudentDto): Promise<InsertResult> {
+    try {
+      return this.studentRepository.insert(createStudentDto as Student);
+    } catch (error) {
+      throw new Error(error.message);
+    }
   }
 
   async findAll(): Promise<Array<CreateStudentDto>> {
@@ -30,14 +34,22 @@ export class StudentsService {
     }
   }
 
-  update(
+  async update(
     id: number,
     updateStudentDto: UpdateStudentDto,
   ): Promise<UpdateResult> {
-    return this.studentRepository.update(id, updateStudentDto as Student);
+    try {
+      return this.studentRepository.update(id, updateStudentDto as Student);
+    } catch (error) {
+      throw new Error(error.message);
+    }
   }
 
-  remove(id: number): Promise<DeleteResult> {
-    return this.studentRepository.delete(id);
+  async remove(id: number): Promise<DeleteResult> {
+    try {
+      return this.studentRepository.delete(id);
+    } catch (error) {
+      throw new Error(error.message);
+    }
   }
 }

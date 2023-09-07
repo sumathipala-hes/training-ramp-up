@@ -23,7 +23,7 @@ class UserRepository {
         },
       ),
     );
-    if (res.statusCode == 200) {
+    if (res.statusCode == 201 || res.statusCode == 200) {
       final Map<String, dynamic> jsonData = json.decode(res.body);
       final accessToken = jsonData['accessToken'];
 

@@ -1,6 +1,6 @@
+import { createCipheriv, createDecipheriv } from 'node:crypto';
 import * as dotenv from 'dotenv';
 dotenv.config();
-import { createCipheriv, createDecipheriv } from 'node:crypto';
 
 const encryptionKey = process.env.ENCRYPTION_KEY!;
 const iv = process.env.ENCRYPTION_IV!;

@@ -10,10 +10,14 @@ import {
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { AuthService } from 'src/auth/auth.service';
 
 @Controller('api/v1/user')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly authService: AuthService,
+  ) {}
 
   @Post('/add')
   async create(@Body() createUserDto: CreateUserDto) {
@@ -26,12 +30,23 @@ export class UsersController {
   }
 
   @Put(':email')
-  update(@Param('email') email: string, @Body() updateUserDto: UpdateUserDto) {
+  async update(
+    @Param('email') email: string,
+    @Body() updateUserDto: UpdateUserDto,
+  ) {
     return this.usersService.update(email, updateUserDto);
   }
 
   @Delete('del/:id')
-  remove(@Param('id') email: string) {
+  async remove(@Param('id') email: string) {
     return this.usersService.remove(email);
   }
+
+  @Post('signIn')
+  async signIn(@Body() createUserDto: CreateUserDto): Promise<any> {
+    return await this.authService.signIn(createUserDto);
+  }
+
+  @Delete('signOut')
+  async signOut() {}
 }
