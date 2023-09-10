@@ -56,6 +56,22 @@ export class UsersService {
     }
   }
 
+  async findOne(email: string): Promise<User> {
+    try {
+      const user = await this.userRepository.findOne({
+        where: {
+          email: email,
+        },
+      });
+      if (!user) {
+        throw new Error('User not found');
+      }
+      return user;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+
   async remove(email: string): Promise<DeleteResult> {
     try {
       const user = await this.userRepository.findOne({

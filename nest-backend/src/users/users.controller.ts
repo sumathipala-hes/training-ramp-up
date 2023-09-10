@@ -12,10 +12,12 @@ import { UsersService } from './users.service';
 import { Response } from 'express';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { AuthService } from 'src/auth/auth.service';
 
 @Controller('api/v1/user')
 export class UsersController {
   constructor(private readonly usersService: UsersService,
+    private readonly authService: AuthService
  ) {}
 
   @Post('/add')
@@ -39,5 +41,23 @@ export class UsersController {
   @Delete('del/:id')
   async remove(@Param('id') email: string) {
     return await this.usersService.remove(email);
+  }
+
+  @Post('signIn')
+  async login(@Body() createUserDto:CreateUserDto, @Res() res: Response) {
+    const tokens = await this.authService.signIn(createUserDto);
+    console.log(tokens);
+    res.cookie('accessToken', tokens.accessToken, {
+      maxAge: 1000 * 60 * 5,
+      httpOnly: true,
+    });
+    res.cookie('refreshToken', tokens.refreshToken, {
+      maxAge: 60 * 60 * 24 * 1000,
+      httpOnly: true,
+    });
+    res.status(200).json({
+      accessToken: tokens.accessToken,
+      refreshToken: tokens.refreshToken,
+    });
   }
 }
