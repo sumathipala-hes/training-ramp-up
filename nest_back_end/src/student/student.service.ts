@@ -1,26 +1,79 @@
 import { Injectable } from '@nestjs/common';
-import { CreateStudentDto } from './dto/create-student.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository, DeleteResult, UpdateResult, InsertResult } from 'typeorm';
+import { Student } from './entities/student.entity';
 import { UpdateStudentDto } from './dto/update-student.dto';
+import { CreateStudentDto } from './dto/create-student.dto';
 
 @Injectable()
 export class StudentService {
-  create(createStudentDto: CreateStudentDto) {
-    return 'This action adds a new student';
+  constructor(
+    @InjectRepository(Student)
+    private readonly studentRepository: Repository<Student>,
+  ) {}
+
+  async saveStudent(createStudentDto: CreateStudentDto): Promise<InsertResult> {
+    try {
+      // Insert the student into the database
+      const newStudent: InsertResult =
+        await this.studentRepository.insert(createStudentDto as Student);
+      return newStudent;
+    } catch (error) {
+      // Handle and rethrow the error
+      throw error;
+    }
   }
 
-  findAll() {
-    return `This action returns all student`;
+  async retrieveAllStudents(): Promise<CreateStudentDto[]> {
+    try {
+      // Retrieve all the students from the database
+      const students: CreateStudentDto[] = await this.studentRepository.find({
+        order: { studentId: 'DESC' },
+      });
+      if (!students) {
+        throw new Error('No students found.');
+      }
+      return students;
+    } catch (error) {
+      // Handle and rethrow the error
+      throw error;
+    }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} student`;
+  async updateStudent(
+    id: number,
+    updateStudentDto: UpdateStudentDto,
+  ): Promise<UpdateResult> {
+    try {
+      // Update the student in the database
+      const updatedStudent: UpdateResult = await this.studentRepository.update(
+        id,
+        updateStudentDto as Student,
+      );
+      if (updatedStudent.affected === 1) {
+        // If the student is updated
+        updatedStudent.raw = updateStudentDto;
+      } else {
+        throw new Error('Student not found.');
+      }
+      return updatedStudent;
+    } catch (error) {
+      // Handle and rethrow the error
+      throw error;
+    }
   }
 
-  update(id: number, updateStudentDto: UpdateStudentDto) {
-    return `This action updates a #${id} student`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} student`;
+  async deleteStudent(id: number): Promise<DeleteResult> {
+    try {
+      const deletedStudent: DeleteResult =
+        await this.studentRepository.delete(id);
+      if (deletedStudent.affected !== 1) {
+        throw new Error('Student not found.');
+      }
+      return deletedStudent;
+    } catch (error) {
+      // Handle and rethrow the error
+      throw error;
+    }
   }
 }
