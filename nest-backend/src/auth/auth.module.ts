@@ -6,11 +6,14 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from 'src/users/entities/user.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User]),JwtModule.register({
-    global: true,
-    secret: jwtConstants.secretKey,
-    signOptions: { expiresIn: '60s' },
-  }),],
+  imports: [
+    TypeOrmModule.forFeature([User]),
+    JwtModule.register({
+      global: true,
+      secret: jwtConstants.secretKey,
+      signOptions: { expiresIn: '60s' },
+    }),
+  ],
   providers: [AuthService],
   exports: [AuthService],
 })

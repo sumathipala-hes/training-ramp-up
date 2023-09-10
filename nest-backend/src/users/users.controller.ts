@@ -16,9 +16,10 @@ import { AuthService } from 'src/auth/auth.service';
 
 @Controller('api/v1/user')
 export class UsersController {
-  constructor(private readonly usersService: UsersService,
-    private readonly authService: AuthService
- ) {}
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly authService: AuthService,
+  ) {}
 
   @Post('/add')
   async create(@Body() createUserDto: CreateUserDto) {
@@ -44,7 +45,7 @@ export class UsersController {
   }
 
   @Post('signIn')
-  async login(@Body() createUserDto:CreateUserDto, @Res() res: Response) {
+  async login(@Body() createUserDto: CreateUserDto, @Res() res: Response) {
     const tokens = await this.authService.signIn(createUserDto);
     console.log(tokens);
     res.cookie('accessToken', tokens.accessToken, {
@@ -59,5 +60,12 @@ export class UsersController {
       accessToken: tokens.accessToken,
       refreshToken: tokens.refreshToken,
     });
+  }
+
+  @Delete('signOut')
+  async logout(@Res() res: Response) {
+    res.clearCookie('accessToken');
+    res.clearCookie('refreshToken');
+    res.status(200).json({ message: 'Logout Success' });
   }
 }
