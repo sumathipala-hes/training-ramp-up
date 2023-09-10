@@ -1,6 +1,7 @@
-import jwt from 'jsonwebtoken';
 import { Request, Response, NextFunction } from 'express';
 import { jwtConstants } from './auth.constants';
+import { JwtService } from '@nestjs/jwt';
+import jwt from 'jsonwebtoken';
 
 export const authorization = (
   req: Request,
@@ -26,12 +27,12 @@ export const authPermissions = (
   next: NextFunction
 ) => {
   const accessToken = req.headers.cookie?.split('=')[1];
-  console.log(accessToken);
   if (!accessToken) {
     return res.sendStatus(403);
   } else {
     try {
       const payload = jwt.verify(accessToken, jwtConstants.secretKey);
+      console.log(payload);
 
       if ((payload as { role: string }).role == 'admin') {
         return next();
@@ -39,6 +40,7 @@ export const authPermissions = (
         return res.sendStatus(403);
       }
     } catch {
+      console.log('No access token');
       return res.sendStatus(500);
     }
   }

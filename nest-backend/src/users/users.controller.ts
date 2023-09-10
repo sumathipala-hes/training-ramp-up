@@ -44,8 +44,9 @@ export class UsersController {
     return await this.usersService.remove(email);
   }
 
-  @Post('signIn')
+  @Post('/signIn')
   async login(@Body() createUserDto: CreateUserDto, @Res() res: Response) {
+    console.log(createUserDto);
     const tokens = await this.authService.signIn(createUserDto);
     console.log(tokens);
     res.cookie('accessToken', tokens.accessToken, {

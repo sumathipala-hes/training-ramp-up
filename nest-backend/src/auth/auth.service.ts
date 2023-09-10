@@ -21,6 +21,7 @@ export class AuthService {
           email: createUserDto.email,
         },
       });
+      console.log('Password not match0');
       if (user) {
         if (user.password == encrypt(createUserDto.password)) {
           const accessToken = this.jwtService.sign(
@@ -33,12 +34,15 @@ export class AuthService {
           );
           return { accessToken: accessToken, refreshToken: refreshToken };
         } else {
+          console.log('Password not match');
           throw new Error('Password not match');
         }
       } else {
+        console.log('Password not match1');
         throw new Error('User not found');
       }
     } catch (error) {
+      console.log('Password not match2');
       throw new Error(error.message);
     }
   }

@@ -8,6 +8,7 @@ import { AuthModule } from './auth/auth.module';
 import typeOrmConfig from './config/typeorm.config';
 import { StudentMiddleware } from './students/student.middleware';
 import { authPermissions } from './auth/auth.middleware';
+import { validateUser } from './users/user.middleware';
 
 @Module({
   imports: [
@@ -21,11 +22,13 @@ import { authPermissions } from './auth/auth.middleware';
 })
 export class AppModule {
   configure(consumer:MiddlewareConsumer) {
-    consumer.apply(StudentMiddleware).forRoutes({path: 'student', method: RequestMethod.POST});
-    consumer.apply(StudentMiddleware).forRoutes({path: 'student', method: RequestMethod.PUT});
-    consumer.apply(authPermissions).forRoutes({path: 'user/add', method: RequestMethod.POST});
-    consumer.apply(authPermissions).forRoutes({path: 'user/update', method: RequestMethod.PUT});
-    consumer.apply(authPermissions).forRoutes({path: 'user', method: RequestMethod.GET});
-    consumer.apply(authPermissions).forRoutes({path: 'user/del', method: RequestMethod.DELETE});
+    consumer.apply(StudentMiddleware).forRoutes({path: 'api/v1/student', method: RequestMethod.POST});
+    consumer.apply(StudentMiddleware).forRoutes({path: 'api/v1/student', method: RequestMethod.PUT});
+    consumer.apply(authPermissions).forRoutes({path: 'api/v1/user/add', method: RequestMethod.POST});
+    consumer.apply(authPermissions).forRoutes({path: 'api/v1/user/:id', method: RequestMethod.PUT});
+    // consumer.apply(authPermissions).forRoutes({path: 'api/v1/user/signIn', method: RequestMethod.GET});
+    consumer.apply(authPermissions).forRoutes({path: 'api/v1/user/del', method: RequestMethod.DELETE});
+    consumer.apply(validateUser).forRoutes({path: 'api/v1/user/add', method: RequestMethod.POST});
+    consumer.apply(validateUser).forRoutes({path: 'api/v1/user/:id', method: RequestMethod.PUT});
   }
 }
