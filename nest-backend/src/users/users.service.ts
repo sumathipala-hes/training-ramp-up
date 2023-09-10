@@ -46,7 +46,6 @@ export class UsersService {
     updateUserDto: UpdateUserDto,
   ): Promise<UpdateResult> {
     try {
-      updateUserDto.password = encrypt(updateUserDto.password);
       return await this.userRepository.update(id, {
         ...updateUserDto,
         password: encrypt(updateUserDto.password),

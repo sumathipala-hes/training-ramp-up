@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 import { Request, Response, NextFunction } from 'express';
-import { jwtConfig } from '../configs/jwt.config';
+import { jwtConstants } from './auth.constants';
 
 export const authorization = (
   req: Request,
@@ -12,7 +12,7 @@ export const authorization = (
     res.sendStatus(403);
   } else {
     try {
-      const payload = jwt.verify(accessToken, jwtConfig.secretKey);
+      const payload = jwt.verify(accessToken, jwtConstants.secretKey);
       payload ? next() : res.sendStatus(401);
     } catch {
       res.sendStatus(403);
@@ -31,7 +31,7 @@ export const authPermissions = (
     return res.sendStatus(403);
   } else {
     try {
-      const payload = jwt.verify(accessToken, jwtConfig.secretKey);
+      const payload = jwt.verify(accessToken, jwtConstants.secretKey);
 
       if ((payload as { role: string }).role == 'admin') {
         return next();
