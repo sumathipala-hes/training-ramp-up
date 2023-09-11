@@ -200,10 +200,7 @@ axios.interceptors.response.use(
         return res
     },
     async function (error) {
-        console.log(error.response.data.refreshToken)
-
         if (error.message === 'Request failed with status code 402') {
-            console.log('Sending Post request to refresh-token')
             try {
                 const response = await axios(
                     `${API_BASE_URL}/api/user/refresh-token`,
@@ -215,7 +212,7 @@ axios.interceptors.response.use(
                         withCredentials: true,
                     }
                 )
-                console.log(response)
+
                 return response
             } catch (tokenError) {
                 console.error(tokenError)

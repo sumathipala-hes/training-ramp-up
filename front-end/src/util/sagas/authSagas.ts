@@ -114,21 +114,14 @@ axios.interceptors.response.use(
         return res
     },
     async function (error) {
-        console.log(error.response.data.refreshToken)
-
         if (error.message === 'Request failed with status code 402') {
-            console.log('Sending Post request to refresh-token')
-            const response = await fetch(
-                `${API_BASE_URL}/api/user/refresh-token`,
-                {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    credentials: 'include',
-                }
-            )
-            console.log(response)
+            await fetch(`${API_BASE_URL}/api/user/refresh-token`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                credentials: 'include',
+            })
         }
     }
 )

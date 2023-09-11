@@ -139,74 +139,16 @@ const protect = async (req: Request, res: Response, next: NextFunction) => {
     }
     if (!accessToken && !refreshToken) {
       return res.status(500).json({ status: 'fail', message: `You're logged out, Please log In again` })
-      ///////////////////////////////////////
-      // if (refreshToken) {
-      //   let currentUser
-      //   const verifiedJWTRT = verify(refreshToken, jwtSecret)
-      //   const decoded = jwt_decode(refreshToken) as JwtPayload
-      //   if (verifiedJWTRT) {
-      //     currentUser = await findUserById(decoded.id)
-      //     if (currentUser) {
-      //       const newAccessToken = signToken(currentUser.id, currentUser.email)
-      //       res.cookie('accessToken', newAccessToken.accessToken, {
-      //         maxAge: 30000,
-      //         httpOnly: true,
-      //         secure: false,
-      //       })
-      //       req.user = currentUser
-      //       return next()
-      //     }
-      //   }
-      // }
     }
   } catch (err) {
     console.error(err)
   }
-
-  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  // const refreshToken = req.cookies.refreshToken
-
-  // if (!refreshToken && !accessToken) {
-  //   return res.status(401).json({ status: 'fail', error: `You're Not Logged In, Please Log in and Try agin` })
-  // }
-
-  // try {
-  //   let verifiedJWT
-  //   let decoded
-  //   //2) Validate Token (Verification)
-  //   if (accessToken) {
-  //     verifiedJWT = verify(accessToken, jwtSecret)
-  //     decoded = jwt_decode(accessToken) as JwtPayload
-  //   } else {
-  //     verifiedJWT = verify(refreshToken, jwtSecret)
-  //     decoded = jwt_decode(refreshToken) as JwtPayload
-  //   }
-  //   if (verifiedJWT) {
-  //     // //3)Check if user still exists
-  //     let currentUser = await findUserById(decoded.id)
-  //     if (!currentUser) {
-  //       currentUser = await findUserByEmail(decoded.email)
-  //     }
-
-  //     if (!currentUser) {
-  //       return res.status(401).json({ status: 'fail', message: `The User belonging to this token No Longer Exists` })
-  //     } else {
-  //       req.user = currentUser
-  //       return next()
-  //     }
-  //   } else {
-  //     return res.status(401).json({ status: 'fail', message: `The Token is Unautharized` })
-  //   }
-  // } catch (err) {
-  //   return res.status(401).json({ status: 'fail', message: 'The Token is not verified' })
-  // }
 }
 
 export const refreshToken = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    console.log('Refresh Token function is reached')
     const refreshToken = req.cookies.refreshToken
-    console.log(refreshToken)
+
     if (!refreshToken) {
       return response.status(403).json({ status: 'fail', message: 'Both Tokens are Expired, Please Log in Again' })
     }
