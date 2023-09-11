@@ -1,10 +1,17 @@
-import { NextFunction, Request, Response } from 'express'
+import { NextFunction, Request, Response, response } from 'express'
 import { User } from '../entities/user'
 import { JwtPayload, verify } from 'jsonwebtoken'
 import { validationResult } from 'express-validator'
 import jwt_decode from 'jwt-decode'
 import { AppRoles } from '../util/Roles'
-import { createSendToken, createUser, findAllUsers, findUserByEmail, findUserById } from '../services/authService'
+import {
+  createSendToken,
+  createUser,
+  findAllUsers,
+  findUserByEmail,
+  findUserById,
+  signToken,
+} from '../services/authService'
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
@@ -40,6 +47,28 @@ const signUp = async (req: Request, res: Response) => {
     console.log(`Couldn't Sign up with details that has given, ${err}`)
   }
 }
+const registerUser = async (req: Request, res: Response) => {
+  try {
+    const errors = validationResult(req)
+
+    if (!errors.isEmpty()) {
+      console.log(errors)
+      return res.status(400).json({ errors: errors.array() })
+    }
+
+    const newUser = await createUser(req.body.email, req.body.userName, req.body.password)
+    console.log(newUser)
+    //If Everythin is Ok Send a Token
+    newUser.password = undefined
+    if (newUser) {
+      return { newUser, status: 200 }
+    } else {
+      return { status: 403 }
+    }
+  } catch (err) {
+    console.log(`Couldn't Sign up with details that has given, ${err}`)
+  }
+}
 
 const logIn = async (req: Request, res: Response) => {
   try {
@@ -51,7 +80,7 @@ const logIn = async (req: Request, res: Response) => {
       return res.status(400).json({ errors: 'Email Or Password is not given' })
     }
 
-    //2)Check if User Exists and Password is Correct
+    //2)Check if User Exists and Password is Correctoiuygfdsatr
     const user = await findUserByEmail(email)
 
     if (user?.password) {
@@ -88,37 +117,117 @@ const protect = async (req: Request, res: Response, next: NextFunction) => {
   const accessToken = req.cookies.accessToken
   const refreshToken = req.cookies.refreshToken
 
-  if (!accessToken && !refreshToken) {
-    return res.status(401).json({ status: 'fail', error: `You're Not Logged In, Please Log in and Try agin` })
-  }
-
   try {
-    let verifiedJWT
-    //2) Validate Token (Verification)
     if (accessToken) {
-      verifiedJWT = verify(accessToken, jwtSecret)
-    } else {
-      verifiedJWT = verify(refreshToken, jwtSecret)
-    }
-    if (verifiedJWT) {
+      const verifiedJWTAT = verify(accessToken, jwtSecret)
       const decoded = jwt_decode(accessToken) as JwtPayload
-      // //3)Check if user still exists
-      let currentUser = await findUserById(decoded.id)
-      if (!currentUser) {
-        currentUser = await findUserById(decoded.email)
-      }
+      let currentUser
+      if (verifiedJWTAT) {
+        console.log(decoded.exp, Date.now() / 1000)
+        currentUser = await findUserById(decoded.id)
+        if (!currentUser) {
+          return res.status(401).json({ status: 'fail', message: `The User belonging to this token No Longer Exists` })
+        }
 
-      if (!currentUser) {
-        return res.status(401).json({ status: 'fail', message: `The User belonging to this token No Longer Exists` })
-      } else {
         req.user = currentUser
         return next()
       }
-    } else {
-      return res.status(401).json({ status: 'fail', message: `The Token is Unautharized` })
+    } else if (refreshToken) {
+      return res
+        .status(402)
+        .json({ status: 'refresh', message: `Access Token is Expired,check If Token can be refreshed`, refreshToken })
+    }
+    if (!accessToken && !refreshToken) {
+      return res.status(500).json({ status: 'fail', message: `You're logged out, Please log In again` })
+      ///////////////////////////////////////
+      // if (refreshToken) {
+      //   let currentUser
+      //   const verifiedJWTRT = verify(refreshToken, jwtSecret)
+      //   const decoded = jwt_decode(refreshToken) as JwtPayload
+      //   if (verifiedJWTRT) {
+      //     currentUser = await findUserById(decoded.id)
+      //     if (currentUser) {
+      //       const newAccessToken = signToken(currentUser.id, currentUser.email)
+      //       res.cookie('accessToken', newAccessToken.accessToken, {
+      //         maxAge: 30000,
+      //         httpOnly: true,
+      //         secure: false,
+      //       })
+      //       req.user = currentUser
+      //       return next()
+      //     }
+      //   }
+      // }
     }
   } catch (err) {
-    return res.status(401).json({ status: 'fail', message: 'The Token is not verified' })
+    console.error(err)
+  }
+
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  // const refreshToken = req.cookies.refreshToken
+
+  // if (!refreshToken && !accessToken) {
+  //   return res.status(401).json({ status: 'fail', error: `You're Not Logged In, Please Log in and Try agin` })
+  // }
+
+  // try {
+  //   let verifiedJWT
+  //   let decoded
+  //   //2) Validate Token (Verification)
+  //   if (accessToken) {
+  //     verifiedJWT = verify(accessToken, jwtSecret)
+  //     decoded = jwt_decode(accessToken) as JwtPayload
+  //   } else {
+  //     verifiedJWT = verify(refreshToken, jwtSecret)
+  //     decoded = jwt_decode(refreshToken) as JwtPayload
+  //   }
+  //   if (verifiedJWT) {
+  //     // //3)Check if user still exists
+  //     let currentUser = await findUserById(decoded.id)
+  //     if (!currentUser) {
+  //       currentUser = await findUserByEmail(decoded.email)
+  //     }
+
+  //     if (!currentUser) {
+  //       return res.status(401).json({ status: 'fail', message: `The User belonging to this token No Longer Exists` })
+  //     } else {
+  //       req.user = currentUser
+  //       return next()
+  //     }
+  //   } else {
+  //     return res.status(401).json({ status: 'fail', message: `The Token is Unautharized` })
+  //   }
+  // } catch (err) {
+  //   return res.status(401).json({ status: 'fail', message: 'The Token is not verified' })
+  // }
+}
+
+export const refreshToken = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    console.log('Refresh Token function is reached')
+    const refreshToken = req.cookies.refreshToken
+    console.log(refreshToken)
+    if (!refreshToken) {
+      return response.status(403).json({ status: 'fail', message: 'Both Tokens are Expired, Please Log in Again' })
+    }
+    const verifiedJWTRT = verify(refreshToken, jwtSecret)
+    const decoded = jwt_decode(refreshToken) as JwtPayload
+
+    if (verifiedJWTRT) {
+      const currentUser = await findUserById(decoded.id)
+      if (currentUser) {
+        const newAccessToken = signToken(currentUser.id, currentUser.email)
+        res.cookie('accessToken', newAccessToken.accessToken, {
+          expires: new Date(Date.now() + 300000),
+          httpOnly: true,
+          secure: false,
+        })
+        req.user = currentUser
+        return next()
+      }
+    }
+  } catch (err) {
+    console.log(err)
   }
 }
 
@@ -170,4 +279,4 @@ const deleteUser = async (req: Request, res: Response) => {
   }
 }
 
-export { signUp, logIn, protect, getAllUsers, deleteUser, updateUserRole, createSendToken, logOut }
+export { signUp, logIn, protect, getAllUsers, deleteUser, updateUserRole, createSendToken, logOut, registerUser }

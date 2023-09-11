@@ -19,6 +19,7 @@
         "@types/node": "^16.18.38",
         "@types/react": "^18.2.15",
         "@types/react-dom": "^18.2.7",
+        "axios": "^1.5.0",
         "eslint-plugin-react": "7.33",
         "random-int": "^3.0.0",
         "random-js": "^2.1.0",

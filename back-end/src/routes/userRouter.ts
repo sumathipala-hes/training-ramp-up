@@ -10,6 +10,8 @@ import {
   updateUserRole,
   restrictToAdmin,
   logOut,
+  registerUser,
+  refreshToken,
 } from '../controllers/authController'
 const router = express.Router()
 
@@ -17,11 +19,15 @@ const router = express.Router()
 router
   .route('/api/user/sign-up')
   .post([check('email').isEmail(), check('userName').notEmpty(), check('password').notEmpty()], signUp)
+router
+  .route('/api/user/register-user')
+  .post([check('email').isEmail(), check('userName').notEmpty(), check('password').notEmpty()], registerUser)
 router.post('/api/user/log-in', logIn)
 router.get('/api/user', protect, restrictToAdmin, getAllUsers)
 router.delete('/api/user/:userId', protect, restrictToAdmin, deleteUser)
 router.put('/api/user/:userId', protect, restrictToAdmin, updateUserRole)
 router.post('/api/user/log-out', logOut)
+router.post('/api/user/refresh-token', refreshToken)
 
 router
   .route('/api/student')

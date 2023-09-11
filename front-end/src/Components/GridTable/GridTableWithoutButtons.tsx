@@ -21,7 +21,7 @@ import { minDate, maxDate } from './GridTableUtility/min_maxDate'
 import { socket } from '../../App'
 import { useNavigate } from 'react-router-dom'
 import { useEffect } from 'react'
-import { logInSuccessfull } from '../LogInPage/LogInSlice'
+import { logInSuccessfull, logOutInvoke } from '../LogInPage/LogInSlice'
 
 // import { count } from '../../sagas'
 
@@ -54,6 +54,7 @@ export default function FullFeaturedCrudGrid() {
 
     const handleClickLogOut = async () => {
         localStorage.clear()
+        dispatch(logOutInvoke())
         dispatch(logInSuccessfull('fail'))
         navigate('/')
     }

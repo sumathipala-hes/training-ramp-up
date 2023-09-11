@@ -9,6 +9,7 @@ export interface LogIn {
     successRole: string
     successMessage: string
     successState: boolean
+    authState: boolean
 }
 
 const initialState: LogIn = {
@@ -16,6 +17,7 @@ const initialState: LogIn = {
     successRole: '',
     successMessage: '',
     successState: false,
+    authState: false,
 }
 
 const signInSlice = createSlice({
@@ -37,6 +39,12 @@ const signInSlice = createSlice({
         logOutInvoke: () => {
             console.log('Log Out Invoked')
         },
+        setAuthState: (state, action: PayloadAction<boolean>) => {
+            state.authState =
+                action.payload === state.authState
+                    ? state.authState
+                    : action.payload
+        },
     },
 })
 
@@ -46,5 +54,6 @@ export const {
     logInSuccessfulState,
     logInAssignRole,
     logOutInvoke,
+    setAuthState,
 } = signInSlice.actions
 export default signInSlice.reducer

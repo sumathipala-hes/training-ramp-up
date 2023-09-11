@@ -13,6 +13,7 @@ import {
     addUserSagaToRoot,
     logOutSagaToRoot,
     logUserSagaToRoot,
+    registerUserSagaToRoot,
 } from './util/sagas/authSagas'
 
 //set sagas
@@ -27,5 +28,6 @@ export default function* rootSaga() {
         changeUserRoleSagaToRoot(),
         fetchUsersSagaToRoot(),
         logOutSagaToRoot(),
+        registerUserSagaToRoot(),
     ])
 }

@@ -93,6 +93,8 @@ export default function SignUp() {
                 password: password,
             }
             dispacth(signUpUser(newUser))
+        } else {
+            alert('Password and Confirm Password must be same')
         }
     }
 

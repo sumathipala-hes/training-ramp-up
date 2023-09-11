@@ -13,6 +13,8 @@ import {
     logInAssignRole,
     logInSuccessfull,
 } from '../../Components/LogInPage/LogInSlice'
+import axios from 'axios'
+
 // import { useNavigate } from 'react-router-dom'
 
 const API_BASE_URL = 'http://localhost:5000'
@@ -48,14 +50,13 @@ function* addRowSaga(
         }
         console.log(modifiedData, isNew)
         if (!isNew) {
-            const response = yield fetch(
+            const response = yield axios.put(
                 `${API_BASE_URL}/api/student/${action.payload.id}`,
+                JSON.stringify(modifiedData),
                 {
-                    method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify(modifiedData),
                 }
             )
             const data = yield response.json()
@@ -80,13 +81,15 @@ function* addRowSaga(
             )
             yield put(updateRow(modifiedJsonData))
         } else if (isNew) {
-            const response = yield fetch(`${API_BASE_URL}/api/student`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(modifiedData),
-            })
+            const response = yield axios.post(
+                `${API_BASE_URL}/api/student`,
+                JSON.stringify(modifiedData),
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                }
+            )
             const data = yield response.json()
             const modifiedJsonData = data.map(
                 (item: {
@@ -118,17 +121,16 @@ function* addRowSaga(
 
 function* fetchRowsSaga(): Generator<any, any, any> {
     try {
-        const response = yield fetch(`${API_BASE_URL}/api/student`, {
+        const response = yield axios(`${API_BASE_URL}/api/student`, {
             method: 'GET',
-            credentials: 'include',
+            withCredentials: true,
         })
 
-        const data = yield response.json()
-        console.log(data)
+        console.log(response.data)
 
-        if (yield data.status === 'fail') {
-            yield put(logInSuccessfull(data.status))
-            yield put(logInAssignRole(data.data.user.roles[0]))
+        if (yield response.data.status === 'fail') {
+            yield put(logInSuccessfull(response.data.status))
+            yield put(logInAssignRole(response.data.data.user.roles[0]))
 
             console.log(
                 'Authentication Failed Now I will be navigating you to log in page'
@@ -137,7 +139,7 @@ function* fetchRowsSaga(): Generator<any, any, any> {
         }
 
         // Modify the data properties
-        const modifiedData = yield data.map(
+        const modifiedData = yield response.data.map(
             (item: {
                 id: any
                 name: any
@@ -174,11 +176,11 @@ function* deleteRowSaga(
     action: PayloadAction<GridRowId>
 ): Generator<any, any, any> {
     try {
-        const response = yield fetch(
+        const response = yield axios(
             `${API_BASE_URL}/api/student/${action.payload}`,
             {
                 method: 'DELETE',
-                credentials: 'include',
+                withCredentials: true,
             }
         )
         console.log('Row is Deleted And User is an Admin')
@@ -190,6 +192,40 @@ function* deleteRowSaga(
         console.error('Error deleting row:', error)
     }
 }
+
+axios.interceptors.response.use(
+    async (res) => {
+        console.log('Interceptor Ran With Response')
+
+        return res
+    },
+    async function (error) {
+        console.log(error.response.data.refreshToken)
+
+        if (error.message === 'Request failed with status code 402') {
+            console.log('Sending Post request to refresh-token')
+            try {
+                const response = await axios(
+                    `${API_BASE_URL}/api/user/refresh-token`,
+                    {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        withCredentials: true,
+                    }
+                )
+                console.log(response)
+                return response
+            } catch (tokenError) {
+                console.error(tokenError)
+                return Promise.reject(tokenError)
+            }
+        } else {
+            return Promise.reject(error)
+        }
+    }
+)
 
 function* addStuSaga() {
     yield takeEvery(updateRow, addRowSaga)

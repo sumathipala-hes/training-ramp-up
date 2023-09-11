@@ -28,12 +28,17 @@ export default function LogIn() {
 
     const response = useSelector((store: RootState) => store.logIn.successRole)
 
-    if (response === 'USER') {
-        localStorage.setItem('Role', 'USER')
-    } else if (response === 'ADMIN') {
-        localStorage.setItem('Role', 'ADMIN')
+    if (responseState) {
+        if (response === 'USER') {
+            localStorage.setItem('Role', 'USER')
+        } else if (response === 'ADMIN') {
+            localStorage.setItem('Role', 'ADMIN')
+        }
     }
+
     useEffect(() => {
+        console.log(responseState)
+
         if (responseState) {
             checkRoleAndNavigate()
             dispatch(logInSuccessfulState(false))

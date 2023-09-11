@@ -13,12 +13,16 @@ import { RootState } from '../../store'
 import { User, fetchUsers } from './UsersListSlice'
 import { useNavigate } from 'react-router-dom'
 import { logInSuccessfull } from '../LogInPage/LogInSlice'
+import { NewUserState, createUser } from './NewUserSlice'
 
 export default function Users() {
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const [role, setRole] = React.useState('')
     const [id, setId] = React.useState('')
+    const [email, setEmail] = React.useState('')
+    const [userName, setUserName] = React.useState('')
+    const [password, setPassword] = React.useState('')
 
     const users = useSelector((state: RootState) => state.usersList.usersList)
 
@@ -37,6 +41,22 @@ export default function Users() {
     }) => {
         setId(event.target.value)
     }
+    const handleChangeEmail = (event: {
+        target: { value: React.SetStateAction<string> }
+    }) => {
+        setEmail(event.target.value)
+    }
+    const handleChangeUserName = (event: {
+        target: { value: React.SetStateAction<string> }
+    }) => {
+        setUserName(event.target.value)
+    }
+
+    const handleChangePassword = (event: {
+        target: { value: React.SetStateAction<string> }
+    }) => {
+        setPassword(event.target.value)
+    }
 
     const handleChangeRoleClick = () => {
         const user: UserState = {
@@ -44,6 +64,16 @@ export default function Users() {
             userRole: [role.toUpperCase()],
         }
         dispatch(changeUserRole(user))
+    }
+
+    const handleCreateUserClick = () => {
+        const user: NewUserState = {
+            email: email,
+            userName: userName,
+            password: password,
+        }
+        console.log(user)
+        dispatch(createUser(user))
     }
 
     const handleDeleteUser = () => {
@@ -62,7 +92,7 @@ export default function Users() {
 
     return (
         <Container>
-            <Container>
+            <Container sx={{ backgroundColor: 'cyan', borderRadius: '20px' }}>
                 <ul>
                     <ListItemButton component="a" href="#simple-list">
                         <ListItemText primary="ID"></ListItemText>
@@ -83,7 +113,7 @@ export default function Users() {
             </Container>
             <Container
                 sx={{
-                    marginTop: '100px',
+                    marginTop: '80px',
                     marginLeft: '180px',
                     marginBottom: '20px',
                 }}
@@ -126,6 +156,23 @@ export default function Users() {
                 >
                     Students Table
                 </Button>
+            </Container>
+            <Container
+                sx={{
+                    marginLeft: '180px',
+                }}
+            >
+                <TextField label="email" onChange={handleChangeEmail}>
+                    Email
+                </TextField>
+                <TextField label="username" onChange={handleChangeUserName}>
+                    Username
+                </TextField>
+                <TextField label="password" onChange={handleChangePassword}>
+                    Password
+                </TextField>
+
+                <Button onClick={handleCreateUserClick}>Create User</Button>
             </Container>
         </Container>
     )
