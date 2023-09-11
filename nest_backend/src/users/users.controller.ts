@@ -14,6 +14,8 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { DeleteResult, InsertResult, UpdateResult } from 'typeorm';
 import { Response } from 'express';
+import { Roles } from 'src/auth/roles.decorator';
+import { Role } from 'src/enum/role.enum';
 
 @Controller('users')
 export class UsersController {
@@ -39,6 +41,7 @@ export class UsersController {
     }
   }
 
+  @Roles(Role.Admin)
   @Get()
   async findAll(@Res() res: Response): Promise<void> {
     try {
@@ -62,6 +65,7 @@ export class UsersController {
     }
   }
 
+  @Roles(Role.Admin)
   @Get(':id')
   findOne(@Param('id') id: string, @Res() res: Response) {
     try {
@@ -85,6 +89,7 @@ export class UsersController {
     }
   }
 
+  @Roles(Role.Admin)
   @Put(':id')
   async update(
     @Param('id') id: string,
@@ -114,6 +119,7 @@ export class UsersController {
     }
   }
 
+  @Roles(Role.Admin)
   @Delete(':id')
   async remove(@Param('id') id: string, @Res() res: Response): Promise<void> {
     try {
