@@ -67,7 +67,7 @@ function SignIn(){
             username: email,
             password: password,
           };
-          dispatch(userActions.processAuth(userData));
+          dispatch(userActions.processAuthentication(userData));
         } else {
           setErrorEmail(true);
         }

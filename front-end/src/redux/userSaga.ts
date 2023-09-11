@@ -139,11 +139,11 @@ function* registerUser(action: PayloadAction<UserData>) {
 
 //user saga func
 function* authUserSaga(){
-    yield takeEvery(userActions.processAuth, authenticateUser)
+    yield takeEvery(userActions.processAuthentication, authenticateUser)
 }
 
 function* authoUserSaga(){
-    yield takeEvery(userActions.processAutho.type, authorizeUser)
+    yield takeEvery(userActions.processAuthorization.type, authorizeUser)
 }
 
 function* registerUserSaga(){

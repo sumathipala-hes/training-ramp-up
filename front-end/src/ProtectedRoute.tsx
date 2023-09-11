@@ -23,7 +23,7 @@ function ProtectedRoute(props: { authRequired: any; adminRequired: any; element:
 
   //authorize user
   useEffect(() =>{
-      dispatch(userActions.processAutho());
+      dispatch(userActions.processAuthorization());
   },[]);
 
     //home button handler
