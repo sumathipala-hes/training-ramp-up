@@ -1,12 +1,11 @@
 import { Request, Response, NextFunction } from 'express';
 import { jwtConstants } from './auth.constants';
-import { JwtService } from '@nestjs/jwt';
 import jwt from 'jsonwebtoken';
 
 export const authorization = (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ): void => {
   const accessToken = req.cookies.accessToken;
   if (!accessToken) {
@@ -24,7 +23,7 @@ export const authorization = (
 export const authPermissions = (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   const accessToken = req.headers.cookie?.split('=')[1];
   if (!accessToken) {
