@@ -1,6 +1,5 @@
 import {call, put, takeEvery} from 'redux-saga/effects';
 import { PayloadAction } from '@reduxjs/toolkit';
-import axios from 'axios';
 import { userActions } from './user/userSlice';
 import axiosInstance from '../api/axiosInstance';
 

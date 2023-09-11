@@ -96,7 +96,7 @@ const loginRules = [
   (req:Request, res:Response, next: () => void) => {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
-        return res.status(200).json({
+        return res.status(400).json({
           status: 400,
           errors: errors.array(),
         });

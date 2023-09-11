@@ -1,8 +1,8 @@
 import {call, put, takeEvery} from 'redux-saga/effects';
 import { PayloadAction } from '@reduxjs/toolkit';
 import {tableActions} from './tableData/tableSlice';
-import axios from 'axios';
 import { calculateAge } from '../utils';
+import axiosInstance from '../api/axiosInstance';
 
 interface ResponseType{
     status: number;
@@ -27,7 +27,7 @@ interface TableData {
 
 //add student into the DB
 function* addStudent(action: PayloadAction<TableData>) {
-    const { id, name, gender, mobile, birthday, age,address } = action.payload;
+    const { id, name, gender, mobile, birthday, address } = action.payload;
 
     const studentData = {
         id,
@@ -39,10 +39,11 @@ function* addStudent(action: PayloadAction<TableData>) {
         age : calculateAge(new Date(birthday))
     };
     try {
-        yield call(axios.post, 'http://localhost:4000/add-student', studentData, {
+        yield call(axiosInstance.post, '/add-student', studentData, {
             headers: {
                 'Content-Type': 'application/json',
             },
+            withCredentials: true,
         });
     } catch (error) {
         console.log(error);
@@ -55,10 +56,11 @@ function* removeStudent(action: PayloadAction<TableData>) {
         id :action.payload
     };
     try {
-        yield call(axios.post, 'http://localhost:4000/remove-student', studentId, {
+        yield call(axiosInstance.post, '/remove-student', studentId, {
             headers: {
                 'Content-Type': 'application/json',
             },
+            withCredentials: true,
         });
     } catch (error) {
         console.log(error);
@@ -80,10 +82,11 @@ function* updateStudent(action: PayloadAction<TableData>) {
     };
 
     try {
-        yield call(axios.post, 'http://localhost:4000/update-student', studentData , {
+        yield call(axiosInstance.post, '/update-student', studentData, {
             headers: {
                 'Content-Type': 'application/json',
             },
+            withCredentials: true,
         });
     } catch (error) {
     }
@@ -92,7 +95,12 @@ function* updateStudent(action: PayloadAction<TableData>) {
 //get all students' data from DB
 function* getStudents(action: PayloadAction<TableData>) {
     try {
-        const response:ResponseType = yield call(axios.get,'http://localhost:4000/get-students');
+        const response: ResponseType = yield call(axiosInstance.get, '/get-students', {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            withCredentials: true,
+        });
         yield put(tableActions.initializeStudents(response.data.data));
     } catch (error) {
         console.log(error);

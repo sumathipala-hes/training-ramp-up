@@ -9,6 +9,12 @@ const calculateAge = (inputDate:Date) => {
       age -= 1;
     }
     return age;
-  };
+};
 
-  export {calculateAge};
+const userRoles = {
+  user: "user",
+  admin: "admin"
+}
+
+
+  export {calculateAge, userRoles};
