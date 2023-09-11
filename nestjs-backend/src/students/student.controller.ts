@@ -1,7 +1,7 @@
 /* eslint-disable prettier/prettier */
 import { Body, Controller, Delete, Get, HttpStatus, Param, Post, Put, Res } from "@nestjs/common";
 import { StudentService } from "./student.service";
-import { Student } from "./student.model";
+import { StudentDto } from "./student.dto";
 
 @Controller('students')
 export class StudentController {
@@ -21,10 +21,10 @@ export class StudentController {
 
     @Post()
     async createStudent(
-        @Body() studentData: Partial<Student>,
+        @Body() studentDto: StudentDto,
         @Res() res) {
             try {
-                const createdStudent = await this.studentService.createStudent(studentData);
+                const createdStudent = await this.studentService.createStudent(studentDto);
             return res.status(HttpStatus.CREATED).json(createdStudent);
             } catch (err) {
                 return res.status(HttpStatus.BAD_REQUEST).json({ message: err.message });
@@ -35,10 +35,10 @@ export class StudentController {
     @Put(':id')
     async updateStudent(
         @Param('id') id: string,
-        @Body() studentData: Partial<Student>,
+        @Body() studentDto: StudentDto,
         @Res() res) {
             try {
-                await this.studentService.updateStudent(id, studentData);
+                await this.studentService.updateStudent(id, studentDto);
                 return res.sendStatus(HttpStatus.NO_CONTENT);
             } catch (err) {
                 return res.status(HttpStatus.BAD_REQUEST).json({ message: err.message });
