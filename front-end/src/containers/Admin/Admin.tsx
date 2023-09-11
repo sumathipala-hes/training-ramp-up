@@ -27,17 +27,12 @@ function Admin(){
     const dispatch = useDispatch();
 
     //initialize error status and msg for users
-    const authenticated = useSelector((state: {users: any; authenticated:boolean} ) => state.users.authenticated);
-    const user = useSelector((state: {users: any; user:boolean} ) => state.users.user);
-    
-    //initialize error status and msg for users
     const errorStatus = useSelector((state: {users: any; errorStatus:boolean} ) => state.users.errorStatus);
     const message = useSelector((state: {users: any; errorMsg:string | null} ) => state.users.errorMsg);
 
     //reset error status
     useEffect(() =>{
       dispatch(userActions.setErrorStatus(null));
-      dispatch(userActions.processAutho());
      },[]);
 
      //set error netofication type
@@ -86,20 +81,6 @@ function Admin(){
         }
         setSnackOpen(false);
     };
-
-    //home button handler
-    const homeHandler = () => {
-        navigate(routePaths.home);
-    };
-
-    if(!authenticated || user.role === userRoles.user){
-        return(
-            <Card variant="outlined" sx={cardStyles}>
-                <Typography variant="h4" align="center" >The page is protected. Administrator access is required for entry.</Typography>    
-                <Button onClick={homeHandler} size="large" variant="contained" sx={{ borderRadius: "16px", marginTop: "30px" }} >Go Back To Home</Button>
-            </Card>
-        )
-    }else{
     return (
         <React.Fragment>
             <Header name={"test"} isAdmin={true}/>
@@ -143,6 +124,5 @@ function Admin(){
             <Button   onClick={() => {navigate(routePaths.home)}} variant="contained" sx={{ borderRadius: "16px", marginTop: "50px" }} >Go Back Home</Button>
         </React.Fragment>
     );
-    }
 }
 export default Admin;

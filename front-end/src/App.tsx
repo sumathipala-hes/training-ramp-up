@@ -6,6 +6,7 @@ import Register from './containers/Register/Register';
 import { routePaths } from './utils';
 import Admin from './containers/Admin/Admin';
 import Home from './containers/Home/Home';
+import ProtectedRoute from './ProtectedRoute';
 
 const containerStyles = {
   backgroundSize: "cover",
@@ -22,8 +23,8 @@ function App() {
     const router = createBrowserRouter([
       { path:routePaths.signIn, element:<SignIn/>},
       { path:routePaths.register, element:<Register/>},
-      { path:routePaths.home,  element: <Home/>},
-      { path:routePaths.admin, element:<Admin/>}
+      { path:routePaths.home,  element: <ProtectedRoute authRequired={true} adminRequired={false} element={<Home/>} />},
+      { path:routePaths.admin, element:<ProtectedRoute authRequired={true} adminRequired={true} element={<Admin/>} />}
     ]);
     
   return (

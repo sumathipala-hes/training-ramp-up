@@ -1,28 +1,13 @@
-import {useEffect} from 'react';
-import {Navigate} from 'react-router-dom';
-import { routePaths, userRoles } from '../../utils';
+import {userRoles} from '../../utils';
 import FullStuTable from '../../components/FullStuTable/FullStuTable';
 import ViewStuTable from '../../components/ViewStuTable/ViewStuTable';
 import React from 'react';
 import Header from '../../components/Header/Header';
-import { useDispatch, useSelector } from 'react-redux';
-import { userActions } from '../../redux/user/userSlice';
+import {useSelector} from 'react-redux';
 
 function Home() {
-
-  const dispatch = useDispatch();
-
-  //initialize error status and msg for users
-  const authenticated = useSelector((state: {users: any; authenticated:boolean} ) => state.users.authenticated);
-  
-  //authorize user
-  useEffect(() =>{
-    dispatch(userActions.processAutho());
-   },[]);
-   
   const user = useSelector((state: {users: any; user:boolean} ) => state.users.user);
 
-  if (authenticated) {
     if (user.role === userRoles.admin) {
        return (
         <React.Fragment>
@@ -38,9 +23,6 @@ function Home() {
         </React.Fragment>  
        )
     }
-  } else {
-     return (<Navigate to={routePaths.signIn} />);
-  }
  }
  
  export default Home;
