@@ -7,21 +7,21 @@ import {
 
 @Entity()
 export class Student {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn({ type: 'int' })
   id!: number;
 
-  @Column()
+  @Column({ nullable: false })
   name!: string;
 
-  @Column()
+  @Column({ nullable: false })
   address!: string;
 
-  @Column()
+  @Column({ nullable: false })
   mobileNumber!: string;
 
-  @CreateDateColumn()
+  @CreateDateColumn({ nullable: false })
   dob!: Date;
 
-  @Column()
+  @Column({ nullable: false, enum: ['Male', 'Female'] })
   gender!: string;
 }
