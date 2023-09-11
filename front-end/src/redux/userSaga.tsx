@@ -1,5 +1,5 @@
 import { call, put, takeLatest } from 'redux-saga/effects';
-import { authenticateApi, loginApi, logoutApi, registerApi } from '../api/AuthApi/AuthApi';
+import { authenticateApi, getUserRoleApi, loginApi, logoutApi, registerApi } from '../api/AuthApi/AuthApi';
 import {
   registerUser,
   setAuthStatus,
@@ -9,6 +9,7 @@ import {
   setCreatedUserStatus,
   setCreateUserError,
   logoutUser,
+  setCurrentUserRole,
 } from './userSlice';
 import { AxiosResponse } from 'axios';
 
@@ -17,10 +18,14 @@ function* registerUserSaga( action: ReturnType<typeof registerUser> ): Generator
   try {
     const response = yield call(registerApi, userEmail, userPassword, userRole);
     const isAuthenticated = yield call(authenticateApi);
+    const role = yield call(getUserRoleApi);
+
     yield put(setAuthStatus(isAuthenticated));
+    yield put(setCurrentUserRole(role.data));
     yield put(setAxiosResponse(response));
   } catch (error) {
     yield put(setAxiosError(error));
+    yield put(setAuthStatus(false));
   }
 }
 
@@ -29,7 +34,10 @@ function* loginUserSaga( action: ReturnType<typeof loginUser> ): Generator<any, 
   try {
     const response = yield call(loginApi, userEmail, userPassword);
     const isAuthenticated = yield call(authenticateApi);
+    const role = yield call(getUserRoleApi);
+
     yield put(setAuthStatus(isAuthenticated));
+    yield put(setCurrentUserRole(role.data));
     yield put(setAxiosResponse(response));
   } catch (error) {
     yield put(setAxiosError(error));

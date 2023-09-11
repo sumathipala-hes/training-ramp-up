@@ -23,7 +23,7 @@ describe('API Functions', () => {
   it('registers a new user', async () => {
     const response = await request(app)
       .post('/register')
-      .send({ username: 'testuser5@google.com', password: 'password123', role: 'user' });
+      .send({ username: 'testuser8@google.com', password: 'password123', role: 'user' });
     expect(response.status).toBe(200);
     expect(response.body).toHaveProperty('token');
     expect(response.body).toHaveProperty('message', 'USER REGISTERED');
@@ -83,8 +83,8 @@ describe('API Functions', () => {
 
   it('crud operations for verified user', async () => {
     const newStudentData = {
-      name: 'Jane',
-      gender: 'Female',
+      name: 'Nora',
+      gender: 'female',
       address: 'colombo',
       mobile: "1894567814",
       dob: '2002-01-01',
@@ -120,7 +120,7 @@ describe('API Functions', () => {
   expect(putFailResponse.statusCode).toEqual(400);
 
     const deleteResponse = await request(app)
-      .delete('/students/30')
+      .delete('/students/34')
       .set('Cookie', `access-token=${accessToken}`)
     expect(deleteResponse.statusCode).toEqual(204);
 

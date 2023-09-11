@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { login, logout, register, userAuthenticated } from "../controllers/user.controller";
-import { verifyJWT } from "../middlewares/UserValidations";
+import { getUserRole, login, logout, register, userAuthenticated } from "../controllers/user.controller";
+import { verifyJWT, verifyRefreshJWT } from "../middlewares/UserValidations";
 import { registrationValidation, validate } from "../middlewares/UserValidations";
 
 const router = Router();
@@ -12,5 +12,9 @@ router.post('/login', login);
 router.post('/logout', logout);
 
 router.get('/userAuth', verifyJWT, userAuthenticated);
+
+router.get('/user', verifyJWT, getUserRole);
+
+router.get('/refresh', verifyRefreshJWT, userAuthenticated);
 
 export default router;
