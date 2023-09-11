@@ -1,6 +1,6 @@
 import dotenv from 'dotenv'
 import {Request, Response} from 'express'; 
-import { authenticateUser, fetchUser, saveUser } from '../services/user';
+import { authenticateUser, createAccessToken, fetchUser, saveUser } from '../services/user';
 dotenv.config();
 
 //register a user
@@ -82,23 +82,16 @@ const logoutUser = (async (req: Request, res: Response) => {
 const authUser = (async (req: Request, res: Response) => {
     try {
         const token = await fetchUser(req);
-        if(token.status == 200){
+        if(token){
             res.status(200).json({
                 status: 200,
-                data:token.data
-            });
-        }else{
-            res.cookie('token', token.token, { httpOnly: true, secure: true, sameSite: 'strict' });
-            res.status(200).json({
-                status: 200,
-                data:token.data
+                data:token
             });
         }
-
     } catch (err) {
-        if (err instanceof Error) {
-            res.status(400).json({
-                status: 400,
+        if (err instanceof Error) {                             
+            res.status(401).json({
+                status: 401,
                 error: err.message,
             });
         } else {
@@ -110,6 +103,30 @@ const authUser = (async (req: Request, res: Response) => {
     }
 });
 
+//create new access token
+const newAccessToken = (async (req: Request, res: Response) => {
+    try {
+        const token = await createAccessToken(req);
+        if(token){
+            res.cookie('token', token.token, { httpOnly: true, secure: true, sameSite: 'strict' });
+            res.status(200).json({
+                status: 200,
+                data:token.data
+            });
+        }
+    } catch (err) {
+        if (err instanceof Error) {                             
+            res.status(401).json({
+                status: 401,
+                error: err.message,
+            });
+        } else {
+            res.status(500).json({
+                status: 500,
+                error: "An unknown error occurred.",
+            });
+        }
+    }
+});
 
-
-export {registerUser, validateUser, logoutUser, authUser};
+export {registerUser, validateUser, logoutUser, authUser, newAccessToken};

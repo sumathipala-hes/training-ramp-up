@@ -8,12 +8,6 @@ dotenv.config();
 
 const saltRounds = 11;
 
-interface tokenData {
-    status : number,
-    token:null |string, 
-    data:{name:string, role:string}
-}
-
 //add user to the database
 async function saveUser(req: Request){
     const username = req.body.username
@@ -30,14 +24,10 @@ async function saveUser(req: Request){
     user.role = role;
     user.name = name;
     if(token){
-        const tokenData = await validateToken(req) as tokenData;
-        if(tokenData.status == 200){
-            await userRepository.insert(user);  
-        }else{
-            if(tokenData.data.role == "admin" ){
-                await userRepository.insert(user);  
-            }else{
-                user.role = "user";
+        const refreshToken = await validateRefToken(req);
+        if(refreshToken){
+            const accessToken = await validateAccessToken(req);
+            if(accessToken.role === "admin"){
                 await userRepository.insert(user);  
             }
         }
@@ -49,8 +39,11 @@ async function saveUser(req: Request){
 
 //return authorized user data
 async function fetchUser(req: Request){
-    const authUser = await validateToken(req) as tokenData;
-    return authUser;
+    const refreshToken = await validateRefToken(req);
+    if(refreshToken){
+        const accessToken = await validateAccessToken(req);
+        return {name : accessToken.name, role :accessToken.role}
+    }
 }
 
 //authenticate user 
@@ -83,30 +76,52 @@ async function authenticateUser(req:Request) {
     }
 }
 
-//validate token
-async function validateToken(req:Request){
+//create access token
+async function createAccessToken(req:Request){
     const refreshToken = req.cookies.refreshToken;
-    const token = req.cookies.token;
-    const decRefToken = jwt.verify(refreshToken , process.env.JWT_SECRET as string) as {name:string,role:string, username:string};
-    if(decRefToken){
+    const decodedRefToken = jwt.verify(refreshToken , process.env.JWT_SECRET as string) as {name:string,role:string, username:string};
+    if(decodedRefToken){
         try{
-            const decoded = jwt.verify(token , process.env.JWT_SECRET as string) as {name:string,role:string};
-            return {status:200, data:{name : decoded.name, role :decoded.role}, token:null}
-        }catch(err){
             const user = await userRepository.findOneBy({
-                username: decRefToken.username,
+                username: decodedRefToken.username,
             });
             if(user){
                 const token = jwt.sign({name : user.name, role :user.role}, process.env.JWT_SECRET as string, { expiresIn: '10m' });
-                return{status:400, data:{name : user.name, role :user.role}, token:token};
+                return {token:token, data: {name : user.name, role :user.role}};
             }else{
-                throw new Error("Invalid access token");
+                throw new Error("Invalid refresh token");
             }
+        }catch(err){
+            throw new Error("Invalid refresh token");
         }
     }else{
         return{status:400, data:""}
     }
 }
 
+//validate refresh token
+async function validateRefToken(req:Request){
+    try {
+        const refreshToken = req.cookies.refreshToken;
+        const decodedRefToken = jwt.verify(refreshToken , process.env.JWT_SECRET as string) as {name:string,role:string, username:string};
+        return decodedRefToken;
+    }
+    catch(err){
+        throw new Error("Invalid refresh token");   
+    }
+}
 
-export {saveUser, authenticateUser, validateToken, fetchUser};
+//validate access token
+async function validateAccessToken(req:Request){
+    try {
+        const accessToken = req.cookies.token;
+        const decodedAccessToken = jwt.verify(accessToken , process.env.JWT_SECRET as string) as {name:string,role:string, username:string};
+        return decodedAccessToken;
+    }
+    catch(err){
+        throw new Error("Invalid access token");   
+    }
+}
+
+
+export {saveUser, authenticateUser, fetchUser, createAccessToken};
