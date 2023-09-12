@@ -6,32 +6,44 @@ import {
   Param,
   Delete,
   Put,
+  Res,
+  HttpStatus,
+  HttpException,
 } from '@nestjs/common';
 import { StudentService } from './student.service';
 import { CreateStudentDto } from './dto/create-student.dto';
 import { UpdateStudentDto } from './dto/update-student.dto';
+import { Response } from 'express';
 
 @Controller('api/v1/student')
 export class StudentController {
   constructor(private readonly studentService: StudentService) {}
 
   @Post()
-  create(@Body() createStudentDto: CreateStudentDto) {
+  async create(@Body() createStudentDto: CreateStudentDto) {
     return this.studentService.saveStudent(createStudentDto);
   }
 
   @Get()
-  retrieveAll() {
-    return this.studentService.retrieveAllStudents();
+  async retrieveAll(@Res() res: Response) {
+    try {
+      const students = await this.studentService.retrieveAllStudents();
+      return res.status(HttpStatus.OK).json({ data: students });
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 
   @Put(':id')
-  update(@Param('id') id: string, @Body() updateStudentDto: UpdateStudentDto) {
+  async update(
+    @Param('id') id: string,
+    @Body() updateStudentDto: UpdateStudentDto,
+  ) {
     return this.studentService.updateStudent(+id, updateStudentDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  async remove(@Param('id') id: string) {
     return this.studentService.deleteStudent(+id);
   }
 }
