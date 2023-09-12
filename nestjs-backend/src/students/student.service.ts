@@ -2,8 +2,9 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
-import { Student } from "./student.model";
-import { StudentDto } from "./student.dto";
+import { Student } from "./entities/student.entity";
+import { StudentDto } from "./dto/student.dto";
+import { UpdateUserDto } from "./dto/update.dto";
 
 @Injectable()
 export class StudentService {
@@ -22,12 +23,12 @@ export class StudentService {
         return newStudent;
     }
 
-    async updateStudent(id: string, studentDtO: StudentDto): Promise<void> {
+    async updateStudent(id: string, updateUserDto: UpdateUserDto): Promise<void> {
         const student = await this.studentRepository.findOneBy({ id: parseInt(id) });
         if(!student) {
             throw new NotFoundException('Student does not exist');
         }
-        await this.studentRepository.update(id, studentDtO);
+        await this.studentRepository.update(id, updateUserDto);
     }
 
     async deleteStudent(id: string): Promise<void> {

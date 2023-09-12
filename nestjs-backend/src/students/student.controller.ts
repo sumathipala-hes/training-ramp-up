@@ -1,7 +1,8 @@
 /* eslint-disable prettier/prettier */
 import { Body, Controller, Delete, Get, HttpStatus, Param, Post, Put, Res } from "@nestjs/common";
 import { StudentService } from "./student.service";
-import { StudentDto } from "./student.dto";
+import { StudentDto } from "./dto/student.dto";
+import { UpdateUserDto } from "./dto/update.dto";
 
 @Controller('students')
 export class StudentController {
@@ -25,7 +26,7 @@ export class StudentController {
         @Res() res) {
             try {
                 const createdStudent = await this.studentService.createStudent(studentDto);
-            return res.status(HttpStatus.CREATED).json(createdStudent);
+                return res.status(HttpStatus.CREATED).json(createdStudent);
             } catch (err) {
                 return res.status(HttpStatus.BAD_REQUEST).json({ message: err.message });
             }
@@ -35,11 +36,11 @@ export class StudentController {
     @Put(':id')
     async updateStudent(
         @Param('id') id: string,
-        @Body() studentDto: StudentDto,
+        @Body() updateUserDto: UpdateUserDto,
         @Res() res) {
             try {
-                await this.studentService.updateStudent(id, studentDto);
-                return res.sendStatus(HttpStatus.NO_CONTENT);
+                await this.studentService.updateStudent(id, updateUserDto);
+                return res.status(HttpStatus.OK).json({ message: 'Updated the student record' });
             } catch (err) {
                 return res.status(HttpStatus.BAD_REQUEST).json({ message: err.message });
             }
@@ -51,7 +52,7 @@ export class StudentController {
         @Res() res) {
             try{
                 await this.studentService.deleteStudent(id);
-                return res.sendStatus(HttpStatus.NO_CONTENT);
+                return res.status(HttpStatus.OK).json({ message: 'Deleted the student record' });;
             } catch (err) {
                 return res.status(HttpStatus.BAD_REQUEST).json({ message: err.message });
             }
