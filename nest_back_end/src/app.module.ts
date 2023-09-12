@@ -7,6 +7,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { dataSource } from './configs/db.config';
 
 @Module({
+  
   imports: [StudentModule, TypeOrmModule.forRoot(dataSource), UserModule],
   controllers: [AppController],
   providers: [AppService],

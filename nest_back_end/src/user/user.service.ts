@@ -6,10 +6,13 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { Repository } from 'typeorm/repository/Repository';
 import { DeleteResult, UpdateResult } from 'typeorm';
+import {
+  decryptPassword,
+  encryptPassword,
+} from 'src/util/encrypted.decrypted.util';
 
 @Injectable()
 export class UserService {
-  [x: string]: any;
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
@@ -17,9 +20,17 @@ export class UserService {
 
   async registerUser(createUserDto: CreateUserDto): Promise<InsertResult> {
     try {
+      const encryptedPassword = encryptPassword(createUserDto.userPassword);
+
+      // Create a new user object with the encrypted password
+      const userWithEncryptedPassword = {
+        ...createUserDto,
+        userPassword: encryptedPassword,
+      };
+
       // Insert the users into the database
       const newUser: InsertResult = await this.userRepository.insert(
-        createUserDto as User,
+        userWithEncryptedPassword as User,
       );
       return newUser;
     } catch (error) {
@@ -34,6 +45,11 @@ export class UserService {
       const users: CreateUserDto[] = await this.userRepository.find({
         order: { userEmail: 'DESC' },
       });
+      // Decrypt the passwords
+      users.forEach((user) => {
+        user.userPassword = decryptPassword(user.userPassword);
+      });
+
       if (!users) {
         throw new Error('No users found.');
       }
@@ -49,10 +65,18 @@ export class UserService {
     updateUserDto: UpdateUserDto,
   ): Promise<UpdateResult> {
     try {
+      const encryptedPassword = encryptPassword(updateUserDto.userPassword);
+
+      // Upadate user object with the encrypted password
+      const userWithEncryptedPassword = {
+        ...updateUserDto,
+        userPassword: encryptedPassword,
+      };
+
       // Update the user in the database
       const updatedUser: UpdateResult = await this.userRepository.update(
         userEmail,
-        updateUserDto as User,
+        userWithEncryptedPassword as User,
       );
       if (updatedUser.affected === 1) {
         // If the user is updated
