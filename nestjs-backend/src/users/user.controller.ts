@@ -2,7 +2,8 @@
 import { Body, Controller, Get, HttpStatus, Post, Req, Res } from "@nestjs/common";
 import { UserService } from "./user.service";
 import { Response, Request } from 'express';
-import { LoginDto, RegisterDto } from "./user.dto";
+import { LoginDto } from "./dto/login.dto";
+import { RegisterDto } from "./dto/register.dto";
 
 @Controller()
 export class UserController {
@@ -32,7 +33,7 @@ export class UserController {
                 const tokens = await this.userService.login(loginDto);
                 res.cookie('access-token', tokens.accessToken, { httpOnly: true, maxAge: 60 * 60 * 1000 });
                 res.cookie('refresh-token', tokens.refreshToken, { httpOnly: true, maxAge: 30 * 24 * 60 * 60 * 1000 });
-                res.json({ message: 'USER REGISTERED' });
+                res.json({ message: 'USER LOGGED IN' });
             } catch (err) {
                 if (err instanceof Error) {
                     return res.status(HttpStatus.BAD_REQUEST).json({ message: err.message });
@@ -59,6 +60,13 @@ export class UserController {
         @Res() res: Response) {
             res.json('User is Authenticated');
         }
+
+    @Get('refresh')
+    async refreshedAuthentication(
+        @Res() res: Response) {
+            res.json('User is Authenticated. Refreshed');
+        }
+        
     @Get('user')
     async getUserRole(
         @Req() req: Request,

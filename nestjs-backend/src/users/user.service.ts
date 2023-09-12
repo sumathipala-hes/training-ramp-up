@@ -2,11 +2,13 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
-import { User } from "./user.model";
-import bcrypt from "bcrypt";
-import { LoginDto, RegisterDto } from "./user.dto";
+import { User } from "./entities/user.entity";
+import { LoginDto } from "./dto/login.dto";
 import { JwtService } from '@nestjs/jwt';
 import { Request } from "express";
+import * as bcrypt from 'bcryptjs';
+import { JwtPayload } from "jsonwebtoken";
+import { RegisterDto } from "./dto/register.dto";
 
 @Injectable()
 export class UserService {
@@ -50,21 +52,22 @@ export class UserService {
 
     async getUserRole(req: Request): Promise<string | null> {
         const accessToken = req.cookies['access-token'] as string;
-        const decodedToken = this.jwtService.decode(accessToken) as { role: string };
+        if (!accessToken) {
+          throw new Error('User is not logged in. Cannot fetch the role.');
+        }
+        const decodedToken = this.jwtService.decode(accessToken) as JwtPayload;
         return decodedToken.role;
     }
 
     createTokens(user: User): { accessToken: string; refreshToken: string } {
         const accessToken = this.jwtService.sign(
           { username: user.username, id: user.id, role: user.role },
-          { expiresIn: '60m' },
+          { secret: process.env.JWT_SECRET as string, expiresIn: '60m'}
         );
         const refreshToken = this.jwtService.sign(
           { username: user.username, id: user.id, role: user.role },
-          { expiresIn: '30d' },
+          { secret: process.env.JWT_REFRESH_SECRET as string, expiresIn: '30d' },
         );
         return { accessToken, refreshToken };
-      }
-        
-        
+      }       
 }

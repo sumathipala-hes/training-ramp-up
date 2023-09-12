@@ -1,8 +1,8 @@
 /* eslint-disable prettier/prettier */
 import { TypeOrmModule } from "@nestjs/typeorm";
-import { Student } from "src/students/student.model";
+import { Student } from "src/students/entities/student.entity";
 import * as dotenv from 'dotenv';
-import { User } from "src/users/user.model";
+import { User } from "src/users/entities/user.entity";
 
 dotenv.config();
 
