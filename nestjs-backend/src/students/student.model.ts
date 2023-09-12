@@ -19,7 +19,7 @@ export class Student {
   mobile: string;
 
   @Column()
-  dob: Date;
+  dob: string;
 
   @Column()
   age: number;
