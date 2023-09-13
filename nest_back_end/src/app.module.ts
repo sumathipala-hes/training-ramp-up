@@ -8,8 +8,12 @@ import { dataSource } from './configs/db.config';
 import { AuthModule } from './auth/auth.module';
 
 @Module({
-  
-  imports: [StudentModule, TypeOrmModule.forRoot(dataSource), UserModule, AuthModule],
+  imports: [
+    StudentModule,
+    TypeOrmModule.forRoot(dataSource),
+    UserModule,
+    AuthModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })

@@ -18,11 +18,13 @@ import { RolesGuard } from './roles.guard';
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService],
-  exports: [AuthService,
-  {
-    provide: APP_GUARD,
-    useClass: RolesGuard,
-  },],
+  providers: [
+    AuthService,
+    {
+      provide: APP_GUARD,
+      useClass: RolesGuard,
+    },
+  ],
+  exports: [AuthService],
 })
 export class AuthModule {}

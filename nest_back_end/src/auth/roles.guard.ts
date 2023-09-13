@@ -11,9 +11,7 @@ import { ROLES_KEY } from './roles.decorator';
 
 @Injectable()
 export class RolesGuard implements CanActivate {
-  constructor(
-    private reflector: Reflector,
-  ) {}
+  constructor(private reflector: Reflector) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const requiredRoles = this.reflector.getAllAndOverride<Role[]>(ROLES_KEY, [
@@ -35,7 +33,7 @@ export class RolesGuard implements CanActivate {
     }
 
     try {
-      if (accessToken == Role.Admin) {
+      if (requiredRoles.includes(accessToken)) {
         return true;
       }
       throw new ForbiddenException('Forbidden');
