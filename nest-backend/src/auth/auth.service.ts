@@ -24,7 +24,7 @@ export class AuthService {
       if (user) {
         if (user.password == encrypt(createUserDto.password)) {
           const accessToken = this.jwtService.sign(
-            { email: user.email, role: user.role },
+            { email: user.email, role: user.role.toLowerCase() },
             { secret: jwtConstants.secretKey!, expiresIn: '5h' },
           );
           const refreshToken = this.jwtService.sign(

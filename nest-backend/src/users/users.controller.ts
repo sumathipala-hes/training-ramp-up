@@ -13,6 +13,8 @@ import { Response } from 'express';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { AuthService } from '../auth/auth.service';
+import { Roles } from '../auth/roles.decorator';
+import { Role } from '../enum/role.enum';
 
 @Controller('api/v1/user')
 export class UsersController {
@@ -21,6 +23,7 @@ export class UsersController {
     private readonly authService: AuthService,
   ) {}
 
+  @Roles(Role.ADMIN)
   @Post('/add')
   async create(@Body() createUserDto: CreateUserDto) {
     return await this.usersService.create(createUserDto);
@@ -31,6 +34,7 @@ export class UsersController {
     return await this.usersService.findAll();
   }
 
+  @Roles(Role.ADMIN)
   @Put(':email')
   async update(
     @Param('email') email: string,
@@ -39,6 +43,7 @@ export class UsersController {
     return await this.usersService.update(email, updateUserDto);
   }
 
+  @Roles(Role.ADMIN)
   @Delete('del/:id')
   async remove(@Param('id') email: string) {
     return await this.usersService.remove(email);

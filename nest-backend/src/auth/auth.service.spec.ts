@@ -3,7 +3,6 @@ import { AuthService } from './auth.service';
 import { Repository } from 'typeorm';
 import { User } from '../users/entities/user.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { encrypt } from '../utils/password.util';
 import { JwtService } from '@nestjs/jwt';
 
 describe('AuthService', () => {
@@ -30,6 +29,7 @@ describe('AuthService', () => {
 
   it('should be defined', () => {
     expect(repo).toBeDefined();
+    expect(service).toBeDefined();
   });
 
   describe('signIn', () => {
@@ -43,10 +43,7 @@ describe('AuthService', () => {
     test('signIn success', async () => {
       repo.findOne = jest.fn().mockResolvedValue(result);
       const data = await service.signIn(result);
-      const user = (repo.findOne = jest.fn().mockResolvedValue(result));
-      if(user){
-        expect(typeof data).toEqual('object');
-      }
+      expect(typeof data).toEqual('object');
     });
 
     test('signIn fail', async () => {
