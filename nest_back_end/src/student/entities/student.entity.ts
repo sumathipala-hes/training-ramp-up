@@ -5,18 +5,18 @@ export class Student {
     @PrimaryGeneratedColumn()
     studentId!: number;
   
-    @Column()
+    @Column({nullable: false})
     studentName!: string;
   
-    @Column()
+    @Column({nullable: false})
     studentAddress!: string;
   
-    @Column()
+    @Column({nullable: false})
     studentMobile!: string;
   
-    @Column()
+    @Column({nullable: false})
     studentDob!: Date;
   
-    @Column()
+    @Column({nullable: false})
     studentGender!: string;
 }

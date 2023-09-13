@@ -2,15 +2,15 @@ import { Entity, Column, BaseEntity, PrimaryColumn } from 'typeorm';
 
 @Entity()
 export class User extends BaseEntity {
-  @Column()
+  @Column({ nullable: false })
   userName: string;
 
-  @PrimaryColumn({ unique: true })
+  @PrimaryColumn({ unique: true, nullable: false })
   userEmail: string;
 
-  @Column()
+  @Column({ nullable: false })
   userPassword: string;
 
-  @Column()
+  @Column({ nullable: false })
   role: string;
 }
