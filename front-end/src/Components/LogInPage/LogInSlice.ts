@@ -40,10 +40,7 @@ const signInSlice = createSlice({
             console.log('Log Out Invoked')
         },
         setAuthState: (state, action: PayloadAction<boolean>) => {
-            state.authState =
-                action.payload === state.authState
-                    ? state.authState
-                    : action.payload
+            state.authState = action.payload
         },
     },
 })

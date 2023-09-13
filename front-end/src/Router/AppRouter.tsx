@@ -11,6 +11,7 @@ import { RootState } from '../store'
 
 function AppRouter() {
     const logged = useSelector((store: RootState) => store.logIn.authState)
+    console.log(logged)
     return (
         <Router>
             <Routes>

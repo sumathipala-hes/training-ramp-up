@@ -55,9 +55,6 @@ const createSendToken = (user: User, res: Response) => {
     httpOnly: true,
   })
 
-  //Remove the Password from output
-  // user.password = undefined
-
   res.status(200).json({
     status: 'success',
     accessToken: token.accessToken,
