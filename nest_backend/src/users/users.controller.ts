@@ -14,8 +14,8 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { DeleteResult, InsertResult, UpdateResult } from 'typeorm';
 import { Response } from 'express';
-import { Roles } from 'src/auth/roles.decorator';
-import { Role } from 'src/enum/role.enum';
+import { Roles } from '../auth/roles.decorator';
+import { Role } from '../enum/role.enum';
 
 @Controller('users')
 export class UsersController {

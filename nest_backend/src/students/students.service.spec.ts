@@ -1,10 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { StudentsService } from './students.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { DeleteResult, Repository, UpdateResult } from 'typeorm';
+import { DeleteResult, Repository, UpdateResult, InsertResult } from 'typeorm';
 import { Student } from './entities/student.entity';
 import { CreateStudentDto } from './dto/create-student.dto';
-import { InsertResult } from 'typeorm';
 
 describe('StudentsService', () => {
   let service: StudentsService;
@@ -16,7 +15,13 @@ describe('StudentsService', () => {
         StudentsService,
         {
           provide: getRepositoryToken(Student),
-          useClass: Repository,
+          useValue: {
+            find: jest.fn(),
+            findOne: jest.fn(),
+            insert: jest.fn(),
+            update: jest.fn(),
+            delete: jest.fn(),
+          },
         },
       ],
     }).compile();
@@ -60,16 +65,16 @@ describe('StudentsService', () => {
       gender: 'Male',
     };
 
-    const expectedResult: InsertResult = {
+    const insertResult: InsertResult = {
       raw: {},
       generatedMaps: [],
       identifiers: [],
     };
 
     it('should create a new student', async () => {
-      studentRepository.insert = jest.fn().mockResolvedValue(expectedResult);
+      studentRepository.insert = jest.fn().mockResolvedValue(insertResult);
       const result = await service.createStudent(createStudentDto);
-      expect(result).toEqual(expectedResult);
+      expect(result).toEqual(insertResult);
       expect(studentRepository.insert).toHaveBeenCalledWith(createStudentDto);
     });
 

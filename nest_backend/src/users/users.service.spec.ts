@@ -1,9 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UsersService } from './users.service';
-import { InsertResult, Repository } from 'typeorm';
-import { getRepositoryToken } from '@nestjs/typeorm';
+import { UsersController } from './users.controller';
 import { User } from './entities/user.entity';
-import { decrypt, encrypt } from 'src/util/encrypted.decrypted.util';
+import { Repository } from 'typeorm';
+import { getRepositoryToken } from '@nestjs/typeorm';
 
 describe('UsersService', () => {
   let service: UsersService;
@@ -15,7 +15,13 @@ describe('UsersService', () => {
         UsersService,
         {
           provide: getRepositoryToken(User),
-          useClass: Repository,
+          useValue: {
+            find: jest.fn(),
+            findOne: jest.fn(),
+            insert: jest.fn(),
+            update: jest.fn(),
+            delete: jest.fn(),
+          },
         },
       ],
     }).compile();
@@ -24,32 +30,7 @@ describe('UsersService', () => {
     userRepository = module.get<Repository<User>>(getRepositoryToken(User));
   });
 
-  const expectedResult: User[] = [
-    {
-      roleType: 'ADMIN',
-      name: 'Nimesh',
-      address: 'Galle',
-      email: 'nimesh123@gmail.com',
-      mobileNumber: '0761234567',
-      dob: new Date('2001 - 12 - 15'),
-      gender: 'Male',
-      password: 'Nimesh12@345',
-    },
-    {
-      roleType: 'USER',
-      name: 'Nimesh',
-      address: 'Galle',
-      email: 'nimesh12@gmail.com',
-      mobileNumber: '0761234567',
-      dob: new Date('2001 - 12 - 15'),
-      gender: 'Male',
-      password: 'Nimesh12@345',
-    },
-  ];
-
   it('should be defined', () => {
     expect(service).toBeDefined();
   });
-
-
 });
