@@ -6,8 +6,10 @@ import {
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { User } from './user.entity';
-import { Response } from 'express';
 import { JwtService } from '@nestjs/jwt';
+import { JwtPayload } from 'jsonwebtoken';
+import jwtDecode from 'jwt-decode';
+import { Request, Response } from 'express';
 
 @Injectable()
 export class AuthService {
@@ -47,6 +49,17 @@ export class AuthService {
     this.createSendToken(user, res);
 
     return user;
+  }
+
+  async refreshToken(req: Request, res: Response) {
+    const refreshToken = req.cookies.refreshToken;
+    const verifiedJWT = await this.jwtservice.verifyAsync(refreshToken);
+    if (!verifiedJWT) {
+      throw new BadRequestException('Token cannot be verifiable');
+    }
+    const decoded: JwtPayload = jwtDecode(refreshToken) as JwtPayload;
+    const user = await this.usersService.findOne(decoded.id);
+    this.createSendToken(user, res);
   }
 
   signToken = async (id: number, email: string) => {

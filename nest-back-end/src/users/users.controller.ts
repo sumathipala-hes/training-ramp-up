@@ -6,15 +6,18 @@ import {
   NotFoundException,
   Param,
   Post,
+  Req,
   Res,
+  UseGuards,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { Response } from 'express';
+import { Response, Request } from 'express';
 import { UserDto } from './dtos/user.dto';
 import { Serialize } from 'src/interceptors/serialize.interceptor';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { SignInDto } from './dtos/sign-in-user.dto';
+import { AuthGuard } from 'src/guards/auth.guard';
 
 @Controller('users')
 @Serialize(UserDto)
@@ -39,6 +42,12 @@ export class UsersController {
     return this.authService.signin(body.email, body.password, res);
   }
 
+  @Post('/refresh')
+  refresh(@Req() req: Request, @Res() res: Response) {
+    return this.authService.refreshToken(req, res);
+  }
+
+  @UseGuards(AuthGuard)
   @Get()
   findAllUsers() {
     return this.usersService.find();
