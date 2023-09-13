@@ -14,8 +14,8 @@ import { CreateStudentDto } from './dto/create-student.dto';
 import { UpdateStudentDto } from './dto/update-student.dto';
 import { DeleteResult, InsertResult, UpdateResult } from 'typeorm';
 import { Response } from 'express';
-import { Roles } from 'src/auth/roles.decorator';
-import { Role } from 'src/enum/role.enum';
+import { Roles } from '../auth/roles.decorator';
+import { Role } from '../enum/role.enum';
 
 @Controller('students')
 export class StudentsController {
