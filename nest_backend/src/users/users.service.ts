@@ -44,7 +44,7 @@ export class UsersService {
     }
   }
 
-  async findOneUser(search: string): Promise<User> {
+  async findAllUsers(search: string): Promise<User> {
     try {
       const user: User = await this.userRepository.findOne({
         where: [
