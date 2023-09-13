@@ -19,6 +19,7 @@ class StudentRepository {
       Uri.parse('$baseUrl/student'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
+        'Cookie': 'role=admin',
       },
       body: jsonEncode(
         student.toJson(),
@@ -34,6 +35,9 @@ class StudentRepository {
   Future<http.Response> deleteStudent(String id) async {
     final response = await http.delete(
       Uri.parse('$baseUrl/student/$id'),
+      headers: <String, String>{
+        'Cookie': 'role=admin',
+      },
     );
     if (response.statusCode == 200) {
       return response;
@@ -47,6 +51,7 @@ class StudentRepository {
       Uri.parse('$baseUrl/student/${student.studentId}'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
+        'Cookie': 'role=admin',
       },
       body: jsonEncode(
         student.toJson(),
