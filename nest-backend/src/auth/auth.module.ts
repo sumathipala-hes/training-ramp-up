@@ -5,7 +5,7 @@ import { jwtConstants } from './auth.constants';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from 'src/users/entities/user.entity';
 import { APP_GUARD } from '@nestjs/core';
-import { RolesGuard } from './role.guard';
+import { RolesGuard } from './roles.guard';
 
 @Module({
   imports: [
