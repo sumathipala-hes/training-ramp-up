@@ -14,7 +14,7 @@ class StudentRepository {
     return response;
   }
 
-  Future<http.Response> createStudent(Student student) async {
+  Future<void> createStudent(Student student) async {
     final response = await http.post(
       Uri.parse('$baseUrl/student'),
       headers: <String, String>{
@@ -25,9 +25,7 @@ class StudentRepository {
         student.toJson(),
       ),
     );
-    if (response.statusCode == 200) {
-      return response;
-    } else {
+    if (response.statusCode == 500) {
       throw Exception('Failed to create student.');
     }
   }
