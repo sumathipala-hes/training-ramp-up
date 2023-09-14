@@ -35,10 +35,10 @@ export class AuthService {
           );
           return tokens;
         } else {
-          throw new HttpException('Password not match', HttpStatus.BAD_REQUEST);
+          throw new HttpException('Password Not Match', HttpStatus.BAD_REQUEST);
         }
       } else {
-        throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+        throw new HttpException('User Not Found', HttpStatus.NOT_FOUND);
       }
     } catch (error) {
       throw new HttpException(
