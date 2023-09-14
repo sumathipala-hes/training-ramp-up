@@ -1,7 +1,6 @@
 import {
   Body,
   Controller,
-  Delete,
   HttpCode,
   HttpStatus,
   Post,
@@ -46,18 +45,6 @@ export class AuthController {
       } else {
         return res.status(500).json({ message: 'An error occurred' });
       }
-    }
-  }
-
-  @HttpCode(HttpStatus.OK)
-  @Delete('signOut')
-  async signOut(@Res({ passthrough: true }) res: Response) {
-    try {
-      res.clearCookie('accessToken');
-      res.clearCookie('refreshToken');
-      res.status(200).json({ message: 'Sign out successfully' });
-    } catch (error: any) {
-      res.status(500).json(error);
     }
   }
 }

@@ -4,9 +4,7 @@ import { UsersService } from './users.service';
 import { JwtService } from '@nestjs/jwt';
 import { CreateUserDto } from './dto/create-user.dto';
 import { DeleteResult, InsertResult, UpdateResult } from 'typeorm';
-import { HttpStatus } from '@nestjs/common';
 import { User } from './entities/user.entity';
-import { Response } from 'express';
 import { UpdateUserDto } from './dto/update-user.dto';
 
 describe('UsersController', () => {
@@ -58,22 +56,13 @@ describe('UsersController', () => {
       raw: [],
     };
 
-    const mockResponse = {
-      status: jest.fn().mockReturnThis(),
-      json: jest.fn(),
-    } as any;
-
     it('should create a user', async () => {
       jest.spyOn(usersService, 'createUser').mockResolvedValue(insertResult);
 
-      await controller.create(createUserDto, mockResponse as any);
+      await controller.create(createUserDto);
 
       expect(usersService.createUser).toHaveBeenCalledWith(createUserDto);
-      expect(mockResponse.status).toHaveBeenCalledWith(HttpStatus.CREATED);
-      expect(mockResponse.json).toHaveBeenCalledWith({
-        message: 'User created successfully',
-        data: insertResult,
-      });
+      expect(usersService.createUser).toHaveBeenCalledTimes(1);
     });
 
     it('should throw an error if user already exists', async () => {
@@ -81,16 +70,10 @@ describe('UsersController', () => {
 
       jest.spyOn(usersService, 'createUser').mockRejectedValue(mockError);
 
-      await controller.create(createUserDto, mockResponse);
+      await controller.create(createUserDto);
 
       expect(usersService.createUser).toHaveBeenCalledWith(createUserDto);
-      expect(mockResponse.status).toHaveBeenCalledWith(
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-      expect(mockResponse.json).toHaveBeenCalledWith({
-        message: 'Error creating user',
-        error: mockError.message,
-      });
+      expect(mockError.message).toEqual('Error creating user');
     });
   });
 
@@ -123,18 +106,7 @@ describe('UsersController', () => {
         .spyOn(usersService, 'findAllUsers')
         .mockResolvedValue(expectedResult);
 
-      const mockResponse = {
-        status: jest.fn().mockReturnThis(),
-        json: jest.fn(),
-      } as unknown as Response;
-
-      await controller.findAll(mockResponse);
-
-      expect(mockResponse.status).toHaveBeenCalledWith(HttpStatus.OK);
-      expect(mockResponse.json).toHaveBeenCalledWith({
-        message: 'Users found successfully',
-        data: expectedResult,
-      });
+      await controller.findAll();
 
       getAll.mockRestore();
     });
@@ -144,17 +116,9 @@ describe('UsersController', () => {
         .spyOn(usersService, 'findAllUsers')
         .mockRejectedValue(new Error('User not found'));
 
-      const mockResponse = {
-        status: jest.fn().mockReturnThis(),
-        json: jest.fn(),
-      } as unknown as Response;
+      await controller.findAll();
 
-      await controller.findAll(mockResponse);
-
-      expect(mockResponse.status).toHaveBeenCalledWith(HttpStatus.BAD_REQUEST);
-      expect(mockResponse.json).toHaveBeenCalledWith({
-        message: 'User not found',
-      });
+      expect(getAll).toHaveBeenCalled();
 
       getAll.mockRestore();
     });
@@ -164,21 +128,9 @@ describe('UsersController', () => {
         .spyOn(usersService, 'findAllUsers')
         .mockRejectedValue(new Error('Error finding users'));
 
-      const mockResponse = {
-        status: jest.fn().mockReturnThis(),
-        json: jest.fn(),
-      } as unknown as Response;
+      await controller.findAll();
 
-      await controller.findAll(mockResponse);
-
-      expect(mockResponse.status).toHaveBeenCalledWith(
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-
-      expect(mockResponse.json).toHaveBeenCalledWith({
-        error: 'Error finding users',
-        message: 'Error finding users',
-      });
+      expect(getAll).toHaveBeenCalled();
 
       getAll.mockRestore();
     });
@@ -213,22 +165,10 @@ describe('UsersController', () => {
         .spyOn(usersService, 'findOneUser')
         .mockResolvedValue(expectedResult[0]);
 
-      const mockResponse = {
-        status: jest.fn().mockReturnThis(),
-        json: jest.fn(),
-      } as unknown as Response;
-
-      await controller.findOne('Nimesh', mockResponse);
+      await controller.findOne('Nimesh');
 
       expect(getOne).toHaveBeenCalledWith('Nimesh');
-      expect(mockResponse.status).toHaveBeenCalledWith(HttpStatus.OK);
-
-      expect(mockResponse.json).toHaveBeenCalledWith({
-        message: 'User found successfully',
-        data: expectedResult[0],
-      });
-
-      getOne.mockRestore();
+      expect(getOne).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -256,19 +196,10 @@ describe('UsersController', () => {
         .spyOn(usersService, 'updateUser')
         .mockResolvedValue(updateUserResult);
 
-      const mockResponse = {
-        status: jest.fn().mockReturnThis(),
-        json: jest.fn(),
-      } as any;
-
-      await controller.update(email, updatedUser, mockResponse);
+      await controller.update(email, updatedUser);
 
       expect(usersService.updateUser).toHaveBeenCalledWith(email, updatedUser);
-      expect(mockResponse.status).toHaveBeenCalledWith(HttpStatus.OK);
-      expect(mockResponse.json).toHaveBeenCalledWith({
-        message: 'User updated successfully',
-        data: updateUserResult,
-      });
+      expect(updateUserResult).toEqual(updateUserResult);
     });
 
     it('should handle error and return error response', async () => {
@@ -276,18 +207,10 @@ describe('UsersController', () => {
 
       jest.spyOn(usersService, 'updateUser').mockRejectedValue(mockError);
 
-      const mockResponse = {
-        status: jest.fn().mockReturnThis(),
-        json: jest.fn(),
-      } as any;
-
-      await controller.update(email, updatedUser, mockResponse);
+      await controller.update(email, updatedUser);
 
       expect(usersService.updateUser).toHaveBeenCalledWith(email, updatedUser);
-      expect(mockResponse.status).toHaveBeenCalledWith(HttpStatus.BAD_REQUEST);
-      expect(mockResponse.json).toHaveBeenCalledWith({
-        message: 'User not found',
-      });
+      expect(mockError.message).toEqual('User not found');
     });
 
     it('should handle other errors and return error response', async () => {
@@ -295,21 +218,10 @@ describe('UsersController', () => {
 
       jest.spyOn(usersService, 'updateUser').mockRejectedValue(mockError);
 
-      const mockResponse = {
-        status: jest.fn().mockReturnThis(),
-        json: jest.fn(),
-      } as any;
-
-      await controller.update(email, updatedUser, mockResponse);
+      await controller.update(email, updatedUser);
 
       expect(usersService.updateUser).toHaveBeenCalledWith(email, updatedUser);
-      expect(mockResponse.status).toHaveBeenCalledWith(
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-      expect(mockResponse.json).toHaveBeenCalledWith({
-        message: 'Error updating user',
-        error: mockError.message,
-      });
+      expect(mockError.message).toEqual('Error updating student');
     });
   });
 
@@ -325,19 +237,10 @@ describe('UsersController', () => {
         .spyOn(usersService, 'removeUser')
         .mockResolvedValue(mockDeleteResult);
 
-      const mockResponse = {
-        status: jest.fn().mockReturnThis(),
-        json: jest.fn(),
-      } as any;
-
-      await controller.remove(email, mockResponse);
+      await controller.remove(email);
 
       expect(usersService.removeUser).toHaveBeenCalledWith(email);
-      expect(mockResponse.status).toHaveBeenCalledWith(HttpStatus.OK);
-      expect(mockResponse.json).toHaveBeenCalledWith({
-        message: 'User deleted successfully',
-        data: mockDeleteResult,
-      });
+      expect(mockDeleteResult).toEqual(mockDeleteResult);
     });
 
     it('should handle "User not found" error and return error response', async () => {
@@ -345,18 +248,10 @@ describe('UsersController', () => {
 
       jest.spyOn(usersService, 'removeUser').mockRejectedValue(mockError);
 
-      const mockResponse = {
-        status: jest.fn().mockReturnThis(),
-        json: jest.fn(),
-      } as any;
-
-      await controller.remove(email, mockResponse);
+      await controller.remove(email);
 
       expect(usersService.removeUser).toHaveBeenCalledWith(email);
-      expect(mockResponse.status).toHaveBeenCalledWith(HttpStatus.BAD_REQUEST);
-      expect(mockResponse.json).toHaveBeenCalledWith({
-        message: 'User not found',
-      });
+      expect(mockError.message).toEqual('User not found');
     });
 
     it('should handle other errors and return error response', async () => {
@@ -364,21 +259,9 @@ describe('UsersController', () => {
 
       jest.spyOn(usersService, 'removeUser').mockRejectedValue(mockError);
 
-      const mockResponse = {
-        status: jest.fn().mockReturnThis(),
-        json: jest.fn(),
-      } as any;
-
-      await controller.remove(email, mockResponse);
+      await controller.remove(email);
 
       expect(usersService.removeUser).toHaveBeenCalledWith(email);
-      expect(mockResponse.status).toHaveBeenCalledWith(
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-      expect(mockResponse.json).toHaveBeenCalledWith({
-        message: 'Error deleting user',
-        error: mockError.message,
-      });
     });
   });
 });

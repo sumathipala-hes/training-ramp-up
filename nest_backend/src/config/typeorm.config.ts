@@ -13,5 +13,5 @@ export const typeOrmConfig = async (
   password: configService.get('DB_PASSWORD'),
   database: configService.get('DB_DATABASE'),
   entities: [Student, User],
-  synchronize: true,
+  synchronize: false,
 });

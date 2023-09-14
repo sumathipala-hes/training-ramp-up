@@ -10,20 +10,24 @@ import '../util/local_storage.dart';
 
 class StudentRepository {
   Future<http.Response> getAllStudents() async {
+    final token = await LocalStorage().getAccessToken();
     final response = await http.get(
       Uri.parse('$baseUrl/students'),
       headers: <String, String>{
         'Content-Type': 'application/json',
+        'Authorization': 'Bearer:$token',
       },
     );
     return response;
   }
 
   Future<http.Response> getStudentByOne(String search) async {
+    final token = await LocalStorage().getAccessToken();
     final response = await http.get(
       Uri.parse('$baseUrl/students/$search'),
       headers: <String, String>{
         'Content-Type': 'application/json',
+        'Authorization': 'Bearer:$token',
       },
     );
     return response;

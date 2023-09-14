@@ -8,20 +8,20 @@ import {
 @Entity()
 export class Student {
   @PrimaryGeneratedColumn({ type: 'int' })
-  id!: number;
+  id: number;
 
-  @Column({ nullable: false })
-  name!: string;
+  @Column({ nullable: true })
+  name: string;
 
-  @Column({ nullable: false })
-  address!: string;
+  @Column({ nullable: true })
+  address: string;
 
-  @Column({ nullable: false })
-  mobileNumber!: string;
+  @Column({ nullable: true })
+  mobileNumber: string;
 
-  @CreateDateColumn({ nullable: false })
-  dob!: Date;
+  @CreateDateColumn({ nullable: true })
+  dob: Date;
 
-  @Column({ nullable: false, enum: ['Male', 'Female'] })
-  gender!: string;
+  @Column({ nullable: true, enum: ['Male', 'Female'] })
+  gender: string;
 }

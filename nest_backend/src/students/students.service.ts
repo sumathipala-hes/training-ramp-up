@@ -1,9 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateStudentDto } from './dto/create-student.dto';
 import { UpdateStudentDto } from './dto/update-student.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Student } from './entities/student.entity';
 import { DeleteResult, InsertResult, Repository, UpdateResult } from 'typeorm';
+import { StudentResponseData } from './dto/response-data';
 
 @Injectable()
 export class StudentsService {
@@ -20,27 +21,30 @@ export class StudentsService {
         await this.studentRepository.insert(createStudentDto);
       return newStudent;
     } catch (err) {
-      throw new Error('Failed to create student.');
+      throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
     }
   }
 
-  async findAllStudents(): Promise<Array<Student>> {
+  async findAllStudents(): Promise<StudentResponseData> {
     try {
-      const students: Array<Student> = await this.studentRepository.find({
+      const students: Student[] = await this.studentRepository.find({
         order: { id: 'DESC' },
       });
 
       if (students.length === 0) {
-        throw new Error('No students found.');
+        throw new HttpException('No students found.', HttpStatus.NOT_FOUND);
       }
 
-      return students;
+      return {
+        message: 'Student found successfully',
+        data: students,
+      };
     } catch (err) {
-      throw new Error('Failed to fetch students.');
+      throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
     }
   }
 
-  async findOneStudent(search: string): Promise<Student> {
+  async findOneStudent(search: string): Promise<StudentResponseData> {
     try {
       const student: Student = await this.studentRepository.findOne({
         where: [
@@ -51,12 +55,15 @@ export class StudentsService {
       });
 
       if (!student) {
-        throw new Error('No student found.');
+        throw new HttpException('No student found.', HttpStatus.NOT_FOUND);
       }
 
-      return student;
+      return {
+        message: 'Student found successfully',
+        data: [student],
+      };
     } catch (err) {
-      throw new Error('Failed to fetch student.');
+      throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -71,12 +78,12 @@ export class StudentsService {
       );
 
       if (updateStudent.affected === 0) {
-        throw new Error('Student not found');
+        throw new HttpException('Student not found', HttpStatus.NOT_FOUND);
       }
 
       return updateStudent;
     } catch (err) {
-      throw new Error('Failed to update student.');
+      throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -86,12 +93,12 @@ export class StudentsService {
         await this.studentRepository.delete(id);
 
       if (deleteStudent.affected === 0) {
-        throw new Error('Student not found');
+        throw new HttpException('Student not found', HttpStatus.NOT_FOUND);
       }
 
       return deleteStudent;
     } catch (err) {
-      throw new Error('Failed to delete student.');
+      throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
     }
   }
 }
