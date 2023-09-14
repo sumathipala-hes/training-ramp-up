@@ -4,6 +4,8 @@ import {
   ExecutionContext,
   UnauthorizedException,
   ForbiddenException,
+  HttpException,
+  HttpStatus,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { Role } from 'src/enum/role.enum';
@@ -38,15 +40,16 @@ export class RolesGuard implements CanActivate {
           if (requiredRoles.includes(decoded.role)) {
             return true;
           } else {
-            throw new UnauthorizedException('Invalid Role');
+            throw new HttpException('Invalid Role', HttpStatus.FORBIDDEN);
           }
         } else {
-          console.log('Invalid Token');
-          throw new UnauthorizedException('Invalid Token');
+          throw new HttpException('Invalid Token', HttpStatus.BAD_REQUEST);
         }
       } else {
-        console.log('Access Token Not Found');
-        throw new ForbiddenException('Access Token Not Found');
+        throw new HttpException(
+          'Access Token Not Found',
+          HttpStatus.UNAUTHORIZED,
+        );
       }
     } catch (error) {
       throw error;

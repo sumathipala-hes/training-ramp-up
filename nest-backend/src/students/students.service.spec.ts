@@ -3,6 +3,7 @@ import { StudentsService } from './students.service';
 import { Repository } from 'typeorm';
 import { Student } from './entities/student.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
+import { HttpException, HttpStatus } from '@nestjs/common';
 
 describe('StudentsService', () => {
   let service: StudentsService;
@@ -54,8 +55,17 @@ describe('StudentsService', () => {
       expect(data).toEqual(insertResult);
     });
     it('create student fail', async () => {
-      repo.insert = jest.fn().mockRejectedValue(new Error('Error'));
-      await expect(service.create(result)).rejects.toThrowError('Error');
+      repo.insert = jest
+        .fn()
+        .mockRejectedValue(
+          new HttpException(
+            'Internal Server Error',
+            HttpStatus.INTERNAL_SERVER_ERROR,
+          ),
+        );
+      await expect(service.create(result)).rejects.toThrowError(
+        'Internal Server Error',
+      );
     });
   });
 
@@ -85,8 +95,17 @@ describe('StudentsService', () => {
       expect(data).toEqual(result);
     });
     it('find all students fail', async () => {
-      repo.find = jest.fn().mockRejectedValue(new Error('Error'));
-      await expect(service.findAll()).rejects.toThrowError('Error');
+      repo.find = jest
+        .fn()
+        .mockRejectedValue(
+          new HttpException(
+            'Internal Server Error',
+            HttpStatus.INTERNAL_SERVER_ERROR,
+          ),
+        );
+      await expect(service.findAll()).rejects.toThrowError(
+        'Internal Server Error',
+      );
     });
   });
 
@@ -105,8 +124,17 @@ describe('StudentsService', () => {
       expect(data).toEqual(result);
     });
     it('update student fail', async () => {
-      repo.update = jest.fn().mockRejectedValue(new Error('Error'));
-      await expect(service.update(1, result)).rejects.toThrowError('Error');
+      repo.update = jest
+        .fn()
+        .mockRejectedValue(
+          new HttpException(
+            'Internal Server Error',
+            HttpStatus.INTERNAL_SERVER_ERROR,
+          ),
+        );
+      await expect(service.update(1, result)).rejects.toThrowError(
+        'Internal Server Error',
+      );
     });
   });
 
@@ -121,8 +149,17 @@ describe('StudentsService', () => {
       expect(data).toEqual(result);
     });
     it('delete student fail', async () => {
-      repo.delete = jest.fn().mockRejectedValue(new Error('Error'));
-      await expect(service.remove(1)).rejects.toThrowError('Error');
+      repo.delete = jest
+        .fn()
+        .mockRejectedValue(
+          new HttpException(
+            'Internal Server Error',
+            HttpStatus.INTERNAL_SERVER_ERROR,
+          ),
+        );
+      await expect(service.remove(1)).rejects.toThrowError(
+        'Internal Server Error',
+      );
     });
   });
 });

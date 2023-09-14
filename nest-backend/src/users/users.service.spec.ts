@@ -3,6 +3,7 @@ import { UsersService } from './users.service';
 import { Any, Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
+import { HttpException, HttpStatus } from '@nestjs/common';
 
 jest.mock('../utils/password.util', () => ({
   encrypt: jest.fn().mockReturnValue('encrypted'),
@@ -51,7 +52,7 @@ describe('UsersService', () => {
   describe('create user', () => {
     const result: User = {
       name: 'Dasun',
-      email: '',
+      email: 'dasun@gmail.com',
       password: '123456',
       role: 'admin',
     };
@@ -66,8 +67,17 @@ describe('UsersService', () => {
       expect(data).toEqual(insertResult);
     });
     it('create user fail', async () => {
-      repo.insert = jest.fn().mockRejectedValue(new Error('Error'));
-      await expect(service.create(result)).rejects.toThrowError('Error');
+      repo.insert = jest
+        .fn()
+        .mockRejectedValue(
+          new HttpException(
+            'Internal Server Error',
+            HttpStatus.INTERNAL_SERVER_ERROR,
+          ),
+        );
+      await expect(service.create(result)).rejects.toThrowError(
+        'Internal Server Error',
+      );
     });
   });
 
@@ -86,8 +96,17 @@ describe('UsersService', () => {
       expect(data).toEqual(result);
     });
     it('find all users fail', async () => {
-      repo.find = jest.fn().mockRejectedValue(new Error('Error'));
-      await expect(service.findAll()).rejects.toThrowError('Error');
+      repo.find = jest
+        .fn()
+        .mockRejectedValue(
+          new HttpException(
+            'Internal Server Error',
+            HttpStatus.INTERNAL_SERVER_ERROR,
+          ),
+        );
+      await expect(service.findAll()).rejects.toThrowError(
+        'Internal Server Error',
+      );
     });
   });
 
@@ -104,10 +123,17 @@ describe('UsersService', () => {
       expect(data).toEqual(result);
     });
     it('update user fail', async () => {
-      repo.update = jest.fn().mockRejectedValue(new Error('Error'));
+      repo.update = jest
+        .fn()
+        .mockRejectedValue(
+          new HttpException(
+            'Internal Server Error',
+            HttpStatus.INTERNAL_SERVER_ERROR,
+          ),
+        );
       await expect(
         service.update('dasun@gmail.com', result),
-      ).rejects.toThrowError('Error');
+      ).rejects.toThrowError('Internal Server Error');
     });
   });
 
@@ -125,23 +151,21 @@ describe('UsersService', () => {
       if (user) {
         expect(data).toEqual(result);
       } else {
-        expect(data).rejects.toThrowError('Error');
+        expect(data).rejects.toThrowError('Internal Server Error');
       }
     });
     it('remove user fail', async () => {
-      const result = {
-        name: 'Dasun',
-        email: 'dasun@gmail.com',
-        password: '123456',
-        role: 'admin',
-      };
-      const user = (repo.findOne = jest.fn().mockResolvedValue(result));
-      if (user) {
-        repo.delete = jest.fn().mockRejectedValue(new Error('Error'));
-        expect(typeof service.remove('dasun@gmail.com')).toEqual('object');
-      } else {
-        expect(service.remove('dasun@gmail.com')).rejects.toThrowError('Error');
-      }
+      repo.delete = jest
+        .fn()
+        .mockRejectedValue(
+          new HttpException(
+            'Internal Server Error',
+            HttpStatus.INTERNAL_SERVER_ERROR,
+          ),
+        );
+      await expect(service.remove('dasun@gmail.com')).rejects.toThrowError(
+        'Internal Server Error',
+      );
     });
   });
 });

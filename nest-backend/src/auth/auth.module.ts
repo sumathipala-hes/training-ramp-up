@@ -16,7 +16,7 @@ import { RolesGuard } from './roles.guard';
       signOptions: { expiresIn: '7d' },
     }),
   ],
-  providers: [AuthService, {provide:APP_GUARD,useClass:RolesGuard}],
+  providers: [AuthService, { provide: APP_GUARD, useClass: RolesGuard }],
   exports: [AuthService],
 })
 export class AuthModule {}

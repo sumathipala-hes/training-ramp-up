@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateStudentDto } from './dto/create-student.dto';
 import { UpdateStudentDto } from './dto/update-student.dto';
 import { DeleteResult, InsertResult, Repository, UpdateResult } from 'typeorm';
@@ -16,11 +16,14 @@ export class StudentsService {
     try {
       return this.studentRepository.insert(createStudentDto as Student);
     } catch (error) {
-      throw new Error(error.message);
+      throw new HttpException(
+        'Internal Server Error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
-  async findAll(): Promise<Array<CreateStudentDto>> {
+  async findAll(): Promise<CreateStudentDto[]> {
     try {
       const students = await this.studentRepository.find({
         order: { id: 'DESC' },
@@ -30,7 +33,10 @@ export class StudentsService {
       }
       return students;
     } catch (error) {
-      throw new Error(error.message);
+      throw new HttpException(
+        'Internal Server Error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
@@ -41,7 +47,10 @@ export class StudentsService {
     try {
       return this.studentRepository.update(id, updateStudentDto as Student);
     } catch (error) {
-      throw new Error(error.message);
+      throw new HttpException(
+        'Internal Server Error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
@@ -49,7 +58,10 @@ export class StudentsService {
     try {
       return this.studentRepository.delete(id);
     } catch (error) {
-      throw new Error(error.message);
+      throw new HttpException(
+        'Internal Server Error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 }

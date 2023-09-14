@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
@@ -20,7 +20,10 @@ export class UsersService {
         password: encrypt(createUserDto.password),
       } as User);
     } catch (error) {
-      throw new Error(error.message);
+      throw new HttpException(
+        'Internal Server Error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
@@ -30,14 +33,20 @@ export class UsersService {
         order: { email: 'DESC' },
       });
       if (!users) {
-        throw new Error('No Users Found');
+        throw new HttpException(
+          'Internal Server Error',
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
       }
       users.forEach((user) => {
         user.password = decrypt(user.password);
       });
       return users;
     } catch (error) {
-      throw new Error(error.message);
+      throw new HttpException(
+        'Internal Server Error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
@@ -51,7 +60,10 @@ export class UsersService {
         password: encrypt(updateUserDto.password),
       } as User);
     } catch (error) {
-      throw new Error(error.message);
+      throw new HttpException(
+        'Internal Server Error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
@@ -67,7 +79,10 @@ export class UsersService {
       }
       return user;
     } catch (error) {
-      throw new Error(error.message);
+      throw new HttpException(
+        'Internal Server Error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
@@ -82,6 +97,11 @@ export class UsersService {
         throw new Error('User not found');
       }
       return await this.userRepository.delete(email);
-    } catch (error) {}
+    } catch (error) {
+      throw new HttpException(
+        'Internal Server Error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 }
