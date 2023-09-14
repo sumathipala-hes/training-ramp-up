@@ -6,6 +6,7 @@ import { User } from './entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { HttpException, HttpStatus } from '@nestjs/common';
+import { UserResponseData } from './dto/response-data';
 
 describe('UsersService', () => {
   let service: UsersService;
@@ -103,6 +104,16 @@ describe('UsersService', () => {
     it('should throw an error if user is not found', async () => {
       userRepository.update = jest
         .fn()
+        .mockRejectedValue(new Error('Failed to not found.'));
+      await expect(service.updateUser(email, updateUserDto)).rejects.toThrow(
+        'Failed to not found.',
+      );
+      expect(userRepository.update).toHaveBeenCalledWith(email, updateUserDto);
+    });
+
+    it('should throw an error on failure', async () => {
+      userRepository.update = jest
+        .fn()
         .mockRejectedValue(new Error('Failed to update user.'));
       await expect(service.updateUser(email, updateUserDto)).rejects.toThrow(
         'Failed to update user.',
@@ -129,11 +140,104 @@ describe('UsersService', () => {
     it('should throw an error if user is not found', async () => {
       userRepository.delete = jest
         .fn()
+        .mockRejectedValue(new Error('Failed to not found.'));
+      await expect(service.removeUser(email)).rejects.toThrow(
+        'Failed to not found.',
+      );
+      expect(userRepository.delete).toHaveBeenCalledWith(email);
+    });
+
+    it('should throw an error on failure', async () => {
+      userRepository.delete = jest
+        .fn()
         .mockRejectedValue(new Error('Failed to delete user.'));
       await expect(service.removeUser(email)).rejects.toThrow(
         'Failed to delete user.',
       );
       expect(userRepository.delete).toHaveBeenCalledWith(email);
+    });
+  });
+
+  describe('findAll', () => {
+    const result: UserResponseData = {
+      message: 'User found successfully',
+      data: [
+        {
+          roleType: 'ADMIN',
+          name: 'Nimesh',
+          address: 'Galle',
+          email: 'nimesh12@gmail.com',
+          mobileNumber: '0761234567',
+          dob: new Date('2001 - 12 - 15'),
+          gender: 'Male',
+          password: 'Nimesh12@345',
+        },
+      ],
+    };
+
+    it('should return all users', async () => {
+      jest.spyOn(userRepository, 'find').mockResolvedValue(result.data);
+    });
+
+    it('should throw an error if users are not found', async () => {
+      userRepository.find = jest
+        .fn()
+        .mockRejectedValue(new Error('Failed to not found.'));
+      await expect(service.findAllUsers()).rejects.toThrow(
+        'Failed to not found.',
+      );
+      expect(userRepository.find).toHaveBeenCalled();
+    });
+
+    it('should throw an error on failure', async () => {
+      userRepository.find = jest
+        .fn()
+        .mockRejectedValue(new Error('Failed to find users.'));
+      await expect(service.findAllUsers()).rejects.toThrow(
+        'Failed to find users.',
+      );
+      expect(userRepository.find).toHaveBeenCalled();
+    });
+  });
+
+  describe('findOne', () => {
+    const name = 'Nimesh';
+    const result: UserResponseData = {
+      message: 'User found successfully',
+      data: [
+        {
+          roleType: 'ADMIN',
+          name: 'Nimesh',
+          address: 'Galle',
+          email: 'nimesh12@gmail.com',
+          mobileNumber: '0761234567',
+          dob: new Date('2001 - 12 - 15'),
+          gender: 'Male',
+          password: 'Nimesh12@345',
+        },
+      ],
+    };
+
+    it('should return a user', async () => {
+      jest.spyOn(userRepository, 'findOne').mockResolvedValue(result.data[0]);
+    });
+
+    it('should throw an error if user is not found', async () => {
+      userRepository.findOne = jest
+        .fn()
+        .mockRejectedValue(new Error('Failed to not found.'));
+      await expect(service.findOneUser(name)).rejects.toThrow(
+        'Failed to not found.',
+      );
+    });
+
+    it('should throw an error on failure', async () => {
+      userRepository.findOne = jest
+        .fn()
+        .mockRejectedValue(new Error('Failed to find user.'));
+      await expect(service.findOneUser(name)).rejects.toThrow(
+        'Failed to find user.',
+      );
     });
   });
 });
