@@ -8,6 +8,6 @@ export class User {
   name: string;
   @Column({ nullable: false })
   password: string;
-  @Column({ nullable: false })
+  @Column({ nullable: false, enum: ['admin', 'user'] })
   role: string;
 }
