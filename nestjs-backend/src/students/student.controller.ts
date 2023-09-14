@@ -2,7 +2,7 @@
 import { Body, Controller, Delete, Get, HttpStatus, Param, Post, Put, Res } from "@nestjs/common";
 import { StudentService } from "./student.service";
 import { StudentDto } from "./dto/student.dto";
-import { UpdateUserDto } from "./dto/update.dto";
+import { UpdateStudentDto } from "./dto/update.dto";
 
 @Controller('students')
 export class StudentController {
@@ -36,10 +36,10 @@ export class StudentController {
     @Put(':id')
     async updateStudent(
         @Param('id') id: string,
-        @Body() updateUserDto: UpdateUserDto,
+        @Body() updateStudentDto: UpdateStudentDto,
         @Res() res) {
             try {
-                await this.studentService.updateStudent(id, updateUserDto);
+                await this.studentService.updateStudent(id, updateStudentDto);
                 return res.status(HttpStatus.OK).json({ message: 'Updated the student record' });
             } catch (err) {
                 return res.status(HttpStatus.BAD_REQUEST).json({ message: err.message });
