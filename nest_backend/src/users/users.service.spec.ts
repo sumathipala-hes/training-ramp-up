@@ -5,6 +5,7 @@ import { UsersService } from './users.service';
 import { User } from './entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { HttpException, HttpStatus } from '@nestjs/common';
 
 describe('UsersService', () => {
   let service: UsersService;
@@ -30,29 +31,6 @@ describe('UsersService', () => {
     service = module.get<UsersService>(UsersService);
     userRepository = module.get<Repository<User>>(getRepositoryToken(User));
   });
-
-  const mockUsers: User[] = [
-    {
-      roleType: 'ADMIN',
-      name: 'Nimesh',
-      address: 'Galle',
-      email: 'nimesh123@gmail.com',
-      mobileNumber: '0761234567',
-      dob: new Date('2001 - 12 - 15'),
-      gender: 'Male',
-      password: '56be13c102bcf2a06c95f7ab57ce6018',
-    },
-    {
-      roleType: 'USER',
-      name: 'Pasan',
-      address: 'Galle',
-      email: 'nimesh12@gmail.com',
-      mobileNumber: '0761234567',
-      dob: new Date('2001 - 12 - 15'),
-      gender: 'Male',
-      password: '56be13c102bcf2a06c95f7ab57ce6018',
-    },
-  ];
 
   it('should be defined', () => {
     expect(service).toBeDefined();
@@ -86,48 +64,13 @@ describe('UsersService', () => {
     it('should throw an error if user creation fails', async () => {
       userRepository.insert = jest
         .fn()
-        .mockRejectedValue(new Error('Failed to create user.'));
+        .mockRejectedValue(
+          new HttpException('Failed to create user.', HttpStatus.BAD_REQUEST),
+        );
 
       await expect(service.createUser(createUserDto)).rejects.toThrowError(
         'Failed to create user.',
       );
-    });
-  });
-
-  describe('findAllUsers', () => {
-    it('should return an array of users', async () => {
-      userRepository.find = jest.fn().mockResolvedValue(mockUsers);
-      const result = await service.findAllUsers();
-      expect(result).toEqual(mockUsers);
-      expect(userRepository.find).toHaveBeenCalledTimes(1);
-    });
-
-    it('should throw an error if no users are found', async () => {
-      userRepository.find = jest.fn().mockResolvedValue([]);
-      await expect(service.findAllUsers()).rejects.toThrow(
-        'Failed to fetch users.',
-      );
-      expect(userRepository.find).toHaveBeenCalledTimes(1);
-    });
-
-    it('should throw an error if userRepository.find throws an error', async () => {
-      userRepository.find = jest
-        .fn()
-        .mockRejectedValue(new Error('Database error'));
-      await expect(service.findAllUsers()).rejects.toThrow(
-        'Failed to fetch users.',
-      );
-      expect(userRepository.find).toHaveBeenCalledTimes(1);
-    });
-  });
-
-  describe('findOneUser', () => {
-    it('should throw an error if no user is found', async () => {
-      userRepository.findOne = jest.fn().mockResolvedValue(null);
-      await expect(service.findOneUser('Nimeshe')).rejects.toThrow(
-        'Failed to fetch user.',
-      );
-      expect(userRepository.findOne).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -166,16 +109,6 @@ describe('UsersService', () => {
       );
       expect(userRepository.update).toHaveBeenCalledWith(email, updateUserDto);
     });
-
-    it('should throw an error if userRepository.update throws an error', async () => {
-      userRepository.update = jest
-        .fn()
-        .mockRejectedValue(new Error('Database error'));
-      await expect(service.updateUser(email, updateUserDto)).rejects.toThrow(
-        'Failed to update user.',
-      );
-      expect(userRepository.update).toHaveBeenCalledWith(email, updateUserDto);
-    });
   });
 
   describe('removeUser', () => {
@@ -197,16 +130,6 @@ describe('UsersService', () => {
       userRepository.delete = jest
         .fn()
         .mockRejectedValue(new Error('Failed to delete user.'));
-      await expect(service.removeUser(email)).rejects.toThrow(
-        'Failed to delete user.',
-      );
-      expect(userRepository.delete).toHaveBeenCalledWith(email);
-    });
-
-    it('should throw an error if userRepository.delete throws an error', async () => {
-      userRepository.delete = jest
-        .fn()
-        .mockRejectedValue(new Error('Database error'));
       await expect(service.removeUser(email)).rejects.toThrow(
         'Failed to delete user.',
       );

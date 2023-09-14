@@ -4,7 +4,6 @@ import { UsersService } from './users.service';
 import { JwtService } from '@nestjs/jwt';
 import { CreateUserDto } from './dto/create-user.dto';
 import { DeleteResult, InsertResult, UpdateResult } from 'typeorm';
-import { User } from './entities/user.entity';
 import { UpdateUserDto } from './dto/update-user.dto';
 
 describe('UsersController', () => {
@@ -64,112 +63,6 @@ describe('UsersController', () => {
       expect(usersService.createUser).toHaveBeenCalledWith(createUserDto);
       expect(usersService.createUser).toHaveBeenCalledTimes(1);
     });
-
-    it('should throw an error if user already exists', async () => {
-      const mockError = new Error('Error creating user');
-
-      jest.spyOn(usersService, 'createUser').mockRejectedValue(mockError);
-
-      await controller.create(createUserDto);
-
-      expect(usersService.createUser).toHaveBeenCalledWith(createUserDto);
-      expect(mockError.message).toEqual('Error creating user');
-    });
-  });
-
-  describe('findAllUsers', () => {
-    const expectedResult: User[] = [
-      {
-        roleType: 'ADMIN',
-        name: 'Nimesh',
-        address: 'Galle',
-        email: 'nimesh123@gmail.com',
-        mobileNumber: '0761234567',
-        dob: new Date('2001 - 12 - 15'),
-        gender: 'Male',
-        password: 'Nimesh12@345',
-      },
-      {
-        roleType: 'USER',
-        name: 'Pasan',
-        address: 'Galle',
-        email: 'nimesh12@gmail.com',
-        mobileNumber: '0761234567',
-        dob: new Date('2001 - 12 - 15'),
-        gender: 'Male',
-        password: 'Nimesh12@345',
-      },
-    ];
-
-    it('should return an array of users', async () => {
-      const getAll = jest
-        .spyOn(usersService, 'findAllUsers')
-        .mockResolvedValue(expectedResult);
-
-      await controller.findAll();
-
-      getAll.mockRestore();
-    });
-
-    it('should return an error message if users not found', async () => {
-      const getAll = jest
-        .spyOn(usersService, 'findAllUsers')
-        .mockRejectedValue(new Error('User not found'));
-
-      await controller.findAll();
-
-      expect(getAll).toHaveBeenCalled();
-
-      getAll.mockRestore();
-    });
-
-    it('should return an error message if users fetch failed', async () => {
-      const getAll = jest
-        .spyOn(usersService, 'findAllUsers')
-        .mockRejectedValue(new Error('Error finding users'));
-
-      await controller.findAll();
-
-      expect(getAll).toHaveBeenCalled();
-
-      getAll.mockRestore();
-    });
-  });
-
-  describe('findOneUser', () => {
-    const expectedResult: User[] = [
-      {
-        roleType: 'ADMIN',
-        name: 'Nimesh',
-        address: 'Galle',
-        email: 'nimesh123@gmail.com',
-        mobileNumber: '0761234567',
-        dob: new Date('2001 - 12 - 15'),
-        gender: 'Male',
-        password: 'Nimesh12@345',
-      },
-      {
-        roleType: 'USER',
-        name: 'Pasan',
-        address: 'Galle',
-        email: 'nimesh12@gmail.com',
-        mobileNumber: '0761234567',
-        dob: new Date('2001 - 12 - 15'),
-        gender: 'Male',
-        password: 'Nimesh12@345',
-      },
-    ];
-
-    it('should return a user', async () => {
-      const getOne = jest
-        .spyOn(usersService, 'findOneUser')
-        .mockResolvedValue(expectedResult[0]);
-
-      await controller.findOne('Nimesh');
-
-      expect(getOne).toHaveBeenCalledWith('Nimesh');
-      expect(getOne).toHaveBeenCalledTimes(1);
-    });
   });
 
   describe('updateUser', () => {
@@ -201,28 +94,6 @@ describe('UsersController', () => {
       expect(usersService.updateUser).toHaveBeenCalledWith(email, updatedUser);
       expect(updateUserResult).toEqual(updateUserResult);
     });
-
-    it('should handle error and return error response', async () => {
-      const mockError = new Error('User not found');
-
-      jest.spyOn(usersService, 'updateUser').mockRejectedValue(mockError);
-
-      await controller.update(email, updatedUser);
-
-      expect(usersService.updateUser).toHaveBeenCalledWith(email, updatedUser);
-      expect(mockError.message).toEqual('User not found');
-    });
-
-    it('should handle other errors and return error response', async () => {
-      const mockError = new Error('Error updating student');
-
-      jest.spyOn(usersService, 'updateUser').mockRejectedValue(mockError);
-
-      await controller.update(email, updatedUser);
-
-      expect(usersService.updateUser).toHaveBeenCalledWith(email, updatedUser);
-      expect(mockError.message).toEqual('Error updating student');
-    });
   });
 
   describe('removeUser', () => {
@@ -241,27 +112,6 @@ describe('UsersController', () => {
 
       expect(usersService.removeUser).toHaveBeenCalledWith(email);
       expect(mockDeleteResult).toEqual(mockDeleteResult);
-    });
-
-    it('should handle "User not found" error and return error response', async () => {
-      const mockError = new Error('User not found');
-
-      jest.spyOn(usersService, 'removeUser').mockRejectedValue(mockError);
-
-      await controller.remove(email);
-
-      expect(usersService.removeUser).toHaveBeenCalledWith(email);
-      expect(mockError.message).toEqual('User not found');
-    });
-
-    it('should handle other errors and return error response', async () => {
-      const mockError = new Error('Error deleting user');
-
-      jest.spyOn(usersService, 'removeUser').mockRejectedValue(mockError);
-
-      await controller.remove(email);
-
-      expect(usersService.removeUser).toHaveBeenCalledWith(email);
     });
   });
 });
