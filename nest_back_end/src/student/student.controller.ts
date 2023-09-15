@@ -10,8 +10,10 @@ import {
 import { StudentService } from './student.service';
 import { CreateStudentDto } from './dto/create-student.dto';
 import { UpdateStudentDto } from './dto/update-student.dto';
-import { Roles } from 'src/auth/roles.decorator';
-import { Role } from 'src/enums/role.enum';
+// import { Roles } from 'src/auth/roles.decorator';
+import { Roles } from '../auth/roles.decorator';
+// import { Role } from 'src/enums/role.enum';
+import { Role } from '../enums/role.enum';
 
 @Controller('api/v1/student')
 export class StudentController {
