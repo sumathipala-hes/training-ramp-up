@@ -60,7 +60,7 @@ describe('AuthController', () => {
       expect(res.json).toHaveBeenCalledWith(signInResult); // Check json method usage
     });
 
-    test('Sign In User Fail', async () => {
+    it('Sign In User Fail', async () => {
       const error = new Error('Error');
       authService.signIn = jest.fn().mockRejectedValue(error);
       const res = createMockResponse(); // Create the custom response object
