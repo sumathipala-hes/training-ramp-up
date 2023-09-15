@@ -37,7 +37,7 @@ describe('StudentController', () => {
   describe('createStudent', () => {
     const createStudentDto: CreateStudentDto = {
       studentId: 1,
-      studentName: 'Maneesha',
+      studentName: 'Pahasara',
       studentAddress: 'Panadura',
       studentMobile: '0717133074',
       studentDob: new Date('2001-01-01'),
