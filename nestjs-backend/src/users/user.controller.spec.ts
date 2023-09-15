@@ -18,6 +18,7 @@ const mockResponse = {
     status: jest.fn(() => mockResponse),
     json: jest.fn(),
     cookie: jest.fn(),
+    clearCookie: jest.fn(),
 } as unknown as Response;
 
 describe('UserController', () => {
@@ -133,4 +134,30 @@ describe('UserController', () => {
             expect(mockResponse.json).toHaveBeenCalledWith({ message: 'Error fetching user role' });
         })
     })
+
+    describe('logout', () => {
+        it('should clear cookies and return "LOGGED OUT"', async() => {
+            userController.logout(mockResponse);
+            expect(mockResponse.clearCookie).toHaveBeenCalledWith('access-token');
+            expect(mockResponse.clearCookie).toHaveBeenCalledWith('refresh-token');
+            expect(mockResponse.json).toHaveBeenCalledWith({ message: 'LOGGED OUT' });
+            
+        });
+    });
+
+    describe('userAuth', () => {
+        it('should return "User is Authenticated"', async() => {
+            userController.userAuthenticated(mockResponse);
+            expect(mockResponse.json).toHaveBeenCalledWith('User is Authenticated');
+            
+        });
+    });
+
+    describe('refresh', () => {
+        it('should return "User is Authenticated. Refreshed"', async() => {
+            userController.refreshedAuthentication(mockResponse);
+            expect(mockResponse.json).toHaveBeenCalledWith('User is Authenticated. Refreshed');
+            
+        });
+    });
 });
