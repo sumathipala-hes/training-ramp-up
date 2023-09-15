@@ -1,13 +1,18 @@
 // student.controller.ts
-import { Body, Controller, Get, Post, Res } from '@nestjs/common';
+import { Body, Controller, Get, Post, Res, UseGuards } from '@nestjs/common';
 import { StudentService } from './student.service';
 import { Response } from 'express';
+import { RolesGuard } from 'src/roles/roles.guard';
+import { Roles } from 'src/roles/roles.decorator';
+import { userRoles } from 'src/utils';
 
 @Controller('students')
+@UseGuards(RolesGuard)
 export class StudentController {
   constructor(private readonly studentService: StudentService) {}
 
   @Get('/get-students')
+  @Roles([userRoles.admin, userRoles.user])
   async getAllStudents(@Body() req: Request, @Res() res: Response) {
     try {
       const students = await this.studentService.fetchStudents();
@@ -30,6 +35,7 @@ export class StudentController {
     }
   }
   @Post('/add-student')
+  @Roles([userRoles.admin])
   async addStudent(@Body() req: Request, @Res() res: Response) {
     try {
       const isSaved = await this.studentService.saveStudent(req);
@@ -57,6 +63,7 @@ export class StudentController {
   }
 
   @Post('/remove-student')
+  @Roles([userRoles.admin])
   async removeStudent(@Body() req: Request, @Res() res: Response) {
     try {
       const isDeleted = await this.studentService.deleteStudent(req);
@@ -84,6 +91,7 @@ export class StudentController {
   }
 
   @Post('/update-student')
+  @Roles([userRoles.admin])
   async updateStudent(@Body() req: Request, @Res() res: Response) {
     try {
       const isUpdated = await this.studentService.updateStudent(req);

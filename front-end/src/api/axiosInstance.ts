@@ -24,7 +24,7 @@ axiosInstance.interceptors.response.use(
     async (error) => {
         if (error.response && error.response.status === 401 && error.response.data.error === 'Invalid access token') {
             try {
-                const refreshedTokenResponse = await axiosInstance.post('/auth-token', {},
+                const refreshedTokenResponse = await axiosInstance.post('/user/auth-token', {},
                 {
                     headers: {'Content-Type': 'application/json',},
                         withCredentials: true,
