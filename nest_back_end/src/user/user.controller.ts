@@ -10,8 +10,8 @@ import {
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { Roles } from 'src/auth/roles.decorator';
-import { Role } from 'src/enums/role.enum';
+import { Roles } from '../auth/roles.decorator';
+import { Role } from '../enums/role.enum';
 
 @Controller('api/v1/user')
 export class UserController {

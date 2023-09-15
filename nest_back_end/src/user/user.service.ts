@@ -9,7 +9,7 @@ import { DeleteResult, UpdateResult } from 'typeorm';
 import {
   decryptPassword,
   encryptPassword,
-} from 'src/util/encrypted.decrypted.util';
+} from '../util/encrypted.decrypted.util';
 
 @Injectable()
 export class UserService {
