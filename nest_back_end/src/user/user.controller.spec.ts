@@ -1,11 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
-// import { StudentController } from './student.controller';
-// import { StudentService } from './student.service';
-// import { CreateStudentDto } from './dto/create-student.dto';
-// import { UpdateStudentDto } from './dto/update-student.dto';
 import { DeleteResult, UpdateResult } from 'typeorm';
 import { UserController } from './user.controller';
-import { StudentService } from 'src/student/student.service';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
