@@ -1,22 +1,3 @@
-// import { Test, TestingModule } from '@nestjs/testing';
-// import { StudentService } from './student.service';
-
-// describe('StudentService', () => {
-//   let service: StudentService;
-
-//   beforeEach(async () => {
-//     const module: TestingModule = await Test.createTestingModule({
-//       providers: [StudentService],
-//     }).compile();
-
-//     service = module.get<StudentService>(StudentService);
-//   });
-
-//   it('should be defined', () => {
-//     expect(service).toBeDefined();
-//   });
-// });
-
 import { Test, TestingModule } from '@nestjs/testing';
 import { StudentService } from './student.service';
 import { DeleteResult, InsertResult, Repository, UpdateResult } from 'typeorm';
@@ -148,7 +129,7 @@ describe('StudentService', () => {
 
   describe('updateStudent', () => {
     const updateId = '1';
-    const updateStudentDto: CreateStudentDto = {
+    const updateStudentDto: UpdateStudentDto = {
       studentId: 1,
       studentName: 'Pahasara',
       studentAddress: 'Panadura',
