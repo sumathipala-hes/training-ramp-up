@@ -6,14 +6,10 @@ import {
   Param,
   Delete,
   Put,
-  Res,
-  HttpStatus,
-  HttpException,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { Response } from 'express';
 import { Roles } from 'src/auth/roles.decorator';
 import { Role } from 'src/enums/role.enum';
 
@@ -27,13 +23,10 @@ export class UserController {
   }
 
   @Get()
-  async retrieveAllUsers(@Res() res: Response) {
-    try {
-      const users = await this.userService.retrieveAllUsers();
-      return res.status(HttpStatus.OK).json({ data: users });
-    } catch (error) {
-      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+  async retrieveAllUsers(): Promise<{ data: CreateUserDto[] }> {
+    return (await this.userService.retrieveAllUsers()) as {
+      data: CreateUserDto[];
+    };
   }
 
   @Put(':userEmail')
