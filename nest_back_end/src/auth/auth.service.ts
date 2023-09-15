@@ -1,9 +1,9 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
-import { CreateUserDto } from 'src/user/dto/create-user.dto';
-import { User } from 'src/user/entities/user.entity';
-import { encryptPassword } from 'src/util/encrypted.decrypted.util';
+import { CreateUserDto } from '../user/dto/create-user.dto';
+import { User } from '../user/entities/user.entity';
+import { encryptPassword } from '../util/encrypted.decrypted.util';
 import { Repository } from 'typeorm';
 import { jwtConstants } from './auth.constants';
 import { TokenDto } from './dto/token.dto';
