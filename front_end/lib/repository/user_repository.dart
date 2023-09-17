@@ -49,6 +49,7 @@ class UserRepository {
 
       if (response.statusCode != 201) {
         Logger().d('Successfully to create User: ${response.statusCode}');
+         successfullyNotification('Successfully to create user');
       }
     } catch (error) {
       Logger().e('Error creating User: $error');
@@ -71,6 +72,7 @@ class UserRepository {
 
       if (response.statusCode != 201) {
         Logger().d('Successfully to update User: ${response.statusCode}');
+         successfullyNotification('Successfully to update user');
       }
     } catch (error) {
       Logger().e('Error updating user: $error');
@@ -90,6 +92,7 @@ class UserRepository {
 
       if (response.statusCode != 201) {
         Logger().d('Successfully to delete User: ${response.statusCode}');
+         successfullyNotification('Successfully to delete user');
       }
     } catch (error) {
       Logger().e('Error deleting user: $error');

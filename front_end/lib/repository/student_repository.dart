@@ -7,6 +7,7 @@ import 'package:http/http.dart' as http;
 import '../../model/student_model.dart';
 import '../util/db_util.dart';
 import '../util/local_storage.dart';
+import '../util/notification_util.dart';
 
 class StudentRepository {
   Future<http.Response> getAllStudents() async {
@@ -47,6 +48,7 @@ class StudentRepository {
 
       if (response.statusCode != 201) {
         Logger().d('Successfully to create Student: ${response.statusCode}');
+        successfullyNotification('Successfully to create Student');
       }
     } catch (error) {
       Logger().e('Error creating student: $error');
@@ -67,6 +69,7 @@ class StudentRepository {
 
       if (response.statusCode != 201) {
         Logger().d('Successfully to update Student: ${response.statusCode}');
+        successfullyNotification('Successfully to update Student');
       }
     } catch (error) {
       Logger().e('Error updating student: $error');
@@ -86,6 +89,7 @@ class StudentRepository {
 
       if (response.statusCode != 201) {
         Logger().d('Successfully to delete Student: ${response.statusCode}');
+        successfullyNotification('Successfully to delete Student');
       }
     } catch (error) {
       Logger().e('Error deleting student: $error');
