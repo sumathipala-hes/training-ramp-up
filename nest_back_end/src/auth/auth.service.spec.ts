@@ -7,7 +7,7 @@ import { JwtService } from '@nestjs/jwt';
 import { HttpException, HttpStatus } from '@nestjs/common';
 import {
   encryptPassword,
-} from '../util/encrypted.decrypted.util';
+} from '../util/password.util';
 
 describe('AuthService', () => {
   let authService: AuthService;

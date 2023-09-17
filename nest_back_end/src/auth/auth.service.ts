@@ -3,7 +3,7 @@ import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateUserDto } from '../user/dto/create-user.dto';
 import { User } from '../user/entities/user.entity';
-import { encryptPassword } from '../util/encrypted.decrypted.util';
+import { encryptPassword } from '../util/password.util';
 import { Repository } from 'typeorm';
 import { jwtConstants } from './auth.constants';
 import { TokenDto } from './dto/token.dto';
@@ -16,9 +16,7 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async signIn(
-    createUserDto: CreateUserDto,
-  ): Promise<TokenDto> {
+  async signIn(createUserDto: CreateUserDto): Promise<TokenDto> {
     try {
       const user = await this.usersRepository.findOne({
         where: {

@@ -5,7 +5,7 @@ import { HttpException, HttpStatus } from '@nestjs/common';
 import { UserService } from './user.service';
 import { User } from './entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
-import { encryptPassword } from '../util/encrypted.decrypted.util';
+import { encryptPassword } from '../util/password.util';
 import { UpdateUserDto } from './dto/update-user.dto';
 
 describe('UserService', () => {
