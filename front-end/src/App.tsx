@@ -5,16 +5,18 @@ import { SignUp } from './containers/SignUpPage/SignUpPage';
 import { Login } from './containers/LoginPage/LoginPage';
 import { Admin } from './containers/AdminPage/AdminPage';
 import { routes } from './utils/RoutePaths';
+import Protected from './components/ProtectedRoute/ProtectedRoute';
 
 function App() {
+  
   return (
     <div className="App">
       <Router>
         <Routes>
-          <Route path={routes.main} element={<Main />} />
           <Route path={routes.register} element={<SignUp />} />
           <Route path={routes.login} element={<Login />} />
-          <Route path={routes.admin} element={<Admin />} />
+          <Route path={routes.main} element={<Protected><Main /></Protected>} />
+          <Route path={routes.admin} element={<Protected><Admin /></Protected>}/>
         </Routes>
       </Router>
     </div>

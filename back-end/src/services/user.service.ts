@@ -1,16 +1,24 @@
 import bcrypt from "bcrypt";
 import { User } from "../models/user";
-import { sign } from "jsonwebtoken";
+import { JwtPayload, decode, sign } from "jsonwebtoken";
 import { LoginData, RegisterData } from "../interfaces/user.interface";
+import { Request } from "express";
 
 export const createTokens = (user: User) => {
     const accessToken = sign(
         { username: user.username, id: user.id, role: user.role },
         process.env.JWT_SECRET as string, {
-            expiresIn: 60 * 1000
+            expiresIn: '60m'
         }
     );
-    return accessToken;
+    const refreshToken = sign(
+        { username: user.username, id: user.id, role: user.role },
+        process.env.JWT_REFRESH_SECRET as string, {
+            expiresIn: '30d'
+        }
+    );
+
+return { accessToken, refreshToken };
 }
 
 export const registerService = async (data: RegisterData) => {
@@ -26,8 +34,8 @@ export const registerService = async (data: RegisterData) => {
         role: role,
     });
     await user.save();
-    const accessToken = createTokens(user)
-    return accessToken;
+    const tokens = createTokens(user)
+    return tokens;
 }
 
 export const loginService = async (data: LoginData) => {
@@ -41,6 +49,16 @@ export const loginService = async (data: LoginData) => {
     if (!match) {
         throw new Error('Wrong Username and Password Combination');
     }
-    const accessToken = createTokens(user)
-    return accessToken;
+    const tokens = createTokens(user)
+    return tokens;
 }
+
+export const getUserRoleService = (req: Request) => {
+    const accessToken = req.cookies['access-token'] as string;
+    try {
+        const decodedToken = decode(accessToken) as JwtPayload;
+        return decodedToken.role;
+    } catch (error) {
+        return null;
+    }
+};

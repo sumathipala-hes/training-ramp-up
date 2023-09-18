@@ -12,12 +12,9 @@ import { useNavigate } from 'react-router-dom';
 import {
   registerUser,
   setCurrentUsername,
-  setCurrentUserRole,
   clearUserData,
 } from '../../redux/userSlice';
 import { useDispatch, useSelector } from 'react-redux';
-import jwt_decode from 'jwt-decode';
-import { JwtPayload } from '../LoginPage/LoginPage';
 import React from 'react';
 import { isEmailValid, isPasswordConfirmed, isPasswordValid } from '../../utils/UserValidations';
 
@@ -35,7 +32,6 @@ export const SignUp = () => {
   const [password, setPassword] = useState('');
   const [confirmedPassword, setConfirmedPassword] = useState('');
 
-  const response = useSelector((state: any) => state.user.responseData);
   const error = useSelector((state: any) => state.user.errorData);
   const isAuthenticated = useSelector((state: any) => state.user.authStatus);
 
@@ -80,10 +76,7 @@ export const SignUp = () => {
 
   useEffect(() => {
     if (isAuthenticated) {
-      const decoded = jwt_decode(response.data.token) as JwtPayload;
-      dispatch(setCurrentUsername(decoded.username));
-      dispatch(setCurrentUserRole(decoded.role));
-      dispatch(clearUserData());
+      dispatch(setCurrentUsername(username));
       navigate('/main');
     } else if (error) {
       if (error instanceof Error && error.message === 'User already exists') {
@@ -98,6 +91,7 @@ export const SignUp = () => {
         });
       }
     }
+    dispatch(clearUserData());
   }, [isAuthenticated, error]);
 
   return (

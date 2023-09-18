@@ -9,23 +9,13 @@ import {
 } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import jwt_decode from 'jwt-decode';
 import { useDispatch, useSelector } from 'react-redux';
 import {
-  authenticateUser,
   clearUserData,
   loginUser,
-  setAxiosError,
   setCurrentUsername,
-  setCurrentUserRole,
 } from '../../redux/userSlice';
 import React from 'react';
-
-export interface JwtPayload {
-  username: string;
-  id: number;
-  role: string;
-}
 
 export const Login = () => {
   const [snackbar, setSnackbar] = React.useState<Pick<
@@ -40,9 +30,9 @@ export const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
-  const response = useSelector((state: any) => state.user.responseData);
   const error = useSelector((state: any) => state.user.errorData);
   const isAuthenticated = useSelector((state: any) => state.user.authStatus);
+  const userRole = useSelector((state: any) => state.user.currentUserRole);
 
   const isLoginDisabled = 
     username.trim() === '' || password.trim() === '';
@@ -57,14 +47,10 @@ export const Login = () => {
 
   useEffect(() => {
     if (isAuthenticated) {
-      const decoded = jwt_decode(response.data.token) as JwtPayload;
-      dispatch(setCurrentUsername(decoded.username));
-      dispatch(clearUserData());
-      if (decoded.role === 'admin') {
-        dispatch(setCurrentUserRole('admin'));
+      dispatch(setCurrentUsername(username));
+      if (userRole === 'admin') {
         navigate('/admin');
-      } else if (decoded.role === 'user') {
-        dispatch(setCurrentUserRole('user'));
+      } else if (userRole === 'user') {
         navigate('/main');
       }
     } else if (error) {
@@ -86,6 +72,7 @@ export const Login = () => {
         });
       }
     }
+    dispatch(clearUserData());
   }, [isAuthenticated, error]);
 
   return (

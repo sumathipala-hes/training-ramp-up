@@ -1,6 +1,6 @@
 import axios, { AxiosError } from 'axios';
 
-const apiInstance = axios.create({
+const axiosInstance = axios.create({
   baseURL: 'http://localhost:4000',
   withCredentials: true
 });
@@ -11,7 +11,7 @@ export const registerApi = async (
   role: String,
 ) => {
   try {
-    const response = await apiInstance.post('/register', {
+    const response = await axiosInstance.post('/register', {
       username,
       password,
       role,
@@ -29,7 +29,7 @@ export const registerApi = async (
 
 export const loginApi = async (username: String, password: String) => {
   try {
-    const response = await apiInstance.post('/login', {
+    const response = await axiosInstance.post('/login', {
       username,
       password,
     });
@@ -46,7 +46,7 @@ export const loginApi = async (username: String, password: String) => {
 
 export const authenticateApi = async () => {
   try {
-    const response = await apiInstance.get('/userAuth');
+    const response = await axiosInstance.get('/userAuth');
     return response;
   } catch (error) {
     console.error('API Error:', error);
@@ -55,6 +55,32 @@ export const authenticateApi = async () => {
 };
 
 export const logoutApi = async () => {
-  const response = await apiInstance.post('/logout');
+  const response = await axiosInstance.post('/logout');
   return response.data;
 };
+
+export const getUserRoleApi = async () => {
+  try {
+    const response = await axiosInstance.get('/user');
+    return response;
+  } catch (error) {
+    console.error('User Role API Error:', error);
+    throw error;
+  }
+}
+
+axios.interceptors.response.use(function (response) {
+  return response;
+}, function (error) {
+  if (error.response && error.response.status === 401) {
+    axiosInstance.get('/refresh');
+    }
+  return Promise.reject(error);
+});
+
+axios.interceptors.request.use(function (config) {
+  return config;
+}, function (error) {
+  axiosInstance.get('/refresh');
+  return Promise.reject(error);
+});
