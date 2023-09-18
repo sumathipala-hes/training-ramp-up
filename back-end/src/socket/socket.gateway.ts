@@ -3,19 +3,21 @@ import {
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';
-import { Socket } from 'dgram';
+import { Socket } from 'socket.io';
 import { Server } from 'socket.io';
 
-@WebSocketGateway(80, { namespace: 'socket' })
+@WebSocketGateway({
+  cors: {
+    origin: 'http://localhost:3000',
+    credentials: true,
+    methods: ['GET', 'POST'],
+  },
+})
 export class SocketGateway {
   @WebSocketServer()
   server: Server;
   @SubscribeMessage('message')
   handleMessage(client: Socket, payload: any): void {
-    this.server.emit('message', payload); // Broadcast the message to all connected clients
+    this.server.emit('message', payload);
   }
-  // @SubscribeMessage('message')
-  // handleMessage(client: any, payload: any): string {
-  //   return 'Hello world!';
-  // }
 }
