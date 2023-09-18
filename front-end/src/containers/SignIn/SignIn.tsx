@@ -20,6 +20,8 @@ function SignIn(){
 
     const navigate = useNavigate();
     const dispatch = useDispatch();
+
+    //set error status null;
     useEffect(() =>{
         dispatch(userActions.setErrorStatus(null))
     },[]);
@@ -27,6 +29,7 @@ function SignIn(){
     const errorStatus = useSelector((state: {users: any; errorStatus:boolean} ) => state.users.errorStatus);
     const errorMessage = useSelector((state: {users: any; errorMsg:string | null} ) => state.users.errorMsg);
 
+    //navigate user to home after a successfull signin
     useEffect(() =>{
         if(errorStatus === false){
           dispatch(userActions.setErrorStatus(null))
@@ -36,11 +39,13 @@ function SignIn(){
 
     const [errorEmail, setErrorEmail] = useState(false);
 
-    const linkHnadler = (event: { preventDefault: () => void; }) => {
+    //navigate to signing page
+    const linkHandler = (event: { preventDefault: () => void; }) => {
         event.preventDefault();
         navigate(routePaths.register);
     }
 
+    //mail field validation
     const mailChangeHandler = (event: { target: { value: string } }) => {
         const email =  event.target.value;
         if(isValidEmail(email)){
@@ -48,6 +53,7 @@ function SignIn(){
         }
     }
 
+    //form submit vvalidation and pass data
     const submitHandler = async (event: any) => {
         event.preventDefault();
         const formData = new FormData(event.target);
@@ -61,7 +67,7 @@ function SignIn(){
             username: email,
             password: password,
           };
-          dispatch(userActions.processAuth(userData));
+          dispatch(userActions.processAuthentication(userData));
         } else {
           setErrorEmail(true);
         }
@@ -80,7 +86,7 @@ function SignIn(){
                         <Grid item xs={12}>
                             <Typography variant="body1" align="center" sx={{ marginBottom: "30px" }}>
                             Don't you have an account?
-                            <Link href="#" onClick ={linkHnadler} > Register</Link>
+                            <Link href="#" onClick ={linkHandler} > Register</Link>
                             </Typography>
                         </Grid>
                         {errorStatus &&

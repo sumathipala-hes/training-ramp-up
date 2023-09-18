@@ -27,6 +27,7 @@ function Register(){
     const errorStatus = useSelector((state: {users: any; errorStatus:boolean} ) => state.users.errorStatus);
     const errorMessage = useSelector((state: {users: any; errorMsg:string | null} ) => state.users.errorMsg);
 
+    //redirect user to signing after a succesfull registraion
     useEffect(() =>{
         if(errorStatus === false){
             dispatch(userActions.setErrorStatus(null))
@@ -41,6 +42,7 @@ function Register(){
     const [focused, setFocused] = useState(false);
     const [errorValidate,setValidate] = useState(false);
 
+    //confirm password field validation
     function confirmPassHandler(event: { target: { value: string } }) {
         setFocused(true)
         if (event.target.value === password) {
@@ -53,14 +55,18 @@ function Register(){
         }
     }
 
+    //password update
     function passHandler(event: { target: { value: string } }) {
         setPassword(event.target.value);
     }
 
+    //navigate to signing page
     const linkHandler = (event: { preventDefault: () => void; }) => {
         event.preventDefault();
         navigate(routePaths.signIn);
     }
+
+    //mail field validation
     const mailChangeHandler = (event: { target: { value: string } }) => {
         const email =  event.target.value;
         if(isValidEmail(email)){
@@ -68,6 +74,7 @@ function Register(){
         }
     }
 
+    //form submit validation
     const submitHandler = async (event: any) => {
         event.preventDefault();
         const formData = new FormData(event.target);

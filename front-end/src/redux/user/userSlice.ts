@@ -38,10 +38,10 @@ const userSlice = createSlice({
     setAuth(state, action){
       state.authenticated = action.payload;
     },
-    processAuth(state, action){
+    processAuthentication(state, action){
 
     },
-    processAutho(state){
+    processAuthorization(state){
 
     },
     register(state,action){

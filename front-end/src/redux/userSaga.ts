@@ -1,7 +1,7 @@
 import {call, put, takeEvery} from 'redux-saga/effects';
 import { PayloadAction } from '@reduxjs/toolkit';
-import axios from 'axios';
 import { userActions } from './user/userSlice';
+import axiosInstance from '../api/axiosInstance';
 
 interface ResponseType{
     status: number;
@@ -41,7 +41,7 @@ function* authenticateUser(action: PayloadAction<UserData>) {
     };
 
     try {
-        const response: ResponseType = yield call(axios.post, 'http://localhost:4000/login', userData , {
+        const response: ResponseType = yield call(axiosInstance.post, '/login', userData , {
             headers: {
                 'Content-Type': 'application/json',
             },
@@ -66,7 +66,7 @@ function* authenticateUser(action: PayloadAction<UserData>) {
 //authorize user
 function* authorizeUser(action: PayloadAction<UserData>) {
     try {
-        const response: ResponseType = yield call(axios.post, 'http://localhost:4000/auth', {} , {
+        const response: ResponseType = yield call(axiosInstance.post, '/auth', {} , {
             headers: {
                 'Content-Type': 'application/json',
             },
@@ -85,7 +85,7 @@ function* authorizeUser(action: PayloadAction<UserData>) {
 
 function* logOutUser(action: PayloadAction<UserData>) {
     try {
-        const response: ResponseType = yield call(axios.get, 'http://localhost:4000/log-out' , {
+        const response: ResponseType = yield call(axiosInstance.get, '/log-out' , {
             headers: {
                 'Content-Type': 'application/json',
             },
@@ -116,7 +116,7 @@ function* registerUser(action: PayloadAction<UserData>) {
     };
 
     try {
-        const response: ResponseType = yield call(axios.post, 'http://localhost:4000/register', userData , {
+        const response: ResponseType = yield call(axiosInstance.post, '/register', userData , {
             headers: {
                 'Content-Type': 'application/json',
             },
@@ -138,11 +138,11 @@ function* registerUser(action: PayloadAction<UserData>) {
 
 //user saga func
 function* authUserSaga(){
-    yield takeEvery(userActions.processAuth, authenticateUser)
+    yield takeEvery(userActions.processAuthentication, authenticateUser)
 }
 
 function* authoUserSaga(){
-    yield takeEvery(userActions.processAutho.type, authorizeUser)
+    yield takeEvery(userActions.processAuthorization.type, authorizeUser)
 }
 
 function* registerUserSaga(){
