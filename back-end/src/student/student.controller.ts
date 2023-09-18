@@ -34,6 +34,7 @@ export class StudentController {
       }
     }
   }
+
   @Post('/add-student')
   @Roles([userRoles.admin])
   async addStudent(@Body() req: Request, @Res() res: Response) {
@@ -53,7 +54,6 @@ export class StudentController {
           error: err.message,
         });
       } else {
-        // Handle the case when 'err' is of unknown type
         return res.status(500).json({
           status: 500,
           error: 'An unknown error occurred.',
