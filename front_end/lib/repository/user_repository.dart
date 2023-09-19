@@ -105,39 +105,6 @@ class UserRepository {
     }
   }
 
-  // Future<void> signIn(String userEmail, String userPassword) async {
-  //   final res = await http.post(
-  //     Uri.parse('$baseUrl/users/signIn'),
-  //     headers: <String, String>{
-  //       'Content-Type': 'application/json',
-  //     },
-  //     body: jsonEncode({
-  //       "email": userEmail,
-  //       "password": userPassword,
-  //     }),
-  //   );
-
-  //   if (res.statusCode == 200) {
-  //     final Map<String, dynamic> jsonData = json.decode(res.body);
-  //     final accessToken = jsonData['accessToken'];
-  //     final refreshToken = jsonData['refreshToken'];
-  //     LocalStorage().setAccessToken(accessToken);
-  //     LocalStorage().setRefreshToken(refreshToken);
-
-  //     if (refreshToken != null) {
-  //       Map<String, dynamic> decodedToken = JwtDecoder.decode(accessToken);
-  //       String email = decodedToken['email'];
-  //       String roleType = decodedToken['roleType'];
-
-  //       LocalStorage().setCurrentLoginRole(roleType);
-  //       LocalStorage().setCurrentLoginEmail(email);
-  //     }
-  //   }
-  //   if (res.statusCode == 500) {
-  //     showFieldError('Failed Login..!');
-  //   }
-  // }
-
   Future<void> signIn(String userEmail, String userPassword) async {
     final res = await http.post(
       Uri.parse('$baseUrl/users/signIn'),

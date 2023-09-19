@@ -5,10 +5,11 @@ import {
   HttpException,
   HttpStatus,
   Post,
+  Req,
   Res,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { Response } from 'express';
+import { Response, Request } from 'express';
 
 @Controller('users')
 export class AuthController {
@@ -51,21 +52,18 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @Post('refreshToken')
   async getNewAccessToken(
-    @Body() refreshTokenDto: { refreshToken: string },
+    @Req() req: Request,
     @Res() res: Response,
-  ) {
+  ): Promise<void> {
+    const refreshToken = req.headers.cookie.split(':')[1];
     try {
-      const token = await this.authService.getNewAccessToken(
-        refreshTokenDto.refreshToken,
-      );
-      console.log(token);
-      res.cookie('accessToken', token.accessToken, {
+      const token = await this.authService.getNewAccessToken(refreshToken);
+      res.cookie('newAccessToken', token.accessToken, {
         maxAge: 1000 * 60 * 5,
         httpOnly: true,
       });
-
       res.status(200).json({
-        accessToken: token.accessToken,
+        message: 'Success Refresh Token',
       });
     } catch (error: any) {
       if (error.message === 'Invalid token') {
