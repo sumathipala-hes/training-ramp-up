@@ -7,9 +7,10 @@ import {
   Delete,
   Put,
   Res,
+  Req,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { AuthService } from '../auth/auth.service';
@@ -35,7 +36,7 @@ export class UsersController {
     return await this.usersService.findAll();
   }
 
-  @Roles(Role.ADMIN)
+  // @Roles(Role.ADMIN)
   @Put(':email')
   async update(
     @Param('email') email: string,

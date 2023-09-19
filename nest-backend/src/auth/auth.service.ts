@@ -7,6 +7,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../users/entities/user.entity';
 import { encrypt } from '../utils/password.util';
 import { TokenDto } from './dto/token.dto';
+import { Role } from 'src/enum/role.enum';
 
 @Injectable()
 export class AuthService {
@@ -39,6 +40,27 @@ export class AuthService {
         }
       } else {
         throw new HttpException('User Not Found', HttpStatus.NOT_FOUND);
+      }
+    } catch (error) {
+      throw new HttpException(
+        'Internal Server Error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  async generateNewAccessToken(refreshToken: string): Promise<String> {
+    try {
+      const decoded = (await this.jwtService.verify(refreshToken, {
+        secret: jwtConstants.secretKey,
+      })) as { email: string; role: Role };
+      if (decoded) {
+        return this.jwtService.sign(
+          { email: decoded.email },
+          { secret: jwtConstants.secretKey, expiresIn: '1d' },
+        );
+      } else {
+        throw new HttpException('Invalid Token', HttpStatus.BAD_REQUEST);
       }
     } catch (error) {
       throw new HttpException(

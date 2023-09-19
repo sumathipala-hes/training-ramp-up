@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:frontend/model/user.dart';
 import 'package:frontend/util/db_util.dart';
 import 'package:frontend/util/local_storage.dart';
+import 'package:frontend/util/refresh_token_util.dart';
 import 'package:frontend/util/show_toast.dart';
 import 'package:http/http.dart' as http;
 import 'package:jwt_decoder/jwt_decoder.dart';
@@ -30,8 +31,10 @@ class UserRepository {
       if (accessToken != null) {
         Map<String, dynamic> decodedToken = JwtDecoder.decode(accessToken);
         localStorage.setEmail(decodedToken['email']);
+        print(decodedToken['role'].toLowerCase());
         localStorage.setRole(decodedToken['role'].toLowerCase());
         localStorage.setAcessToken(accessToken);
+        localStorage.setRefreshToken(jsonData['refreshToken']);
         return true;
       }
     }
@@ -63,6 +66,7 @@ class UserRepository {
   }
 
   Future<void> addUsers(User user) async {
+    await refreshToken(await localStorage.getAccessToken());
     String token = await localStorage.getAccessToken();
     final res = await http.post(
       Uri.parse('$baseUrl/user/add'),
@@ -78,6 +82,7 @@ class UserRepository {
   }
 
   Future<void> updateUsers(User user) async {
+    await refreshToken(await localStorage.getAccessToken());
     String token = await localStorage.getAccessToken();
     final res = await http.put(
       Uri.parse('$baseUrl/user/${user.email}'),
@@ -93,6 +98,7 @@ class UserRepository {
   }
 
   Future<void> deleteUsers(String email) async {
+    await refreshToken(await localStorage.getAccessToken());
     String token = await localStorage.getAccessToken();
     final res = await http.delete(
       Uri.parse('$baseUrl/user/del/$email'),
@@ -107,7 +113,6 @@ class UserRepository {
 
   Future<void> signOut() async {
     await localStorage.clearDetails();
-
     await http.delete(
       Uri.parse('$baseUrl/user/signOut'),
     );

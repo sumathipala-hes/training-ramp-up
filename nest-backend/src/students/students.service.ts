@@ -15,7 +15,9 @@ export class StudentsService {
 
   async create(createStudentDto: CreateStudentDto): Promise<InsertResult> {
     try {
-      const savedStudent = await  this.studentRepository.insert(createStudentDto as Student);
+      const savedStudent = await this.studentRepository.insert(
+        createStudentDto as Student,
+      );
       sendNotification('New student', 'A new student has been created..!');
       return savedStudent;
     } catch (error) {
@@ -50,7 +52,10 @@ export class StudentsService {
     updateStudentDto: UpdateStudentDto,
   ): Promise<UpdateResult> {
     try {
-      const updatedStudent = await this.studentRepository.update(id, updateStudentDto as Student);
+      const updatedStudent = await this.studentRepository.update(
+        id,
+        updateStudentDto as Student,
+      );
       sendNotification('Student updated', 'A student has been updated..!');
       return updatedStudent;
     } catch (error) {

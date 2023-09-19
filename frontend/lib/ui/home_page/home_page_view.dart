@@ -117,7 +117,7 @@ class HomePageView extends StatelessWidget {
                       return const CircularProgressIndicator();
                     }
 
-                    if (snapshot.data ==
+                    if (snapshot.data !=
                         RoleEnum.admin
                             .toString()
                             .split('.')

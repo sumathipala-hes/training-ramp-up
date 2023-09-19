@@ -16,7 +16,7 @@ export class UsersService {
 
   async create(createUserDto: CreateUserDto): Promise<InsertResult> {
     try {
-      const savedUser =  await this.userRepository.insert({
+      const savedUser = await this.userRepository.insert({
         ...createUserDto,
         password: encrypt(createUserDto.password),
       } as User);
@@ -59,7 +59,7 @@ export class UsersService {
     updateUserDto: UpdateUserDto,
   ): Promise<UpdateResult> {
     try {
-      const updatedUser =  await this.userRepository.update(id, {
+      const updatedUser = await this.userRepository.update(id, {
         ...updateUserDto,
         password: encrypt(updateUserDto.password),
       } as User);
@@ -103,7 +103,7 @@ export class UsersService {
       if (!user) {
         throw new Error('User not found');
       }
-      const deletedUser =  await this.userRepository.delete(email);
+      const deletedUser = await this.userRepository.delete(email);
       sendNotification('User deleted', 'A user has been deleted..!');
       return deletedUser;
     } catch (error) {
