@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   HttpCode,
+  HttpException,
   HttpStatus,
   Post,
   Res,
@@ -41,9 +42,41 @@ export class AuthController {
       });
     } catch (error: any) {
       if (error.message === 'User not found') {
-        return res.status(400).json({ message: 'User not found' });
+        throw new HttpException('User not found', HttpStatus.NOT_FOUND);
       } else {
-        return res.status(500).json({ message: 'An error occurred' });
+        throw new HttpException('An error occurred', HttpStatus.BAD_REQUEST);
+      }
+    }
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @Post('refreshToken')
+  async getNewAccessToken(
+    @Body() refreshTokenDto: { refreshToken: string },
+    @Res() res: Response,
+  ) {
+    try {
+      const token = await this.authService.getNewAccessToken(
+        refreshTokenDto.refreshToken,
+      );
+      res.cookie('accessToken', token.accessToken, {
+        maxAge: 1000 * 60 * 5,
+        httpOnly: true,
+      });
+
+      res.cookie('refreshToken', token.refreshToken, {
+        maxAge: 60 * 60 * 24 * 1000,
+        httpOnly: true,
+      });
+      res.status(200).json({
+        accessToken: token.accessToken,
+        refreshToken: token.refreshToken,
+      });
+    } catch (error: any) {
+      if (error.message === 'Invalid token') {
+        throw new HttpException('Invalid token', HttpStatus.UNAUTHORIZED);
+      } else {
+        throw new HttpException('An error occurred', HttpStatus.BAD_REQUEST);
       }
     }
   }

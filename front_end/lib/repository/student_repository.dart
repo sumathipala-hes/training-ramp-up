@@ -7,10 +7,10 @@ import 'package:http/http.dart' as http;
 import '../../model/student_model.dart';
 import '../util/db_util.dart';
 import '../util/local_storage.dart';
-import '../util/notification_util.dart';
 
 class StudentRepository {
   Future<http.Response> getAllStudents() async {
+   await getNewAccessToken();
     final token = await LocalStorage().getAccessToken();
     final response = await http.get(
       Uri.parse('$baseUrl/students'),
@@ -23,6 +23,7 @@ class StudentRepository {
   }
 
   Future<http.Response> getStudentByOne(String search) async {
+   await getNewAccessToken();
     final token = await LocalStorage().getAccessToken();
     final response = await http.get(
       Uri.parse('$baseUrl/students/$search'),
@@ -35,6 +36,7 @@ class StudentRepository {
   }
 
   Future<void> saveStudent(Student student) async {
+   await getNewAccessToken();
     final token = await LocalStorage().getAccessToken();
     try {
       final response = await http.post(
@@ -48,7 +50,6 @@ class StudentRepository {
 
       if (response.statusCode != 201) {
         Logger().d('Successfully to create Student: ${response.statusCode}');
-        successfullyNotification('Successfully to create Student');
       }
     } catch (error) {
       Logger().e('Error creating student: $error');
@@ -56,6 +57,7 @@ class StudentRepository {
   }
 
   Future<void> updateStudent(Student student) async {
+  await  getNewAccessToken();
     final token = await LocalStorage().getAccessToken();
     try {
       final response = await http.put(
@@ -69,7 +71,6 @@ class StudentRepository {
 
       if (response.statusCode != 201) {
         Logger().d('Successfully to update Student: ${response.statusCode}');
-        successfullyNotification('Successfully to update Student');
       }
     } catch (error) {
       Logger().e('Error updating student: $error');
@@ -77,6 +78,7 @@ class StudentRepository {
   }
 
   Future<void> deleteStudent(String studentId) async {
+   await getNewAccessToken();
     final token = await LocalStorage().getAccessToken();
     try {
       final response = await http.delete(
@@ -89,10 +91,26 @@ class StudentRepository {
 
       if (response.statusCode != 201) {
         Logger().d('Successfully to delete Student: ${response.statusCode}');
-        successfullyNotification('Successfully to delete Student');
       }
     } catch (error) {
       Logger().e('Error deleting student: $error');
+    }
+  }
+
+  Future<void> getNewAccessToken() async {
+    final refreshToken = await LocalStorage().getRefreshToken();
+    final res = await http.post(
+      Uri.parse('$baseUrl/users/refreshToken'),
+      headers: <String, String>{
+        'Content-Type': 'application/json',
+      },
+      body: '{"refreshToken": "$refreshToken"}',
+    );
+
+    if (res.statusCode == 200) {
+      final Map<String, dynamic> jsonData = json.decode(res.body);
+      final accessToken = jsonData['accessToken'];
+      LocalStorage().setAccessToken(accessToken);
     }
   }
 }

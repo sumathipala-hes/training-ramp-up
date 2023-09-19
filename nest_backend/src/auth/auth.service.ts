@@ -34,4 +34,18 @@ export class AuthService {
       }),
     };
   }
+
+  async getNewAccessToken(refreshToken: string): Promise<TokenPayloadDto> {
+    const user = await this.jwtService.verifyAsync(refreshToken, {
+      secret: jwtConfig.refreshKey,
+    });
+    const payload = { email: user.email, roleType: user.roleType };
+    return {
+      accessToken: await this.jwtService.signAsync(payload, {
+        expiresIn: jwtConfig.accessExpiresIn,
+        secret: jwtConfig.secretKey,
+      }),
+      refreshToken: refreshToken,
+    };
+  }
 }

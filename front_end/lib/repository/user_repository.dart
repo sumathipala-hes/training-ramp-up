@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_null_comparison
+
 import 'dart:convert';
 
 import 'package:front_end/util/local_storage.dart';
@@ -12,6 +14,7 @@ import 'package:http/http.dart' as http;
 
 class UserRepository {
   Future<http.Response> getAllUsers() async {
+   await getNewAccessToken();
     final token = await LocalStorage().getAccessToken();
     final response = await http.get(
       Uri.parse('$baseUrl/users'),
@@ -24,6 +27,7 @@ class UserRepository {
   }
 
   Future<http.Response> getUserByOne(String search) async {
+   await getNewAccessToken();
     final token = await LocalStorage().getAccessToken();
     final response = await http.get(
       Uri.parse('$baseUrl/users/$search'),
@@ -36,6 +40,7 @@ class UserRepository {
   }
 
   Future<void> saveUser(User user) async {
+   await getNewAccessToken();
     final token = await LocalStorage().getAccessToken();
     try {
       final response = await http.post(
@@ -49,7 +54,6 @@ class UserRepository {
 
       if (response.statusCode != 201) {
         Logger().d('Successfully to create User: ${response.statusCode}');
-         successfullyNotification('Successfully to create user');
       }
     } catch (error) {
       Logger().e('Error creating User: $error');
@@ -59,6 +63,7 @@ class UserRepository {
   }
 
   Future<void> updateUser(User user) async {
+  await  getNewAccessToken();
     final token = await LocalStorage().getAccessToken();
     try {
       final response = await http.put(
@@ -72,7 +77,6 @@ class UserRepository {
 
       if (response.statusCode != 201) {
         Logger().d('Successfully to update User: ${response.statusCode}');
-         successfullyNotification('Successfully to update user');
       }
     } catch (error) {
       Logger().e('Error updating user: $error');
@@ -80,6 +84,7 @@ class UserRepository {
   }
 
   Future<void> deleteUser(String userEmail) async {
+   await getNewAccessToken();
     final token = await LocalStorage().getAccessToken();
     try {
       final response = await http.delete(
@@ -92,7 +97,6 @@ class UserRepository {
 
       if (response.statusCode != 201) {
         Logger().d('Successfully to delete User: ${response.statusCode}');
-         successfullyNotification('Successfully to delete user');
       }
     } catch (error) {
       Logger().e('Error deleting user: $error');
@@ -116,6 +120,7 @@ class UserRepository {
       final accessToken = jsonData['accessToken'];
       final refreshToken = jsonData['refreshToken'];
       LocalStorage().setAccessToken(accessToken);
+      LocalStorage().setRefreshToken(refreshToken);
 
       if (refreshToken != null) {
         Map<String, dynamic> decodedToken = JwtDecoder.decode(accessToken);
@@ -144,5 +149,25 @@ class UserRepository {
         'Authorization': 'Bearer:$token',
       },
     );
+  }
+
+  Future<void> getNewAccessToken() async {
+    final refreshToken = await LocalStorage().getRefreshToken();
+    final token = await LocalStorage().getAccessToken();
+    if(token != null && JwtDecoder.isExpired(token)){
+    final res = await http.post(
+      Uri.parse('$baseUrl/users/refreshToken'),
+      headers: <String, String>{
+        'Content-Type': 'application/json',
+      },
+      body: '{"refreshToken": "$refreshToken"}',
+    );
+
+    if (res.statusCode == 200) {
+      final Map<String, dynamic> jsonData = json.decode(res.body);
+      final accessToken = jsonData['accessToken'];
+      LocalStorage().setAccessToken(accessToken);
+    }
+    }
   }
 }
