@@ -14,6 +14,8 @@ import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Response } from 'express';
+import { Roles } from 'src/auth/roles.decorator';
+import { Role } from 'src/enums/role.enum';
 
 @Controller('api/v1/user')
 export class UserController {
@@ -35,6 +37,7 @@ export class UserController {
   }
 
   @Put(':userEmail')
+  @Roles(Role.Admin)
   async update(
     @Param('userEmail') userEmail: string,
     @Body() updateUserDto: UpdateUserDto,
@@ -43,6 +46,7 @@ export class UserController {
   }
 
   @Delete(':userEmail')
+  @Roles(Role.Admin)
   async remove(@Param('userEmail') userEmail: string) {
     return this.userService.deleteUser(userEmail);
   }

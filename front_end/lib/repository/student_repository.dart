@@ -14,19 +14,18 @@ class StudentRepository {
     return response;
   }
 
-  Future<http.Response> createStudent(Student student) async {
+  Future<void> createStudent(Student student) async {
     final response = await http.post(
       Uri.parse('$baseUrl/student'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
+        'Cookie': 'role=admin',
       },
       body: jsonEncode(
         student.toJson(),
       ),
     );
-    if (response.statusCode == 200) {
-      return response;
-    } else {
+    if (response.statusCode == 500) {
       throw Exception('Failed to create student.');
     }
   }
@@ -34,6 +33,9 @@ class StudentRepository {
   Future<http.Response> deleteStudent(String id) async {
     final response = await http.delete(
       Uri.parse('$baseUrl/student/$id'),
+      headers: <String, String>{
+        'Cookie': 'role=admin',
+      },
     );
     if (response.statusCode == 200) {
       return response;
@@ -47,6 +49,7 @@ class StudentRepository {
       Uri.parse('$baseUrl/student/${student.studentId}'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
+        'Cookie': 'role=admin',
       },
       body: jsonEncode(
         student.toJson(),

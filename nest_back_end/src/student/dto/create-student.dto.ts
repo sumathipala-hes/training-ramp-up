@@ -1,4 +1,5 @@
-import { IsNotEmpty, IsNumber, IsString, IsDate } from "@nestjs/class-validator";
+import { IsNotEmpty, IsNumber, IsString, IsDate, IsIn } from "@nestjs/class-validator";
+import { Transform } from "class-transformer";
 
 export class CreateStudentDto {
   @IsNotEmpty()
@@ -23,5 +24,9 @@ export class CreateStudentDto {
 
   @IsNotEmpty()
   @IsString()
+  @IsString()
+  @IsNotEmpty()
+  @IsIn(['Male', 'Female']) // Assuming 'studentGender' should be one of these values
+  @Transform((value) => value.obj.studentGender.toLowerCase())
   studentGender: string;
 }

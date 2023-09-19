@@ -44,13 +44,10 @@ class AdminHomeScreenBloc extends Bloc<AdminHomePageEvent, AdminHomeState> {
       studentGender: event.studentGender,
     );
 
-    final response = await StudentRepository().createStudent(student);
-
-    if (response.statusCode == 200) {
-      add(
-        GetAllStudents(),
-      );
-    }
+    await StudentRepository().createStudent(student);
+    add(
+      GetAllStudents(),
+    );
   }
 
   Future<void> _onGetAllStudents(
