@@ -14,6 +14,6 @@ export class AuthController {
       maxAge: 1000 * 60 * 5,
       httpOnly: true,
     });
-    res.status(200).json({ accessToken: newAccessToken });
+    res.status(200).json({ message: 'Refresh Token Success'});
   }
 }
