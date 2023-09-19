@@ -12,9 +12,11 @@ import '../util/db_util.dart';
 import '../util/notification_util.dart';
 import 'package:http/http.dart' as http;
 
+import 'auth_validate_repository.dart';
+
 class UserRepository {
   Future<http.Response> getAllUsers() async {
-   await getNewAccessToken();
+    await getNewAccessToken();
     final token = await LocalStorage().getAccessToken();
     final response = await http.get(
       Uri.parse('$baseUrl/users'),
@@ -27,7 +29,7 @@ class UserRepository {
   }
 
   Future<http.Response> getUserByOne(String search) async {
-   await getNewAccessToken();
+    await getNewAccessToken();
     final token = await LocalStorage().getAccessToken();
     final response = await http.get(
       Uri.parse('$baseUrl/users/$search'),
@@ -40,7 +42,7 @@ class UserRepository {
   }
 
   Future<void> saveUser(User user) async {
-   await getNewAccessToken();
+    await getNewAccessToken();
     final token = await LocalStorage().getAccessToken();
     try {
       final response = await http.post(
@@ -63,7 +65,7 @@ class UserRepository {
   }
 
   Future<void> updateUser(User user) async {
-  await  getNewAccessToken();
+    await getNewAccessToken();
     final token = await LocalStorage().getAccessToken();
     try {
       final response = await http.put(
@@ -84,7 +86,7 @@ class UserRepository {
   }
 
   Future<void> deleteUser(String userEmail) async {
-   await getNewAccessToken();
+    await getNewAccessToken();
     final token = await LocalStorage().getAccessToken();
     try {
       final response = await http.delete(
@@ -103,6 +105,39 @@ class UserRepository {
     }
   }
 
+  // Future<void> signIn(String userEmail, String userPassword) async {
+  //   final res = await http.post(
+  //     Uri.parse('$baseUrl/users/signIn'),
+  //     headers: <String, String>{
+  //       'Content-Type': 'application/json',
+  //     },
+  //     body: jsonEncode({
+  //       "email": userEmail,
+  //       "password": userPassword,
+  //     }),
+  //   );
+
+  //   if (res.statusCode == 200) {
+  //     final Map<String, dynamic> jsonData = json.decode(res.body);
+  //     final accessToken = jsonData['accessToken'];
+  //     final refreshToken = jsonData['refreshToken'];
+  //     LocalStorage().setAccessToken(accessToken);
+  //     LocalStorage().setRefreshToken(refreshToken);
+
+  //     if (refreshToken != null) {
+  //       Map<String, dynamic> decodedToken = JwtDecoder.decode(accessToken);
+  //       String email = decodedToken['email'];
+  //       String roleType = decodedToken['roleType'];
+
+  //       LocalStorage().setCurrentLoginRole(roleType);
+  //       LocalStorage().setCurrentLoginEmail(email);
+  //     }
+  //   }
+  //   if (res.statusCode == 500) {
+  //     showFieldError('Failed Login..!');
+  //   }
+  // }
+
   Future<void> signIn(String userEmail, String userPassword) async {
     final res = await http.post(
       Uri.parse('$baseUrl/users/signIn'),
@@ -115,21 +150,16 @@ class UserRepository {
       }),
     );
 
-    if (res.statusCode == 200) {
-      final Map<String, dynamic> jsonData = json.decode(res.body);
-      final accessToken = jsonData['accessToken'];
-      final refreshToken = jsonData['refreshToken'];
-      LocalStorage().setAccessToken(accessToken);
-      LocalStorage().setRefreshToken(refreshToken);
+    if (res.statusCode == 200 || res.statusCode == 201) {
+      final String rawCookies = res.headers['set-cookie']!;
+      List<String> cookies = rawCookies.split('; ');
 
-      if (refreshToken != null) {
-        Map<String, dynamic> decodedToken = JwtDecoder.decode(accessToken);
-        String email = decodedToken['email'];
-        String roleType = decodedToken['roleType'];
-
-        LocalStorage().setCurrentLoginRole(roleType);
-        LocalStorage().setCurrentLoginEmail(email);
-      }
+      Map<String, dynamic> decodeToken =
+          JwtDecoder.decode(cookies[0].split('accessToken=')[1]);
+      LocalStorage().setCurrentLoginRole(decodeToken['roleType']);
+      LocalStorage().setCurrentLoginEmail(decodeToken['email']);
+      LocalStorage().setAccessToken(cookies[0].split('accessToken=')[1]);
+      LocalStorage().setRefreshToken(cookies[4].split('refreshToken=')[1]);
     }
     if (res.statusCode == 500) {
       showFieldError('Failed Login..!');
@@ -149,25 +179,5 @@ class UserRepository {
         'Authorization': 'Bearer:$token',
       },
     );
-  }
-
-  Future<void> getNewAccessToken() async {
-    final refreshToken = await LocalStorage().getRefreshToken();
-    final token = await LocalStorage().getAccessToken();
-    if(token != null && JwtDecoder.isExpired(token)){
-    final res = await http.post(
-      Uri.parse('$baseUrl/users/refreshToken'),
-      headers: <String, String>{
-        'Content-Type': 'application/json',
-      },
-      body: '{"refreshToken": "$refreshToken"}',
-    );
-
-    if (res.statusCode == 200) {
-      final Map<String, dynamic> jsonData = json.decode(res.body);
-      final accessToken = jsonData['accessToken'];
-      LocalStorage().setAccessToken(accessToken);
-    }
-    }
   }
 }

@@ -7,10 +7,11 @@ import 'package:http/http.dart' as http;
 import '../../model/student_model.dart';
 import '../util/db_util.dart';
 import '../util/local_storage.dart';
+import 'auth_validate_repository.dart';
 
 class StudentRepository {
   Future<http.Response> getAllStudents() async {
-   await getNewAccessToken();
+    await getNewAccessToken();
     final token = await LocalStorage().getAccessToken();
     final response = await http.get(
       Uri.parse('$baseUrl/students'),
@@ -23,7 +24,7 @@ class StudentRepository {
   }
 
   Future<http.Response> getStudentByOne(String search) async {
-   await getNewAccessToken();
+    await getNewAccessToken();
     final token = await LocalStorage().getAccessToken();
     final response = await http.get(
       Uri.parse('$baseUrl/students/$search'),
@@ -36,7 +37,7 @@ class StudentRepository {
   }
 
   Future<void> saveStudent(Student student) async {
-   await getNewAccessToken();
+    await getNewAccessToken();
     final token = await LocalStorage().getAccessToken();
     try {
       final response = await http.post(
@@ -57,7 +58,7 @@ class StudentRepository {
   }
 
   Future<void> updateStudent(Student student) async {
-  await  getNewAccessToken();
+    await getNewAccessToken();
     final token = await LocalStorage().getAccessToken();
     try {
       final response = await http.put(
@@ -78,7 +79,7 @@ class StudentRepository {
   }
 
   Future<void> deleteStudent(String studentId) async {
-   await getNewAccessToken();
+    await getNewAccessToken();
     final token = await LocalStorage().getAccessToken();
     try {
       final response = await http.delete(
@@ -94,23 +95,6 @@ class StudentRepository {
       }
     } catch (error) {
       Logger().e('Error deleting student: $error');
-    }
-  }
-
-  Future<void> getNewAccessToken() async {
-    final refreshToken = await LocalStorage().getRefreshToken();
-    final res = await http.post(
-      Uri.parse('$baseUrl/users/refreshToken'),
-      headers: <String, String>{
-        'Content-Type': 'application/json',
-      },
-      body: '{"refreshToken": "$refreshToken"}',
-    );
-
-    if (res.statusCode == 200) {
-      final Map<String, dynamic> jsonData = json.decode(res.body);
-      final accessToken = jsonData['accessToken'];
-      LocalStorage().setAccessToken(accessToken);
     }
   }
 }
