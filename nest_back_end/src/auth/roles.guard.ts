@@ -2,11 +2,11 @@ import {
   Injectable,
   CanActivate,
   ExecutionContext,
-  ForbiddenException,
-  UnauthorizedException,
+  HttpException,
+  HttpStatus,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { Role } from 'src/enums/role.enum';
+import { Role } from '../enums/role.enum';
 import { ROLES_KEY } from './roles.decorator';
 
 @Injectable()
@@ -24,21 +24,24 @@ export class RolesGuard implements CanActivate {
     console.log('requiredRoles :' + requiredRoles);
 
     const request = context.switchToHttp().getRequest();
-    const accessToken = request.headers.cookie?.split('=')[1];
+    const accessRole = request.headers.cookie?.split('=')[1];
 
-    console.log('accessToken :' + accessToken);
+    console.log('accessRole :' + accessRole);
 
-    if (!accessToken) {
-      throw new ForbiddenException('Access token not found');
+    if (!accessRole) {
+      throw new HttpException('Role not found', HttpStatus.UNAUTHORIZED);
     }
 
     try {
-      if (requiredRoles.includes(accessToken)) {
+      if (requiredRoles.includes(accessRole)) {
         return true;
       }
-      throw new ForbiddenException('Forbidden');
+      throw new HttpException('Invalid role', HttpStatus.FORBIDDEN);
     } catch (error) {
-      throw new UnauthorizedException('Invalid accessToken');
+      throw new HttpException(
+        error.message,
+        error?.status ?? HttpStatus.BAD_REQUEST,
+      );
     }
   }
 }

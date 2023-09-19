@@ -1,5 +1,11 @@
-import { IsNotEmpty, IsNumber, IsString, IsDate, IsIn } from "@nestjs/class-validator";
-import { Transform } from "class-transformer";
+import {
+  IsNotEmpty,
+  IsNumber,
+  IsString,
+  IsDate,
+  IsIn,
+} from '@nestjs/class-validator';
+import { Transform } from 'class-transformer';
 
 export class CreateStudentDto {
   @IsNotEmpty()

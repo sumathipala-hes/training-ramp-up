@@ -6,16 +6,12 @@ import {
   Param,
   Delete,
   Put,
-  Res,
-  HttpStatus,
-  HttpException,
 } from '@nestjs/common';
 import { StudentService } from './student.service';
 import { CreateStudentDto } from './dto/create-student.dto';
 import { UpdateStudentDto } from './dto/update-student.dto';
-import { Response } from 'express';
-import { Roles } from 'src/auth/roles.decorator';
-import { Role } from 'src/enums/role.enum';
+import { Roles } from '../auth/roles.decorator';
+import { Role } from '../enums/role.enum';
 
 @Controller('api/v1/student')
 export class StudentController {
@@ -28,13 +24,10 @@ export class StudentController {
   }
 
   @Get()
-  async retrieveAll(@Res() res: Response) {
-    try {
-      const students = await this.studentService.retrieveAllStudents();
-      return res.status(HttpStatus.OK).json({ data: students });
-    } catch (error) {
-      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+  async retrieveAll(): Promise<{ data: CreateStudentDto[] }> {
+    return (await this.studentService.retrieveAllStudents()) as {
+      data: CreateStudentDto[];
+    };
   }
 
   @Put(':id')

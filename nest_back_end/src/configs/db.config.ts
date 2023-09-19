@@ -1,7 +1,7 @@
 import { config } from 'dotenv';
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
-import { Student } from 'src/student/entities/student.entity';
-import { User } from 'src/user/entities/user.entity';
+import { Student } from '../student/entities/student.entity';
+import { User } from '../user/entities/user.entity';
 config();
 
 export const dataSource: TypeOrmModuleOptions = {

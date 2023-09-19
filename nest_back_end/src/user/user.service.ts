@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InsertResult } from 'typeorm/query-builder/result/InsertResult';
@@ -9,7 +9,7 @@ import { DeleteResult, UpdateResult } from 'typeorm';
 import {
   decryptPassword,
   encryptPassword,
-} from 'src/util/encrypted.decrypted.util';
+} from '../util/password.util';
 
 @Injectable()
 export class UserService {
@@ -34,15 +34,17 @@ export class UserService {
       );
       return newUser;
     } catch (error) {
-      // Handle and rethrow the error
-      throw error;
+      throw new HttpException(
+        error.message,
+        error?.status ?? HttpStatus.BAD_REQUEST,
+      );
     }
   }
 
-  async retrieveAllUsers(): Promise<CreateUserDto[]> {
+  async retrieveAllUsers(): Promise<{ data: User[] }> {
     try {
       // Retrieve all the users from the database
-      const users: CreateUserDto[] = await this.userRepository.find({
+      const users: User[] = await this.userRepository.find({
         order: { userEmail: 'DESC' },
       });
       // Decrypt the passwords
@@ -51,12 +53,14 @@ export class UserService {
       });
 
       if (!users) {
-        throw new Error('No users found.');
+        throw new HttpException('No users found.', HttpStatus.NOT_FOUND);
       }
-      return users;
+      return { data: users };
     } catch (error) {
-      // Handle and rethrow the error
-      throw error;
+      throw new HttpException(
+        error.message,
+        error?.status ?? HttpStatus.BAD_REQUEST,
+      );
     }
   }
 
@@ -82,12 +86,14 @@ export class UserService {
         // If the user is updated
         updatedUser.raw = updateUserDto;
       } else {
-        throw new Error('User not found.');
+        throw new HttpException('No users found.', HttpStatus.NOT_FOUND);
       }
       return updatedUser;
     } catch (error) {
-      // Handle and rethrow the error
-      throw error;
+      throw new HttpException(
+        error.message,
+        error?.status ?? HttpStatus.BAD_REQUEST,
+      );
     }
   }
 
@@ -96,12 +102,14 @@ export class UserService {
       const deletedUser: DeleteResult =
         await this.userRepository.delete(userEmail);
       if (deletedUser.affected !== 1) {
-        throw new Error('User not found.');
+        throw new HttpException('No users found.', HttpStatus.NOT_FOUND);
       }
       return deletedUser;
     } catch (error) {
-      // Handle and rethrow the error
-      throw error;
+      throw new HttpException(
+        error.message,
+        error?.status ?? HttpStatus.BAD_REQUEST,
+      );
     }
   }
 }
