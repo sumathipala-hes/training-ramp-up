@@ -5,6 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Student } from './entities/student.entity';
 import { DeleteResult, InsertResult, Repository, UpdateResult } from 'typeorm';
 import { StudentResponseData } from './dto/response-data';
+import { sendNotification } from 'src/util/notification.util';
 
 @Injectable()
 export class StudentsService {
@@ -19,6 +20,7 @@ export class StudentsService {
     try {
       const newStudent: InsertResult =
         await this.studentRepository.insert(createStudentDto);
+      sendNotification('Student', 'Student created successfully');
       return newStudent;
     } catch (err) {
       throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
@@ -80,7 +82,7 @@ export class StudentsService {
       if (updateStudent.affected === 0) {
         throw new HttpException('Student not found', HttpStatus.NOT_FOUND);
       }
-
+      sendNotification('Student', 'Student updated successfully');
       return updateStudent;
     } catch (err) {
       throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
@@ -95,7 +97,7 @@ export class StudentsService {
       if (deleteStudent.affected === 0) {
         throw new HttpException('Student not found', HttpStatus.NOT_FOUND);
       }
-
+      sendNotification('Student', 'Student deleted successfully');
       return deleteStudent;
     } catch (err) {
       throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
