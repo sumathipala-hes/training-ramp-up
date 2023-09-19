@@ -25,21 +25,21 @@ class UserRepository {
       ),
     );
     if (res.statusCode == 201 || res.statusCode == 200) {
-      final Map<String, dynamic> jsonData = json.decode(res.body);
-      final accessToken = jsonData['accessToken'];
+      final String rawCookies = res.headers['set-cookie']!;
+      List<String> cookies = rawCookies.split('; ');
 
-      if (accessToken != null) {
-        Map<String, dynamic> decodedToken = JwtDecoder.decode(accessToken);
-        localStorage.setEmail(decodedToken['email']);
-        print(decodedToken['role'].toLowerCase());
-        localStorage.setRole(decodedToken['role'].toLowerCase());
-        localStorage.setAcessToken(accessToken);
-        localStorage.setRefreshToken(jsonData['refreshToken']);
-        return true;
+      if (cookies.length < 2 || res.statusCode == 500) {
+        showToast('Failed Login..!');
+        return false;
       }
-    }
-    if (res.statusCode == 500) {
-      showToast('Failed Login..!');
+      Map<String, dynamic> decodedToken =
+          JwtDecoder.decode(cookies[0].split('accessToken=')[1]);
+      localStorage.setEmail(decodedToken['email']);
+      localStorage.setRole(decodedToken['role'].toLowerCase());
+      localStorage.setAcessToken(cookies[0].split('accessToken=')[1]);
+      localStorage
+          .setRefreshToken(cookies[4].split('HttpOnly,refreshToken=')[1]);
+      return true;
     }
     return false;
   }

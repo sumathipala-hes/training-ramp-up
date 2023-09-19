@@ -7,10 +7,9 @@ import {
   Delete,
   Put,
   Res,
-  Req,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { AuthService } from '../auth/auth.service';
@@ -36,7 +35,7 @@ export class UsersController {
     return await this.usersService.findAll();
   }
 
-  // @Roles(Role.ADMIN)
+  @Roles(Role.ADMIN)
   @Put(':email')
   async update(
     @Param('email') email: string,
@@ -66,6 +65,7 @@ export class UsersController {
       maxAge: 60 * 60 * 24 * 1000,
       httpOnly: true,
     });
+    res.status(200).json({ message: 'Login Success' });
   }
 
   @Delete('signOut')

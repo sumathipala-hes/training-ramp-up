@@ -5,7 +5,7 @@ import { User } from './entities/user.entity';
 import { DeleteResult, InsertResult, Repository, UpdateResult } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { decrypt, encrypt } from '../utils/password.util';
-import { sendNotification } from 'src/utils/notification.util';
+import { sendNotification } from '../utils/notification.util';
 
 @Injectable()
 export class UsersService {
@@ -23,7 +23,7 @@ export class UsersService {
       sendNotification('New user', 'A new user has been created..!');
       return savedUser;
     } catch (error) {
-      sendNotification('Error', 'User creation failed..!');
+      sendNotification('Error', error.message);
       throw new HttpException(
         'Internal Server Error',
         HttpStatus.INTERNAL_SERVER_ERROR,

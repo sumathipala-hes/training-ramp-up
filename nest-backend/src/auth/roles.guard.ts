@@ -2,8 +2,6 @@ import {
   Injectable,
   CanActivate,
   ExecutionContext,
-  UnauthorizedException,
-  ForbiddenException,
   HttpException,
   HttpStatus,
 } from '@nestjs/common';
@@ -30,6 +28,7 @@ export class RolesGuard implements CanActivate {
 
     const req = context.switchToHttp().getRequest();
     const accessToken = req.headers.cookie?.split('=')[1];
+    console.log(accessToken);
 
     try {
       if (accessToken) {
@@ -40,12 +39,15 @@ export class RolesGuard implements CanActivate {
           if (requiredRoles.includes(decoded.role)) {
             return true;
           } else {
+            console.log('Invalid Role');
             throw new HttpException('Invalid Role', HttpStatus.FORBIDDEN);
           }
         } else {
+          console.log('Invalid Token');
           throw new HttpException('Invalid Token', HttpStatus.BAD_REQUEST);
         }
       } else {
+        console.log('Access Token Not Found');
         throw new HttpException(
           'Access Token Not Found',
           HttpStatus.UNAUTHORIZED,

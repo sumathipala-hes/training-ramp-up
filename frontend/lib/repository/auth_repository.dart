@@ -4,7 +4,7 @@ import 'package:frontend/util/show_toast.dart';
 import 'package:http/http.dart' as http;
 
 class AuthRepository {
-  Future<void> refreshToken(String id) async {
+  Future<void> refreshToken() async {
     final refreshToken = await LocalStorage().getRefreshToken();
     final res = await http.delete(
       Uri.parse('$baseUrl/auth/'),
