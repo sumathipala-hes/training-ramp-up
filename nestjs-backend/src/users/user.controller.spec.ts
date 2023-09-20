@@ -124,7 +124,7 @@ describe('UserController', () => {
             const role = 'user';
             jest.spyOn(userService, 'getUserRole').mockResolvedValue(role);
             await userController.getUserRole(mockRequest, mockResponse);
-            expect(mockResponse.json).toHaveBeenCalledWith({ role: role });
+            expect(mockResponse.json).toHaveBeenCalledWith( 'user');
         });
 
         it('should handle errors when gettng the user role', async () => {

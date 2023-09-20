@@ -8,6 +8,7 @@ import { describe } from "node:test";
 import { StudentDto } from "./dto/student.dto";
 import { NotFoundException } from "@nestjs/common";
 import { UpdateStudentDto } from "./dto/update.dto";
+import { SocketGateway } from "../socket/socket.gateway";
 
 const mockStudentRepository = {
     find: jest.fn(),
@@ -17,6 +18,12 @@ const mockStudentRepository = {
     update: jest.fn(),
     delete: jest.fn(),
 };
+
+const mockSocketGateway = {
+    server: {
+        emit: jest.fn(),
+    }
+}
 
 describe('StudentService', () => {
     let studentService: StudentService;
@@ -30,6 +37,10 @@ describe('StudentService', () => {
                 {
                     provide: getRepositoryToken(Student),
                     useValue: mockStudentRepository,
+                },
+                {
+                    provide: SocketGateway,
+                    useValue: mockSocketGateway,
                 },
             ],
         }).compile();

@@ -8,6 +8,7 @@ import { StudentDto } from './dto/student.dto';
 import { UpdateStudentDto } from './dto/update.dto';
 import { Response } from "express";
 import { getRepositoryToken } from '@nestjs/typeorm';
+import { SocketGateway } from "../socket/socket.gateway";
 
 const mockResponse = {
     status: jest.fn(() => mockResponse),
@@ -27,6 +28,7 @@ describe('StudentController', () => {
             provide: getRepositoryToken(Student),
             useValue: mockResponse,
         },
+        SocketGateway,
       ],
     }).compile();
 
