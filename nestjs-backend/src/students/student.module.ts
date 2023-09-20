@@ -8,9 +8,10 @@ import { AuthMiddleware } from "src/middleware/auth.middleware";
 import { AdminAccess } from "src/middleware/admin.access.middleware";
 import { JwtService } from "@nestjs/jwt";
 import { Repository } from "typeorm";
+import { SocketModule } from "src/socket/socket.module";
 
 @Module({
-    imports: [TypeOrmModule.forFeature([Student])],
+    imports: [TypeOrmModule.forFeature([Student]), SocketModule],
     controllers: [StudentController],
     providers: [StudentService, JwtService, Repository],
 })

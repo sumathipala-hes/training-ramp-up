@@ -73,7 +73,7 @@ export class UserController {
         @Res() res: Response) {
             try {
                 const userRole = await this.userService.getUserRole(req);
-                res.json({ role: userRole });
+                res.json(userRole);
             } catch (err) {
                 if (err instanceof Error) {
                     return res.status(HttpStatus.BAD_REQUEST).json({ message: err.message });
