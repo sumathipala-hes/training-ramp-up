@@ -6,6 +6,14 @@ import { mockUser } from 'src/utils';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { User } from 'src/models/user.entity';
 
+interface RequestType {
+  cookies: { token: string; refreshToken: string };
+}
+
+interface loginType {
+  body: { username: string; password: string };
+}
+
 describe('UserController', () => {
   let controller: UserController;
   let userService: UserService;
@@ -44,7 +52,7 @@ describe('UserController', () => {
     } as any;
     it('should register a user with valid data', async () => {
       // Arrange
-      const req = {} as Request;
+      const req = {} as RequestType;
       const userDto: UserDto = mockUser;
       const saveUserSpy = jest.spyOn(userService, 'saveUser');
       saveUserSpy.mockResolvedValue(undefined);
@@ -62,7 +70,7 @@ describe('UserController', () => {
 
     it('should handle validation errors and return a 400 response', async () => {
       // Arrange
-      const req = {} as Request;
+      const req = {} as RequestType;
       const userDto: UserDto = mockUser;
       const saveUserSpy = jest.spyOn(userService, 'saveUser');
       saveUserSpy.mockRejectedValue(new Error('Validation failed'));
@@ -81,7 +89,7 @@ describe('UserController', () => {
 
     it('should handle other errors and return a 500 response', async () => {
       // Arrange
-      const req = {} as Request;
+      const req = {} as RequestType;
       const userDto: UserDto = mockUser;
       const saveUserSpy = jest.spyOn(userService, 'saveUser');
       saveUserSpy.mockRejectedValue('An unknown error occurred');
@@ -106,7 +114,7 @@ describe('UserController', () => {
     } as any;
     it('should authenticate a user with a valid token', async () => {
       // Arrange
-      const req = {} as Request;
+      const req = {} as RequestType;
       const fetchUserSpy = jest.spyOn(userService, 'fetchUser');
       fetchUserSpy.mockResolvedValue({ name: 'nimal', role: 'admin' });
 
@@ -124,7 +132,7 @@ describe('UserController', () => {
 
     it('should handle authentication failure and return a 401 response', async () => {
       // Arrange
-      const req = {} as Request;
+      const req = {} as RequestType;
       const fetchUserSpy = jest.spyOn(userService, 'fetchUser');
       fetchUserSpy.mockResolvedValue(null);
 
@@ -142,7 +150,7 @@ describe('UserController', () => {
 
     it('should handle other errors and return a 401 or 500 response', async () => {
       // Arrange
-      const req = {} as Request;
+      const req = {} as RequestType;
       const fetchUserSpy = jest.spyOn(userService, 'fetchUser');
       fetchUserSpy.mockRejectedValue('An unknown error occurred');
 
@@ -162,7 +170,7 @@ describe('UserController', () => {
   describe('newAccessToken', () => {
     it('should create a new access token and set a cookie', async () => {
       // Arrange
-      const req = {} as Request;
+      const req = {} as RequestType;
       const res = {
         cookie: jest.fn(),
         status: jest.fn(() => res),
@@ -193,7 +201,7 @@ describe('UserController', () => {
 
     it('should handle errors and return a 500 response', async () => {
       // Arrange
-      const req = {} as Request;
+      const req = {} as RequestType;
       const res = {
         cookie: jest.fn(),
         status: jest.fn(() => res),
@@ -219,7 +227,7 @@ describe('UserController', () => {
   describe('validateUser', () => {
     it('should validate a user with valid credentials', async () => {
       // Arrange
-      const req = {} as Request;
+      const req = {} as loginType;
       const res = {
         cookie: jest.fn(),
         status: jest.fn(() => res),
@@ -258,7 +266,7 @@ describe('UserController', () => {
 
     it('should handle authentication failure and return a 400 response', async () => {
       // Arrange
-      const req = {} as Request;
+      const req = {} as loginType;
       const res = {
         cookie: jest.fn(),
         status: jest.fn(() => res),
@@ -282,7 +290,7 @@ describe('UserController', () => {
 
     it('should handle errors and return a 500 response', async () => {
       // Arrange
-      const req = {} as Request;
+      const req = {} as loginType;
       const res = {
         cookie: jest.fn(),
         status: jest.fn(() => res),

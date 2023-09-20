@@ -5,7 +5,7 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { Student } from 'src/models/student.entity';
 import { SocketGateway } from 'src/socket/socket.gateway';
 import { Response } from 'express';
-import { mockRequest, studentsMock } from 'src/utils';
+import { mockRequest, mockStudent, studentsMock } from 'src/utils';
 const mockResponse = {
   status: jest.fn(() => mockResponse),
   json: jest.fn(),
@@ -137,7 +137,7 @@ describe('StudentController', () => {
       saveStudentSpy.mockResolvedValue(true);
 
       // Act
-      await controller.addStudent(mockRequest, mockResponse);
+      await controller.addStudent(mockStudent, mockResponse);
 
       // Assert
       expect(saveStudentSpy).toHaveBeenCalled();
@@ -159,7 +159,7 @@ describe('StudentController', () => {
       );
 
       // Act
-      await controller.addStudent(mockRequest, mockResponse);
+      await controller.addStudent(mockStudent, mockResponse);
 
       // Assert
       expect(saveStudentSpy).toHaveBeenCalled();
@@ -180,7 +180,7 @@ describe('StudentController', () => {
       saveStudentSpy.mockRejectedValue('An unknown error occurred');
 
       // Act
-      await controller.addStudent(mockRequest, mockResponse);
+      await controller.addStudent(mockStudent, mockResponse);
 
       // Assert
       expect(saveStudentSpy).toHaveBeenCalled();
@@ -203,7 +203,7 @@ describe('StudentController', () => {
       deleteStudentSpy.mockResolvedValue(true);
 
       // Act
-      await controller.removeStudent(mockRequest, mockResponse);
+      await controller.removeStudent({ id: 5 }, mockResponse);
 
       // Assert
       expect(deleteStudentSpy).toHaveBeenCalled();
@@ -223,7 +223,7 @@ describe('StudentController', () => {
       deleteStudentSpy.mockResolvedValue(false);
 
       // Act
-      await controller.removeStudent(mockRequest, mockResponse);
+      await controller.removeStudent(mockStudent, mockResponse);
 
       // Assert
       expect(deleteStudentSpy).toHaveBeenCalled();
@@ -246,7 +246,7 @@ describe('StudentController', () => {
       );
 
       // Act
-      await controller.removeStudent(mockRequest, mockResponse);
+      await controller.removeStudent({ id: 5 }, mockResponse);
 
       // Assert
       expect(deleteStudentSpy).toHaveBeenCalled();
@@ -267,7 +267,7 @@ describe('StudentController', () => {
       deleteStudentSpy.mockRejectedValue('An unknown error occurred');
 
       // Act
-      await controller.removeStudent(mockRequest, mockResponse);
+      await controller.removeStudent({ id: 5 }, mockResponse);
 
       // Assert
       expect(deleteStudentSpy).toHaveBeenCalled();
@@ -290,7 +290,7 @@ describe('StudentController', () => {
       updateStudentSpy.mockResolvedValue(true);
 
       // Act
-      await controller.updateStudent(mockRequest, mockResponse);
+      await controller.updateStudent(mockStudent, mockResponse);
 
       // Assert
       expect(updateStudentSpy).toHaveBeenCalled();
@@ -310,7 +310,7 @@ describe('StudentController', () => {
       updateStudentSpy.mockResolvedValue(false);
 
       // Act
-      await controller.updateStudent(mockRequest, mockResponse);
+      await controller.updateStudent(mockStudent, mockResponse);
 
       // Assert
       expect(updateStudentSpy).toHaveBeenCalled();
@@ -333,7 +333,7 @@ describe('StudentController', () => {
       );
 
       // Act
-      await controller.updateStudent(mockRequest, mockResponse);
+      await controller.updateStudent(mockStudent, mockResponse);
 
       // Assert
       expect(updateStudentSpy).toHaveBeenCalled();
@@ -354,7 +354,7 @@ describe('StudentController', () => {
       updateStudentSpy.mockRejectedValue('An unknown error occurred');
 
       // Act
-      await controller.updateStudent(mockRequest, mockResponse);
+      await controller.updateStudent(mockStudent, mockResponse);
 
       // Assert
       expect(updateStudentSpy).toHaveBeenCalled();

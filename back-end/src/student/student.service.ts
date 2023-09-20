@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { Student } from '../models/student.entity';
 import { SocketGateway } from 'src/socket/socket.gateway';
 import { calculateAge } from 'src/utils';
+import { StudentDTO } from './student.dto';
 
 @Injectable()
 export class StudentService {
@@ -18,14 +19,14 @@ export class StudentService {
     return this.studentRepository.find();
   }
 
-  async saveStudent(req) {
+  async saveStudent(req: StudentDTO) {
     const id = req.id;
     const name = req.name;
     const gender = req.gender;
     const address = req.address;
     const mobile = req.mobile;
     const birthday = req.birthday;
-    const age = calculateAge(req.birthday);
+    const age = calculateAge(new Date(req.birthday));
 
     const student = new Student();
     student.name = name;
@@ -44,7 +45,7 @@ export class StudentService {
     return true;
   }
 
-  async deleteStudent(req): Promise<boolean> {
+  async deleteStudent(req: { id: number }): Promise<boolean> {
     const student = await this.studentRepository.findOneBy({
       id: req.id,
     });
@@ -60,14 +61,14 @@ export class StudentService {
     }
   }
 
-  async updateStudent(req) {
+  async updateStudent(req: StudentDTO) {
     const id = req.id;
     const name = req.name;
     const gender = req.gender;
     const address = req.address;
     const mobile = req.mobile;
     const birthday = req.birthday;
-    const age = calculateAge(req.birthday);
+    const age = calculateAge(new Date(req.birthday));
 
     const student = await this.studentRepository.findOneBy({
       id: id,

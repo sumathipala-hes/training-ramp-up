@@ -15,14 +15,23 @@ import { Roles } from 'src/roles/roles.decorator';
 import { RolesGuard } from 'src/roles/roles.guard';
 import { userRoles } from 'src/utils';
 
+interface RequestType {
+  cookies: { token: string; refreshToken: string };
+}
+
+interface loginType {
+  body: { username: string; password: string };
+}
+
 @Controller('user')
 @UseGuards(RolesGuard)
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
+  //register a user
   @Post('register')
   async registerUser(
-    @Req() req: Request,
+    @Req() req: { cookies: { token: string; refreshToken: string } },
     @Res() res: Response,
     @Body(new ValidationPipe()) user: UserDto,
   ) {
@@ -46,9 +55,9 @@ export class UserController {
     }
   }
 
+  //authorize user
   @Post('auth')
-  @Roles([userRoles.admin, userRoles.user])
-  async authUser(@Req() req: Request, @Res() res: Response) {
+  async authUser(@Req() req: RequestType, @Res() res: Response) {
     try {
       const token = await this.userService.fetchUser(req);
       if (token) {
@@ -80,7 +89,7 @@ export class UserController {
   //create new access token
   @Post('auth-token')
   @Roles([userRoles.admin, userRoles.user])
-  async newAccessToken(@Req() req: Request, @Res() res: Response) {
+  async newAccessToken(@Req() req: RequestType, @Res() res: Response) {
     try {
       const token = await this.userService.createAccessToken(req);
       if (token) {
@@ -111,7 +120,7 @@ export class UserController {
 
   //authenticate user
   @Post('login')
-  async validateUser(@Req() req: Request, @Res() res: Response) {
+  async validateUser(@Req() req: loginType, @Res() res: Response) {
     try {
       const tokens = await this.userService.authenticateUser(req);
       if (tokens) {

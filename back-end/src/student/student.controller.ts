@@ -1,16 +1,26 @@
 // student.controller.ts
-import { Body, Controller, Get, Post, Res, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Res,
+  UseGuards,
+  ValidationPipe,
+} from '@nestjs/common';
 import { StudentService } from './student.service';
 import { Response } from 'express';
 import { RolesGuard } from 'src/roles/roles.guard';
 import { Roles } from 'src/roles/roles.decorator';
 import { userRoles } from 'src/utils';
+import { StudentDTO } from './student.dto';
 
 @Controller('students')
 @UseGuards(RolesGuard)
 export class StudentController {
   constructor(private readonly studentService: StudentService) {}
 
+  //get students
   @Get('/get-students')
   @Roles([userRoles.admin, userRoles.user])
   async getAllStudents(@Body() req: Request, @Res() res: Response) {
@@ -35,9 +45,13 @@ export class StudentController {
     }
   }
 
+  //add a student
   @Post('/add-student')
   @Roles([userRoles.admin])
-  async addStudent(@Body() req: Request, @Res() res: Response) {
+  async addStudent(
+    @Body(new ValidationPipe()) req: StudentDTO,
+    @Res() res: Response,
+  ) {
     try {
       const isSaved = await this.studentService.saveStudent(req);
       if (isSaved) {
@@ -62,9 +76,10 @@ export class StudentController {
     }
   }
 
+  //remove a student
   @Post('/remove-student')
   @Roles([userRoles.admin])
-  async removeStudent(@Body() req: Request, @Res() res: Response) {
+  async removeStudent(@Body() req: { id: number }, @Res() res: Response) {
     try {
       const isDeleted = await this.studentService.deleteStudent(req);
       if (isDeleted) {
@@ -81,7 +96,6 @@ export class StudentController {
           error: err.message,
         });
       } else {
-        // Handle the case when 'err' is of unknown type
         return res.status(500).json({
           status: 500,
           error: 'An unknown error occurred.',
@@ -90,9 +104,13 @@ export class StudentController {
     }
   }
 
+  //update a student
   @Post('/update-student')
   @Roles([userRoles.admin])
-  async updateStudent(@Body() req: Request, @Res() res: Response) {
+  async updateStudent(
+    @Body(new ValidationPipe()) req: StudentDTO,
+    @Res() res: Response,
+  ) {
     try {
       const isUpdated = await this.studentService.updateStudent(req);
       if (isUpdated) {

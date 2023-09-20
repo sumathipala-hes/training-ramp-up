@@ -4,6 +4,14 @@ import { User } from 'src/models/user.entity';
 import { Repository } from 'typeorm';
 import * as jwt from 'jsonwebtoken';
 import * as bcrypt from 'bcrypt';
+import { UserDto } from './user.dto';
+interface RequestType {
+  cookies: { token: string; refreshToken: string };
+}
+
+interface loginType {
+  body: { username: string; password: string };
+}
 
 @Injectable()
 export class UserService {
@@ -12,7 +20,7 @@ export class UserService {
     private readonly userRepository: Repository<User>,
   ) {}
 
-  async saveUser(req, body): Promise<void> {
+  async saveUser(req: RequestType, body: UserDto): Promise<void> {
     const username = body.username;
     const name = body.name;
     const role = body.role;
@@ -43,7 +51,9 @@ export class UserService {
     }
   }
 
-  async fetchUser(req): Promise<{ name: string; role: string } | undefined> {
+  async fetchUser(
+    req: RequestType,
+  ): Promise<{ name: string; role: string } | undefined> {
     const refreshToken = await this.validateRefToken(req);
     if (refreshToken) {
       const accessToken = (await this.validateAccessToken(
@@ -55,7 +65,7 @@ export class UserService {
   }
 
   //authenticate user
-  async authenticateUser(req) {
+  async authenticateUser(req: loginType) {
     const username = req.body.username;
     const password = req.body.password;
 
@@ -91,7 +101,7 @@ export class UserService {
     }
   }
 
-  async createAccessToken(req) {
+  async createAccessToken(req: RequestType) {
     try {
       const refreshToken = req.cookies.refreshToken;
       const decodedRefToken = jwt.verify(
@@ -122,7 +132,7 @@ export class UserService {
     }
   }
 
-  async validateRefToken(req) {
+  async validateRefToken(req: RequestType) {
     try {
       const refreshToken = req.cookies.refreshToken;
       const decodedRefToken = jwt.verify(
@@ -135,7 +145,7 @@ export class UserService {
       throw new Error('Invalid refresh token');
     }
   }
-  async validateAccessToken(req) {
+  async validateAccessToken(req: RequestType) {
     try {
       const accessToken = req.cookies.token;
       const decodedAccessToken = jwt.verify(

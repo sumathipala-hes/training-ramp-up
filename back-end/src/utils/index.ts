@@ -14,11 +14,13 @@ const calculateAge = (inputDate: Date) => {
   return age;
 };
 
+//user roles
 const userRoles = {
   user: 'user',
   admin: 'admin',
 };
 
+//mock student data
 const studentsMock = [
   {
     id: 51,
@@ -40,6 +42,7 @@ const studentsMock = [
   },
 ];
 
+//mock request
 const mockRequest: Request = {
   cache: 'default',
   credentials: 'include',
@@ -76,6 +79,7 @@ const mockRequest: Request = {
   },
 };
 
+//mock user data
 const mockUser = {
   name: 'John',
   username: 'john@gmail.com',
@@ -83,4 +87,22 @@ const mockUser = {
   password: 'abcd1234',
 };
 
-export { calculateAge, userRoles, studentsMock, mockRequest, mockUser };
+//mock student single data
+const mockStudent = {
+  id: 2,
+  name: 'James',
+  gender: 'male',
+  address: 'Colombo',
+  mobile: '0715426598',
+  birthday: '2005-08-01',
+  age: 18,
+};
+
+export {
+  calculateAge,
+  userRoles,
+  studentsMock,
+  mockRequest,
+  mockUser,
+  mockStudent,
+};

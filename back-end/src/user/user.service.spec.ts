@@ -35,13 +35,26 @@ describe('UserService', () => {
   describe('saveUser', () => {
     it('should throw an error for invalid token', async () => {
       await expect(async () => {
-        await service.saveUser({ cookies: { token: 'test Token' } }, mockUser);
+        await service.saveUser(
+          {
+            cookies: {
+              token: 'test Token',
+              refreshToken: '',
+            },
+          },
+          mockUser,
+        );
       }).rejects.toThrow('Invalid refresh token');
     });
 
     it('should insert the user to DB without a token', async () => {
       const res = await service.saveUser(
-        { cookies: { token: null } },
+        {
+          cookies: {
+            token: null,
+            refreshToken: '',
+          },
+        },
         mockUser,
       );
       expect(res).resolves;
@@ -61,7 +74,12 @@ describe('UserService', () => {
   describe('fetchUser', () => {
     it('should throw an error for invalid refresh token', async () => {
       await expect(async () => {
-        await service.fetchUser({ cookies: { refreshToken: 'test Token' } });
+        await service.fetchUser({
+          cookies: {
+            refreshToken: 'test Token',
+            token: '',
+          },
+        });
       }).rejects.toThrow('Invalid refresh token');
     });
   });
