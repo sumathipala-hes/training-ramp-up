@@ -64,6 +64,7 @@ export default function LogIn() {
         }
         dispatch(logInUser(newUser))
         socket.emit('wrongDetails', `Incorrect Password or Email`)
+        socket.emit('userNotFound', `User Not Found with the given Email`)
     }
 
     const handleClick2 = () => {

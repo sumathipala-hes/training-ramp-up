@@ -95,7 +95,7 @@ function* registerUserSaga(
 ): Generator<any, any, any> {
     try {
         const response = yield axios.post(
-            `${API_BASE_URL}/users/register-user`,
+            `${API_BASE_URL}/users/register`,
             JSON.stringify(action.payload),
             {
                 headers: {

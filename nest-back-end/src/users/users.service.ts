@@ -2,7 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { User } from './user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { NotificationGateway } from 'src/notification/notification.gateway';
+import { NotificationGateway } from '../notification/notification.gateway';
 
 @Injectable()
 export class UsersService {
@@ -13,7 +13,10 @@ export class UsersService {
 
   async create(email: string, userName: string, password: string) {
     const user = this.repo.create({ email, userName, password });
-    this.socketGateWay.server.emit('signup', 'A new User has been created');
+    this.socketGateWay.server.emit(
+      'signup',
+      `A new User has been created with the email of ${email}`,
+    );
 
     return await this.repo.save(user);
   }

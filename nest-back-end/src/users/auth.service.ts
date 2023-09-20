@@ -39,10 +39,28 @@ export class AuthService {
     return newUser;
   }
 
+  async register(email: string, userName: string, password: string) {
+    const user = await this.usersService.findByEmail(email);
+
+    if (user) {
+      throw new BadRequestException('Email is In Use');
+    }
+
+    const newUser = await this.usersService.create(email, userName, password);
+
+    return newUser;
+  }
+
   async signin(email: string, password: string, res: Response) {
     const user = await this.usersService.findByEmail(email);
 
-    if (!user) throw new NotFoundException('user not found with this email');
+    if (!user) {
+      this.socketGateWay.server.emit(
+        'userNotFound',
+        `There's no user with the given email.Please Log In with a valid Email`,
+      );
+      throw new NotFoundException('user not found with this email');
+    }
 
     if (!user || !(await user.correctPassword(password, user.password))) {
       this.socketGateWay.server.emit(

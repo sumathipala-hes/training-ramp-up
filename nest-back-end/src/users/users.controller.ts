@@ -39,6 +39,12 @@ export class UsersController {
     );
   }
 
+  @UseGuards(AdminGuard)
+  @Post('/register')
+  register(@Body() body: CreateUserDto) {
+    return this.authService.register(body.email, body.userName, body.password);
+  }
+
   @Post('/sign-in')
   signin(@Body() body: SignInDto, @Res() res: Response) {
     return this.authService.signin(body.email, body.password, res);

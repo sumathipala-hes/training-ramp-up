@@ -36,6 +36,11 @@ function App() {
         socket.on('deleteStudent', (data) => {
             alert(data)
         })
+
+        socket.on('userNotFound', (data) => {
+            alert(data)
+        })
+
         // socket.on('recievedDeleteStudent', (data) => {
         //     alert(data)
         //     dispatch(fetchRows())
