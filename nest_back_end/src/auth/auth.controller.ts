@@ -4,10 +4,11 @@ import {
   HttpCode,
   HttpStatus,
   Post,
+  Req,
   Res,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import { CreateUserDto } from '../user/dto/create-user.dto';
 
 @Controller('api/v1/user')
@@ -25,10 +26,12 @@ export class AuthController {
     const user = await this.authService.signIn(createUserDto);
 
     res.cookie('refreshToken', user.refreshToken, {
+      maxAge: 1000 * 60 * 5,
       httpOnly: true,
       secure: true,
     });
     res.cookie('accessToken', user.accessToken, {
+      maxAge: 1000 * 60 * 5,
       httpOnly: true,
       secure: true,
     });
@@ -37,6 +40,24 @@ export class AuthController {
     res.status(200).json({
       accessToken: user.accessToken,
       refreshToken: user.refreshToken,
+      message: 'Sign in Successfully',
+    });
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @Post('refreshToken')
+  async refreshToken(@Req() req: Request, @Res() res: Response): Promise<void> {
+    const user = await this.authService.generateNewAccessToken(
+      req.headers.cookie.split('=')[1],
+    );
+    res.cookie('refreshToken', user.refreshToken, {
+      maxAge: 1000 * 60 * 5,
+      httpOnly: true,
+      secure: true,
+    });
+    res.status(200).json({
+      refreshToken: user.refreshToken,
+      message: 'Genarate Refresh Token Successfully',
     });
   }
 
