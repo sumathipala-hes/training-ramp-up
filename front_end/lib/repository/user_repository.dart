@@ -97,9 +97,10 @@ class UserRepository {
         localStorage.setAcessToken(accessToken);
         localStorage.setRefreshToken(jsonData['refreshToken']);
       }
-    }
-    if (res.statusCode == 500) {
-      toastAlert('Failed Login..!');
+
+      if (res.statusCode == 500) {
+        toastAlert('Failed Login..!');
+      }
     }
   }
 
