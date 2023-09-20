@@ -18,15 +18,16 @@ import {
 import { put, takeEvery } from 'redux-saga/effects'
 import axios from 'axios'
 import { NewUserState, createUser } from '../../Components/Users/NewUserSlice'
+import { store } from '../../store'
 
-const API_BASE_URL = 'http://localhost:5000'
+const API_BASE_URL = 'http://localhost:4000'
 
 function* addUserSaga(
     action: PayloadAction<SignUpState>
 ): Generator<any, any, any> {
     try {
         const response = yield axios.post(
-            `${API_BASE_URL}/api/user/sign-up`,
+            `${API_BASE_URL}/users/sign-up`,
             JSON.stringify(action.payload),
             {
                 headers: {
@@ -53,7 +54,7 @@ function* logInSaga(
 ): Generator<any, any, any> {
     try {
         const response = yield axios.post(
-            `${API_BASE_URL}/api/user/log-in`,
+            `${API_BASE_URL}/users/sign-in`,
             JSON.stringify(action.payload),
             {
                 headers: {
@@ -77,10 +78,12 @@ function* logInSaga(
 
 function* logOutSaga(): Generator<any, any, any> {
     try {
-        yield fetch(`${API_BASE_URL}/api/user/log-out`, {
+        console.log('Log out saga invoked')
+        yield axios(`${API_BASE_URL}/users/log-out`, {
             method: 'POST',
-            credentials: 'include',
+            withCredentials: true,
         })
+
         yield put(setAuthState(false))
     } catch (err) {
         console.log(err)
@@ -92,7 +95,7 @@ function* registerUserSaga(
 ): Generator<any, any, any> {
     try {
         const response = yield axios.post(
-            `${API_BASE_URL}/api/user/register-user`,
+            `${API_BASE_URL}/users/register-user`,
             JSON.stringify(action.payload),
             {
                 headers: {
@@ -114,14 +117,21 @@ axios.interceptors.response.use(
         return res
     },
     async function (error) {
-        if (error.message === 'Request failed with status code 402') {
-            await fetch(`${API_BASE_URL}/api/user/refresh-token`, {
+        console.log(error)
+        if (error.message === 'Request failed with status code 403') {
+            await fetch(`${API_BASE_URL}/users/refresh`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 credentials: 'include',
             })
+        } else if (error.message === 'Request failed with status code 401') {
+            console.log('Check if I have reached here')
+            store.dispatch(setAuthState(false))
+        } else if (error.message === 'Request failed with status code 402') {
+            console.log('Check if I have reached here')
+            return
         }
     }
 )

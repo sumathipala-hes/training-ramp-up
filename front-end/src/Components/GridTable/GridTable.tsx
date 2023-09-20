@@ -33,11 +33,12 @@ import {
 } from './GridSlice' // Import the actions
 import { RootState } from '../../store'
 import { minDate, maxDate } from './GridTableUtility/min_maxDate'
-import { socket } from '../../App'
+// import { socket } from '../../App'
 import randomInteger from 'random-int'
 import { useNavigate } from 'react-router-dom'
 import { useEffect } from 'react'
 import { logInSuccessfull, logOutInvoke } from '../LogInPage/LogInSlice'
+import { socket } from '../../App'
 // import { count } from '../../sagas'
 
 export default function FullFeaturedCrudGrid() {
@@ -211,7 +212,7 @@ export default function FullFeaturedCrudGrid() {
             console.log(newRow)
             // If it's an existing row, dispatch an action to update the row in the Redux store
             dispatch(updateRow(newRow)) // Dispatch action to update the row in the Redux store
-            socket.emit('updateStudent', 'Student Details Updated')
+            // socket.emit('updateStudent', 'Student Details Updated')
             return newRow // Return the updated row
         } else {
             console.log(newRow.name)

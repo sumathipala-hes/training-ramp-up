@@ -2,13 +2,18 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { User } from './user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
+import { NotificationGateway } from 'src/notification/notification.gateway';
 
 @Injectable()
 export class UsersService {
-  constructor(@InjectRepository(User) private repo: Repository<User>) {}
+  constructor(
+    @InjectRepository(User) private repo: Repository<User>,
+    private readonly socketGateWay: NotificationGateway,
+  ) {}
 
   async create(email: string, userName: string, password: string) {
     const user = this.repo.create({ email, userName, password });
+    this.socketGateWay.server.emit('signup', 'A new User has been created');
 
     return await this.repo.save(user);
   }
@@ -45,6 +50,11 @@ export class UsersService {
     if (!user) {
       throw new NotFoundException('user not Found');
     }
+
+    this.socketGateWay.server.emit(
+      'deleteUser',
+      `A User has been deleted with id ${id}`,
+    );
 
     return this.repo.remove(user);
   }

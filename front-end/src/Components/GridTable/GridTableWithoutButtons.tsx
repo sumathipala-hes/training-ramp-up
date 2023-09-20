@@ -18,7 +18,7 @@ import {
 import { updateRow, deleteRowTableOnly, fetchRows } from './GridSlice' // Import the actions
 import { RootState } from '../../store'
 import { minDate, maxDate } from './GridTableUtility/min_maxDate'
-import { socket } from '../../App'
+// import { socket } from '../../App'
 import { useNavigate } from 'react-router-dom'
 import { useEffect } from 'react'
 import { logInSuccessfull, logOutInvoke } from '../LogInPage/LogInSlice'
@@ -99,14 +99,14 @@ export default function FullFeaturedCrudGrid() {
             const newRowWithoutId = newRow
             const oldRowSetToFalse = { ...newRow, isNew: false }
             dispatch(updateRow(newRowWithoutId))
-            socket.emit('newStudent', 'New Student Added')
+            // socket.emit('newStudent', 'New Student Added')
 
             return oldRowSetToFalse // Return the updated row
         } else if (!newRow.isNew && newRow.name) {
             console.log(newRow)
             // If it's an existing row, dispatch an action to update the row in the Redux store
             dispatch(updateRow(newRow)) // Dispatch action to update the row in the Redux store
-            socket.emit('updateStudent', 'Student Details Updated')
+            // socket.emit('updateStudent', 'Student Details Updated')
             return newRow // Return the updated row
         } else {
             console.log(newRow.name)

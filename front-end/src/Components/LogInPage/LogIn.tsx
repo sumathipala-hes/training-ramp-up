@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { LogInState, logInSuccessfulState, logInUser } from './LogInSlice'
 import { useNavigate } from 'react-router-dom'
 import { RootState } from '../../store'
+import { socket } from '../../App'
 export default function LogIn() {
     const asyncLocalStorage = {
         async setItem(key: string, value: string) {
@@ -62,6 +63,7 @@ export default function LogIn() {
             password: password,
         }
         dispatch(logInUser(newUser))
+        socket.emit('wrongDetails', `Incorrect Password or Email`)
     }
 
     const handleClick2 = () => {

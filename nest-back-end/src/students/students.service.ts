@@ -2,10 +2,14 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Student } from './student.entity';
+import { NotificationGateway } from 'src/notification/notification.gateway';
 
 @Injectable()
 export class StudentsService {
-  constructor(@InjectRepository(Student) private repo: Repository<Student>) {}
+  constructor(
+    @InjectRepository(Student) private repo: Repository<Student>,
+    private readonly socketGateWay: NotificationGateway,
+  ) {}
 
   create(
     id: number,
@@ -25,7 +29,10 @@ export class StudentsService {
       mobile_number,
       address,
     });
-
+    this.socketGateWay.server.emit(
+      'newStudent',
+      `A New Student with the name of ${name} has been created`,
+    );
     return this.repo.save(user);
   }
 
@@ -55,6 +62,11 @@ export class StudentsService {
     if (!user) {
       throw new NotFoundException('student not Found');
     }
+
+    this.socketGateWay.server.emit(
+      'deleteStudent',
+      `Student with id of ${id} has been removed`,
+    );
 
     return this.repo.remove(user);
   }

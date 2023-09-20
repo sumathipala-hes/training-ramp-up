@@ -5,6 +5,7 @@ import {
   Get,
   NotFoundException,
   Param,
+  Patch,
   Post,
   Req,
   Res,
@@ -17,7 +18,8 @@ import { Serialize } from 'src/interceptors/serialize.interceptor';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { SignInDto } from './dtos/sign-in-user.dto';
-import { AuthGuard } from 'src/guards/auth.guard';
+import { UpdateUserDto } from './dtos/update-user.dto';
+import { AdminGuard } from 'src/guards/admin.guard';
 
 @Controller('users')
 @Serialize(UserDto)
@@ -47,7 +49,17 @@ export class UsersController {
     return this.authService.refreshToken(req, res);
   }
 
-  @UseGuards(AuthGuard)
+  @Patch('/:id')
+  updateUserRole(@Param('id') id: string, @Body() body: UpdateUserDto) {
+    return this.usersService.update(parseInt(id), body);
+  }
+
+  @Post('/log-out')
+  logOutUser(@Res() res: Response) {
+    return this.authService.logout(res);
+  }
+
+  @UseGuards(AdminGuard)
   @Get()
   findAllUsers() {
     return this.usersService.find();

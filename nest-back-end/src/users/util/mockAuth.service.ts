@@ -4,20 +4,18 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { UsersService } from './users.service';
-import { User } from './user.entity';
+import { UsersService } from '../users.service';
+import { User } from '../user.entity';
 import { JwtService } from '@nestjs/jwt';
 import { JwtPayload } from 'jsonwebtoken';
 import jwtDecode from 'jwt-decode';
 import { Request, Response } from 'express';
-import { NotificationGateway } from 'src/notification/notification.gateway';
 
 @Injectable()
-export class AuthService {
+export class MockAuthService {
   constructor(
     private usersService: UsersService,
     private jwtservice: JwtService,
-    private readonly socketGateWay: NotificationGateway,
   ) {}
 
   async signup(
@@ -44,17 +42,17 @@ export class AuthService {
 
     if (!user) throw new NotFoundException('user not found with this email');
 
-    if (!user || !(await user.correctPassword(password, user.password))) {
-      this.socketGateWay.server.emit(
-        'wrongDetails',
-        `Password or Email is Incorrect`,
-      );
+    if (!user || !this.correctPassword(password, user.password)) {
       throw new BadRequestException('Email or Password is Incorrect');
     }
 
     this.createSendToken(user, res);
 
     return user;
+  }
+
+  correctPassword(candidatePassword: string, userPassword: string): boolean {
+    return candidatePassword === userPassword;
   }
 
   logout(res: Response) {
@@ -93,29 +91,8 @@ export class AuthService {
     return { accessToken, refreshToken };
   };
 
-  createSendToken = async (user: User, res: Response) => {
-    console.log(user);
-    const token = await this.signToken(user.id, user.email);
-
-    const cookieOptions = {
-      expires: new Date(Date.now() + 300000),
-      httpOnly: true,
-      secure: false,
-    };
-
-    res.cookie('accessToken', token.accessToken, cookieOptions);
-    res.cookie('refreshToken', token.refreshToken, {
-      expires: new Date(Date.now() + 300000000), //1year
-      httpOnly: true,
-    });
-
-    res.status(200).json({
-      status: 'success',
-      accessToken: token.accessToken,
-      refreshToken: token.refreshToken,
-      data: {
-        user,
-      },
-    });
-  };
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  createSendToken(user: User, res: Response) {
+    // Do nothing, this is a mock
+  }
 }

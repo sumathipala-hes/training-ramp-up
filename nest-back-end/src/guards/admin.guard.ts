@@ -7,10 +7,14 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { jwtConstants } from 'src/users/constants/constants';
+import { UsersService } from 'src/users/users.service';
 
 @Injectable()
-export class AuthGuard implements CanActivate {
-  constructor(private jwtService: JwtService) {}
+export class AdminGuard implements CanActivate {
+  constructor(
+    private jwtService: JwtService,
+    private usersService: UsersService,
+  ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
@@ -28,6 +32,13 @@ export class AuthGuard implements CanActivate {
       });
 
       request['user'] = payload;
+      const user = await this.usersService.findOne(request.user.id);
+      console.log(user.roles[0]);
+      if (user.roles[0] !== 'ADMIN') {
+        return response
+          .status(402)
+          .json({ message: 'Youre Not an Admin to Access this Route' });
+      }
     } catch (err) {
       if (refreshToken) {
         return response

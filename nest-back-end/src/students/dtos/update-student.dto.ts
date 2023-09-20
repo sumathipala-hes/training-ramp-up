@@ -8,7 +8,6 @@ import {
 } from 'class-validator';
 
 export class UpdateStudentDto {
-  @IsNumber()
   id: number;
 
   @IsString()
