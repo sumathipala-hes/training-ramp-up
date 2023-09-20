@@ -2,7 +2,7 @@ import { Controller, Post, Req, Res } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { Request, Response } from 'express';
 
-@Controller('auth')
+@Controller('api/v1/auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
   @Post('refreshToken')
@@ -14,6 +14,6 @@ export class AuthController {
       maxAge: 1000 * 60 * 5,
       httpOnly: true,
     });
-    res.status(200).json({ message: 'Refresh Token Success'});
+    res.status(200).json({ message: 'Refresh Token Success' });
   }
 }
