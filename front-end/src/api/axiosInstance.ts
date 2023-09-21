@@ -1,6 +1,5 @@
 import axios from 'axios'
 const axiosInstance = axios.create({
-//   baseURL: process.env.REACT_APP_API, // Replace with your API base URL
 baseURL: 'http://localhost:4000',
 });
 
@@ -10,8 +9,6 @@ axiosInstance.interceptors.request.use(
     return config;
   },
   (error) => {
-    // Handle request errors here
-
     return Promise.reject(error);
   }
 );
@@ -22,16 +19,24 @@ axiosInstance.interceptors.response.use(
         return response;
     },
     async (error) => {
-        if (error.response && error.response.status === 401 && error.response.data.error === 'Invalid access token') {
+        if (error.response && (error.response.status === 401) && error.response.data.error === 'Invalid access token' ) {
             try {
                 const refreshedTokenResponse = await axiosInstance.post('/user/auth-token', {},
                 {
                     headers: {'Content-Type': 'application/json',},
                         withCredentials: true,
                 });
-                return refreshedTokenResponse;
+                if (refreshedTokenResponse.data.status === 200){
+                    const authNewResponse: ResponseType =  await axiosInstance.post('/user/auth', {},
+                    {
+                        headers: {'Content-Type': 'application/json',},
+                            withCredentials: true,
+                    });
+                    return authNewResponse;
+                }else{
+                    throw new Error('Failed to refresh access token');
+                }
             } catch (refreshError) {
-                console.error('Token refresh failed:', refreshError);
                 return Promise.reject(refreshError);
             }
         }else {

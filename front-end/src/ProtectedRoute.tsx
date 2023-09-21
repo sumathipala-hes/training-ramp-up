@@ -24,7 +24,7 @@ function ProtectedRoute(props: { authRequired: any; adminRequired: any; element:
   //authorize user
   useEffect(() =>{
       dispatch(userActions.processAuthorization());
-  },[]);
+  },[dispatch, navigate]);
 
     //home button handler
   const homeHandler = () => {
@@ -32,15 +32,15 @@ function ProtectedRoute(props: { authRequired: any; adminRequired: any; element:
   };
 
   // authorization
-  if (props.authRequired && !authenticated) {
-    return (<Navigate to={routePaths.signIn} />);
-  }else if (props.adminRequired && user.role !== userRoles.admin) {
+  if (props.adminRequired && user.role !== userRoles.admin) {
     return(
       <Card variant="outlined" sx={cardStyles}>
           <Typography variant="h4" align="center" >The page is protected. Administrator access is required for entry.</Typography>    
           <Button onClick={homeHandler} size="large" variant="contained" sx={{ borderRadius: "16px", marginTop: "30px" }} >Go Back To Home</Button>
       </Card>
     )
+  }else if (props.authRequired && !authenticated) {
+    return (<Navigate to={routePaths.signIn} />);
   }else{
     return props.element;
   }

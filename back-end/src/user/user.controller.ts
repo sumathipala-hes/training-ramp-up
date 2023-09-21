@@ -88,19 +88,17 @@ export class UserController {
 
   //create new access token
   @Post('auth-token')
-  @Roles([userRoles.admin, userRoles.user])
   async newAccessToken(@Req() req: RequestType, @Res() res: Response) {
     try {
       const token = await this.userService.createAccessToken(req);
       if (token) {
-        res.cookie('token', token.token, {
+        res.cookie('token', token, {
           httpOnly: true,
           secure: true,
           sameSite: 'strict',
         });
         res.status(200).json({
           status: 200,
-          data: token.data,
         });
       }
     } catch (err) {

@@ -18,8 +18,17 @@ export class RolesGuard implements CanActivate {
         refreshToken,
         process.env.JWT_SECRET as string,
       ) as jwt.JwtPayload;
-      if (roles.includes(decodedRefToken.role)) {
-        return true;
+      if (decodedRefToken) {
+        const accessToken = req.cookies.token;
+        const decodedAccessToken = jwt.verify(
+          accessToken,
+          process.env.JWT_SECRET as string,
+        ) as jwt.JwtPayload;
+        if (roles.includes(decodedAccessToken.role)) {
+          return true;
+        } else {
+          return false;
+        }
       } else {
         return false;
       }

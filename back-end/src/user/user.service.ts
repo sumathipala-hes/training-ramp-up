@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/models/user.entity';
-import { Repository } from 'typeorm';
+import { Equal, Repository } from 'typeorm';
 import * as jwt from 'jsonwebtoken';
 import * as bcrypt from 'bcrypt';
 import { UserDto } from './user.dto';
@@ -34,6 +34,7 @@ export class UserService {
     user.password = hashedPassword;
     user.role = role;
     user.name = name;
+    user.refreshToken = 'invalid token';
 
     if (token) {
       const refreshToken = await this.validateRefToken(req);
@@ -83,14 +84,18 @@ export class UserService {
           username: user.username,
         };
 
+        const refreshData: jwt.JwtPayload = { user: user.username };
+
         const token = jwt.sign(userData, process.env.JWT_SECRET as string, {
           expiresIn: '10m',
         });
         const refreshToken = jwt.sign(
-          userData,
+          refreshData,
           process.env.JWT_SECRET as string,
           { expiresIn: '1h' },
         );
+        user.refreshToken = refreshToken;
+        await this.userRepository.save(user as User);
 
         return { token, refreshToken };
       } else {
@@ -111,7 +116,7 @@ export class UserService {
 
       if (decodedRefToken) {
         const user = await this.userRepository.findOneBy({
-          username: decodedRefToken.username,
+          refreshToken: Equal(refreshToken),
         });
 
         if (user) {
@@ -120,12 +125,12 @@ export class UserService {
             process.env.JWT_SECRET as string,
             { expiresIn: '10m' },
           );
-          return { token, data: { name: user.name, role: user.role } };
+          return token;
         } else {
           throw new Error('Invalid refresh token');
         }
       } else {
-        return { status: 400, data: '' };
+        throw new Error('Invalid refresh token');
       }
     } catch (err) {
       throw new Error('Invalid refresh token');
@@ -145,6 +150,7 @@ export class UserService {
       throw new Error('Invalid refresh token');
     }
   }
+
   async validateAccessToken(req: RequestType) {
     try {
       const accessToken = req.cookies.token;
