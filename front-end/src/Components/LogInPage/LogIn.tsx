@@ -90,8 +90,7 @@ export default function LogIn() {
                 justifyContent: 'center',
                 alignItems: 'center',
                 height: '100vh',
-                background:
-                    'linear-gradient(to right bottom, #430089, #82ffa1)',
+                background: 'linear-gradient(to left bottom,#7F00FF, #82ffa1)',
             }}
         >
             <Box

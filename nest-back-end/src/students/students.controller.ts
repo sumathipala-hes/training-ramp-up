@@ -14,6 +14,7 @@ import { UpdateStudentDto } from './dtos/update-student.dto';
 import { StudentsService } from './students.service';
 import { AuthGuard } from 'src/guards/auth.guard';
 
+@UseGuards(AuthGuard)
 @Controller('students')
 export class StudentsController {
   constructor(private studentsService: StudentsService) {}
@@ -41,7 +42,6 @@ export class StudentsController {
     return student;
   }
 
-  @UseGuards(AuthGuard)
   @Get()
   findAllStudents() {
     return this.studentsService.find();

@@ -16,18 +16,15 @@ import {
     setAuthState,
 } from '../../Components/LogInPage/LogInSlice'
 import { put, takeEvery } from 'redux-saga/effects'
-import axios from 'axios'
 import { NewUserState, createUser } from '../../Components/Users/NewUserSlice'
-import { store } from '../../store'
-
-const API_BASE_URL = 'http://localhost:4000'
+import axiosInstance from '../axiosInstance'
 
 function* addUserSaga(
     action: PayloadAction<SignUpState>
 ): Generator<any, any, any> {
     try {
-        const response = yield axios.post(
-            `${API_BASE_URL}/users/sign-up`,
+        const response = yield axiosInstance.post(
+            `/users/sign-up`,
             JSON.stringify(action.payload),
             {
                 headers: {
@@ -53,8 +50,8 @@ function* logInSaga(
     action: PayloadAction<LogInState>
 ): Generator<any, any, any> {
     try {
-        const response = yield axios.post(
-            `${API_BASE_URL}/users/sign-in`,
+        const response = yield axiosInstance.post(
+            `/users/sign-in`,
             JSON.stringify(action.payload),
             {
                 headers: {
@@ -79,7 +76,7 @@ function* logInSaga(
 function* logOutSaga(): Generator<any, any, any> {
     try {
         console.log('Log out saga invoked')
-        yield axios(`${API_BASE_URL}/users/log-out`, {
+        yield axiosInstance(`/users/log-out`, {
             method: 'POST',
             withCredentials: true,
         })
@@ -94,8 +91,8 @@ function* registerUserSaga(
     action: PayloadAction<NewUserState>
 ): Generator<any, any, any> {
     try {
-        const response = yield axios.post(
-            `${API_BASE_URL}/users/register`,
+        const response = yield axiosInstance.post(
+            `/users/register`,
             JSON.stringify(action.payload),
             {
                 headers: {
@@ -109,32 +106,6 @@ function* registerUserSaga(
         console.error('Error Adding User:', error)
     }
 }
-
-axios.interceptors.response.use(
-    async (res) => {
-        console.log('Interceptor Ran With Response')
-
-        return res
-    },
-    async function (error) {
-        console.log(error)
-        if (error.message === 'Request failed with status code 403') {
-            await fetch(`${API_BASE_URL}/users/refresh`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                credentials: 'include',
-            })
-        } else if (error.message === 'Request failed with status code 401') {
-            console.log('Check if I have reached here')
-            store.dispatch(setAuthState(false))
-        } else if (error.message === 'Request failed with status code 402') {
-            console.log('Check if I have reached here')
-            return
-        }
-    }
-)
 
 function* addUserSagaToRoot() {
     yield takeEvery(signUpUser, addUserSaga)

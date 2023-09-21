@@ -33,10 +33,10 @@ export default function Users() {
     const userRole = useSelector((state: RootState) => state.logIn.successRole)
 
     if (authState && userRole === 'ADMIN') {
-        users = useSelector((state: RootState) => state.usersList.usersList)
         useEffect(() => {
             dispatch(fetchUsers())
         }, [dispatch])
+        users = useSelector((state: RootState) => state.usersList.usersList)
     }
 
     const handleChangeRole = (event: {

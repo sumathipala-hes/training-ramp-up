@@ -9,12 +9,7 @@ import {
 import { put } from 'redux-saga/effects'
 import { PayloadAction } from '@reduxjs/toolkit'
 import { takeEvery } from 'redux-saga/effects'
-// import { setAuthState } from '../../Components/LogInPage/LogInSlice'
-import axios from 'axios'
-
-// import { useNavigate } from 'react-router-dom'
-
-const API_BASE_URL = 'http://localhost:4000'
+import axiosInstance from '../axiosInstance'
 
 function* addRowSaga(
     action: PayloadAction<GridRowModel>
@@ -44,13 +39,14 @@ function* addRowSaga(
         }
         console.log(modifiedData, isNew)
         if (!isNew) {
-            const response = yield axios.patch(
-                `${API_BASE_URL}/students/${action.payload.id}`,
+            const response = yield axiosInstance.patch(
+                `/students/${action.payload.id}`,
                 JSON.stringify(modifiedData),
                 {
                     headers: {
                         'Content-Type': 'application/json',
                     },
+                    withCredentials: true,
                 }
             )
 
@@ -76,13 +72,14 @@ function* addRowSaga(
             )
             yield put(updateRow(modifiedJsonData))
         } else if (isNew) {
-            const response = yield axios.post(
-                `${API_BASE_URL}/students`,
+            const response = yield axiosInstance.post(
+                `/students`,
                 JSON.stringify(modifiedData),
                 {
                     headers: {
                         'Content-Type': 'application/json',
                     },
+                    withCredentials: true,
                 }
             )
             const data = yield response.json()
@@ -116,7 +113,7 @@ function* addRowSaga(
 
 function* fetchRowsSaga(): Generator<any, any, any> {
     try {
-        const response = yield axios(`${API_BASE_URL}/students`, {
+        const response = yield axiosInstance(`/students`, {
             method: 'GET',
             withCredentials: true,
         })
@@ -161,13 +158,10 @@ function* deleteRowSaga(
     action: PayloadAction<GridRowId>
 ): Generator<any, any, any> {
     try {
-        const response = yield axios(
-            `${API_BASE_URL}/students/${action.payload}`,
-            {
-                method: 'DELETE',
-                withCredentials: true,
-            }
-        )
+        const response = yield axiosInstance(`/students/${action.payload}`, {
+            method: 'DELETE',
+            withCredentials: true,
+        })
         console.log('Row is Deleted And User is an Admin')
         if (response.status === 'success') {
             yield put(deleteRow(action.payload))
