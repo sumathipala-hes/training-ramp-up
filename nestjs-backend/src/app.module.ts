@@ -7,11 +7,13 @@ import { typeOrmConfig } from './config/typeorm.config';
 import { StudentModule } from './students/student.module';
 import { UserModule } from './users/user.module';
 import { SocketModule } from './socket/socket.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
     StudentModule,
     UserModule,
+    AuthModule,
     TypeOrmModule.forRoot(typeOrmConfig),
     SocketModule
   ],

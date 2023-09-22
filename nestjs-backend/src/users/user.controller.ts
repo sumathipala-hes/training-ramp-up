@@ -54,18 +54,6 @@ export class UserController {
                 }
             }
         }
-    
-    @Get('userAuth')
-    async userAuthenticated(
-        @Res() res: Response) {
-            res.json('User is Authenticated');
-        }
-
-    @Get('refresh')
-    async refreshedAuthentication(
-        @Res() res: Response) {
-            res.json('User is Authenticated. Refreshed');
-        }
         
     @Get('user')
     async getUserRole(

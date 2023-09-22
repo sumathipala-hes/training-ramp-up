@@ -50,7 +50,7 @@ export class UserService {
     return tokens;
     }
 
-    async getUserRole(req: Request): Promise<string | null> {
+    async getUserRole(req: Request): Promise<string> {
         const accessToken = req.cookies['access-token'] as string;
         if (!accessToken) {
           throw new Error('User is not logged in. Cannot fetch the role.');

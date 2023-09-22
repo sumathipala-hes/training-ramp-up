@@ -1,14 +1,18 @@
 /* eslint-disable prettier/prettier */
-import { Body, Controller, Delete, Get, HttpStatus, Param, Post, Put, Res } from "@nestjs/common";
+import { Body, Controller, Delete, Get, HttpStatus, Param, Post, Put, Res, UseGuards } from "@nestjs/common";
 import { StudentService } from "./student.service";
 import { StudentDto } from "./dto/student.dto";
 import { UpdateStudentDto } from "./dto/update.dto";
+import { RolesGuard } from "src/auth/role.guard";
+import { Role, Roles } from "src/auth/roles";
 
+@UseGuards(RolesGuard)
 @Controller('students')
 export class StudentController {
     constructor(private readonly studentService: StudentService) {}
 
     @Get()
+    @Roles(Role.Admin, Role.User)
     async getStudents(
         @Res() res) {
             try {
@@ -21,6 +25,7 @@ export class StudentController {
         }
 
     @Post()
+    @Roles(Role.Admin)
     async createStudent(
         @Body() studentDto: StudentDto,
         @Res() res) {
@@ -34,6 +39,7 @@ export class StudentController {
         }
 
     @Put(':id')
+    @Roles(Role.Admin)
     async updateStudent(
         @Param('id') id: string,
         @Body() updateStudentDto: UpdateStudentDto,
@@ -47,6 +53,7 @@ export class StudentController {
         }
 
     @Delete(':id')
+    @Roles(Role.Admin)
     async deleteStudent(
         @Param('id') id: string,
         @Res() res) {
