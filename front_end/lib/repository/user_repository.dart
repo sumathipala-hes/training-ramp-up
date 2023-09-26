@@ -4,9 +4,12 @@ import 'package:front_end/util/db_util.dart';
 import 'package:front_end/util/toast_alert.dart';
 import 'package:http/http.dart' as http;
 import 'package:jwt_decoder/jwt_decoder.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import '../util/local_storage.dart';
+import '../util/refresh_token_util.dart';
 
 class UserRepository {
+  final localStorage = LocalStorage();
+
   Future<http.Response> retrieveAllUsers() async {
     final response = await http.get(
       Uri.parse('$baseUrl/user'),
@@ -18,11 +21,13 @@ class UserRepository {
   }
 
   Future<void> registerUser(User user) async {
+    await refreshToken(await localStorage.getAccessToken());
+    String accessToken = await localStorage.getAccessToken();
     final response = await http.post(
       Uri.parse('$baseUrl/user'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
-        'Cookie': 'role=admin',
+        'Cookie': 'accessToken=$accessToken',
       },
       body: jsonEncode(
         user.toJson(),
@@ -34,10 +39,12 @@ class UserRepository {
   }
 
   Future<void> deleteUser(String id) async {
+    await refreshToken(await localStorage.getAccessToken());
+    String accessToken = await localStorage.getAccessToken();
     final response = await http.delete(
       Uri.parse('$baseUrl/user/$id'),
       headers: <String, String>{
-        'Cookie': 'role=admin',
+        'Cookie': 'accessToken=$accessToken',
       },
     );
     if (response.statusCode == 500) {
@@ -46,11 +53,13 @@ class UserRepository {
   }
 
   Future<void> updateUser(User user) async {
+    await refreshToken(await localStorage.getAccessToken());
+    String accessToken = await localStorage.getAccessToken();
     final response = await http.put(
       Uri.parse('$baseUrl/user/${user.userEmail}'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
-        'Cookie': 'role=admin',
+        'Cookie': 'accessToken=$accessToken',
       },
       body: jsonEncode(
         user.toJson(),
@@ -61,7 +70,7 @@ class UserRepository {
     }
   }
 
-    Future<void> signIn(String userEmail, String userPassword) async {
+  Future<void> signIn(String userEmail, String userPassword) async {
     final res = await http.post(
       Uri.parse('$baseUrl/user/signIn'),
       headers: <String, String>{
@@ -78,24 +87,25 @@ class UserRepository {
       final Map<String, dynamic> jsonData = json.decode(res.body);
       final accessToken = jsonData['accessToken'];
       final refreshToken = jsonData['refreshToken'];
+      localStorage.setAcessToken(accessToken);
+      localStorage.setRefreshToken(refreshToken);
 
       if (refreshToken != null) {
-        final prefs = await SharedPreferences.getInstance();
         Map<String, dynamic> decodedToken = JwtDecoder.decode(accessToken);
-        prefs.setString('userEmail', decodedToken['userEmail']);
-        prefs.setString('role', decodedToken['role']);
+        localStorage.setUserEmail(decodedToken['userEmail']);
+        localStorage.setCurrentRole(decodedToken['role']);
+        localStorage.setAcessToken(accessToken);
+        localStorage.setRefreshToken(jsonData['refreshToken']);
       }
-    }
-    if (res.statusCode == 500) {
-      toastAlert('Failed Login..!');
+
+      if (res.statusCode == 500) {
+        toastAlert('Failed Login..!');
+      }
     }
   }
 
   Future<void> signOut() async {
-    final prefs = await SharedPreferences.getInstance();
-    prefs.remove('userEmail');
-    prefs.remove('role');
-
+    await localStorage.clearSetValues();
     await http.delete(
       Uri.parse('$baseUrl/user/signOut'),
     );

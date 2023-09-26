@@ -62,4 +62,30 @@ export class AuthService {
       );
     }
   }
+
+  async generateNewAccessToken(refreshToken: string): Promise<TokenDto> {
+    try {
+      const decoded = await this.jwtService.verify(refreshToken, {
+        secret: jwtConstants.refreshKey,
+      });
+
+      if (!decoded) {
+        throw new HttpException('Invalid Token', HttpStatus.BAD_REQUEST);
+      }
+
+      const payload = { userEmail: decoded.userEmail, role: decoded.role };
+      return {
+        accessToken: this.jwtService.sign(payload, {
+          expiresIn: '24h',
+          secret: jwtConstants.secret,
+        }),
+        refreshToken: refreshToken,
+      };
+    } catch (error) {
+      throw new HttpException(
+        'Internal Server Error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
 }

@@ -10,6 +10,7 @@ import {
   decryptPassword,
   encryptPassword,
 } from '../util/password.util';
+import { sendNotification } from 'src/util/notification.util';
 
 @Injectable()
 export class UserService {
@@ -32,6 +33,7 @@ export class UserService {
       const newUser: InsertResult = await this.userRepository.insert(
         userWithEncryptedPassword as User,
       );
+      sendNotification('Success', 'User Registered..!');
       return newUser;
     } catch (error) {
       throw new HttpException(
@@ -88,6 +90,7 @@ export class UserService {
       } else {
         throw new HttpException('No users found.', HttpStatus.NOT_FOUND);
       }
+      sendNotification('Success', 'User Updated..!');
       return updatedUser;
     } catch (error) {
       throw new HttpException(
@@ -104,6 +107,7 @@ export class UserService {
       if (deletedUser.affected !== 1) {
         throw new HttpException('No users found.', HttpStatus.NOT_FOUND);
       }
+      sendNotification('', 'User Deleted..!');
       return deletedUser;
     } catch (error) {
       throw new HttpException(
