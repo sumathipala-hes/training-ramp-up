@@ -41,7 +41,7 @@ function* authenticateUser(action: PayloadAction<UserData>) {
     };
 
     try {
-        const response: ResponseType = yield call(axiosInstance.post, '/login', userData , {
+        const response: ResponseType = yield call(axiosInstance.post, '/user/login', userData , {
             headers: {
                 'Content-Type': 'application/json',
             },
@@ -66,7 +66,7 @@ function* authenticateUser(action: PayloadAction<UserData>) {
 //authorize user
 function* authorizeUser(action: PayloadAction<UserData>) {
     try {
-        const response: ResponseType = yield call(axiosInstance.post, '/auth', {} , {
+        const response: ResponseType = yield call(axiosInstance.post, '/user/auth', {} , {
             headers: {
                 'Content-Type': 'application/json',
             },
@@ -85,7 +85,7 @@ function* authorizeUser(action: PayloadAction<UserData>) {
 
 function* logOutUser(action: PayloadAction<UserData>) {
     try {
-        const response: ResponseType = yield call(axiosInstance.get, '/log-out' , {
+        const response: ResponseType = yield call(axiosInstance.get, '/user/log-out' , {
             headers: {
                 'Content-Type': 'application/json',
             },
@@ -116,7 +116,7 @@ function* registerUser(action: PayloadAction<UserData>) {
     };
 
     try {
-        const response: ResponseType = yield call(axiosInstance.post, '/register', userData , {
+        const response: ResponseType = yield call(axiosInstance.post, '/user/register', userData , {
             headers: {
                 'Content-Type': 'application/json',
             },

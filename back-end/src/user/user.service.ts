@@ -123,7 +123,6 @@ export class UserService {
   }
 
   async validateRefToken(req) {
-    console.log(process.env.JWT_SECRET);
     try {
       const refreshToken = req.cookies.refreshToken;
       const decodedRefToken = jwt.verify(

@@ -5,13 +5,18 @@ import {
   Post,
   Req,
   Res,
+  UseGuards,
   ValidationPipe,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { Response } from 'express';
 import { UserDto } from './user.dto';
+import { Roles } from 'src/roles/roles.decorator';
+import { RolesGuard } from 'src/roles/roles.guard';
+import { userRoles } from 'src/utils';
 
 @Controller('user')
+@UseGuards(RolesGuard)
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
@@ -42,6 +47,7 @@ export class UserController {
   }
 
   @Post('auth')
+  @Roles([userRoles.admin, userRoles.user])
   async authUser(@Req() req: Request, @Res() res: Response) {
     try {
       const token = await this.userService.fetchUser(req);
@@ -73,6 +79,7 @@ export class UserController {
 
   //create new access token
   @Post('auth-token')
+  @Roles([userRoles.admin, userRoles.user])
   async newAccessToken(@Req() req: Request, @Res() res: Response) {
     try {
       const token = await this.userService.createAccessToken(req);
@@ -145,6 +152,7 @@ export class UserController {
 
   //logout user
   @Get('log-out')
+  @Roles([userRoles.admin, userRoles.user])
   async logoutUser(@Req() req: Request, @Res() res: Response) {
     try {
       res.cookie('token', '', {

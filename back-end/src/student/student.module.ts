@@ -5,10 +5,11 @@ import { Student } from '../models/student.entity';
 import { StudentService } from './student.service';
 import { StudentController } from './student.controller';
 import { SocketModule } from 'src/socket/socket.module';
+import { SocketGateway } from 'src/socket/socket.gateway';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Student]), SocketModule],
-  providers: [StudentService],
+  providers: [StudentService, SocketGateway],
   exports: [StudentService],
   controllers: [StudentController],
 })
