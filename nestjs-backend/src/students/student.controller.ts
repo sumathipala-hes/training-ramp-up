@@ -1,14 +1,18 @@
 /* eslint-disable prettier/prettier */
-import { Body, Controller, Delete, Get, HttpStatus, Param, Post, Put, Res } from "@nestjs/common";
+import { Body, Controller, Delete, Get, HttpStatus, Param, Post, Put, Res, UseGuards } from "@nestjs/common";
 import { StudentService } from "./student.service";
 import { StudentDto } from "./dto/student.dto";
-import { UpdateUserDto } from "./dto/update.dto";
+import { UpdateStudentDto } from "./dto/update.dto";
+import { RolesGuard } from "src/auth/role.guard";
+import { Role, Roles } from "src/auth/roles";
 
+@UseGuards(RolesGuard)
 @Controller('students')
 export class StudentController {
     constructor(private readonly studentService: StudentService) {}
 
     @Get()
+    @Roles(Role.Admin, Role.User)
     async getStudents(
         @Res() res) {
             try {
@@ -21,6 +25,7 @@ export class StudentController {
         }
 
     @Post()
+    @Roles(Role.Admin)
     async createStudent(
         @Body() studentDto: StudentDto,
         @Res() res) {
@@ -34,12 +39,13 @@ export class StudentController {
         }
 
     @Put(':id')
+    @Roles(Role.Admin)
     async updateStudent(
         @Param('id') id: string,
-        @Body() updateUserDto: UpdateUserDto,
+        @Body() updateStudentDto: UpdateStudentDto,
         @Res() res) {
             try {
-                await this.studentService.updateStudent(id, updateUserDto);
+                await this.studentService.updateStudent(id, updateStudentDto);
                 return res.status(HttpStatus.OK).json({ message: 'Updated the student record' });
             } catch (err) {
                 return res.status(HttpStatus.BAD_REQUEST).json({ message: err.message });
@@ -47,6 +53,7 @@ export class StudentController {
         }
 
     @Delete(':id')
+    @Roles(Role.Admin)
     async deleteStudent(
         @Param('id') id: string,
         @Res() res) {

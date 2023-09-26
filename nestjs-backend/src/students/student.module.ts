@@ -1,21 +1,18 @@
 /* eslint-disable prettier/prettier */
-import { MiddlewareConsumer, Module, NestModule } from "@nestjs/common";
+import { Module } from "@nestjs/common";
 import { StudentController } from "./student.controller";
 import { StudentService } from "./student.service";
 import { Student } from "./entities/student.entity";
 import { TypeOrmModule } from "@nestjs/typeorm";
-import { AuthMiddleware } from "src/middleware/auth.middleware";
-import { AdminAccess } from "src/middleware/admin.access.middleware";
 import { JwtService } from "@nestjs/jwt";
+import { Repository } from "typeorm";
+import { SocketModule } from "src/socket/socket.module";
+import { RolesGuard } from "src/auth/role.guard";
 
 @Module({
-    imports: [TypeOrmModule.forFeature([Student])],
+    imports: [TypeOrmModule.forFeature([Student]), SocketModule],
     controllers: [StudentController],
-    providers: [StudentService, JwtService],
+    providers: [StudentService, JwtService, Repository, RolesGuard],
 })
 
-export class StudentModule implements NestModule{
-    configure(consumer: MiddlewareConsumer) {
-        consumer.apply(AuthMiddleware, AdminAccess).forRoutes('/students');
-    }
-}
+export class StudentModule {}

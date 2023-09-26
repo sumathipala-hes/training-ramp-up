@@ -15,8 +15,12 @@ function App() {
         <Routes>
           <Route path={routes.register} element={<SignUp />} />
           <Route path={routes.login} element={<Login />} />
-          <Route path={routes.main} element={<Protected><Main /></Protected>} />
-          <Route path={routes.admin} element={<Protected><Admin /></Protected>}/>
+          <Route path={routes.main} element={<Protected children={undefined} />}>
+            <Route index element={<Main />} />
+          </Route>
+          <Route path={routes.admin} element={<Protected children={undefined} />}>
+            <Route index element={<Admin />} />
+            </Route>
         </Routes>
       </Router>
     </div>
