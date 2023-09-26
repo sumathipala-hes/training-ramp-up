@@ -39,7 +39,7 @@ function* addStudent(action: PayloadAction<TableData>) {
         age : calculateAge(new Date(birthday))
     };
     try {
-        yield call(axiosInstance.post, '/add-student', studentData, {
+        yield call(axiosInstance.post, '/students/add-student', studentData, {
             headers: {
                 'Content-Type': 'application/json',
             },
@@ -56,7 +56,7 @@ function* removeStudent(action: PayloadAction<TableData>) {
         id :action.payload
     };
     try {
-        yield call(axiosInstance.post, '/remove-student', studentId, {
+        yield call(axiosInstance.post, '/students/remove-student', studentId, {
             headers: {
                 'Content-Type': 'application/json',
             },
@@ -82,7 +82,7 @@ function* updateStudent(action: PayloadAction<TableData>) {
     };
 
     try {
-        yield call(axiosInstance.post, '/update-student', studentData, {
+        yield call(axiosInstance.post, '/students/update-student', studentData, {
             headers: {
                 'Content-Type': 'application/json',
             },
@@ -95,7 +95,7 @@ function* updateStudent(action: PayloadAction<TableData>) {
 //get all students' data from DB
 function* getStudents(action: PayloadAction<TableData>) {
     try {
-        const response: ResponseType = yield call(axiosInstance.get, '/get-students', {
+        const response: ResponseType = yield call(axiosInstance.get, '/students/get-students', {
             headers: {
                 'Content-Type': 'application/json',
             },
