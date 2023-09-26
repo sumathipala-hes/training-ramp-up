@@ -4,6 +4,7 @@ import { UpdateStudentDto } from './dto/update-student.dto';
 import { DeleteResult, InsertResult, Repository, UpdateResult } from 'typeorm';
 import { Student } from './entities/student.entity';
 import { InjectRepository } from '@nestjs/typeorm';
+import { sendNotification } from 'src/utils/notification.util';
 
 @Injectable()
 export class StudentsService {
@@ -14,8 +15,13 @@ export class StudentsService {
 
   async create(createStudentDto: CreateStudentDto): Promise<InsertResult> {
     try {
-      return this.studentRepository.insert(createStudentDto as Student);
+      const savedStudent = await this.studentRepository.insert(
+        createStudentDto as Student,
+      );
+      sendNotification('New student', 'A new student has been created..!');
+      return savedStudent;
     } catch (error) {
+      sendNotification('Error', 'Student creation failed..!');
       throw new HttpException(
         'Internal Server Error',
         HttpStatus.INTERNAL_SERVER_ERROR,
@@ -33,6 +39,7 @@ export class StudentsService {
       }
       return students;
     } catch (error) {
+      sendNotification('Error', 'Student fetching failed..!');
       throw new HttpException(
         'Internal Server Error',
         HttpStatus.INTERNAL_SERVER_ERROR,
@@ -45,8 +52,14 @@ export class StudentsService {
     updateStudentDto: UpdateStudentDto,
   ): Promise<UpdateResult> {
     try {
-      return this.studentRepository.update(id, updateStudentDto as Student);
+      const updatedStudent = await this.studentRepository.update(
+        id,
+        updateStudentDto as Student,
+      );
+      sendNotification('Student updated', 'A student has been updated..!');
+      return updatedStudent;
     } catch (error) {
+      sendNotification('Error', 'Student updation failed..!');
       throw new HttpException(
         'Internal Server Error',
         HttpStatus.INTERNAL_SERVER_ERROR,
@@ -56,8 +69,11 @@ export class StudentsService {
 
   async remove(id: number): Promise<DeleteResult> {
     try {
-      return this.studentRepository.delete(id);
+      const removedStudent = await this.studentRepository.delete(id);
+      sendNotification('Student deleted', 'A student has been deleted..!');
+      return removedStudent;
     } catch (error) {
+      sendNotification('Error', 'Student deletion failed..!');
       throw new HttpException(
         'Internal Server Error',
         HttpStatus.INTERNAL_SERVER_ERROR,

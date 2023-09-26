@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:frontend/model/user.dart';
 import 'package:frontend/util/db_util.dart';
 import 'package:frontend/util/local_storage.dart';
+import 'package:frontend/util/refresh_token_util.dart';
 import 'package:frontend/util/show_toast.dart';
 import 'package:http/http.dart' as http;
 import 'package:jwt_decoder/jwt_decoder.dart';
@@ -24,19 +25,21 @@ class UserRepository {
       ),
     );
     if (res.statusCode == 201 || res.statusCode == 200) {
-      final Map<String, dynamic> jsonData = json.decode(res.body);
-      final accessToken = jsonData['accessToken'];
+      final String rawCookies = res.headers['set-cookie']!;
+      List<String> cookies = rawCookies.split('; ');
 
-      if (accessToken != null) {
-        Map<String, dynamic> decodedToken = JwtDecoder.decode(accessToken);
-        localStorage.setEmail(decodedToken['email']);
-        localStorage.setRole(decodedToken['role'].toLowerCase());
-        localStorage.setAcessToken(accessToken);
-        return true;
+      if (cookies.length < 2 || res.statusCode == 500) {
+        showToast('Failed Login..!');
+        return false;
       }
-    }
-    if (res.statusCode == 500) {
-      showToast('Failed Login..!');
+      Map<String, dynamic> decodedToken =
+          JwtDecoder.decode(cookies[0].split('accessToken=')[1]);
+      localStorage.setEmail(decodedToken['email']);
+      localStorage.setRole(decodedToken['role'].toLowerCase());
+      localStorage.setAcessToken(cookies[0].split('accessToken=')[1]);
+      localStorage
+          .setRefreshToken(cookies[4].split('HttpOnly,refreshToken=')[1]);
+      return true;
     }
     return false;
   }
@@ -63,6 +66,7 @@ class UserRepository {
   }
 
   Future<void> addUsers(User user) async {
+    await refreshToken(await localStorage.getAccessToken());
     String token = await localStorage.getAccessToken();
     final res = await http.post(
       Uri.parse('$baseUrl/user/add'),
@@ -78,6 +82,7 @@ class UserRepository {
   }
 
   Future<void> updateUsers(User user) async {
+    await refreshToken(await localStorage.getAccessToken());
     String token = await localStorage.getAccessToken();
     final res = await http.put(
       Uri.parse('$baseUrl/user/${user.email}'),
@@ -93,6 +98,7 @@ class UserRepository {
   }
 
   Future<void> deleteUsers(String email) async {
+    await refreshToken(await localStorage.getAccessToken());
     String token = await localStorage.getAccessToken();
     final res = await http.delete(
       Uri.parse('$baseUrl/user/del/$email'),
@@ -107,7 +113,6 @@ class UserRepository {
 
   Future<void> signOut() async {
     await localStorage.clearDetails();
-
     await http.delete(
       Uri.parse('$baseUrl/user/signOut'),
     );

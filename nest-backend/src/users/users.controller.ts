@@ -65,10 +65,7 @@ export class UsersController {
       maxAge: 60 * 60 * 24 * 1000,
       httpOnly: true,
     });
-    res.status(200).json({
-      accessToken: tokens.accessToken,
-      refreshToken: tokens.refreshToken,
-    });
+    res.status(200).json({ message: 'Login Success' });
   }
 
   @Delete('signOut')
