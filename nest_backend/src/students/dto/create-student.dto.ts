@@ -2,7 +2,7 @@ import { IsDate, IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export class CreateStudentDto {
   @IsNumber()
-  id!: number;
+  id: number;
 
   @IsString()
   @IsNotEmpty()

@@ -1,10 +1,12 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 import { DeleteResult, InsertResult, Repository, UpdateResult } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { decrypt, encrypt } from '../util/encrypted.decrypted.util';
+import { decrypt, encrypt } from '../util/securepassword.util';
+import { UserResponseData } from './dto/response-data';
+import { sendNotification } from 'src/util/notification.util';
 
 @Injectable()
 export class UsersService {
@@ -18,33 +20,40 @@ export class UsersService {
       createUserDto.password = encrypt(createUserDto.password);
       const newUser: InsertResult =
         await this.userRepository.insert(createUserDto);
+      sendNotification('User', 'User created successfully');
       return newUser;
-    } catch (err) {
-      throw new Error('Failed to create user.');
+    } catch (error) {
+      throw new HttpException(
+        error.message,
+        error?.status ?? HttpStatus.BAD_REQUEST,
+      );
     }
   }
 
-  async findAllUsers(): Promise<Array<User>> {
+  async findAllUsers(): Promise<UserResponseData> {
     try {
-      const users: Array<User> = await this.userRepository.find({
+      const users: User[] = await this.userRepository.find({
         order: { email: 'DESC' },
       });
 
       if (users.length === 0) {
-        throw new Error('No users found.');
+        throw new HttpException('No users found.', HttpStatus.NOT_FOUND);
       }
 
       users.forEach((user) => {
         user.password = decrypt(user.password);
       });
 
-      return users;
+      return {
+        message: 'Users found successfully',
+        data: users,
+      };
     } catch (err) {
-      throw new Error('Failed to fetch users.');
+      throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
     }
   }
 
-  async findOneUser(search: string): Promise<User> {
+  async findOneUser(search: string): Promise<UserResponseData> {
     try {
       const user: User = await this.userRepository.findOne({
         where: [
@@ -56,14 +65,17 @@ export class UsersService {
       });
 
       if (!user) {
-        throw new Error('No user found.');
+        throw new HttpException('No user found.', HttpStatus.NOT_FOUND);
       }
 
       user.password = decrypt(user.password);
 
-      return user;
+      return {
+        message: 'User found successfully',
+        data: [user],
+      };
     } catch (err) {
-      throw new Error('Failed to fetch user.');
+      throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -80,12 +92,12 @@ export class UsersService {
       );
 
       if (updatedUser.affected === 0) {
-        throw new Error('User not found');
+        throw new HttpException('User not found', HttpStatus.NOT_FOUND);
       }
-
+      sendNotification('User', 'User updated successfully');
       return updatedUser;
     } catch (err) {
-      throw new Error('Failed to update user.');
+      throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -94,12 +106,12 @@ export class UsersService {
       const deletedUser: DeleteResult = await this.userRepository.delete(email);
 
       if (deletedUser.affected === 0) {
-        throw new Error('User not found');
+        throw new HttpException('User not found', HttpStatus.NOT_FOUND);
       }
-
+      sendNotification('User', 'User deleted successfully');
       return deletedUser;
     } catch (err) {
-      throw new Error('Failed to delete user.');
+      throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
     }
   }
 }

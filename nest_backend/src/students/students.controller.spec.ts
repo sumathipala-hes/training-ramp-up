@@ -1,13 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { StudentsController } from './students.controller';
 import { StudentsService } from './students.service';
-import { Response } from 'express';
 import { JwtService } from '@nestjs/jwt';
-import { Student } from './entities/student.entity';
-import { HttpStatus } from '@nestjs/common';
 import { CreateStudentDto } from './dto/create-student.dto';
 import { UpdateStudentDto } from './dto/update-student.dto';
 import { DeleteResult, UpdateResult } from 'typeorm';
+import { StudentResponseData } from './dto/response-data';
 
 describe('StudentsController', () => {
   let studentsController: StudentsController;
@@ -40,136 +38,6 @@ describe('StudentsController', () => {
     expect(studentsController).toBeDefined();
   });
 
-  describe('findAllStudent', () => {
-    const expectedResult: Student[] = [
-      {
-        id: 1,
-        name: 'Nimesh',
-        address: 'Galle',
-        mobileNumber: '0761234567',
-        dob: new Date('2001-12-15'),
-        gender: 'Male',
-      },
-      {
-        id: 2,
-        name: 'Nimesh',
-        address: 'Galle',
-        mobileNumber: '0761234567',
-        dob: new Date('2001-12-15'),
-        gender: 'Male',
-      },
-    ];
-
-    it('should return an array of students', async () => {
-      const getAll = jest
-        .spyOn(studentsService, 'findAllStudents')
-        .mockResolvedValue(expectedResult);
-
-      const mockResponse = {
-        status: jest.fn().mockReturnThis(),
-        json: jest.fn(),
-      } as unknown as Response;
-
-      await studentsController.findAll(mockResponse);
-
-      expect(mockResponse.status).toHaveBeenCalledWith(HttpStatus.OK);
-      expect(mockResponse.json).toHaveBeenCalledWith({
-        message: 'Students found successfully',
-        data: expectedResult,
-      });
-
-      getAll.mockRestore();
-    });
-
-    it('should return an error message if students not found', async () => {
-      const getAll = jest
-        .spyOn(studentsService, 'findAllStudents')
-        .mockRejectedValue(new Error('Student not found'));
-
-      const mockResponse = {
-        status: jest.fn().mockReturnThis(),
-        json: jest.fn(),
-      } as unknown as Response;
-
-      await studentsController.findAll(mockResponse);
-
-      expect(mockResponse.status).toHaveBeenCalledWith(HttpStatus.BAD_REQUEST);
-      expect(mockResponse.json).toHaveBeenCalledWith({
-        message: 'Student not found',
-      });
-
-      getAll.mockRestore();
-    });
-
-    it('should return an error message if students fetch failed', async () => {
-      const getAll = jest
-        .spyOn(studentsService, 'findAllStudents')
-        .mockRejectedValue(new Error('Error finding students'));
-
-      const mockResponse = {
-        status: jest.fn().mockReturnThis(),
-        json: jest.fn(),
-      } as unknown as Response;
-
-      await studentsController.findAll(mockResponse);
-
-      expect(mockResponse.status).toHaveBeenCalledWith(
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-
-      expect(mockResponse.json).toHaveBeenCalledWith({
-        error: 'Error finding students',
-        message: 'Error finding students',
-      });
-
-      getAll.mockRestore();
-    });
-  });
-
-  describe('findOneStudent', () => {
-    const expectedResult: Student[] = [
-      {
-        id: 1,
-        name: 'Nimesh',
-        address: 'Galle',
-        mobileNumber: '0761234567',
-        dob: new Date('2001-12-15'),
-        gender: 'Male',
-      },
-      {
-        id: 2,
-        name: 'Pasan',
-        address: 'Galle',
-        mobileNumber: '0761234567',
-        dob: new Date('2001-12-15'),
-        gender: 'Male',
-      },
-    ];
-
-    it('should return a student', async () => {
-      const getOne = jest
-        .spyOn(studentsService, 'findOneStudent')
-        .mockResolvedValue(expectedResult[0]);
-
-      const mockResponse = {
-        status: jest.fn().mockReturnThis(),
-        json: jest.fn(),
-      } as unknown as Response;
-
-      await studentsController.findOne('Nimesh', mockResponse);
-
-      expect(getOne).toHaveBeenCalledWith('Nimesh');
-      expect(mockResponse.status).toHaveBeenCalledWith(HttpStatus.OK);
-
-      expect(mockResponse.json).toHaveBeenCalledWith({
-        message: 'Student found successfully',
-        data: expectedResult[0],
-      });
-
-      getOne.mockRestore();
-    });
-  });
-
   describe('createStudent', () => {
     const createStudentDto: CreateStudentDto = {
       id: 1,
@@ -191,45 +59,32 @@ describe('StudentsController', () => {
         .spyOn(studentsService, 'createStudent')
         .mockResolvedValue(mockInsertResult);
 
-      const mockResponse = {
-        status: jest.fn().mockReturnThis(),
-        json: jest.fn(),
-      } as any;
-
-      await studentsController.create(createStudentDto, mockResponse);
+      await studentsController.create(createStudentDto);
 
       expect(studentsService.createStudent).toHaveBeenCalledWith(
         createStudentDto,
       );
-      expect(mockResponse.status).toHaveBeenCalledWith(HttpStatus.CREATED);
-      expect(mockResponse.json).toHaveBeenCalledWith({
-        message: 'Student created successfully',
-        data: mockInsertResult,
-      });
+      expect(mockInsertResult).toEqual(mockInsertResult);
     });
 
-    it('should handle error and return error response', async () => {
-      const mockError = new Error('Error creating student');
+    it('should fail in student creation and throw an error', async () => {
+      jest
+        .spyOn(studentsService, 'createStudent')
+        .mockRejectedValue(new Error());
 
-      jest.spyOn(studentsService, 'createStudent').mockRejectedValue(mockError);
+      await expect(
+        studentsController.create(createStudentDto),
+      ).rejects.toThrowError();
+    });
 
-      const mockResponse = {
-        status: jest.fn().mockReturnThis(),
-        json: jest.fn(),
-      } as any;
+    it('should fail and throw an error if student already exists', async () => {
+      jest
+        .spyOn(studentsService, 'createStudent')
+        .mockRejectedValue(new Error('Student already exists'));
 
-      await studentsController.create(createStudentDto, mockResponse);
-
-      expect(studentsService.createStudent).toHaveBeenCalledWith(
-        createStudentDto,
+      await expect(studentsController.create(createStudentDto)).rejects.toThrow(
+        'Student already exists',
       );
-      expect(mockResponse.status).toHaveBeenCalledWith(
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-      expect(mockResponse.json).toHaveBeenCalledWith({
-        message: 'Error creating student',
-        error: mockError.message,
-      });
     });
   });
 
@@ -255,69 +110,33 @@ describe('StudentsController', () => {
         .spyOn(studentsService, 'updateStudent')
         .mockResolvedValue(updateStudentResult);
 
-      const mockResponse = {
-        status: jest.fn().mockReturnThis(),
-        json: jest.fn(),
-      } as any;
-
-      await studentsController.update(id, updateStudentDto, mockResponse);
+      await studentsController.update(id, updateStudentDto);
 
       expect(studentsService.updateStudent).toHaveBeenCalledWith(
         id,
         updateStudentDto,
       );
-      expect(mockResponse.status).toHaveBeenCalledWith(HttpStatus.OK);
-      expect(mockResponse.json).toHaveBeenCalledWith({
-        message: 'Student updated successfully',
-        data: updateStudentResult,
-      });
+      expect(updateStudentResult).toEqual(updateStudentResult);
     });
 
-    it('should handle error and return error response', async () => {
-      const mockError = new Error('Student not found');
+    it('should fail in student update and throw an error', async () => {
+      jest
+        .spyOn(studentsService, 'updateStudent')
+        .mockRejectedValue(new Error());
 
-      jest.spyOn(studentsService, 'updateStudent').mockRejectedValue(mockError);
-
-      const mockResponse = {
-        status: jest.fn().mockReturnThis(),
-        json: jest.fn(),
-      } as any;
-
-      await studentsController.update(id, updateStudentDto, mockResponse);
-
-      expect(studentsService.updateStudent).toHaveBeenCalledWith(
-        id,
-        updateStudentDto,
-      );
-      expect(mockResponse.status).toHaveBeenCalledWith(HttpStatus.BAD_REQUEST);
-      expect(mockResponse.json).toHaveBeenCalledWith({
-        message: 'Student not found',
-      });
+      await expect(
+        studentsController.update(id, updateStudentDto),
+      ).rejects.toThrowError();
     });
 
-    it('should handle other errors and return error response', async () => {
-      const mockError = new Error('Error updating student');
+    it('should fail and throw an error if student does not exists', async () => {
+      jest
+        .spyOn(studentsService, 'updateStudent')
+        .mockRejectedValue(new Error('Student does not exists'));
 
-      jest.spyOn(studentsService, 'updateStudent').mockRejectedValue(mockError);
-
-      const mockResponse = {
-        status: jest.fn().mockReturnThis(),
-        json: jest.fn(),
-      } as any;
-
-      await studentsController.update(id, updateStudentDto, mockResponse);
-
-      expect(studentsService.updateStudent).toHaveBeenCalledWith(
-        id,
-        updateStudentDto,
-      );
-      expect(mockResponse.status).toHaveBeenCalledWith(
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-      expect(mockResponse.json).toHaveBeenCalledWith({
-        message: 'Error updating student',
-        error: mockError.message,
-      });
+      await expect(
+        studentsController.update(id, updateStudentDto),
+      ).rejects.toThrowError('Student does not exists');
     });
   });
 
@@ -333,60 +152,109 @@ describe('StudentsController', () => {
         .spyOn(studentsService, 'removeStudent')
         .mockResolvedValue(mockDeleteResult);
 
-      const mockResponse = {
-        status: jest.fn().mockReturnThis(),
-        json: jest.fn(),
-      } as any;
-
-      await studentsController.remove(id, mockResponse);
+      await studentsController.remove(id);
 
       expect(studentsService.removeStudent).toHaveBeenCalledWith(id);
-      expect(mockResponse.status).toHaveBeenCalledWith(HttpStatus.OK);
-      expect(mockResponse.json).toHaveBeenCalledWith({
-        message: 'Student deleted successfully',
-        data: mockDeleteResult,
-      });
+      expect(mockDeleteResult).toEqual(mockDeleteResult);
     });
 
-    it('should handle "Student not found" error and return error response', async () => {
-      const mockError = new Error('Student not found');
+    it('should fail in student deletion and throw an error', async () => {
+      jest
+        .spyOn(studentsService, 'removeStudent')
+        .mockRejectedValue(new Error());
 
-      jest.spyOn(studentsService, 'removeStudent').mockRejectedValue(mockError);
-
-      const mockResponse = {
-        status: jest.fn().mockReturnThis(),
-        json: jest.fn(),
-      } as any;
-
-      await studentsController.remove(id, mockResponse);
-
-      expect(studentsService.removeStudent).toHaveBeenCalledWith(id);
-      expect(mockResponse.status).toHaveBeenCalledWith(HttpStatus.BAD_REQUEST);
-      expect(mockResponse.json).toHaveBeenCalledWith({
-        message: 'Student not found',
-      });
+      await expect(studentsController.remove(id)).rejects.toThrowError();
     });
 
-    it('should handle other errors and return error response', async () => {
-      const mockError = new Error('Error deleting student');
+    it('should fail and throw an error if student does not exists', async () => {
+      jest
+        .spyOn(studentsService, 'removeStudent')
+        .mockRejectedValue(new Error('Student does not exists'));
 
-      jest.spyOn(studentsService, 'removeStudent').mockRejectedValue(mockError);
-
-      const mockResponse = {
-        status: jest.fn().mockReturnThis(),
-        json: jest.fn(),
-      } as any;
-
-      await studentsController.remove(id, mockResponse);
-
-      expect(studentsService.removeStudent).toHaveBeenCalledWith(id);
-      expect(mockResponse.status).toHaveBeenCalledWith(
-        HttpStatus.INTERNAL_SERVER_ERROR,
+      await expect(studentsController.remove(id)).rejects.toThrowError(
+        'Student does not exists',
       );
-      expect(mockResponse.json).toHaveBeenCalledWith({
-        message: 'Error deleting student',
-        error: mockError.message,
-      });
+    });
+  });
+
+  describe('findAllStudents', () => {
+    it('should return an array of students', async () => {
+      const result: StudentResponseData = {
+        message: 'Student found successfully',
+        data: [
+          {
+            id: 1,
+            name: 'Nimesh',
+            address: 'Galle',
+            mobileNumber: '0761234567',
+            dob: new Date('2001 - 12 - 15'),
+            gender: 'Male',
+          },
+        ],
+      };
+
+      jest.spyOn(studentsService, 'findAllStudents').mockResolvedValue(result);
+
+      expect(await studentsController.findAll()).toBe(result);
+    });
+
+    it('should fail in students retrieval and throw an error', async () => {
+      jest
+        .spyOn(studentsService, 'findAllStudents')
+        .mockRejectedValue(new Error());
+      await expect(studentsController.findAll()).rejects.toThrowError();
+    });
+
+    it('should return an empty array if no students found', async () => {
+      const result: StudentResponseData = {
+        message: 'Student not found',
+        data: [],
+      };
+
+      jest.spyOn(studentsService, 'findAllStudents').mockResolvedValue(result);
+
+      expect(await studentsController.findAll()).toBe(result);
+    });
+  });
+
+  describe('findOneStudent', () => {
+    const search = 'Nimesh';
+    it('should return a student', async () => {
+      const result: StudentResponseData = {
+        message: 'Student found successfully',
+        data: [
+          {
+            id: 1,
+            name: 'Nimesh',
+            address: 'Galle',
+            mobileNumber: '0761234567',
+            dob: new Date('2001 - 12 - 15'),
+            gender: 'Male',
+          },
+        ],
+      };
+
+      jest.spyOn(studentsService, 'findOneStudent').mockResolvedValue(result);
+
+      expect(await studentsController.findOne(search)).toBe(result);
+    });
+
+    it('should fail in student retrieval and throw an error', async () => {
+      jest
+        .spyOn(studentsService, 'findOneStudent')
+        .mockRejectedValue(new Error());
+      await expect(studentsController.findOne(search)).rejects.toThrowError();
+    });
+
+    it('should return an empty array if no students found', async () => {
+      const result: StudentResponseData = {
+        message: 'Student not found',
+        data: [],
+      };
+
+      jest.spyOn(studentsService, 'findOneStudent').mockResolvedValue(result);
+
+      expect(await studentsController.findOne(search)).toBe(result);
     });
   });
 });

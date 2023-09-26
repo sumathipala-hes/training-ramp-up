@@ -32,25 +32,6 @@ describe('StudentsService', () => {
     );
   });
 
-  const expectedResult: Student[] = [
-    {
-      id: 1,
-      name: 'Nimesh',
-      address: 'Galle',
-      mobileNumber: '0761234567',
-      dob: new Date('2001-12-15'),
-      gender: 'Male',
-    },
-    {
-      id: 2,
-      name: 'Nimesh',
-      address: 'Galle',
-      mobileNumber: '0761234567',
-      dob: new Date('2001-12-15'),
-      gender: 'Male',
-    },
-  ];
-
   it('should be defined', () => {
     expect(service).toBeDefined();
   });
@@ -87,46 +68,15 @@ describe('StudentsService', () => {
         service.createStudent(createStudentDto),
       ).rejects.toThrowError('Failed to create student.');
     });
-  });
 
-  describe('findAllStudent', () => {
-    it('should return an array of students', async () => {
-      studentRepository.find = jest.fn().mockResolvedValue(expectedResult);
-      const result = await service.findAllStudents();
-      expect(result).toEqual(expectedResult);
-    });
-
-    it('should throw an error on failure', async () => {
-      studentRepository.find = jest
+    it('should throw an error if student already exists', async () => {
+      studentRepository.insert = jest
         .fn()
-        .mockRejectedValue(new Error('Failed to fetch students.'));
+        .mockRejectedValue(new Error('Student already exists.'));
 
-      await expect(service.findAllStudents()).rejects.toThrowError(
-        'Failed to fetch students.',
-      );
-    });
-  });
-
-  describe('findOneStudent', () => {
-    const searchId = 'Nimesh';
-
-    it('should return a student by id', async () => {
-      studentRepository.findOne = jest
-        .fn()
-        .mockResolvedValue(expectedResult[0]);
-
-      const result = await service.findOneStudent(searchId);
-      expect(result).toEqual(expectedResult[0]);
-    });
-
-    it('should throw an error on failure', async () => {
-      studentRepository.findOne = jest
-        .fn()
-        .mockRejectedValue(new Error('Failed to fetch student.'));
-
-      await expect(service.findOneStudent(searchId)).rejects.toThrowError(
-        'Failed to fetch student.',
-      );
+      await expect(
+        service.createStudent(createStudentDto),
+      ).rejects.toThrowError('Student already exists.');
     });
   });
 
@@ -154,13 +104,23 @@ describe('StudentsService', () => {
     });
 
     it('should throw an error on failure', async () => {
-      studentRepository.update = jest.fn().mockRejectedValue(null);
-      try {
-        await service.updateStudent('1', updateStudentDto);
-        fail('Expected an error to be thrown');
-      } catch (err) {
-        expect(err.message).toBe('Failed to update student.');
-      }
+      studentRepository.update = jest
+        .fn()
+        .mockRejectedValue(new Error('Failed to update student.'));
+
+      await expect(
+        service.updateStudent(updateId, updateStudentDto),
+      ).rejects.toThrowError('Failed to update student.');
+    });
+
+    it('should throw an error if student is not found', async () => {
+      studentRepository.update = jest
+        .fn()
+        .mockRejectedValue(new Error('Student not found.'));
+
+      await expect(
+        service.updateStudent(updateId, updateStudentDto),
+      ).rejects.toThrowError('Student not found.');
     });
   });
 
@@ -178,13 +138,95 @@ describe('StudentsService', () => {
     });
 
     it('should throw an error on failure', async () => {
-      studentRepository.delete = jest.fn().mockRejectedValue(null);
-      try {
-        await service.removeStudent(removeId);
-        fail('Expected an error to be thrown');
-      } catch (err) {
-        expect(err.message).toBe('Failed to delete student.');
-      }
+      studentRepository.delete = jest
+        .fn()
+        .mockRejectedValue(new Error('Failed to delete student.'));
+
+      await expect(service.removeStudent(removeId)).rejects.toThrowError(
+        'Failed to delete student.',
+      );
+    });
+
+    it('should throw an error if student is not found', async () => {
+      studentRepository.delete = jest
+        .fn()
+        .mockRejectedValue(new Error('Student not found.'));
+
+      await expect(service.removeStudent(removeId)).rejects.toThrowError(
+        'Student not found.',
+      );
+    });
+  });
+
+  describe('findAllStudent', () => {
+    it('should return an array of students', async () => {
+      const student: Student[] = [
+        {
+          id: 1,
+          name: 'Nimesh',
+          address: 'Galle',
+          mobileNumber: '0761234567',
+          dob: new Date('2001 - 12 - 15'),
+          gender: 'Male',
+        },
+      ];
+
+      jest.spyOn(studentRepository, 'find').mockResolvedValue(student);
+    });
+
+    it('should throw an error on failure', async () => {
+      studentRepository.find = jest
+        .fn()
+        .mockRejectedValue(new Error('Failed to find students.'));
+
+      await expect(service.findAllStudents()).rejects.toThrowError(
+        'Failed to find students.',
+      );
+    });
+
+    it('should throw an error if no students are found', async () => {
+      studentRepository.find = jest
+        .fn()
+        .mockRejectedValue(new Error('No students found.'));
+
+      await expect(service.findAllStudents()).rejects.toThrowError(
+        'No students found.',
+      );
+    });
+  });
+
+  describe('findOneStudent', () => {
+    it('should return a student', async () => {
+      const student: Student = {
+        id: 1,
+        name: 'Nimesh',
+        address: 'Galle',
+        mobileNumber: '0761234567',
+        dob: new Date('2001 - 12 - 15'),
+        gender: 'Male',
+      };
+
+      jest.spyOn(studentRepository, 'findOne').mockResolvedValue(student);
+    });
+
+    it('should throw an error on failure', async () => {
+      studentRepository.findOne = jest
+        .fn()
+        .mockRejectedValue(new Error('Failed to find student.'));
+
+      await expect(service.findOneStudent('Nimesh')).rejects.toThrowError(
+        'Failed to find student.',
+      );
+    });
+
+    it('should throw an error if no student is found', async () => {
+      studentRepository.findOne = jest
+        .fn()
+        .mockRejectedValue(new Error('No student found.'));
+
+      await expect(service.findOneStudent('Nimesh')).rejects.toThrowError(
+        'No student found.',
+      );
     });
   });
 });

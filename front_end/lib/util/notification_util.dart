@@ -15,6 +15,17 @@ Future<void> showFieldError(String message) async {
       fontSize: 16.0);
 }
 
+Future<void> successfullyNotification(String message) async {
+  Fluttertoast.showToast(
+      msg: message,
+      toastLength: Toast.LENGTH_LONG,
+      gravity: ToastGravity.BOTTOM,
+      backgroundColor: Colors.green,
+      textColor: Colors.white,
+      timeInSecForIosWeb: 1,
+      fontSize: 16.0);
+}
+
 Future<void> generateToken() async {
   final token = await FirebaseMessaging.instance.getToken();
   Logger().d('Token: $token');

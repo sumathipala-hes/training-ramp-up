@@ -34,6 +34,17 @@ class LocalStorage {
     return accessToken??'';
   }
 
+  Future<void> setRefreshToken(String refreshToken) async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setString('refreshToken', refreshToken);
+  }
+
+  Future<String> getRefreshToken() async {
+    final prefs = await SharedPreferences.getInstance();
+    final refreshToken = prefs.getString('refreshToken');
+    return refreshToken??'';
+  }
+
   Future<String> getCurrentLoginEmail() async {
     final prefs = await SharedPreferences.getInstance();
     final email = prefs.getString('email');
