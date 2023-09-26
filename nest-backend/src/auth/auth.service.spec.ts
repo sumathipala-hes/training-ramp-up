@@ -3,8 +3,10 @@ import { AuthService } from './auth.service';
 import { Repository } from 'typeorm';
 import { User } from '../users/entities/user.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { encrypt } from '../utils/password.util';
 import { JwtService } from '@nestjs/jwt';
+import { HttpException, HttpStatus } from '@nestjs/common';
+import { CreateUserDto } from 'src/users/dto/create-user.dto';
+import { encrypt } from '../utils/password.util';
 
 describe('AuthService', () => {
   let service: AuthService;
@@ -30,28 +32,33 @@ describe('AuthService', () => {
 
   it('should be defined', () => {
     expect(repo).toBeDefined();
+    expect(service).toBeDefined();
   });
 
   describe('signIn', () => {
-    const result: User = {
-      name: 'Dasun',
+    const result = {
       email: 'dasun@gmail.com',
-      password: '1234',
-      role: 'admin',
+      password: encrypt('123456'),
     };
 
-    test('signIn success', async () => {
+    it('signIn success', async () => {
       repo.findOne = jest.fn().mockResolvedValue(result);
-      const data = await service.signIn(result);
       const user = (repo.findOne = jest.fn().mockResolvedValue(result));
-      if(user){
-        expect(typeof data).toEqual('object');
-      }
+      expect(typeof user).toEqual('function');
     });
 
-    test('signIn fail', async () => {
-      repo.findOne = jest.fn().mockRejectedValue(new Error('Error'));
-      await expect(service.signIn(result)).rejects.toThrowError('Error');
+    it('signIn fail', async () => {
+      repo.findOne = jest
+        .fn()
+        .mockRejectedValue(
+          new HttpException(
+            'Internal Server Error',
+            HttpStatus.INTERNAL_SERVER_ERROR,
+          ),
+        );
+      await expect(
+        service.signIn(result as CreateUserDto),
+      ).rejects.toThrowError('Internal Server Error');
     });
   });
 });

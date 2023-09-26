@@ -1,11 +1,12 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { CreateUserDto } from 'src/users/dto/create-user.dto';
+import { CreateUserDto } from '../users/dto/create-user.dto';
 import { jwtConstants } from './auth.constants';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../users/entities/user.entity';
 import { encrypt } from '../utils/password.util';
+import { TokenDto } from './dto/token.dto';
 
 @Injectable()
 export class AuthService {
@@ -14,7 +15,7 @@ export class AuthService {
     private readonly userRepository: Repository<User>,
     private readonly jwtService: JwtService,
   ) {}
-  async signIn(createUserDto: CreateUserDto): Promise<any> {
+  async signIn(createUserDto: CreateUserDto): Promise<TokenDto> {
     try {
       const user = await this.userRepository.findOne({
         where: {
@@ -23,23 +24,27 @@ export class AuthService {
       });
       if (user) {
         if (user.password == encrypt(createUserDto.password)) {
-          const accessToken = this.jwtService.sign(
-            { email: user.email, role: user.role },
+          const tokens = new TokenDto();
+          tokens.accessToken = this.jwtService.sign(
+            { email: user.email, role: user.role.toLowerCase() },
             { secret: jwtConstants.secretKey!, expiresIn: '5h' },
           );
-          const refreshToken = this.jwtService.sign(
+          tokens.refreshToken = this.jwtService.sign(
             { email: user.email },
             { secret: jwtConstants.secretKey, expiresIn: '7d' },
           );
-          return { accessToken: accessToken, refreshToken: refreshToken };
+          return tokens;
         } else {
-          throw new Error('Password not match');
+          throw new HttpException('Password Not Match', HttpStatus.BAD_REQUEST);
         }
       } else {
-        throw new Error('User not found');
+        throw new HttpException('User Not Found', HttpStatus.NOT_FOUND);
       }
     } catch (error) {
-      throw new Error(error.message);
+      throw new HttpException(
+        'Internal Server Error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 }

@@ -143,12 +143,6 @@ describe('UsersController', () => {
       role: 'admin',
     };
 
-    const req = {
-      body: {
-        username: 'rashi',
-        password: '123456',
-      },
-    };
     const createMockResponse = (): Response => {
       const res: Response = {} as Response;
       res.status = jest.fn().mockReturnValue(res);

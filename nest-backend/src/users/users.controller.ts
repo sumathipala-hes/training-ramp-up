@@ -13,6 +13,9 @@ import { Response } from 'express';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { AuthService } from '../auth/auth.service';
+import { Roles } from '../auth/roles.decorator';
+import { Role } from '../enum/role.enum';
+import { DeleteResult, InsertResult, UpdateResult } from 'typeorm';
 
 @Controller('api/v1/user')
 export class UsersController {
@@ -21,8 +24,9 @@ export class UsersController {
     private readonly authService: AuthService,
   ) {}
 
+  @Roles(Role.ADMIN)
   @Post('/add')
-  async create(@Body() createUserDto: CreateUserDto) {
+  async create(@Body() createUserDto: CreateUserDto): Promise<InsertResult> {
     return await this.usersService.create(createUserDto);
   }
 
@@ -31,22 +35,26 @@ export class UsersController {
     return await this.usersService.findAll();
   }
 
+  @Roles(Role.ADMIN)
   @Put(':email')
   async update(
     @Param('email') email: string,
     @Body() updateUserDto: UpdateUserDto,
-  ) {
+  ): Promise<UpdateResult> {
     return await this.usersService.update(email, updateUserDto);
   }
 
+  @Roles(Role.ADMIN)
   @Delete('del/:id')
-  async remove(@Param('id') email: string) {
+  async remove(@Param('id') email: string): Promise<DeleteResult> {
     return await this.usersService.remove(email);
   }
 
   @Post('/signIn')
-  async login(@Body() createUserDto: CreateUserDto, @Res() res: Response) {
-    console.log(createUserDto);
+  async login(
+    @Body() createUserDto: CreateUserDto,
+    @Res() res: Response,
+  ): Promise<void> {
     const tokens = await this.authService.signIn(createUserDto);
     console.log(tokens);
     res.cookie('accessToken', tokens.accessToken, {
@@ -64,7 +72,7 @@ export class UsersController {
   }
 
   @Delete('signOut')
-  async logout(@Res() res: Response) {
+  async logout(@Res() res: Response): Promise<void> {
     res.clearCookie('accessToken');
     res.clearCookie('refreshToken');
     res.status(200).json({ message: 'Logout Success' });

@@ -12,7 +12,7 @@ const typeOrmConfig: TypeOrmModuleOptions = {
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
   entities: [Student, User],
-  synchronize: true,
+  synchronize: false,
 };
 
 export default typeOrmConfig;

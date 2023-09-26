@@ -4,6 +4,8 @@ import { JwtModule } from '@nestjs/jwt';
 import { jwtConstants } from './auth.constants';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from 'src/users/entities/user.entity';
+import { APP_GUARD } from '@nestjs/core';
+import { RolesGuard } from './roles.guard';
 
 @Module({
   imports: [
@@ -14,7 +16,7 @@ import { User } from 'src/users/entities/user.entity';
       signOptions: { expiresIn: '7d' },
     }),
   ],
-  providers: [AuthService],
+  providers: [AuthService, { provide: APP_GUARD, useClass: RolesGuard }],
   exports: [AuthService],
 })
 export class AuthModule {}
