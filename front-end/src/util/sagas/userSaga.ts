@@ -7,20 +7,16 @@ import {
 } from '../../Components/Users/UsersSlice'
 import { put, takeEvery } from 'redux-saga/effects'
 import { fetchUsers, setUsersList } from '../../Components/Users/UsersListSlice'
-
-const API_BASE_URL = 'http://localhost:5000'
+import axiosInstance from '../axiosInstance'
 
 function* deleteUsersaga(
     action: PayloadAction<number>
 ): Generator<any, any, any> {
     try {
-        const response = yield fetch(
-            `${API_BASE_URL}/api/user/${action.payload}`,
-            {
-                method: 'DELETE',
-                credentials: 'include',
-            }
-        )
+        const response = yield axiosInstance(`/users/${action.payload}`, {
+            method: 'DELETE',
+            withCredentials: true,
+        })
 
         if (response.status === 'success') {
             console.log(`User with the ${action.payload} Id is Deleted`)
@@ -37,20 +33,19 @@ function* changeUserRoleSaga(
     action: PayloadAction<UserState>
 ): Generator<any, any, any> {
     try {
-        const response = yield fetch(
-            `${API_BASE_URL}/api/user/${action.payload.userId}`,
+        const response = yield axiosInstance.patch(
+            `/users/${action.payload.userId}`,
+            JSON.stringify(action.payload),
             {
-                method: 'PUT',
-                credentials: 'include',
+                withCredentials: true,
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(action.payload),
             }
         )
 
         if (response.status === 200) {
-            console.log(`User Role is chnged to ${action.payload.userRole}`)
+            console.log(`User Role is chnged to ${action.payload.roles}`)
             return
         }
     } catch (err) {
@@ -60,28 +55,17 @@ function* changeUserRoleSaga(
 
 function* fetchUsersSaga(): Generator<any, any, any> {
     try {
-        const response = yield fetch(`${API_BASE_URL}/api/user`, {
+        const response = yield axiosInstance(`/users`, {
             method: 'GET',
-            credentials: 'include',
+            withCredentials: true,
         })
-        const data = yield response.json()
-        if (yield data.status === 'fail') {
-            yield localStorage.clear()
-            yield localStorage.setItem('AuthSuccess', 'fail')
-            yield localStorage.setItem(
-                'AuthSuccessMessage',
-                `User Is Not Found`
-            )
-            console.log(
-                'Authentication Failed Now I will be navigating you to log in page'
-            )
-            return
-        } else {
-            localStorage.setItem('AuthSuccess', 'success')
-        }
 
-        console.log(data[0].email)
-        yield put(setUsersList(data))
+        if (response) {
+            localStorage.setItem('AuthSuccess', 'success')
+            const data = yield response.data
+            yield put(setUsersList(data))
+            console.log(data)
+        }
     } catch (err) {
         console.log(err)
     }

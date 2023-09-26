@@ -9,13 +9,7 @@ import {
 import { put } from 'redux-saga/effects'
 import { PayloadAction } from '@reduxjs/toolkit'
 import { takeEvery } from 'redux-saga/effects'
-import {
-    logInAssignRole,
-    logInSuccessfull,
-} from '../../Components/LogInPage/LogInSlice'
-// import { useNavigate } from 'react-router-dom'
-
-const API_BASE_URL = 'http://localhost:5000'
+import axiosInstance from '../axiosInstance'
 
 function* addRowSaga(
     action: PayloadAction<GridRowModel>
@@ -32,14 +26,11 @@ function* addRowSaga(
 
         // Convert age to string
         const ageString = age.toString()
-
+        console.log(dateOfBirth)
         // Format dateOfBirth to "MM/DD/YYYY" format
-        const formattedDateOfBirth = dateOfBirth.toLocaleDateString('en-US', {
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit',
-        })
+        const formattedDateOfBirth = dateOfBirth.toISOString()
 
+        console.log(formattedDateOfBirth)
         const modifiedData = {
             ...dataToSend,
             mobile_number,
@@ -48,16 +39,17 @@ function* addRowSaga(
         }
         console.log(modifiedData, isNew)
         if (!isNew) {
-            const response = yield fetch(
-                `${API_BASE_URL}/api/student/${action.payload.id}`,
+            const response = yield axiosInstance.patch(
+                `/students/${action.payload.id}`,
+                JSON.stringify(modifiedData),
                 {
-                    method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify(modifiedData),
+                    withCredentials: true,
                 }
             )
+
             const data = yield response.json()
             const modifiedJsonData = data.map(
                 (item: {
@@ -80,13 +72,16 @@ function* addRowSaga(
             )
             yield put(updateRow(modifiedJsonData))
         } else if (isNew) {
-            const response = yield fetch(`${API_BASE_URL}/api/student`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(modifiedData),
-            })
+            const response = yield axiosInstance.post(
+                `/students`,
+                JSON.stringify(modifiedData),
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    withCredentials: true,
+                }
+            )
             const data = yield response.json()
             const modifiedJsonData = data.map(
                 (item: {
@@ -118,26 +113,15 @@ function* addRowSaga(
 
 function* fetchRowsSaga(): Generator<any, any, any> {
     try {
-        const response = yield fetch(`${API_BASE_URL}/api/student`, {
+        const response = yield axiosInstance(`/students`, {
             method: 'GET',
-            credentials: 'include',
+            withCredentials: true,
         })
 
-        const data = yield response.json()
-        console.log(data)
-
-        if (yield data.status === 'fail') {
-            yield put(logInSuccessfull(data.status))
-            yield put(logInAssignRole(data.data.user.roles[0]))
-
-            console.log(
-                'Authentication Failed Now I will be navigating you to log in page'
-            )
-            return
-        }
+        console.log(response)
 
         // Modify the data properties
-        const modifiedData = yield data.map(
+        const modifiedData = yield response.data.map(
             (item: {
                 id: any
                 name: any
@@ -174,13 +158,10 @@ function* deleteRowSaga(
     action: PayloadAction<GridRowId>
 ): Generator<any, any, any> {
     try {
-        const response = yield fetch(
-            `${API_BASE_URL}/api/student/${action.payload}`,
-            {
-                method: 'DELETE',
-                credentials: 'include',
-            }
-        )
+        const response = yield axiosInstance(`/students/${action.payload}`, {
+            method: 'DELETE',
+            withCredentials: true,
+        })
         console.log('Row is Deleted And User is an Admin')
         if (response.status === 'success') {
             yield put(deleteRow(action.payload))

@@ -1,2 +1,8 @@
 node_modules
 dist
+back-end/dist/src/index.js
+back-end/dist/src/index.js
+back-end/dist/ormconfig.js
+back-end/dist/index.js
+back-end/dist/entities/student.js
+back-end/config.env

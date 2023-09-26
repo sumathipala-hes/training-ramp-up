@@ -2,12 +2,12 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 export interface UserState {
     userId: number
-    userRole: [string]
+    roles: [string]
 }
 
 const initialState: UserState = {
     userId: 0,
-    userRole: [''],
+    roles: [''],
 }
 
 const usersSlice = createSlice({

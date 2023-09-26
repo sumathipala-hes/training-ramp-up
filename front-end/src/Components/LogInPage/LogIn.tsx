@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { LogInState, logInSuccessfulState, logInUser } from './LogInSlice'
 import { useNavigate } from 'react-router-dom'
 import { RootState } from '../../store'
+import { socket } from '../../App'
 export default function LogIn() {
     const asyncLocalStorage = {
         async setItem(key: string, value: string) {
@@ -28,12 +29,17 @@ export default function LogIn() {
 
     const response = useSelector((store: RootState) => store.logIn.successRole)
 
-    if (response === 'USER') {
-        localStorage.setItem('Role', 'USER')
-    } else if (response === 'ADMIN') {
-        localStorage.setItem('Role', 'ADMIN')
+    if (responseState) {
+        if (response === 'USER') {
+            localStorage.setItem('Role', 'USER')
+        } else if (response === 'ADMIN') {
+            localStorage.setItem('Role', 'ADMIN')
+        }
     }
+
     useEffect(() => {
+        console.log(responseState)
+
         if (responseState) {
             checkRoleAndNavigate()
             dispatch(logInSuccessfulState(false))
@@ -57,6 +63,8 @@ export default function LogIn() {
             password: password,
         }
         dispatch(logInUser(newUser))
+        socket.emit('wrongDetails', `Incorrect Password or Email`)
+        socket.emit('userNotFound', `User Not Found with the given Email`)
     }
 
     const handleClick2 = () => {
@@ -82,8 +90,7 @@ export default function LogIn() {
                 justifyContent: 'center',
                 alignItems: 'center',
                 height: '100vh',
-                background:
-                    'linear-gradient(to right bottom, #430089, #82ffa1)',
+                background: 'linear-gradient(to left bottom,#7F00FF, #82ffa1)',
             }}
         >
             <Box

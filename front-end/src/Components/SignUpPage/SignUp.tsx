@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { SignUpState, signUpSuccessfulState, signUpUser } from './SignUpSlice'
 import { RootState } from '../../store'
 import { useNavigate } from 'react-router-dom'
+import { socket } from '../../App'
 
 export default function SignUp() {
     const asyncLocalStorage = {
@@ -93,6 +94,9 @@ export default function SignUp() {
                 password: password,
             }
             dispacth(signUpUser(newUser))
+            socket.emit('signup', 'A new User is Created')
+        } else {
+            alert('Password and Confirm Password must be same')
         }
     }
 
