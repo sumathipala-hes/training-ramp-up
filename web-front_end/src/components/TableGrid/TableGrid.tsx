@@ -130,7 +130,7 @@ export default function FullFeaturedCrudGrid() {
     });
 
     const editedRow = rows.find(row => row.id === id);
-    if (editedRow!.isNew) {
+    if (editedRow?.isNew) {
       setRows(rows.filter(row => row.id !== id));
     }
   };
@@ -239,6 +239,7 @@ export default function FullFeaturedCrudGrid() {
         if (isInEditMode) {
           return [
             <GridActionsCellItem
+              key={id}
               icon={
                 <SaveIcon
                   sx={{
@@ -253,6 +254,7 @@ export default function FullFeaturedCrudGrid() {
               onClick={handleSaveClick(id)}
             />,
             <GridActionsCellItem
+              key={id}
               icon={
                 <CancelIcon
                   sx={{
@@ -270,6 +272,7 @@ export default function FullFeaturedCrudGrid() {
 
         return [
           <GridActionsCellItem
+          key={id}
             icon={
               <EditIcon
                 sx={{
@@ -282,6 +285,7 @@ export default function FullFeaturedCrudGrid() {
             color="inherit"
           />,
           <GridActionsCellItem
+          key={id}
             icon={
               <DeleteIcon
                 sx={{
