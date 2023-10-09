@@ -1,11 +1,11 @@
-import * as React from "react";
-import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
-import AddIcon from "@mui/icons-material/Add";
-import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/DeleteOutlined";
-import SaveIcon from "@mui/icons-material/Save";
-import CancelIcon from "@mui/icons-material/Close";
+import * as React from 'react';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import AddIcon from '@mui/icons-material/Add';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/DeleteOutlined';
+import SaveIcon from '@mui/icons-material/Save';
+import CancelIcon from '@mui/icons-material/Close';
 import {
   GridRowsProp,
   GridRowModesModel,
@@ -18,27 +18,27 @@ import {
   GridRowId,
   GridRowModel,
   GridRowEditStopReasons,
-} from "@mui/x-data-grid";
-import "./TableGrid.css";
-import { generateID } from "../../util/generateId";
+} from '@mui/x-data-grid';
+import './TableGrid.css';
+import { generateID } from '../../util/generateId';
 
 const initialRows: GridRowsProp = [
   {
-    id: "1",
-    name: "Nimesh",
-    gender: "Male",
-    address: "Pune",
-    mobileNumber: "0771234556",
-    dateOfBirth: "1996-01-01",
+    id: '1',
+    name: 'Nimesh',
+    gender: 'Male',
+    address: 'Pune',
+    mobileNumber: '0771234556',
+    dateOfBirth: '1996-01-01',
     age: 25,
   },
   {
-    id: "2",
-    name: "Nimesh Piyumantha",
-    gender: "Male",
-    address: "Pune",
-    mobileNumber: "0771234556",
-    dateOfBirth: "1996-01-01",
+    id: '2',
+    name: 'Nimesh Piyumantha',
+    gender: 'Male',
+    address: 'Pune',
+    mobileNumber: '0771234556',
+    dateOfBirth: '1996-01-01',
     age: 25,
   },
 ];
@@ -46,7 +46,7 @@ const initialRows: GridRowsProp = [
 interface EditToolbarProps {
   setRows: (newRows: (oldRows: GridRowsProp) => GridRowsProp) => void;
   setRowModesModel: (
-    newModel: (oldModel: GridRowModesModel) => GridRowModesModel
+    newModel: (oldModel: GridRowModesModel) => GridRowModesModel,
   ) => void;
 }
 
@@ -55,27 +55,27 @@ function EditToolbar(props: EditToolbarProps) {
   const id = generateID();
   const newRow = {
     id,
-    name: "",
-    gender: "",
-    address: "",
-    mobileNumber: "",
-    dateOfBirth: "",
-    age: "",
+    name: '',
+    gender: '',
+    address: '',
+    mobileNumber: '',
+    dateOfBirth: '',
+    age: '',
     isNew: true,
   };
 
   const handleClick = () => {
-    setRows((oldRows) => [newRow, ...oldRows]);
-    setRowModesModel((oldModel) => ({
+    setRows(oldRows => [newRow, ...oldRows]);
+    setRowModesModel(oldModel => ({
       ...oldModel,
-      [id]: { mode: GridRowModes.Edit, fieldToFocus: "name" },
+      [id]: { mode: GridRowModes.Edit, fieldToFocus: 'name' },
     }));
   };
 
   return (
     <GridToolbarContainer
       sx={{
-        backgroundColor: "#ecf0f1",
+        backgroundColor: '#ecf0f1',
       }}
     >
       <Button
@@ -84,10 +84,10 @@ function EditToolbar(props: EditToolbarProps) {
         onClick={handleClick}
         variant="contained"
         sx={{
-          "& .MuiButton-label": {
-            textTransform: "none",
+          '& .MuiButton-label': {
+            textTransform: 'none',
           },
-          margin: "1em",
+          margin: '1em',
         }}
       >
         Add New
@@ -99,12 +99,12 @@ function EditToolbar(props: EditToolbarProps) {
 export default function FullFeaturedCrudGrid() {
   const [rows, setRows] = React.useState(initialRows);
   const [rowModesModel, setRowModesModel] = React.useState<GridRowModesModel>(
-    {}
+    {},
   );
 
-  const handleRowEditStop: GridEventListener<"rowEditStop"> = (
+  const handleRowEditStop: GridEventListener<'rowEditStop'> = (
     params,
-    event
+    event,
   ) => {
     if (params.reason === GridRowEditStopReasons.rowFocusOut) {
       event.defaultMuiPrevented = true;
@@ -120,7 +120,7 @@ export default function FullFeaturedCrudGrid() {
   };
 
   const handleDeleteClick = (id: GridRowId) => () => {
-    setRows(rows.filter((row) => row.id !== id));
+    setRows(rows.filter(row => row.id !== id));
   };
 
   const handleCancelClick = (id: GridRowId) => () => {
@@ -129,15 +129,15 @@ export default function FullFeaturedCrudGrid() {
       [id]: { mode: GridRowModes.View, ignoreModifications: true },
     });
 
-    const editedRow = rows.find((row) => row.id === id);
+    const editedRow = rows.find(row => row.id === id);
     if (editedRow!.isNew) {
-      setRows(rows.filter((row) => row.id !== id));
+      setRows(rows.filter(row => row.id !== id));
     }
   };
 
   const processRowUpdate = (newRow: GridRowModel) => {
     const updatedRow = { ...newRow, isNew: false };
-    setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)));
+    setRows(rows.map(row => (row.id === newRow.id ? updatedRow : row)));
     return updatedRow;
   };
 
@@ -147,92 +147,92 @@ export default function FullFeaturedCrudGrid() {
 
   const columns: GridColDef[] = [
     {
-      field: "id",
-      headerName: "ID",
-      type: "number",
+      field: 'id',
+      headerName: 'ID',
+      type: 'number',
       editable: false,
-      align: "center",
-      headerAlign: "center",
+      align: 'center',
+      headerAlign: 'center',
       maxWidth: 100,
       minWidth: 60,
-      headerClassName: "header-cell",
+      headerClassName: 'header-cell',
     },
     {
-      field: "name",
-      headerName: "Name",
+      field: 'name',
+      headerName: 'Name',
       editable: true,
-      align: "center",
-      headerAlign: "center",
+      align: 'center',
+      headerAlign: 'center',
       maxWidth: 250,
       minWidth: 200,
-      headerClassName: "header-cell",
+      headerClassName: 'header-cell',
     },
     {
-      field: "gender",
-      headerName: "Gender",
-      align: "center",
-      headerAlign: "center",
+      field: 'gender',
+      headerName: 'Gender',
+      align: 'center',
+      headerAlign: 'center',
       maxWidth: 170,
       minWidth: 130,
       editable: true,
-      headerClassName: "header-cell",
+      headerClassName: 'header-cell',
     },
     {
-      field: "address",
-      headerName: "Address",
-      align: "center",
-      headerAlign: "center",
+      field: 'address',
+      headerName: 'Address',
+      align: 'center',
+      headerAlign: 'center',
       maxWidth: 170,
       minWidth: 130,
       editable: true,
-      headerClassName: "header-cell",
+      headerClassName: 'header-cell',
     },
     {
-      field: "mobileNumber",
-      headerName: "MobileNumber",
-      type: "number",
-      align: "center",
-      headerAlign: "center",
+      field: 'mobileNumber',
+      headerName: 'MobileNumber',
+      type: 'number',
+      align: 'center',
+      headerAlign: 'center',
       maxWidth: 170,
       minWidth: 130,
       editable: true,
-      headerClassName: "header-cell",
+      headerClassName: 'header-cell',
     },
     {
-      field: "dateOfBirth",
-      headerName: "Date Of Birth",
-      type: "date",
+      field: 'dateOfBirth',
+      headerName: 'Date Of Birth',
+      type: 'date',
       editable: true,
-      align: "center",
-      headerAlign: "center",
+      align: 'center',
+      headerAlign: 'center',
       maxWidth: 200,
       minWidth: 150,
-      headerClassName: "header-cell",
-      valueGetter: (params) => {
+      headerClassName: 'header-cell',
+      valueGetter: params => {
         return new Date(params.row.dateOfBirth);
       },
     },
     {
-      field: "age",
-      headerName: "Age",
-      type: "number",
+      field: 'age',
+      headerName: 'Age',
+      type: 'number',
       editable: true,
-      align: "center",
-      headerAlign: "center",
+      align: 'center',
+      headerAlign: 'center',
       maxWidth: 130,
       minWidth: 100,
-      headerClassName: "header-cell",
+      headerClassName: 'header-cell',
     },
     {
-      field: "actions",
-      type: "actions",
-      headerName: "Actions",
-      align: "center",
-      headerAlign: "center",
+      field: 'actions',
+      type: 'actions',
+      headerName: 'Actions',
+      align: 'center',
+      headerAlign: 'center',
       maxWidth: 250,
       minWidth: 200,
-      headerClassName: "header-cell",
-      cellClassName: "actions",
+      headerClassName: 'header-cell',
+      cellClassName: 'actions',
       getActions: ({ id }) => {
         const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
 
@@ -242,13 +242,13 @@ export default function FullFeaturedCrudGrid() {
               icon={
                 <SaveIcon
                   sx={{
-                    color: "green",
+                    color: 'green',
                   }}
                 />
               }
               label="Save"
               sx={{
-                color: "primary.main",
+                color: 'primary.main',
               }}
               onClick={handleSaveClick(id)}
             />,
@@ -256,7 +256,7 @@ export default function FullFeaturedCrudGrid() {
               icon={
                 <CancelIcon
                   sx={{
-                    color: "blue",
+                    color: 'blue',
                   }}
                 />
               }
@@ -273,7 +273,7 @@ export default function FullFeaturedCrudGrid() {
             icon={
               <EditIcon
                 sx={{
-                  color: "yellowgreen",
+                  color: 'yellowgreen',
                 }}
               />
             }
@@ -285,7 +285,7 @@ export default function FullFeaturedCrudGrid() {
             icon={
               <DeleteIcon
                 sx={{
-                  color: "red",
+                  color: 'red',
                 }}
               />
             }
@@ -301,29 +301,29 @@ export default function FullFeaturedCrudGrid() {
   return (
     <Box
       sx={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "top",
-        marginTop: "4em",
-        height: "100vh",
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'top',
+        marginTop: '4em',
+        height: '100vh',
       }}
     >
       <Box
         sx={{
-          margin: "1em",
-          width: "80%",
-          "& .actions": {
-            color: "text.secondary",
+          margin: '1em',
+          width: '80%',
+          '& .actions': {
+            color: 'text.secondary',
           },
-          "& .textPrimary": {
-            color: "text.primary",
+          '& .textPrimary': {
+            color: 'text.primary',
           },
         }}
       >
         <DataGrid
           sx={{
-            backgroundColor: "#ecf0f1",
+            backgroundColor: '#ecf0f1',
           }}
           rows={rows}
           columns={columns}
