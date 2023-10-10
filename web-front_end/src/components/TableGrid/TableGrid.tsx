@@ -217,9 +217,6 @@ const StudentDataGrid = () => {
       valueGetter: params => {
         return new Date(params.row.dateOfBirth);
       },
-      valueFormatter: params => {
-        return new Date(params.value).toLocaleDateString;
-      },
     },
     {
       field: "age",
