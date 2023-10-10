@@ -223,6 +223,7 @@ const StudentDataGrid = () => {
       headerName: "Age",
       type: "number",
       editable: false,
+
       align: "center",
       headerAlign: "center",
       maxWidth: 130,
@@ -359,6 +360,3 @@ const StudentDataGrid = () => {
 };
 
 export default StudentDataGrid;
-function handleDateChange(id: any, date: any) {
-  throw new Error("Function not implemented.");
-}
