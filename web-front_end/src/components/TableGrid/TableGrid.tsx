@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-no-undef */
 import * as React from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -36,7 +37,7 @@ interface IStudentEntry {
 const StudentDataGrid = () => {
   const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({});
   const dispatch = useAppDispatch();
-  const studentList = useSelector((state: RootState) => state.students.studentEntries);
+  const studentList = useSelector((state: RootState) => state.studentEntries.studentEntries);
 
   useEffect(() => {
     dispatch(studentActions.fetchStudent());
@@ -62,8 +63,8 @@ const StudentDataGrid = () => {
       };
       dispatch(studentActions.addStudentEntry(newStudent));
       setRowModesModel(oldModel => ({
-        ...oldModel,
         [id]: { mode: GridRowModes.Edit, fieldToFocus: "name" },
+        ...oldModel,
       }));
     };
 
@@ -217,7 +218,7 @@ const StudentDataGrid = () => {
         return new Date(params.row.dateOfBirth);
       },
       valueFormatter: params => {
-        return params.value.toLocaleDateString();
+        return new Date(params.value).toLocaleDateString;
       },
     },
     {
@@ -361,3 +362,6 @@ const StudentDataGrid = () => {
 };
 
 export default StudentDataGrid;
+function handleDateChange(id: any, date: any) {
+  throw new Error("Function not implemented.");
+}

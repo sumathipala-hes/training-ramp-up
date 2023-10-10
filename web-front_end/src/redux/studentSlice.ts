@@ -17,7 +17,17 @@ interface IStudentState {
 }
 
 const initialState: IStudentState = {
-  studentEntries: [],
+  studentEntries: [
+    {
+      id: 1,
+      name: "John",
+      address: "USA",
+      mobileNumber: "0777123456",
+      dateOfBirth: new Date("1990-01-01").toDateString(),
+      age: 20,
+      gender: "Male",
+    },
+  ],
 };
 
 export const studentSlice = createSlice({
@@ -33,15 +43,12 @@ export const studentSlice = createSlice({
       data.age = generateAge(data.dateOfBirth);
       const index = state.studentEntries.findIndex(studentEntry => studentEntry.id === data.id);
       state.studentEntries[index] = data;
-      console.log(state.studentEntries);
     },
     deleteStudentEntry: (state, action: PayloadAction<number>) => {
       const id = action.payload;
       state.studentEntries = state.studentEntries.filter(studentEntry => studentEntry.id !== id);
     },
-    fetchStudent: () => {
-      
-    },
+    fetchStudent: () => {},
   },
 });
 

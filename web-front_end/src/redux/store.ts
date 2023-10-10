@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 
 const store = configureStore({
   reducer: {
-    students: studentReducer,
+    studentEntries: studentReducer,
   },
   middleware: getDefaultMiddleware({
     serializableCheck: false,
