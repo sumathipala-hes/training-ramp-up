@@ -1,13 +1,11 @@
 import React from "react";
+import { Box } from "@mui/material";
+import TableDataGrid from "../../components/TableDataGrid/TableDataGrid";
 
 export default function Home() {
     return (
-        <div className="App">
-        <header className="App-header">
-            <p>
-            Home
-            </p>
-        </header>
-        </div>
+        <Box>
+            <TableDataGrid />
+        </Box>
     );
 }
