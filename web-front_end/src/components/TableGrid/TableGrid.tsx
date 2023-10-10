@@ -114,17 +114,40 @@ const StudentDataGrid = () => {
 
   const processRowUpdate = (newRow: GridRowModel, oldRow: GridRowModel) => {
     const { id, name, gender, address, mobileNumber, dateOfBirth, age } = newRow;
-    const updatedStudent: IStudentEntry = {
-      id: id,
-      name: name,
-      gender: gender,
-      address: address,
-      mobileNumber: mobileNumber,
-      dateOfBirth: dateOfBirth,
-      age: age,
-    };
-    dispatch(studentActions.updateStudentEntry(updatedStudent));
-    return Promise.resolve({ ...oldRow, ...newRow });
+
+    const _nameRegExp = /^[a-zA-Z ]+$/;
+    const _telNoRegExp = /^(07(0|1|2|4|5|6|7|8)[0-9]{7})$/;
+    const _addressRegExp = /^[a-zA-Z0-9 ]+$/;
+
+    if (name.trim() === "") {
+      alert("Name cannot be empty");
+      return Promise.resolve();
+    } else if (name.trim().length > 50) {
+      alert("Name cannot be longer than 50 characters");
+      return Promise.resolve();
+    } else if (!_nameRegExp.test(name)) {
+      alert("Name can only contain letters and spaces");
+      return Promise.resolve();
+    } else if (!_addressRegExp.test(address)) {
+      alert("Address can only contain letters, numbers, and spaces");
+      return Promise.resolve();
+    } else if (!_telNoRegExp.test(mobileNumber)) {
+      alert("Invalid mobile number");
+      console.log(mobileNumber);
+      return Promise.resolve();
+    } else {
+      const updatedStudent: IStudentEntry = {
+        id: id,
+        name: name,
+        gender: gender,
+        address: address,
+        mobileNumber: mobileNumber,
+        dateOfBirth: dateOfBirth,
+        age: age,
+      };
+      dispatch(studentActions.updateStudentEntry(updatedStudent));
+      return Promise.resolve({ ...oldRow, ...newRow });
+    }
   };
 
   const columns: GridColDef[] = [
@@ -172,7 +195,7 @@ const StudentDataGrid = () => {
     {
       field: "mobileNumber",
       headerName: "MobileNumber",
-      type: "number",
+      type: "string",
       align: "center",
       headerAlign: "center",
       maxWidth: 170,
@@ -193,12 +216,15 @@ const StudentDataGrid = () => {
       valueGetter: params => {
         return new Date(params.row.dateOfBirth);
       },
+      valueFormatter: params => {
+        return params.value.toLocaleDateString();
+      },
     },
     {
       field: "age",
       headerName: "Age",
       type: "number",
-      editable: true,
+      editable: false,
       align: "center",
       headerAlign: "center",
       maxWidth: 130,

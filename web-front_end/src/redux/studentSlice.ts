@@ -39,7 +39,9 @@ export const studentSlice = createSlice({
       const id = action.payload;
       state.studentEntries = state.studentEntries.filter(studentEntry => studentEntry.id !== id);
     },
-    fetchStudent: () => {},
+    fetchStudent: () => {
+      
+    },
   },
 });
 
