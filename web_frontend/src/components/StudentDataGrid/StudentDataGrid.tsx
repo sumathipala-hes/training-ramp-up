@@ -13,6 +13,7 @@ import {
   GridColDef,
   GridActionsCellItem,
   GridRowModel,
+  GridPreProcessEditCellProps,
 } from "@mui/x-data-grid";
 import { useSelector } from "react-redux";
 import { RootState, useAppDispatch } from "../../redux/store";
@@ -107,6 +108,10 @@ const StudentDataGrid = () => {
       align: "left",
       headerAlign: "left",
       editable: true,
+      preProcessEditCellProps: (params: GridPreProcessEditCellProps) => {
+        const hasError = !validateName(params.props.value);
+        return { ...params.props, style: { color: hasError ? "red" : "black" } };
+      },
     },
     {
       field: "address",
@@ -114,6 +119,10 @@ const StudentDataGrid = () => {
       type: "string",
       width: 180,
       editable: true,
+      preProcessEditCellProps: (params: GridPreProcessEditCellProps) => {
+        const hasError = !validateAddress(params.props.value);
+        return { ...params.props, style: { color: hasError ? "red" : "black" } };
+      },
     },
     {
       field: "mobile",
@@ -121,6 +130,10 @@ const StudentDataGrid = () => {
       type: "string",
       width: 180,
       editable: true,
+      preProcessEditCellProps: (params: GridPreProcessEditCellProps) => {
+        const hasError = !validateMobile(params.props.value);
+        return { ...params.props, style: { color: hasError ? "red" : "black" } };
+      },
     },
     {
       field: "gender",
