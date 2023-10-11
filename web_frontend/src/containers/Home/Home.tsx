@@ -1,6 +1,6 @@
 import React from "react";
 import { Box } from "@mui/material";
-import StudentDataGrid from "../../components/StudentDataGrid/StudentDataGrid";
+import StudentDataGrid from "./StudentDataGrid";
 
 const Home = () => {
   return (
