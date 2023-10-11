@@ -36,6 +36,14 @@ export const tableSlice = createSlice({
             state.tableDataEntries.unshift(action.payload);
         },
         fetchTableData() {},
+        updateTableData(state, action: PayloadAction<ITableData>) {
+            const index = state.tableDataEntries.findIndex(
+                (item) => item.id === action.payload.id
+            );
+            if (index !== -1) {
+                state.tableDataEntries[index] = action.payload;
+            }
+        },
     },
 });
 

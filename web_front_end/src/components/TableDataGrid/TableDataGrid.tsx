@@ -89,7 +89,7 @@ function TableDataGrid() {
             headerClassName: "headerCellStyles",
         },
         {
-            field: "birthday",
+            field: "dob",
             headerName: "Date of Birth",
             type: "date",
             editable: true,
@@ -190,6 +190,25 @@ function TableDataGrid() {
             [row.id]: { mode: GridRowModes.View },
         });
     };
+
+    function handleProcessRowUpdate(
+        newRow: GridRowModel,
+        oldRow: GridRowModel,
+    ){
+        const { id, ...updatedFields } = newRow;
+        const data: ITableData = {
+            id,
+            name: updatedFields.name as string,
+            address: updatedFields.address as string,
+            mobile: updatedFields.mobile as string,
+            dob: (updatedFields.dob as Date).toISOString(),
+            gender: updatedFields.gender as string,
+            age: updatedFields.age as number,
+        };
+        dispatch(tableDataActions.updateTableData(data));
+        return Promise.resolve({ ...oldRow, ...newRow });
+    };
+
     return (
         <Box
             sx={{
@@ -224,9 +243,8 @@ function TableDataGrid() {
                 columns={columns}
                 editMode="row"
                 rowModesModel={rowModesModel}
-                onRowModesModelChange={(newRowModesModel) => {
-                    setRowModesModel(newRowModesModel);
-                }}
+                onRowModesModelChange={setRowModesModel}
+                processRowUpdate={handleProcessRowUpdate}
             />
         </Box>
     );
