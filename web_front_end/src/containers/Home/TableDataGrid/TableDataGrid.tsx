@@ -146,6 +146,7 @@ function TableDataGrid() {
                         key={id}
                         icon={<EditIcon />}
                         label="Edit"
+                        onClick={handleEditRowClick(row)}
                         className="grid-actions-cell-items-edit"
                         color="inherit"
                     />,
@@ -194,7 +195,7 @@ function TableDataGrid() {
     function handleProcessRowUpdate(
         newRow: GridRowModel,
         oldRow: GridRowModel,
-    ){
+    ) {
         const { id, ...updatedFields } = newRow;
         const data: ITableData = {
             id,
@@ -207,6 +208,13 @@ function TableDataGrid() {
         };
         dispatch(tableDataActions.updateTableData(data));
         return Promise.resolve({ ...oldRow, ...newRow });
+    }
+
+    const handleEditRowClick = (row: GridRowModel) => () => {
+        setRowModesModel((oldModel)=>({
+            ...oldModel,
+            [row.id]: { mode: GridRowModes.Edit, fieldToFocus: "name" },
+        }));
     };
 
     return (
