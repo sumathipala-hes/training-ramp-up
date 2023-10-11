@@ -15,8 +15,8 @@ import {
     GridRowModesModel,
     GridRowModel,
 } from "@mui/x-data-grid";
-import { RootState, useAppDispatch } from "../../redux/store";
-import { tableDataActions } from "../../redux/tableSlice/tableSlice";
+import { RootState, useAppDispatch } from "../../../redux/store";
+import { tableDataActions } from "../../../redux/tableSlice/tableSlice";
 import { useSelector } from "react-redux";
 
 interface ITableData {
