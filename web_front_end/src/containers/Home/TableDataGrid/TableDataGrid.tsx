@@ -154,6 +154,7 @@ function TableDataGrid() {
                         key={id}
                         icon={<DeleteIcon />}
                         label="Delete"
+                        onClick={handleDeleteRowClick(row)}
                         className="grid-actions-cell-items-cancle"
                         color="inherit"
                     />,
@@ -215,6 +216,10 @@ function TableDataGrid() {
             ...oldModel,
             [row.id]: { mode: GridRowModes.Edit, fieldToFocus: "name" },
         }));
+    };
+
+    const handleDeleteRowClick = (row: GridRowModel) => () => {
+        dispatch(tableDataActions.removeTableData(row.id));
     };
 
     return (

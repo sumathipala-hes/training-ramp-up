@@ -44,6 +44,11 @@ export const tableSlice = createSlice({
                 state.tableDataEntries[index] = action.payload;
             }
         },
+        removeTableData(state, action: PayloadAction<number>) {
+            state.tableDataEntries = state.tableDataEntries.filter(
+                (item) => item.id !== action.payload
+            );
+        },
     },
 });
 
