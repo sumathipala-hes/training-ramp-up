@@ -53,7 +53,7 @@ function TableDataGrid() {
         {
             field: "id",
             headerName: "ID",
-            width: 50,
+            width: 90,
             headerClassName: "headerCellStyles",
         },
         {
@@ -263,6 +263,7 @@ function TableDataGrid() {
                 backgroundColor: "#ecf0f1",
                 padding: "10px",
                 borderRadius: "18px",
+                overflowX: "auto",
             }}
         >
             <Button
