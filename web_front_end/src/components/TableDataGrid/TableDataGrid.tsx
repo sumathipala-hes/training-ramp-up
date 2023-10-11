@@ -206,7 +206,6 @@ function TableDataGrid() {
     return (
         <Box
             sx={{
-                // height: "50vh",
                 backgroundColor: "#ecf0f1",
                 padding: "10px",
                 borderRadius: "18px",
