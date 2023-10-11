@@ -14,10 +14,19 @@ import {
     GridActionsCellItem,
     GridRowModesModel,
     GridRowModel,
+    GridRenderEditCellParams,
+    GridEditDateCell,
 } from "@mui/x-data-grid";
 import { RootState, useAppDispatch } from "../../../redux/store";
 import { tableDataActions } from "../../../redux/tableSlice/tableSlice";
 import { useSelector } from "react-redux";
+import {
+    maxDate,
+    minDate,
+    validateAddress,
+    validateMobile,
+    validateName,
+} from "../../../util/validateTable";
 
 interface ITableData {
     id: number;
@@ -56,6 +65,7 @@ function TableDataGrid() {
             align: "left",
             width: 150,
             headerClassName: "headerCellStyles",
+            preProcessEditCellProps: validateName,
         },
         {
             field: "gender",
@@ -77,6 +87,7 @@ function TableDataGrid() {
             align: "left",
             width: 150,
             headerClassName: "headerCellStyles",
+            preProcessEditCellProps: validateAddress,
         },
         {
             field: "mobile",
@@ -87,6 +98,7 @@ function TableDataGrid() {
             align: "left",
             width: 150,
             headerClassName: "headerCellStyles",
+            preProcessEditCellProps: validateMobile,
         },
         {
             field: "dob",
@@ -97,6 +109,9 @@ function TableDataGrid() {
             align: "left",
             width: 150,
             headerClassName: "headerCellStyles",
+            renderEditCell: (params: GridRenderEditCellParams) =>{
+                return <GridEditDateCell {...params} inputProps={{max: maxDate(),min: minDate(),}}/>;
+              },
         },
         {
             field: "age",
