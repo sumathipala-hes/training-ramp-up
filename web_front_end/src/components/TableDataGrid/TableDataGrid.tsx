@@ -29,7 +29,7 @@ interface ITableData {
 }
 
 function TableDataGrid() {
-    const [rowModesModel] = useState<GridRowModesModel>({});
+    const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({});
     const dispatch = useAppDispatch();
     const studentDataList = useSelector(
         (state: RootState) => state.tableDataList.tableDataEntries,
@@ -164,6 +164,23 @@ function TableDataGrid() {
         dob: new Date(row.dob),
     }));
 
+    function handleAddRow() {
+        const id = studentDataList.length + 1;
+        const newRow: ITableData = {
+            id: id,
+            name: "",
+            address: "",
+            mobile: "",
+            dob: new Date().toISOString(),
+            age: '' as unknown as number,
+            gender: "",
+        };
+        dispatch(tableDataActions.addTableData(newRow));
+        setRowModesModel(oldModel => ({
+            [id]: { mode: GridRowModes.Edit, fieldToFocus: "name", },
+            ...oldModel,
+          }));
+    }
     return (
         <Box
             sx={{
@@ -176,6 +193,7 @@ function TableDataGrid() {
                 size="small"
                 variant="contained"
                 startIcon={<AddIcon />}
+                onClick={handleAddRow}
                 sx={{
                     mb: 2,
                     marginRight: "10px",
