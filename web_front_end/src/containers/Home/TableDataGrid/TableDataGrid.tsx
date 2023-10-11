@@ -125,7 +125,7 @@ function TableDataGrid() {
                             key={id}
                             icon={<SaveIcon />}
                             label="Save"
-                            onClick={handleSaveClick(row)}
+                            onClick={handleSaveRowClick(row)}
                             sx={{
                                 color: "primary.main",
                             }}
@@ -186,7 +186,7 @@ function TableDataGrid() {
         }));
     }
 
-    const handleSaveClick = (row: GridRowModel) => () => {
+    const handleSaveRowClick = (row: GridRowModel) => () => {
         setRowModesModel({
             ...rowModesModel,
             [row.id]: { mode: GridRowModes.View },
