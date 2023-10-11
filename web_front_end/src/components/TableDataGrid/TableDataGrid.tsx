@@ -13,6 +13,7 @@ import {
     GridColDef,
     GridActionsCellItem,
     GridRowModesModel,
+    GridRowModel,
 } from "@mui/x-data-grid";
 import { RootState, useAppDispatch } from "../../redux/store";
 import { tableDataActions } from "../../redux/tableSlice/tableSlice";
@@ -124,6 +125,7 @@ function TableDataGrid() {
                             key={id}
                             icon={<SaveIcon />}
                             label="Save"
+                            onClick={handleSaveClick(row)}
                             sx={{
                                 color: "primary.main",
                             }}
@@ -172,15 +174,22 @@ function TableDataGrid() {
             address: "",
             mobile: "",
             dob: new Date().toISOString(),
-            age: '' as unknown as number,
+            age: "" as unknown as number,
             gender: "",
         };
         dispatch(tableDataActions.addTableData(newRow));
-        setRowModesModel(oldModel => ({
-            [id]: { mode: GridRowModes.Edit, fieldToFocus: "name", },
+        setRowModesModel((oldModel) => ({
+            [id]: { mode: GridRowModes.Edit, fieldToFocus: "name" },
             ...oldModel,
-          }));
+        }));
     }
+
+    const handleSaveClick = (row: GridRowModel) => () => {
+        setRowModesModel({
+            ...rowModesModel,
+            [row.id]: { mode: GridRowModes.View },
+        });
+    };
     return (
         <Box
             sx={{
