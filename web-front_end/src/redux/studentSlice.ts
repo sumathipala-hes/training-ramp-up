@@ -21,7 +21,7 @@ const initialState: IStudentState = {
     {
       id: 1,
       name: "John",
-      address: "USA",
+      address: "Galle",
       mobileNumber: "0777123456",
       dateOfBirth: new Date("1990-01-01").toDateString(),
       age: 20,

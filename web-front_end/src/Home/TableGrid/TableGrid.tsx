@@ -17,12 +17,21 @@ import {
   GridEventListener,
   GridRowEditStopReasons,
   GridToolbarContainer,
+  GridPreProcessEditCellProps,
 } from "@mui/x-data-grid";
 import "./TableGrid.css";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState, useAppDispatch } from "../../redux/store";
 import { studentActions } from "../../redux/studentSlice";
+import {
+  validateAddress,
+  validateMobileNumber,
+  validateName,
+  validateNameInput,
+  validateAddressInput,
+  validateMobileInput,
+} from "../../util/validationUtil";
 
 interface IStudentEntry {
   id: number;
@@ -107,6 +116,10 @@ const StudentDataGrid = () => {
   };
 
   const handleCancelClick = (row: GridRowModel) => () => {
+    if (row.name == "" || row.mobileNumber == "" || row.address == "" || row.age == 0) {
+      dispatch(studentActions.deleteStudentEntry(row.id));
+      return;
+    }
     setRowModesModel({
       ...rowModesModel,
       [row.id]: { mode: GridRowModes.View, ignoreModifications: true },
@@ -116,39 +129,36 @@ const StudentDataGrid = () => {
   const processRowUpdate = (newRow: GridRowModel, oldRow: GridRowModel) => {
     const { id, name, gender, address, mobileNumber, dateOfBirth, age } = newRow;
 
-    const _nameRegExp = /^[a-zA-Z ]+$/;
-    const _telNoRegExp = /^(07(0|1|2|4|5|6|7|8)[0-9]{7})$/;
-    const _addressRegExp = /^[a-zA-Z0-9 ]+$/;
+    const nameError = validateName(name);
+    if (nameError) {
+      alert(nameError);
+      return Promise.resolve();
+    }
 
-    if (name.trim() === "") {
-      alert("Name cannot be empty");
+    const addressError = validateAddress(address);
+    if (addressError) {
+      alert(addressError);
       return Promise.resolve();
-    } else if (name.trim().length > 50) {
-      alert("Name cannot be longer than 50 characters");
-      return Promise.resolve();
-    } else if (!_nameRegExp.test(name)) {
-      alert("Name can only contain letters and spaces");
-      return Promise.resolve();
-    } else if (!_addressRegExp.test(address)) {
-      alert("Address can only contain letters, numbers, and spaces");
-      return Promise.resolve();
-    } else if (!_telNoRegExp.test(mobileNumber)) {
-      alert("Invalid mobile number");
+    }
+
+    const mobileNumberError = validateMobileNumber(mobileNumber);
+    if (mobileNumberError) {
+      alert(mobileNumberError);
       console.log(mobileNumber);
       return Promise.resolve();
-    } else {
-      const updatedStudent: IStudentEntry = {
-        id: id,
-        name: name,
-        gender: gender,
-        address: address,
-        mobileNumber: mobileNumber,
-        dateOfBirth: dateOfBirth,
-        age: age,
-      };
-      dispatch(studentActions.updateStudentEntry(updatedStudent));
-      return Promise.resolve({ ...oldRow, ...newRow });
     }
+
+    const updatedStudent: IStudentEntry = {
+      id: id,
+      name: name,
+      gender: gender,
+      address: address,
+      mobileNumber: mobileNumber,
+      dateOfBirth: dateOfBirth,
+      age: age,
+    };
+    dispatch(studentActions.updateStudentEntry(updatedStudent));
+    return Promise.resolve({ ...oldRow, ...newRow });
   };
 
   const columns: GridColDef[] = [
@@ -172,6 +182,10 @@ const StudentDataGrid = () => {
       maxWidth: 250,
       minWidth: 200,
       headerClassName: "header-cell",
+      preProcessEditCellProps: (params: GridPreProcessEditCellProps) => {
+        const hasError = !validateNameInput(params.props.value);
+        return { ...params.props, style: { color: hasError ? "red" : "green" } };
+      },
     },
     {
       field: "gender",
@@ -182,6 +196,8 @@ const StudentDataGrid = () => {
       minWidth: 130,
       editable: true,
       headerClassName: "header-cell",
+      type: "singleSelect",
+      valueOptions: ["Male", "Female", "Other"],
     },
     {
       field: "address",
@@ -192,6 +208,10 @@ const StudentDataGrid = () => {
       minWidth: 130,
       editable: true,
       headerClassName: "header-cell",
+      preProcessEditCellProps: (params: GridPreProcessEditCellProps) => {
+        const hasError = !validateAddressInput(params.props.value);
+        return { ...params.props, style: { color: hasError ? "red" : "green" } };
+      },
     },
     {
       field: "mobileNumber",
@@ -203,6 +223,10 @@ const StudentDataGrid = () => {
       minWidth: 130,
       editable: true,
       headerClassName: "header-cell",
+      preProcessEditCellProps: (params: GridPreProcessEditCellProps) => {
+        const hasError = !validateMobileInput(params.props.value);
+        return { ...params.props, style: { color: hasError ? "red" : "green" } };
+      },
     },
     {
       field: "dateOfBirth",
@@ -217,13 +241,29 @@ const StudentDataGrid = () => {
       valueGetter: params => {
         return new Date(params.row.dateOfBirth);
       },
+      valueParser: (newValue, field) => {
+        const params = field?.row;
+        const newDateOfBirth = new Date(newValue);
+        const currentDate = new Date();
+        const eighteenYearsAgo = new Date(
+          currentDate.getFullYear() - 18,
+          currentDate.getMonth(),
+          currentDate.getDate(),
+        );
+
+        if (newDateOfBirth > eighteenYearsAgo) {
+          alert("Date of birth must be at least 18 years ago");
+          return params.value;
+        }
+
+        return newDateOfBirth;
+      },
     },
     {
       field: "age",
       headerName: "Age",
       type: "number",
       editable: false,
-
       align: "center",
       headerAlign: "center",
       maxWidth: 130,
