@@ -135,6 +135,7 @@ function TableDataGrid() {
                             key={id}
                             icon={<CancelIcon />}
                             label="Cancel"
+                            onClick={handleCancelRowClick(row)}
                             className="grid-actions-cell-items-cancle"
                             color="inherit"
                         />,
@@ -212,14 +213,28 @@ function TableDataGrid() {
     }
 
     const handleEditRowClick = (row: GridRowModel) => () => {
-        setRowModesModel((oldModel)=>({
+        setRowModesModel((oldModel) => ({
             ...oldModel,
             [row.id]: { mode: GridRowModes.Edit, fieldToFocus: "name" },
         }));
     };
 
     const handleDeleteRowClick = (row: GridRowModel) => () => {
-        dispatch(tableDataActions.removeTableData(row.id));
+        if (window.confirm("Are you sure you want to delete this record?")) {
+            dispatch(tableDataActions.removeTableData(row.id));
+        }
+    };
+
+    const handleCancelRowClick = (row: GridRowModel) => () => {
+        if (!row.someProperty) {
+            dispatch(tableDataActions.removeTableData(row.id));
+            return;
+        }
+
+        setRowModesModel((oldModel) => ({
+            ...oldModel,
+            [row.id]: { mode: GridRowModes.View },
+        }));
     };
 
     return (
