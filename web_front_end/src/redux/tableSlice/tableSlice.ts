@@ -1,4 +1,5 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
+import { generateAge } from "../../util/generateAge";
 
 interface ITableData {
     id: number;
@@ -37,6 +38,8 @@ export const tableSlice = createSlice({
         },
         fetchTableData() {},
         updateTableData(state, action: PayloadAction<ITableData>) {
+            const data = action.payload;
+            data.age = generateAge(data.dob);
             const index = state.tableDataEntries.findIndex(
                 (item) => item.id === action.payload.id
             );
