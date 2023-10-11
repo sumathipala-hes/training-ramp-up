@@ -222,6 +222,11 @@ function TableDataGrid() {
                 }}
                 rows={transformedStudentData}
                 columns={columns}
+                editMode="row"
+                rowModesModel={rowModesModel}
+                onRowModesModelChange={(newRowModesModel) => {
+                    setRowModesModel(newRowModesModel);
+                }}
             />
         </Box>
     );
