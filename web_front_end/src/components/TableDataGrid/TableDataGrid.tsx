@@ -18,6 +18,16 @@ import { RootState, useAppDispatch } from "../../redux/store";
 import { tableDataActions } from "../../redux/tableSlice/tableSlice";
 import { useSelector } from "react-redux";
 
+interface ITableData {
+    id: number;
+    name: string;
+    address: string;
+    mobile: string;
+    dob: string;
+    gender: string;
+    age: number;
+}
+
 function TableDataGrid() {
     const [rowModesModel] = useState<GridRowModesModel>({});
     const dispatch = useAppDispatch();
