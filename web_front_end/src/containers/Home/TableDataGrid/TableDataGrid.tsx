@@ -109,9 +109,14 @@ function TableDataGrid() {
             align: "left",
             width: 150,
             headerClassName: "headerCellStyles",
-            renderEditCell: (params: GridRenderEditCellParams) =>{
-                return <GridEditDateCell {...params} inputProps={{max: maxDate(),min: minDate(),}}/>;
-              },
+            renderEditCell: (params: GridRenderEditCellParams) => {
+                return (
+                    <GridEditDateCell
+                        {...params}
+                        inputProps={{ max: maxDate(), min: minDate() }}
+                    />
+                );
+            },
         },
         {
             field: "age",
@@ -191,7 +196,7 @@ function TableDataGrid() {
             name: "",
             address: "",
             mobile: "",
-            dob: new Date().toISOString(),
+            dob: maxDate(),
             age: "" as unknown as number,
             gender: "",
         };
