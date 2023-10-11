@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import "./TableDataGrid.css";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -14,10 +14,20 @@ import {
     GridActionsCellItem,
     GridRowModesModel,
 } from "@mui/x-data-grid";
-import { useState } from "react";
+import { RootState, useAppDispatch } from "../../redux/store";
+import { tableDataActions } from "../../redux/tableSlice/tableSlice";
+import { useSelector } from "react-redux";
 
 function TableDataGrid() {
     const [rowModesModel] = useState<GridRowModesModel>({});
+    const dispatch = useAppDispatch();
+    const studentDataList = useSelector(
+        (state: RootState) => state.tableDataList.tableDataEntries,
+    );
+
+    useEffect(() => {
+        dispatch(tableDataActions.fetchTableData());
+    }, [dispatch]);
 
     const columns: GridColDef[] = [
         {
@@ -139,69 +149,10 @@ function TableDataGrid() {
         },
     ];
 
-    const rows = [
-        {
-            name: "Maneesha",
-            gender: "Male",
-            address: "Dehiwala",
-            mobile: 717133589,
-            birthday: new Date("2023-10-10"),
-            age: 23,
-        },
-        {
-            name: "Nimesh",
-            gender: "Male",
-            address: "Galle",
-            mobile: 758595682,
-            birthday: new Date("2023-09-25"),
-            age: 21,
-        },
-        {
-            name: "Pahasara",
-            gender: "Male",
-            address: "Panadura",
-            mobile: 785749674,
-            birthday: new Date("2023-09-30"),
-            age: 22,
-        },
-        {
-            name: "Nipunai",
-            gender: "Female",
-            address: "Galle",
-            mobile: 725896478,
-            birthday: new Date("2023-08-22"),
-            age: 25,
-        },
-        {
-            name: "Sadun",
-            gender: "Male",
-            address: "Colombo",
-            mobile: 752875964,
-            birthday: new Date("2023-05-07"),
-            age: 28,
-        },
-        {
-            name: "Sahani",
-            gender: "Female",
-            address: "Matara",
-            mobile: 778596478,
-            birthday: new Date("2023-10-08"),
-            age: 29,
-        },
-    ];
-
-    const generateAutoIds = (
-        rows: {
-            name: string;
-            gender: string;
-            address: string;
-            mobile: number;
-            birthday: Date;
-            age: number;
-        }[],
-    ) => {
-        return rows.map((row, index) => ({ ...row, id: index + 1 }));
-    };
+    const transformedStudentData = studentDataList.map((row) => ({
+        ...row,
+        dob: new Date(row.dob),
+    }));
 
     return (
         <Box
@@ -232,7 +183,7 @@ function TableDataGrid() {
                     borderRadius: "8px",
                     boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)",
                 }}
-                rows={generateAutoIds(rows)}
+                rows={transformedStudentData}
                 columns={columns}
             />
         </Box>
