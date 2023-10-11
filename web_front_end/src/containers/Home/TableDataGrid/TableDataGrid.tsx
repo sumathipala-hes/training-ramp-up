@@ -102,7 +102,7 @@ function TableDataGrid() {
             field: "age",
             headerName: "Age",
             type: "number",
-            editable: true,
+            editable: false,
             headerAlign: "left",
             align: "left",
             width: 150,
