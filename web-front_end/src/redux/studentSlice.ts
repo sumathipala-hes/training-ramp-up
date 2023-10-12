@@ -24,7 +24,7 @@ const initialState: IStudentState = {
       address: "Galle",
       mobileNumber: "0777123456",
       dateOfBirth: new Date("1990-01-01").toDateString(),
-      age: 20,
+      age: 33,
       gender: "Male",
     },
   ],

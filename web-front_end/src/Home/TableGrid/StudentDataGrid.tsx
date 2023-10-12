@@ -19,7 +19,6 @@ import {
   GridToolbarContainer,
   GridPreProcessEditCellProps,
 } from "@mui/x-data-grid";
-import "./TableGrid.css";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState, useAppDispatch } from "../../redux/store";
@@ -95,7 +94,7 @@ const StudentDataGrid = () => {
             margin: "1em",
           }}
         >
-          Add New
+          Add Student
         </Button>
       </GridToolbarContainer>
     );
