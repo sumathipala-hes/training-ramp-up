@@ -43,7 +43,6 @@ describe("StudentDataGrid", () => {
       );
 
       const addButton = screen.getByRole("button", { name: "Add Student" });
-      fireEvent.click(addButton);
 
       try {
         fireEvent.click(addButton);
@@ -64,8 +63,12 @@ describe("StudentDataGrid", () => {
         age: 25,
       };
 
-      store.dispatch(studentActions.addStudent(student));
-      expect(store.getState().studentList.studentList[0]).toEqual(student);
+      store.dispatch(studentActions.updateStudent(student));
+      expect(
+        store.getState().studentList.studentList[
+          store.getState().studentList.studentList.length - 1
+        ],
+      ).toEqual(student);
     });
 
     it("Update Student Fail", async () => {

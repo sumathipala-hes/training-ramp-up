@@ -14,12 +14,20 @@ import {
   GridActionsCellItem,
   GridRowModel,
   GridPreProcessEditCellProps,
+  GridRenderEditCellParams,
+  GridEditDateCell,
 } from "@mui/x-data-grid";
 import { useSelector } from "react-redux";
 import { RootState, useAppDispatch } from "../../redux/store";
 import { useEffect, useState } from "react";
 import { studentActions } from "../../redux/student/slice";
-import { validateAddress, validateMobile, validateName } from "../../util/validationUtil";
+import {
+  maxDate,
+  minDate,
+  validateAddress,
+  validateMobile,
+  validateName,
+} from "../../util/validationUtil";
 
 interface IStudentData {
   id: number;
@@ -149,6 +157,9 @@ const StudentDataGrid = () => {
       type: "date",
       width: 180,
       editable: true,
+      renderEditCell: (params: GridRenderEditCellParams) => {
+        return <GridEditDateCell {...params} inputProps={{ max: maxDate(), min: minDate() }} />;
+      },
     },
     {
       field: "age",
