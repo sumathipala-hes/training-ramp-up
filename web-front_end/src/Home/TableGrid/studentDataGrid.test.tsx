@@ -73,6 +73,21 @@ describe("StudentDataGrid Component", () => {
       store.dispatch(studentActions.addStudentEntry(student));
       expect(store.getState().studentEntries.studentEntries[0]).toEqual(student);
     });
+    it("Edit Student Fail", () => {
+      render(
+        <Provider store={store}>
+          <StudentDataGrid />
+        </Provider>,
+      );
+      const addButton = screen.getByRole("button", { name: "Add Student" });
+      fireEvent.click(addButton);
+
+      try {
+        fireEvent.click(addButton);
+      } catch (error) {
+        expect(typeof error).toEqual("error");
+      }
+    });
   });
 
   describe("Delete Student", () => {
