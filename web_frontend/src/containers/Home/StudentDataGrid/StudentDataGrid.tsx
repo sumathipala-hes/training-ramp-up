@@ -95,7 +95,7 @@ const StudentDataGrid = () => {
       name: name,
       address: address,
       mobile: mobile,
-      dob: (dob as Date).toISOString(),
+      dob: dob.toISOString(),
       gender: gender,
       age: age,
     };
