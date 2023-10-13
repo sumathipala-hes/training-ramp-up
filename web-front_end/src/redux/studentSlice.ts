@@ -43,11 +43,11 @@ export const studentSlice = createSlice({
       const index = state.studentEntries.findIndex(studentEntry => studentEntry.id === data.id);
       state.studentEntries[index] = data;
     },
+    fetchStudent: () => {},
     deleteStudentEntry: (state, action: PayloadAction<number>) => {
       const id = action.payload;
       state.studentEntries = state.studentEntries.filter(studentEntry => studentEntry.id !== id);
     },
-    fetchStudent: () => {},
   },
 });
 
