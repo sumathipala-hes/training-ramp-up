@@ -4,7 +4,7 @@ import StudentDataGrid from "./StudentDataGrid";
 
 const Home = () => {
   return (
-    <Box sx={{ p: 10 }}>
+    <Box sx={{ py: 20, px: 40 }}>
       <StudentDataGrid />
     </Box>
   );
