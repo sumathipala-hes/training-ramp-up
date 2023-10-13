@@ -20,8 +20,8 @@ import {
 } from "@mui/x-data-grid";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { RootState, useAppDispatch } from "../../redux/store";
-import { studentActions } from "../../redux/studentSlice";
+import { RootState, useAppDispatch } from "../../../redux/store";
+import { studentActions } from "../../../redux/studentSlice";
 import {
   validateAddress,
   validateMobileNumber,
@@ -29,7 +29,7 @@ import {
   validateNameInput,
   validateAddressInput,
   validateMobileInput,
-} from "../../util/validationUtil";
+} from "../../../util/validationUtil";
 
 interface IStudentEntry {
   id: number;

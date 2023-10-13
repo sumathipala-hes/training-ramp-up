@@ -1,4 +1,4 @@
-import { configureStore, getDefaultMiddleware } from "@reduxjs/toolkit";
+import { configureStore } from "@reduxjs/toolkit";
 import { studentReducer } from "./studentSlice";
 import { useDispatch } from "react-redux";
 
@@ -6,9 +6,6 @@ const store = configureStore({
   reducer: {
     studentEntries: studentReducer,
   },
-  middleware: getDefaultMiddleware({
-    serializableCheck: false,
-  }),
 });
 
 export type RootState = ReturnType<typeof store.getState>;
