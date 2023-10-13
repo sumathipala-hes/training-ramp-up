@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-empty-function */
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { generateAge } from "../util/generateAgeUtil";
 
