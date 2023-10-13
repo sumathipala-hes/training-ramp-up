@@ -25,6 +25,7 @@ import {
   maxDate,
   minDate,
   validateAddress,
+  validateFields,
   validateMobile,
   validateName,
 } from "../../../util/validationUtil";
@@ -99,12 +100,9 @@ const StudentDataGrid = () => {
       gender: gender,
       age: age,
     };
-    if (
-      !validateName(data.name) ||
-      !validateAddress(data.address) ||
-      !validateMobile(data.mobile)
-    ) {
-      return Promise.reject(alert("Invalid Data, Please Check Again..!"));
+    const validations = validateFields(name, address, mobile);
+    if (validations) {
+      return Promise.reject(alert(validations));
     }
     dispatch(studentActions.updateStudent(data));
     return Promise.resolve({ ...newRow, ...oldRow });
