@@ -1,7 +1,6 @@
 import React from "react";
 import { Box, Button } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import "./TableDataGrid.css";
 
 const columns: GridColDef[] = [
     {
