@@ -48,7 +48,6 @@ export const studentSlice = createSlice({
         student.id === updatedStudent.id ? updatedStudent : student,
       );
       state.studentList = updatedList;
-      console.log("updatedList", state.studentList);
     },
   },
 });

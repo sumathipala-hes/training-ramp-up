@@ -1,8 +1,8 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { Provider } from "react-redux";
-import store from "../../redux/store";
+import store from "../../../redux/store";
 import StudentDataGrid from "./StudentDataGrid";
-import { studentActions } from "../../redux/student/slice";
+import { studentActions } from "../../../redux/student/slice";
 
 interface IStudent {
   id: number;
