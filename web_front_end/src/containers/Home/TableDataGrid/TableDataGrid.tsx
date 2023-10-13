@@ -246,7 +246,7 @@ function TableDataGrid() {
             age: updatedFields.age as number,
         };
         dispatch(tableDataActions.updateTableData(data));
-        return Promise.resolve({ ...oldRow, ...newRow });
+        return { ...oldRow, ...newRow };
     }
 
     const handleEditRowClick = (row: GridRowModel) => () => {
