@@ -58,4 +58,14 @@ function validateMobile(params: GridPreProcessEditCellProps) {
     };
 }
 
-export { validateMobile, validateName, validateAddress, maxDate, minDate };
+function validateField(params: GridPreProcessEditCellProps, regex: RegExp, alertMessage: string) {
+    const hasError = regex.test(params.props.value);
+    return {
+        ...params.props,
+        style: { color: !hasError ? "red" : "black" },
+        error: !hasError,
+        alert: hasError ? alertMessage : "",
+    };
+}
+
+export { validateMobile, validateName, validateAddress, maxDate, minDate, validateField, nameRegex, addressRegex, mobileRegex, alerts };

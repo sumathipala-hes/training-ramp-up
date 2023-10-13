@@ -15,14 +15,19 @@ import {
     GridRowModel,
     GridRenderEditCellParams,
     GridEditDateCell,
+    GridPreProcessEditCellProps,
 } from "@mui/x-data-grid";
 import { RootState, useAppDispatch } from "../../../redux/store";
 import { tableDataActions } from "../../../redux/tableSlice/tableSlice";
 import { useSelector } from "react-redux";
 import {
+    addressRegex,
+    alerts,
     maxDate,
     minDate,
+    nameRegex,
     validateAddress,
+    validateField,
     validateMobile,
     validateName,
 } from "../../../util/validateTable";
@@ -64,7 +69,9 @@ function TableDataGrid() {
             align: "left",
             width: 150,
             headerClassName: "headerCellStyles",
-            preProcessEditCellProps: validateName,
+            preProcessEditCellProps: (params: GridPreProcessEditCellProps) => {
+                return validateField(params, nameRegex, alerts.nameRegex);
+            },
         },
         {
             field: "gender",
@@ -86,7 +93,9 @@ function TableDataGrid() {
             align: "left",
             width: 150,
             headerClassName: "headerCellStyles",
-            preProcessEditCellProps: validateAddress,
+            preProcessEditCellProps: (params: GridPreProcessEditCellProps) => {
+                return validateField(params, addressRegex, alerts.addressRegex);
+            },
         },
         {
             field: "mobile",
@@ -214,7 +223,7 @@ function TableDataGrid() {
             address: "",
             mobile: "",
             dob: maxDate(),
-            age: "" as unknown as number,
+            age: 0,
             gender: "",
         };
         dispatch(tableDataActions.addTableData(newRow));
