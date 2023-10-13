@@ -1,10 +1,17 @@
 import React from "react";
 import { Box } from "@mui/material";
-import TableDataGrid from "../../components/TableDataGrid/TableDataGrid";
+import TableDataGrid from "./TableDataGrid/TableDataGrid";
 
 export default function Home() {
     return (
-        <Box>
+        <Box
+            sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                height: "100vh",
+            }}
+        >
             <TableDataGrid />
         </Box>
     );
