@@ -1,6 +1,4 @@
-import {
-    GridPreProcessEditCellProps,
-} from "@mui/x-data-grid";
+import { GridPreProcessEditCellProps } from "@mui/x-data-grid";
 
 const alerts = {
     nameRegex: "Name field can't be empty",
@@ -28,37 +26,11 @@ const minDate = () => {
     return `${year}-${month}-${day}`;
 };
 
-function validateName(params: GridPreProcessEditCellProps) {
-    const hasError = nameRegex.test(params.props.value);
-    return {
-        ...params.props,
-        style: { color: !hasError ? "red" : "black" },
-        error: !hasError,
-        alert: alerts.nameRegex,
-    };
-}
-
-function validateAddress(params: GridPreProcessEditCellProps) {
-    const hasError = addressRegex.test(params.props.value);
-    return {
-        ...params.props,
-        style: { color: !hasError ? "red" : "black" },
-        error: !hasError,
-        alert: alerts.addressRegex,
-    };
-}
-
-function validateMobile(params: GridPreProcessEditCellProps) {
-    const hasError = mobileRegex.test(params.props.value);
-    return {
-        ...params.props,
-        style: { color: !hasError ? "red" : "black" },
-        error: !hasError,
-        alert: alerts.mobileRegex,
-    };
-}
-
-function validateField(params: GridPreProcessEditCellProps, regex: RegExp, alertMessage: string) {
+function validateField(
+    params: GridPreProcessEditCellProps,
+    regex: RegExp,
+    alertMessage: string,
+) {
     const hasError = regex.test(params.props.value);
     return {
         ...params.props,
@@ -68,4 +40,27 @@ function validateField(params: GridPreProcessEditCellProps, regex: RegExp, alert
     };
 }
 
-export { validateMobile, validateName, validateAddress, maxDate, minDate, validateField, nameRegex, addressRegex, mobileRegex, alerts };
+const validateFieldAlerts = (
+    name: string,
+    address: string,
+    mobile: string,
+): string => {
+    return nameRegex.test(name)
+        ? addressRegex.test(address)
+            ? mobileRegex.test(mobile)
+                ? ""
+                : alerts.mobileRegex
+            : alerts.addressRegex
+        : alerts.nameRegex;
+};
+
+export {
+    maxDate,
+    minDate,
+    validateField,
+    validateFieldAlerts,
+    nameRegex,
+    addressRegex,
+    mobileRegex,
+    alerts,
+};

@@ -25,11 +25,10 @@ import {
     alerts,
     maxDate,
     minDate,
+    mobileRegex,
     nameRegex,
-    validateAddress,
     validateField,
-    validateMobile,
-    validateName,
+    validateFieldAlerts,
 } from "../../../util/validateTable";
 
 interface ITableData {
@@ -106,7 +105,9 @@ function TableDataGrid() {
             align: "left",
             width: 150,
             headerClassName: "headerCellStyles",
-            preProcessEditCellProps: validateMobile,
+            preProcessEditCellProps: (params: GridPreProcessEditCellProps) => {
+                return validateField(params, mobileRegex, alerts.mobileRegex);
+            },
         },
         {
             field: "dob",
@@ -216,7 +217,7 @@ function TableDataGrid() {
     }));
 
     function handleAddRow() {
-        const id = studentDataList.length + 1;
+        const id = dispatch.length + 1;
         const newRow: ITableData = {
             id: id,
             name: "",
@@ -254,6 +255,11 @@ function TableDataGrid() {
             gender: updatedFields.gender as string,
             age: updatedFields.age as number,
         };
+        const validations = validateFieldAlerts(data.name, data.address, data.mobile);
+        if (validations) {
+          return Promise.reject(alert(validations));
+        }
+        
         dispatch(tableDataActions.updateTableData(data));
         return { ...oldRow, ...newRow };
     }
