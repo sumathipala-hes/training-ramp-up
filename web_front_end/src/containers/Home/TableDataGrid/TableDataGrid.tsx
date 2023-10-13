@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import "./TableDataGrid.css";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import AddIcon from "@mui/icons-material/Add";
@@ -148,16 +147,24 @@ function TableDataGrid() {
                             onClick={handleSaveRowClick(row)}
                             sx={{
                                 color: "primary.main",
+                                ":hover": {
+                                    color: "#0984e3 !important",
+                                    cursor: "pointer",
+                                },
                             }}
-                            className="grid-actions-cell-item"
                         />,
                         <GridActionsCellItem
                             key={id}
                             icon={<CancelIcon />}
                             label="Cancel"
                             onClick={handleCancelRowClick(row)}
-                            className="grid-actions-cell-items-cancle"
                             color="inherit"
+                            sx={{
+                                ":hover": {
+                                    color: "red !important",
+                                    cursor: "pointer",
+                                },
+                            }}
                         />,
                     ];
                 }
@@ -168,16 +175,26 @@ function TableDataGrid() {
                         icon={<EditIcon />}
                         label="Edit"
                         onClick={handleEditRowClick(row)}
-                        className="grid-actions-cell-items-edit"
                         color="inherit"
+                        sx={{
+                            ":hover": {
+                                color: "green !important",
+                                cursor: "pointer",
+                            },
+                        }}
                     />,
                     <GridActionsCellItem
                         key={id}
                         icon={<DeleteIcon />}
                         label="Delete"
                         onClick={handleDeleteRowClick(row)}
-                        className="grid-actions-cell-items-cancle"
                         color="inherit"
+                        sx={{
+                            ":hover": {
+                                color: "red !important",
+                                cursor: "pointer",
+                            },
+                        }}
                     />,
                 ];
             },
