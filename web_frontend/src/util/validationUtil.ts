@@ -1,5 +1,5 @@
-const nameRegex = /^[a-zA-Z]+$/;
-const addressRegex = /^[a-zA-Z0-9\s,'-]*$/;
+const nameRegex = /^[a-zA-Z]{4,}$/;
+const addressRegex = /^[a-zA-Z0-9\s,'-]{3,}$/;
 const mobileRegex = /^[0-9]{10}$/;
 
 export const validateName = (name: string) => {
@@ -26,6 +26,6 @@ export const minDate = () => {
   const date = new Date();
   const day = date.getDate().toString().padStart(2, "0");
   const month = (date.getMonth() + 1).toString().padStart(2, "0");
-  const year = (date.getFullYear() - 150).toString();
+  const year = (date.getFullYear() - 50).toString();
   return `${year}-${month}-${day}`;
 };
