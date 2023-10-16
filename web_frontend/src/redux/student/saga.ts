@@ -74,3 +74,10 @@ function* deleteStudent(action: PayloadAction<number>) {
     alert(error);
   }
 }
+
+export function* studentSaga() {
+  yield takeEvery("saveStudent", saveStudent);
+  yield takeEvery("getAllStudents", getAllStudents);
+  yield takeEvery("updateStudent", updateStudent);
+  yield takeEvery("deleteStudent", deleteStudent);
+}
