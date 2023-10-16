@@ -1,6 +1,7 @@
 import { call, put, takeEvery } from "redux-saga/effects";
 import { PayloadAction } from "@reduxjs/toolkit";
-import { api } from "../../../api/api";
+import { api } from "../../api/api";
+import { studentActions } from "./slice";
 
 interface IStudentData {
   id: number;
@@ -76,8 +77,8 @@ function* deleteStudent(action: PayloadAction<number>) {
 }
 
 export function* studentSaga() {
-  yield takeEvery("saveStudent", saveStudent);
-  yield takeEvery("getAllStudents", getAllStudents);
-  yield takeEvery("updateStudent", updateStudent);
-  yield takeEvery("deleteStudent", deleteStudent);
+  yield takeEvery(studentActions.addStudent, saveStudent);
+  yield takeEvery(studentActions.fetchStudent, getAllStudents);
+  yield takeEvery(studentActions.updateStudent, updateStudent);
+  yield takeEvery(studentActions.removeStudent, deleteStudent);
 }
