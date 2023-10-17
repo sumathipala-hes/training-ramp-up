@@ -10,24 +10,28 @@ interface IStudentData {
   mobile: string;
   dob: string;
   gender: string;
-  age: number;
 }
 
-function* saveStudent(action: PayloadAction<IStudentData>) {
-  const { id, name, address, mobile, dob, gender, age } = action.payload;
+interface IResponse {
+  data: IStudentData[];
+}
+
+function* saveAndUpdateStudent(action: PayloadAction<IStudentData>) {
+  const { id, name, address, mobile, dob, gender } = action.payload;
 
   const student = {
-    id,
-    name,
-    address,
-    mobile,
-    dob,
-    gender,
-    age,
+    id: id,
+    name: name,
+    address: address,
+    mobile: mobile,
+    dob: dob,
+    gender: gender,
   };
 
+  const isUpdate: boolean = id != -1;
+
   try {
-    yield call(api.post, "/student", student, {
+    yield call(isUpdate ? api.put : api.post, `/student/${isUpdate ? id : ""}`, student, {
       headers: { "Content-Type": "application/json" },
     });
   } catch (error) {
@@ -37,30 +41,9 @@ function* saveStudent(action: PayloadAction<IStudentData>) {
 
 function* getAllStudents() {
   try {
-    const response: IStudentData[] = yield call(api.get, "/student");
-    yield put({ type: "student", payload: response });
-  } catch (error) {
-    alert(error);
-  }
-}
-
-function* updateStudent(action: PayloadAction<IStudentData>) {
-  const { id, name, address, mobile, dob, gender, age } = action.payload;
-
-  const student = {
-    id,
-    name,
-    address,
-    mobile,
-    dob,
-    gender,
-    age,
-  };
-
-  try {
-    yield call(api.put, "/student", student, {
-      headers: { "Content-Type": "application/json" },
-    });
+    const response: IResponse = yield call(api.get, "/student");
+    console.log(response);
+    yield put(studentActions.setStudent(response.data));
   } catch (error) {
     alert(error);
   }
@@ -77,8 +60,7 @@ function* deleteStudent(action: PayloadAction<number>) {
 }
 
 export function* studentSaga() {
-  yield takeEvery(studentActions.addStudent, saveStudent);
-  yield takeEvery(studentActions.fetchStudent, getAllStudents);
-  yield takeEvery(studentActions.updateStudent, updateStudent);
+  yield takeEvery(studentActions.fetchStudent.type, getAllStudents);
+  yield takeEvery(studentActions.updateStudent, saveAndUpdateStudent);
   yield takeEvery(studentActions.removeStudent, deleteStudent);
 }

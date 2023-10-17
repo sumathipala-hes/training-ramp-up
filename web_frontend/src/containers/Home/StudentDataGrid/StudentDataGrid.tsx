@@ -29,6 +29,7 @@ import {
   validateMobile,
   validateName,
 } from "../../../util/validationUtil";
+import { generateAge } from "../../../util/generateAgeUtil";
 
 interface IStudentData {
   id: number;
@@ -50,9 +51,8 @@ const StudentDataGrid = () => {
   }, [dispatch]);
 
   const handleAddNew = () => {
-    const id = studentList.length + 1;
     const newStudent: IStudentData = {
-      id: id,
+      id: -1,
       name: "",
       address: "",
       mobile: "",
@@ -62,7 +62,7 @@ const StudentDataGrid = () => {
     };
     dispatch(studentActions.addStudent(newStudent));
     setRowModesModel(oldModel => ({
-      [id]: { mode: GridRowModes.Edit, fieldToFocus: "name" },
+      [newStudent.id]: { mode: GridRowModes.Edit, fieldToFocus: "name" },
       ...oldModel,
     }));
   };
@@ -105,7 +105,8 @@ const StudentDataGrid = () => {
       return Promise.reject(alert(validations));
     }
     dispatch(studentActions.updateStudent(data));
-    return Promise.resolve({ ...newRow, ...oldRow });
+    dispatch(studentActions.fetchStudent());
+    return Promise.resolve({ ...oldRow, ...oldRow });
   };
 
   const columns: GridColDef[] = [
@@ -189,7 +190,7 @@ const StudentDataGrid = () => {
               sx={{
                 color: "primary.main",
               }}
-              onClick={handleSaveClick(row)}
+              onClick={handleSaveClick(row.row)}
             />,
             <GridActionsCellItem
               key={id}
@@ -254,6 +255,7 @@ const StudentDataGrid = () => {
         rows={studentList.map(student => ({
           ...student,
           dob: new Date(student.dob),
+          age: generateAge(student.dob),
         }))}
         columns={columns}
         editMode="row"
