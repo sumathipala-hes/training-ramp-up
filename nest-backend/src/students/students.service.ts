@@ -6,13 +6,14 @@ import { Student } from './entities/student.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { sendNotification } from 'src/utils/notification.util';
 import { SocketGateway } from 'src/socket/socket.gateway';
+import { SocketService } from 'src/socket/socket.service';
 
 @Injectable()
 export class StudentsService {
   constructor(
     @InjectRepository(Student)
     private studentRepository: Repository<Student>,
-    private readonly socketGateway: SocketGateway,
+    private readonly socketService: SocketService,
   ) {}
 
   async create(createStudentDto: CreateStudentDto): Promise<InsertResult> {
@@ -21,10 +22,7 @@ export class StudentsService {
         createStudentDto as Student,
       );
       sendNotification('New student', 'A new student has been created..!');
-      this.socketGateway.sendNotificationToClient(
-        '1',
-        'A new student has been created..!',
-      );
+      this.socketService.sendNotification('A new student has been created..!');
       return savedStudent;
     } catch (error) {
       sendNotification('Error', 'Student creation failed..!');
@@ -43,10 +41,6 @@ export class StudentsService {
       if (!students) {
         throw new Error('No Students Found');
       }
-      this.socketGateway.sendNotificationToClient(
-        'Success',
-        'Students fetched successfully..!',
-      );
       return students;
     } catch (error) {
       sendNotification('Error', 'Student fetching failed..!');
@@ -67,10 +61,7 @@ export class StudentsService {
         updateStudentDto as Student,
       );
       sendNotification('Student updated', 'A student has been updated..!');
-      this.socketGateway.sendNotificationToClient(
-        'Success',
-        'A student has been updated..!',
-      );
+      this.socketService.sendNotification('A student has been updated..!');
       return updatedStudent;
     } catch (error) {
       sendNotification('Error', 'Student updation failed..!');
@@ -85,10 +76,7 @@ export class StudentsService {
     try {
       const removedStudent = await this.studentRepository.delete(id);
       sendNotification('Student deleted', 'A student has been deleted..!');
-      this.socketGateway.sendNotificationToClient(
-        'Success',
-        'A student has been deleted..!',
-      );
+      this.socketService.sendNotification('A student has been deleted..!');
       return removedStudent;
     } catch (error) {
       sendNotification('Error', 'Student deletion failed..!');

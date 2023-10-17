@@ -10,7 +10,7 @@ export const store = configureStore({
   reducer: {
     studentList: studentReducer,
   },
-  middleware: [sagaMiddleware],
+  middleware: getDefaultMiddleware => getDefaultMiddleware().concat(sagaMiddleware),
 });
 
 sagaMiddleware.run(rootSaga);

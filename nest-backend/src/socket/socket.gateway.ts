@@ -6,18 +6,19 @@ import {
 import { Socket } from 'socket.io';
 import { SocketService } from './socket.service';
 
-@WebSocketGateway()
-export class SocketGateway implements OnGatewayConnection {
+@WebSocketGateway({
+  cors: {
+    origin: '*',
+    methods: ['GET', 'POST'],
+  },
+})
+export class SocketGateway {
   @WebSocketServer()
-  private server: Socket;
+  server: Socket;
 
-  constructor(private readonly socketService: SocketService) {}
+  constructor(private socketService: SocketService) {}
 
   handleConnection(socket: Socket): void {
     this.socketService.handleConnection(socket);
-  }
-
-  sendNotificationToClient(clientId: string, message: string): void {
-    this.socketService.sendNotification(clientId, message);
   }
 }
