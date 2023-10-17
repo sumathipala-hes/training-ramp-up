@@ -17,5 +17,7 @@ export class SocketGateway implements OnGatewayConnection {
     this.socketService.handleConnection(socket);
   }
 
-  // Implement other Socket.IO event handlers and message handlers
+  sendNotificationToClient(clientId: string, message: string): void {
+    this.socketService.sendNotification(clientId, message);
+  }
 }
