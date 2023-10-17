@@ -9,7 +9,6 @@ const sagaMiddleware = createSagaMiddleware();
 export const store = configureStore({
   reducer: {
     studentList: studentReducer,
-    lastUpdatedId: studentReducer,
   },
   middleware: [sagaMiddleware],
 });

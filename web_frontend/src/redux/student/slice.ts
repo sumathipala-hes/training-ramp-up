@@ -11,7 +11,6 @@ interface IStudent {
 
 interface IStudentState {
   studentList: IStudent[];
-  lastUpdatedId: number;
 }
 
 const initialState: IStudentState = {
@@ -25,7 +24,6 @@ const initialState: IStudentState = {
       gender: "Male",
     },
   ],
-  lastUpdatedId: -1,
 };
 
 export const studentSlice = createSlice({
@@ -41,13 +39,11 @@ export const studentSlice = createSlice({
     },
     fetchStudent: () => {},
     updateStudent: (state, action: PayloadAction<IStudent>) => {
-      console.log(action.payload, state);
+      console.log(action.payload);
+      console.log(state.studentList);
     },
     setStudent: (state, action: PayloadAction<IStudent[]>) => {
       state.studentList = action.payload;
-    },
-    setLastUpdatedId: (state, action: PayloadAction<number>) => {
-      state.lastUpdatedId = action.payload;
     },
   },
 });

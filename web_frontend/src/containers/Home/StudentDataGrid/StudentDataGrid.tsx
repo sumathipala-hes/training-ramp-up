@@ -89,7 +89,7 @@ const StudentDataGrid = () => {
     dispatch(studentActions.removeStudent(row.id));
   };
 
-  const handleProcessRowUpdate = (newRow: GridRowModel, oldRow: GridRowModel) => {
+  const handleProcessRowUpdate = async (newRow: GridRowModel, oldRow: GridRowModel) => {
     const { id, name, address, mobile, dob, gender, age } = newRow;
     const data: IStudentData = {
       id: id,
@@ -104,9 +104,11 @@ const StudentDataGrid = () => {
     if (validations) {
       return Promise.reject(alert(validations));
     }
-    dispatch(studentActions.updateStudent(data));
-    dispatch(studentActions.fetchStudent());
-    return Promise.resolve({ ...oldRow, ...oldRow });
+    await Promise.all([
+      dispatch(studentActions.updateStudent(data)),
+      dispatch(studentActions.fetchStudent()),
+    ]);
+    return { ...newRow, ...oldRow };
   };
 
   const columns: GridColDef[] = [
