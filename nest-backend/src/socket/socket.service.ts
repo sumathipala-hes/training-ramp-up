@@ -9,9 +9,6 @@ export class SocketService {
     const clientId = socket.id;
     this.connectedClients.set(clientId, socket);
 
-    this.sendNotification('Welcome to the server..!');
-    console.log('New client connected..!');
-
     socket.on('disconnect', () => {
       this.connectedClients.delete(clientId);
     });
