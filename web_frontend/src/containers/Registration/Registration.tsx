@@ -32,7 +32,7 @@ const Registration = () => {
       <Grid container justifyContent="center" alignItems="center" sx={{ height: "100vh" }}>
         <Grid item xs={12} sm={8} md={6} lg={4}>
           <Card sx={{ padding: "1rem" }}>
-            <h1>Sign In</h1>
+            <h1>Register</h1>
             <TextField
               label="Email"
               type="email"

@@ -32,8 +32,9 @@ function* saveAndUpdateUser(action: PayloadAction<IUserData>) {
     role: role,
   };
 
+  alert("saveAndUpdateUser");
   try {
-    yield call(isUpdate ? api.put : api.post, `/user/${isUpdate ? email : ""}`, user, {
+    yield call(isUpdate ? api.put : api.post, `/user/${isUpdate ? email : "add"}`, user, {
       headers: { "Content-Type": "application/json" },
     });
     yield put(userActions.fetchUser());

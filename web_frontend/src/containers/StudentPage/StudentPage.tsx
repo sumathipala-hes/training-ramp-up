@@ -2,7 +2,7 @@ import React from "react";
 import { Box } from "@mui/material";
 import StudentDataGrid from "./StudentDataGrid/StudentDataGrid";
 
-const Home = () => {
+const StudentPage = () => {
   return (
     <Box sx={{ py: 20, px: 40 }}>
       <StudentDataGrid />
@@ -10,4 +10,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default StudentPage;

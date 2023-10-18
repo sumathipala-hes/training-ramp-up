@@ -24,7 +24,6 @@ export class UsersController {
     private readonly authService: AuthService,
   ) {}
 
-  @Roles(Role.ADMIN)
   @Post('/add')
   async create(@Body() createUserDto: CreateUserDto): Promise<InsertResult> {
     return await this.usersService.create(createUserDto);
