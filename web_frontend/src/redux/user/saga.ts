@@ -63,6 +63,6 @@ function* deleteUser(action: PayloadAction<string>) {
 
 export function* userSaga() {
   yield takeEvery(userActions.fetchUser.type, getAllUsers);
-  yield takeEvery(userActions.updateUser, saveAndUpdateUser);
+  yield takeEvery(userActions.saveAndUpdateUser, saveAndUpdateUser);
   yield takeEvery(userActions.removeUser, deleteUser);
 }

@@ -35,7 +35,7 @@ export const userSlice = createSlice({
       state.userList = state.userList.filter(user => user.email != action.payload);
     },
     fetchUser: () => {},
-    updateUser: (state, action: PayloadAction<IUserData>) => {},
+    saveAndUpdateUser: (state, action: PayloadAction<IUserData>) => {},
     setUser: (state, action: PayloadAction<IUser[]>) => {
       state.userList = action.payload;
     },
