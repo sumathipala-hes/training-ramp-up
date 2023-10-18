@@ -39,10 +39,7 @@ export const studentSlice = createSlice({
       const index = state.studentEntries.findIndex(studentEntry => studentEntry.id === data.id);
       state.studentEntries[index] = data;
     },
-    fetchStudent: () => {
-      // console.log(action.payload,state);
-      // state.studentEntries = action.payload;
-    },
+    fetchStudent: () => {},
     setStudentEntries: (state, action: PayloadAction<IStudentEntry[]>) => {
       state.studentEntries = action.payload;
     },
