@@ -4,11 +4,11 @@ import { api } from "../../api/api";
 import { userActions } from "./slice";
 
 interface IUserData {
+  id: number;
   email: string;
   name: string;
   password: string;
   role: string;
-  isUpdate: boolean;
 }
 
 interface IUser {
@@ -23,7 +23,7 @@ interface IResponse {
 }
 
 function* saveAndUpdateUser(action: PayloadAction<IUserData>) {
-  const { email, name, password, role, isUpdate } = action.payload;
+  const { email, name, password, role } = action.payload;
 
   const user: IUser = {
     email: email,
@@ -32,7 +32,7 @@ function* saveAndUpdateUser(action: PayloadAction<IUserData>) {
     role: role,
   };
 
-  alert("saveAndUpdateUser");
+  const isUpdate: boolean = email != "";
   try {
     yield call(isUpdate ? api.put : api.post, `/user/${isUpdate ? email : "add"}`, user, {
       headers: { "Content-Type": "application/json" },
@@ -56,7 +56,7 @@ function* deleteUser(action: PayloadAction<string>) {
   const email = action.payload;
 
   try {
-    yield call(api.delete, `/user/${email}`);
+    yield call(api.delete, `/user/del/${email}`);
   } catch (error) {
     alert(error);
   }

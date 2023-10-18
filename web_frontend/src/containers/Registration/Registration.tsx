@@ -4,11 +4,11 @@ import { useAppDispatch } from "../../redux/store";
 import { userActions } from "../../redux/user/slice";
 
 interface IUserData {
+  id: number;
   email: string;
   name: string;
   password: string;
   role: string;
-  isUpdate: boolean;
 }
 
 const Registration = () => {
@@ -19,11 +19,11 @@ const Registration = () => {
 
   const handleRegister = () => {
     const user: IUserData = {
+      id: 0,
       email: email,
       name: name,
       password: password,
       role: "user",
-      isUpdate: false,
     };
     dispatch(userActions.saveAndUpdateUser(user));
   };

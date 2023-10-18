@@ -8,11 +8,11 @@ interface IUser {
 }
 
 interface IUserData {
+  id: number;
   email: string;
   name: string;
   password: string;
   role: string;
-  isUpdate: boolean;
 }
 
 interface IUserState {

@@ -21,11 +21,11 @@ import { studentActions } from "../../../redux/student/slice";
 import { userActions } from "../../../redux/user/slice";
 
 interface IUserData {
+  id: number;
   email: string;
   name: string;
   password: string;
   role: string;
-  isUpdate: boolean;
 }
 
 const UserDataGrid = () => {
@@ -39,15 +39,15 @@ const UserDataGrid = () => {
 
   const handleAddNew = () => {
     const newUser: IUserData = {
+      id: 0,
       email: "",
       name: "",
       password: "",
       role: "user",
-      isUpdate: false,
     };
-    dispatch(userActions.saveAndUpdateUser(newUser));
+    dispatch(userActions.addUser(newUser));
     setRowModesModel(oldModel => ({
-      [newUser.email]: { mode: GridRowModes.Edit, fieldToFocus: "email" },
+      [1]: { mode: GridRowModes.Edit, fieldToFocus: "email" },
       ...oldModel,
     }));
   };
@@ -71,28 +71,30 @@ const UserDataGrid = () => {
   };
 
   const handleDeleteClick = (row: GridRowModel) => () => {
-    dispatch(userActions.removeUser(row.email));
+    dispatch(userActions.removeUser(row.row.email));
   };
 
   const handleProcessRowUpdate = async (newRow: GridRowModel, oldRow: GridRowModel) => {
-    const { email, name, password, role } = newRow;
+    const { id, email, name, password, role } = newRow;
     const data: IUserData = {
+      id: id,
       email: email,
       name: name,
       password: password,
       role: role,
-      isUpdate: email != "",
     };
 
     // const validations = validateFields(name, address, mobile);
     // if (validations) {
     //   return Promise.reject(alert(validations));
     // }
+
     dispatch(userActions.saveAndUpdateUser(data));
     return Promise.resolve({ ...newRow, ...oldRow });
   };
 
   const columns: GridColDef[] = [
+    { field: "id", type: "number", headerName: "ID", width: 80, editable: true },
     { field: "email", type: "string", headerName: "Email", width: 200, editable: true },
     {
       field: "name",
@@ -123,11 +125,8 @@ const UserDataGrid = () => {
       headerName: "Role",
       width: 180,
       editable: true,
+      type: "singleSelect",
       valueOptions: ["Admin", "User"],
-      //   preProcessEditCellProps: (params: GridPreProcessEditCellProps) => {
-      //     const hasError = !validateMobile(params.props.value);
-      //     return { ...params.props, style: { color: hasError ? "red" : "black" } };
-      //   },
     },
 
     {
@@ -211,10 +210,15 @@ const UserDataGrid = () => {
         Add User
       </Button>
       <DataGrid
-        rows={userList}
+        rows={userList.map((user, index) => ({
+          id: index + 1,
+          email: user.email,
+          name: user.name,
+          password: user.password,
+          role: user.role,
+        }))}
         columns={columns}
         editMode="row"
-        getRowId={row => row.email}
         rowModesModel={rowModesModel}
         onRowModesModelChange={newRowModesModel => {
           setRowModesModel(newRowModesModel);
