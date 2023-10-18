@@ -30,8 +30,8 @@ function* getAllTableDataRows() {
         const response: IResponseData = yield call(api.get, "/student");
         console.log(response.data.data);
         yield put(setTableData(response.data.data));
-    } catch (error) {
-        alert(error);
+    } catch (e) {
+        alert("Loading data failed. Please try again." + e);
     }
 }
 
@@ -55,19 +55,18 @@ function* updateTableDataRow(action: PayloadAction<ITableData>) {
             tableData,
         );
         yield call(getAllTableDataRows);
-    } catch (error) {
-        alert(error);
+    } catch (e) {
+        alert("Saving or Updating data failed. Please try again." + e);
     }
 }
-  
 
 function* deleteTableDataRow(action: PayloadAction<number>) {
     const id = action.payload;
     try {
         yield call(api.delete, `/student/${id}`);
         yield call(getAllTableDataRows);
-    } catch (error) {
-        alert(error);
+    } catch (e) {
+        alert("Deleting data failed. Please try again." + e + id);
     }
 }
 
