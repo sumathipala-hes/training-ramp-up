@@ -1,7 +1,7 @@
 import React from "react";
 import { Button, Card, Container, Grid, TextField } from "@mui/material";
 
-const SignIn = () => {
+const Registration = () => {
   return (
     <Container>
       <Grid container justifyContent="center" alignItems="center" sx={{ height: "100vh" }}>
@@ -26,4 +26,4 @@ const SignIn = () => {
   );
 };
 
-export default SignIn;
+export default Registration;
