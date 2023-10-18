@@ -30,14 +30,15 @@ import {
     validateField,
     validateFieldAlerts,
 } from "../../../util/validateTable";
+import { generateAge } from "../../../util/generateAge";
 
 interface ITableData {
-    id: number;
-    name: string;
-    address: string;
-    mobile: string;
-    dob: string;
-    gender: string;
+    studentId: number;
+    studentName: string;
+    studentAddress: string;
+    studentMobile: string;
+    studentDob: string;
+    studentGender: string;
     age: number;
 }
 
@@ -54,13 +55,13 @@ function TableDataGrid() {
 
     const columns: GridColDef[] = [
         {
-            field: "id",
+            field: "studentId",
             headerName: "ID",
             width: 90,
             headerClassName: "headerCellStyles",
         },
         {
-            field: "name",
+            field: "studentName",
             headerName: "Name",
             type: "string",
             editable: true,
@@ -73,7 +74,7 @@ function TableDataGrid() {
             },
         },
         {
-            field: "gender",
+            field: "studentGender",
             headerName: "Gender",
             editable: true,
             headerAlign: "left",
@@ -84,7 +85,7 @@ function TableDataGrid() {
             valueOptions: ["Male", "Female"],
         },
         {
-            field: "address",
+            field: "studentAddress",
             headerName: "Address",
             type: "string",
             editable: true,
@@ -97,7 +98,7 @@ function TableDataGrid() {
             },
         },
         {
-            field: "mobile",
+            field: "studentMobile",
             headerName: "Mobile No",
             type: "string",
             editable: true,
@@ -110,7 +111,7 @@ function TableDataGrid() {
             },
         },
         {
-            field: "dob",
+            field: "studentDob",
             headerName: "Date of Birth",
             type: "date",
             editable: true,
@@ -154,7 +155,7 @@ function TableDataGrid() {
                             key={id}
                             icon={<SaveIcon />}
                             label="Save"
-                            onClick={handleSaveRowClick(row)}
+                            onClick={handleSaveRowClick(row.row)}
                             sx={{
                                 color: "primary.main",
                                 ":hover": {
@@ -211,25 +212,25 @@ function TableDataGrid() {
         },
     ];
 
-    const transformedStudentData = studentDataList.map((row) => ({
+    const transformedStudentData = studentDataList.map(row => ({
         ...row,
-        dob: new Date(row.dob),
+        studentDob: new Date(row.studentDob),
+        age: generateAge(row.studentDob),
     }));
 
     function handleAddRow() {
-        const id = dispatch.length + 1;
         const newRow: ITableData = {
-            id: id,
-            name: "",
-            address: "",
-            mobile: "",
-            dob: maxDate(),
+            studentId: -1,
+            studentName: "",
+            studentAddress: "",
+            studentMobile: "",
+            studentDob: maxDate(),
             age: 0,
-            gender: "",
+            studentGender: "",
         };
         dispatch(tableDataActions.addTableData(newRow));
         setRowModesModel((oldModel) => ({
-            [id]: { mode: GridRowModes.Edit, fieldToFocus: "name" },
+            [newRow.studentId]: { mode: GridRowModes.Edit, fieldToFocus: "name" },
             ...oldModel,
         }));
     }
@@ -245,22 +246,23 @@ function TableDataGrid() {
         newRow: GridRowModel,
         oldRow: GridRowModel,
     ) {
-        const { id, ...updatedFields } = newRow;
+        const { studentId, ...updatedFields } = newRow;
         const data: ITableData = {
-            id,
-            name: updatedFields.name as string,
-            address: updatedFields.address as string,
-            mobile: updatedFields.mobile as string,
-            dob: (updatedFields.dob as Date).toISOString(),
-            gender: updatedFields.gender as string,
+            studentId,
+            studentName: updatedFields.studentName as string,
+            studentAddress: updatedFields.studentAddress as string,
+            studentMobile: updatedFields.studentMobile as string,
+            studentDob: (updatedFields.studentDob as Date).toISOString(),
+            studentGender: updatedFields.studentGender as string,
             age: updatedFields.age as number,
         };
-        const validations = validateFieldAlerts(data.name, data.address, data.mobile);
+        const validations = validateFieldAlerts(data.studentName, data.studentAddress, data.studentMobile);
         if (validations) {
           return Promise.reject(alert(validations));
         }
         
         dispatch(tableDataActions.updateTableData(data));
+        dispatch(tableDataActions.fetchTableData());
         return { ...oldRow, ...newRow };
     }
 
@@ -321,6 +323,7 @@ function TableDataGrid() {
                     boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)",
                 }}
                 rows={transformedStudentData}
+                getRowId={(row) => row.studentId}
                 columns={columns}
                 editMode="row"
                 rowModesModel={rowModesModel}
