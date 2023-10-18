@@ -42,7 +42,6 @@ function* saveAndUpdateStudent(action: PayloadAction<IStudentData>) {
 function* getAllStudents() {
   try {
     const response: IResponse = yield call(api.get, "/student");
-    console.log(response);
     yield put(studentActions.setStudent(response.data));
   } catch (error) {
     alert(error);
