@@ -21,11 +21,11 @@ interface IResponseData {
 }
 
 // Define action types
-const { fetchTableData, removeTableData , setTableData } =
+const { fetchTableData, removeTableData, updateTableData, setTableData } =
     tableDataActions;
 
 // Define saga functions
-function* getAllTableData() {
+function* getAllTableDataRows() {
     try {
         const response: IResponseData = yield call(api.get, "/student");
         console.log(response.data.data);
@@ -35,7 +35,32 @@ function* getAllTableData() {
     }
 }
 
-function* deleteTableData(action: PayloadAction<number>) {
+function* updateTableDataRow(action: PayloadAction<ITableData>) {
+    const data = action.payload;
+    const isUpdate: boolean = data.studentId !== -1;
+
+    const tableData = {
+        studentId: data.studentId,
+        studentName: data.studentName,
+        studentAddress: data.studentAddress,
+        studentMobile: data.studentMobile,
+        studentDob: data.studentDob,
+        studentGender: data.studentGender,
+    };
+
+    try {
+        yield call(
+            isUpdate ? api.put : api.post,
+            `/student/${isUpdate ? data.studentId : ""}`,
+            tableData,
+        );
+    } catch (error) {
+        alert(error);
+    }
+}
+  
+
+function* deleteTableDataRow(action: PayloadAction<number>) {
     const id = action.payload;
     try {
         yield call(api.delete, `/student/${id}`);
@@ -45,8 +70,9 @@ function* deleteTableData(action: PayloadAction<number>) {
 }
 
 function* tableDataSaga() {
-    yield takeEvery(fetchTableData, getAllTableData);
-    yield takeEvery(removeTableData, deleteTableData);
+    yield takeEvery(fetchTableData, getAllTableDataRows);
+    yield takeEvery(updateTableData, updateTableDataRow);
+    yield takeEvery(removeTableData, deleteTableDataRow);
 }
 
 function* mySaga() {

@@ -155,7 +155,7 @@ function TableDataGrid() {
                             key={id}
                             icon={<SaveIcon />}
                             label="Save"
-                            onClick={handleSaveRowClick(row.row)}
+                            onClick={handleSaveRowClick(row)}
                             sx={{
                                 color: "primary.main",
                                 ":hover": {
@@ -230,7 +230,7 @@ function TableDataGrid() {
         };
         dispatch(tableDataActions.addTableData(newRow));
         setRowModesModel((oldModel) => ({
-            [newRow.studentId]: { mode: GridRowModes.Edit, fieldToFocus: "name" },
+            [newRow.studentId]: { mode: GridRowModes.Edit, fieldToFocus: "studentName" },
             ...oldModel,
         }));
     }
@@ -248,7 +248,7 @@ function TableDataGrid() {
     ) {
         const { studentId, ...updatedFields } = newRow;
         const data: ITableData = {
-            studentId,
+            studentId: studentId,
             studentName: updatedFields.studentName as string,
             studentAddress: updatedFields.studentAddress as string,
             studentMobile: updatedFields.studentMobile as string,
@@ -262,14 +262,13 @@ function TableDataGrid() {
         }
         
         dispatch(tableDataActions.updateTableData(data));
-        dispatch(tableDataActions.fetchTableData());
         return { ...oldRow, ...newRow };
     }
 
     const handleEditRowClick = (row: GridRowModel) => () => {
         setRowModesModel((oldModel) => ({
             ...oldModel,
-            [row.id]: { mode: GridRowModes.Edit, fieldToFocus: "name" },
+            [row.id]: { mode: GridRowModes.Edit, fieldToFocus: "studentName" },
         }));
     };
 
