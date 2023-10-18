@@ -48,6 +48,7 @@ function* addAndUpdateStudent(action: PayloadAction<IStudentData>) {
     } else {
       yield call(api.post, "/students", studentData);
     }
+    yield put(studentActions.fetchStudent());
   } catch (e) {
     alert("Error adding/updating student data " + e);
   }
@@ -57,6 +58,7 @@ function* deleteStudent(action: PayloadAction<number>) {
   try {
     const id = action.payload;
     yield call(api.delete, `/students/ ${id}`);
+    yield put(studentActions.fetchStudent());
   } catch (e) {
     alert("Error deleting student data " + e);
   }
