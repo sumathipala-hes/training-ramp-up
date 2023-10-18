@@ -1,4 +1,8 @@
-import { WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
+import {
+  OnGatewayConnection,
+  WebSocketGateway,
+  WebSocketServer,
+} from '@nestjs/websockets';
 import { Socket } from 'socket.io';
 import { SocketService } from './socket.service';
 
@@ -8,11 +12,11 @@ import { SocketService } from './socket.service';
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
   },
 })
-export class SocketGateway {
+export class SocketGateway implements OnGatewayConnection {
   @WebSocketServer()
-  server: Socket;
+  private server: Socket;
 
-  constructor(private socketService: SocketService) {}
+  constructor(private readonly socketService: SocketService) {}
 
   handleConnection(socket: Socket): void {
     this.socketService.handleConnection(socket);
