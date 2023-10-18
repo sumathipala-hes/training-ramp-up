@@ -1,13 +1,13 @@
 import React from "react";
 import { Provider } from "react-redux";
-import Home from "./containers/Home/Home";
 import store from "./redux/store";
 import Notification from "./components/Notification/Notification";
+import RootRoutes from "./components/RootRoutes/RootRoutes";
 
 const App = () => {
   return (
     <Provider store={store}>
-      <Home />
+      <RootRoutes />
       <Notification />
     </Provider>
   );
