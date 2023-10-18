@@ -15,6 +15,11 @@ interface IUserData {
   role: string;
 }
 
+interface ISignInData {
+  email: string;
+  password: string;
+}
+
 interface IUserState {
   userList: IUser[];
 }
@@ -41,6 +46,10 @@ export const userSlice = createSlice({
     },
     setUser: (state, action: PayloadAction<IUser[]>) => {
       state.userList = action.payload;
+    },
+    signIn: (state, action: PayloadAction<ISignInData>) => {
+      console.log(action.payload);
+      console.log(state.userList);
     },
   },
 });

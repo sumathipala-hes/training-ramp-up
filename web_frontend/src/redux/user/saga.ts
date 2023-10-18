@@ -11,6 +11,11 @@ interface IUserData {
   role: string;
 }
 
+interface ISignInData {
+  email: string;
+  password: string;
+}
+
 interface IUser {
   email: string;
   name: string;
@@ -62,8 +67,20 @@ function* deleteUser(action: PayloadAction<string>) {
   }
 }
 
+function* signIn(action: PayloadAction<ISignInData>) {
+  try {
+    yield call(api.post, "/user/signIn", action.payload, {
+      headers: { "Content-Type": "application/json" },
+    });
+    alert("response");
+  } catch (error) {
+    alert(error);
+  }
+}
+
 export function* userSaga() {
   yield takeEvery(userActions.fetchUser.type, getAllUsers);
   yield takeEvery(userActions.saveAndUpdateUser, saveAndUpdateUser);
   yield takeEvery(userActions.removeUser, deleteUser);
+  yield takeEvery(userActions.signIn, signIn);
 }
