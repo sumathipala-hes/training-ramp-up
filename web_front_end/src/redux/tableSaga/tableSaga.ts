@@ -54,6 +54,7 @@ function* updateTableDataRow(action: PayloadAction<ITableData>) {
             `/student/${isUpdate ? data.studentId : ""}`,
             tableData,
         );
+        yield call(getAllTableDataRows);
     } catch (error) {
         alert(error);
     }
@@ -64,6 +65,7 @@ function* deleteTableDataRow(action: PayloadAction<number>) {
     const id = action.payload;
     try {
         yield call(api.delete, `/student/${id}`);
+        yield call(getAllTableDataRows);
     } catch (error) {
         alert(error);
     }
