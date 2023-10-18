@@ -25,11 +25,16 @@ const SignUp = () => {
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    console.log(selectedGender);
     const data = new FormData(event.currentTarget);
     console.log({
+      roleType: "USER",
+      name: data.get("name"),
+      address: data.get("address"),
       email: data.get("email"),
-      password: data.get("password"),
+      mobileNumber: data.get("mobileNumber"),
+      dob: data.get("dob"),
+      password: data.get("conPassword"),
+      gender: selectedGender,
     });
   };
 
