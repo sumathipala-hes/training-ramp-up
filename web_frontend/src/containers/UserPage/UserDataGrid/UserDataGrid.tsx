@@ -126,7 +126,7 @@ const UserDataGrid = () => {
       width: 180,
       editable: true,
       type: "singleSelect",
-      valueOptions: ["Admin", "User"],
+      valueOptions: ["admin", "user"],
     },
 
     {
