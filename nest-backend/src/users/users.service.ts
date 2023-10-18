@@ -6,12 +6,14 @@ import { DeleteResult, InsertResult, Repository, UpdateResult } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { decrypt, encrypt } from '../utils/password.util';
 import { sendNotification } from '../utils/notification.util';
+import { SocketService } from 'src/socket/socket.service';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+    private readonly socketService: SocketService,
   ) {}
 
   async create(createUserDto: CreateUserDto): Promise<InsertResult> {
@@ -20,7 +22,7 @@ export class UsersService {
         ...createUserDto,
         password: encrypt(createUserDto.password),
       } as User);
-      sendNotification('New user', 'A new user has been created..!');
+      this.socketService.sendNotification('A new user has been created..!');
       return savedUser;
     } catch (error) {
       sendNotification('Error', error.message);
@@ -47,6 +49,7 @@ export class UsersService {
       });
       return users;
     } catch (error) {
+      this.socketService.sendNotification('User fetching failed..!');
       throw new HttpException(
         'Internal Server Error',
         HttpStatus.INTERNAL_SERVER_ERROR,
@@ -63,7 +66,7 @@ export class UsersService {
         ...updateUserDto,
         password: encrypt(updateUserDto.password),
       } as User);
-      sendNotification('User updated', 'A user has been updated..!');
+      this.socketService.sendNotification('A user has been updated..!');
       return updatedUser;
     } catch (error) {
       sendNotification('Error', 'User update failed..!');
@@ -101,10 +104,11 @@ export class UsersService {
         },
       });
       if (!user) {
+        this.socketService.sendNotification('User deletion failed..!');
         throw new Error('User not found');
       }
       const deletedUser = await this.userRepository.delete(email);
-      sendNotification('User deleted', 'A user has been deleted..!');
+      this.socketService.sendNotification('A user has been deleted..!');
       return deletedUser;
     } catch (error) {
       sendNotification('Error', 'User deletion failed..!');

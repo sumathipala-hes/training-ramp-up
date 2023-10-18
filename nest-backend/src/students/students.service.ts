@@ -5,7 +5,6 @@ import { DeleteResult, InsertResult, Repository, UpdateResult } from 'typeorm';
 import { Student } from './entities/student.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { sendNotification } from 'src/utils/notification.util';
-import { SocketGateway } from 'src/socket/socket.gateway';
 import { SocketService } from 'src/socket/socket.service';
 
 @Injectable()
@@ -21,7 +20,6 @@ export class StudentsService {
       const savedStudent = await this.studentRepository.insert(
         createStudentDto as Student,
       );
-      sendNotification('New student', 'A new student has been created..!');
       this.socketService.sendNotification('A new student has been created..!');
       return savedStudent;
     } catch (error) {
@@ -43,7 +41,7 @@ export class StudentsService {
       }
       return students;
     } catch (error) {
-      sendNotification('Error', 'Student fetching failed..!');
+      this.socketService.sendNotification('Student fetching failed..!');
       throw new HttpException(
         'Internal Server Error',
         HttpStatus.INTERNAL_SERVER_ERROR,
@@ -60,11 +58,10 @@ export class StudentsService {
         id,
         updateStudentDto as Student,
       );
-      sendNotification('Student updated', 'A student has been updated..!');
       this.socketService.sendNotification('A student has been updated..!');
       return updatedStudent;
     } catch (error) {
-      sendNotification('Error', 'Student updation failed..!');
+      this.socketService.sendNotification('Student updation failed..!');
       throw new HttpException(
         'Internal Server Error',
         HttpStatus.INTERNAL_SERVER_ERROR,
@@ -75,11 +72,10 @@ export class StudentsService {
   async remove(id: number): Promise<DeleteResult> {
     try {
       const removedStudent = await this.studentRepository.delete(id);
-      sendNotification('Student deleted', 'A student has been deleted..!');
       this.socketService.sendNotification('A student has been deleted..!');
       return removedStudent;
     } catch (error) {
-      sendNotification('Error', 'Student deletion failed..!');
+      this.socketService.sendNotification('Student deletion failed..!');
       throw new HttpException(
         'Internal Server Error',
         HttpStatus.INTERNAL_SERVER_ERROR,

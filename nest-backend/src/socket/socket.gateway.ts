@@ -9,7 +9,7 @@ import { SocketService } from './socket.service';
 @WebSocketGateway({
   cors: {
     origin: '*',
-    methods: ['GET', 'POST'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
   },
 })
 export class SocketGateway {

@@ -104,11 +104,8 @@ const StudentDataGrid = () => {
     if (validations) {
       return Promise.reject(alert(validations));
     }
-    await Promise.all([
-      dispatch(studentActions.updateStudent(data)),
-      dispatch(studentActions.fetchStudent()),
-    ]);
-    return { ...newRow, ...oldRow };
+    dispatch(studentActions.updateStudent(data));
+    return Promise.resolve({ ...newRow, ...oldRow });
   };
 
   const columns: GridColDef[] = [
