@@ -13,56 +13,41 @@ import {
   GridColDef,
   GridActionsCellItem,
   GridRowModel,
-  GridPreProcessEditCellProps,
-  GridRenderEditCellParams,
-  GridEditDateCell,
 } from "@mui/x-data-grid";
 import { useSelector } from "react-redux";
 import { RootState, useAppDispatch } from "../../../redux/store";
 import { useEffect, useState } from "react";
 import { studentActions } from "../../../redux/student/slice";
-import {
-  maxDate,
-  minDate,
-  validateAddress,
-  validateFields,
-  validateMobile,
-  validateName,
-} from "../../../util/validationUtil";
-import { generateAge } from "../../../util/generateAgeUtil";
+import { userActions } from "../../../redux/user/slice";
 
-interface IStudentData {
-  id: number;
+interface IUserData {
+  email: string;
   name: string;
-  address: string;
-  mobile: string;
-  dob: string;
-  gender: string;
-  age: number;
+  password: string;
+  role: string;
+  isUpdate: boolean;
 }
 
 const UserDataGrid = () => {
   const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({});
   const dispatch = useAppDispatch();
-  const studentList = useSelector((state: RootState) => state.studentList.studentList);
+  const userList = useSelector((state: RootState) => state.userList.userList);
 
   useEffect(() => {
-    dispatch(studentActions.fetchStudent());
+    dispatch(userActions.fetchUser());
   }, [dispatch]);
 
   const handleAddNew = () => {
-    const newStudent: IStudentData = {
-      id: -1,
+    const newUser: IUserData = {
+      email: "",
       name: "",
-      address: "",
-      mobile: "",
-      dob: new Date().toISOString(),
-      age: 0,
-      gender: "Male",
+      password: "",
+      role: "user",
+      isUpdate: false,
     };
-    dispatch(studentActions.addStudent(newStudent));
+    dispatch(userActions.saveAndUpdateUser(newUser));
     setRowModesModel(oldModel => ({
-      [newStudent.id]: { mode: GridRowModes.Edit, fieldToFocus: "name" },
+      [newUser.email]: { mode: GridRowModes.Edit, fieldToFocus: "email" },
       ...oldModel,
     }));
   };
@@ -86,30 +71,29 @@ const UserDataGrid = () => {
   };
 
   const handleDeleteClick = (row: GridRowModel) => () => {
-    dispatch(studentActions.removeStudent(row.id));
+    dispatch(userActions.removeUser(row.email));
   };
 
   const handleProcessRowUpdate = async (newRow: GridRowModel, oldRow: GridRowModel) => {
-    const { id, name, address, mobile, dob, gender, age } = newRow;
-    const data: IStudentData = {
-      id: id,
+    const { email, name, password, role } = newRow;
+    const data: IUserData = {
+      email: email,
       name: name,
-      address: address,
-      mobile: mobile,
-      dob: dob.toISOString(),
-      gender: gender,
-      age: age,
+      password: password,
+      role: role,
+      isUpdate: email != "",
     };
-    const validations = validateFields(name, address, mobile);
-    if (validations) {
-      return Promise.reject(alert(validations));
-    }
-    dispatch(studentActions.updateStudent(data));
+
+    // const validations = validateFields(name, address, mobile);
+    // if (validations) {
+    //   return Promise.reject(alert(validations));
+    // }
+    dispatch(userActions.saveAndUpdateUser(data));
     return Promise.resolve({ ...newRow, ...oldRow });
   };
 
   const columns: GridColDef[] = [
-    { field: "id", headerName: "ID", width: 80, editable: true },
+    { field: "email", type: "string", headerName: "Email", width: 200, editable: true },
     {
       field: "name",
       headerName: "Name",
@@ -118,58 +102,34 @@ const UserDataGrid = () => {
       align: "left",
       headerAlign: "left",
       editable: true,
-      preProcessEditCellProps: (params: GridPreProcessEditCellProps) => {
-        const hasError = !validateName(params.props.value);
-        return { ...params.props, style: { color: hasError ? "red" : "black" } };
-      },
+      //   preProcessEditCellProps: (params: GridPreProcessEditCellProps) => {
+      //     const hasError = !validateName(params.props.value);
+      //     return { ...params.props, style: { color: hasError ? "red" : "black" } };
+      //   },
     },
     {
-      field: "address",
-      headerName: "Address",
+      field: "password",
+      headerName: "Password",
       type: "string",
       width: 180,
       editable: true,
-      preProcessEditCellProps: (params: GridPreProcessEditCellProps) => {
-        const hasError = !validateAddress(params.props.value);
-        return { ...params.props, style: { color: hasError ? "red" : "black" } };
-      },
+      //   preProcessEditCellProps: (params: GridPreProcessEditCellProps) => {
+      //     const hasError = !validateAddress(params.props.value);
+      //     return { ...params.props, style: { color: hasError ? "red" : "black" } };
+      //   },
     },
     {
-      field: "mobile",
-      headerName: "Mobile",
-      type: "string",
+      field: "role",
+      headerName: "Role",
       width: 180,
       editable: true,
-      preProcessEditCellProps: (params: GridPreProcessEditCellProps) => {
-        const hasError = !validateMobile(params.props.value);
-        return { ...params.props, style: { color: hasError ? "red" : "black" } };
-      },
+      valueOptions: ["Admin", "User"],
+      //   preProcessEditCellProps: (params: GridPreProcessEditCellProps) => {
+      //     const hasError = !validateMobile(params.props.value);
+      //     return { ...params.props, style: { color: hasError ? "red" : "black" } };
+      //   },
     },
-    {
-      field: "gender",
-      headerName: "Gender",
-      width: 180,
-      editable: true,
-      type: "singleSelect",
-      valueOptions: ["Male", "Female"],
-    },
-    {
-      field: "dob",
-      headerName: "DOB",
-      type: "date",
-      width: 180,
-      editable: true,
-      renderEditCell: (params: GridRenderEditCellParams) => {
-        return <GridEditDateCell {...params} inputProps={{ max: maxDate(), min: minDate() }} />;
-      },
-    },
-    {
-      field: "age",
-      headerName: "Age",
-      type: "number",
-      width: 80,
-      editable: true,
-    },
+
     {
       field: "actions",
       type: "actions",
@@ -248,16 +208,13 @@ const UserDataGrid = () => {
         onClick={handleAddNew}
         sx={{ mb: 2 }}
       >
-        Add Student
+        Add User
       </Button>
       <DataGrid
-        rows={studentList.map(student => ({
-          ...student,
-          dob: new Date(student.dob),
-          age: generateAge(student.dob),
-        }))}
+        rows={userList}
         columns={columns}
         editMode="row"
+        getRowId={row => row.email}
         rowModesModel={rowModesModel}
         onRowModesModelChange={newRowModesModel => {
           setRowModesModel(newRowModesModel);
