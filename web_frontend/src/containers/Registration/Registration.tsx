@@ -8,7 +8,8 @@ const Registration = () => {
         <Grid item xs={12} sm={8} md={6} lg={4}>
           <Card sx={{ padding: "1rem" }}>
             <h1>Sign In</h1>
-            <TextField label="Username" variant="outlined" fullWidth margin="normal" />
+            <TextField label="Email" type="email" variant="outlined" fullWidth margin="normal" />
+            <TextField label="Full Name" variant="outlined" fullWidth margin="normal" />
             <TextField
               type="password"
               label="Password"
@@ -16,8 +17,10 @@ const Registration = () => {
               fullWidth
               margin="normal"
             />
+
+            <TextField label="Role" variant="outlined" fullWidth margin="normal" />
             <Button variant="contained" fullWidth sx={{ mt: 2 }}>
-              Sign In
+              Register
             </Button>
           </Card>
         </Grid>
