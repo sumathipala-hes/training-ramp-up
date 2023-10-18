@@ -14,16 +14,7 @@ interface IStudentState {
 }
 
 const initialState: IStudentState = {
-  studentEntries: [
-    // {
-    //   id: 1,
-    //   name: "John",
-    //   address: "Galle",
-    //   mobileNumber: "0777123456",
-    //   dateOfBirth: new Date("1990-01-01").toDateString(),
-    //   gender: "Male",
-    // },
-  ],
+  studentEntries: [],
 };
 
 export const studentSlice = createSlice({
