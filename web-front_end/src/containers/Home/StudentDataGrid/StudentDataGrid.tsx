@@ -17,17 +17,22 @@ import {
   GridRowEditStopReasons,
   GridToolbarContainer,
   GridPreProcessEditCellProps,
+  GridEditDateCell,
+  GridRenderEditCellParams,
 } from "@mui/x-data-grid";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState, useAppDispatch } from "../../../redux/store";
-import { studentActions } from "../../../redux/studentSlice";
+import { studentActions } from "../../../redux/student/studentSlice";
 import {
   validateInput,
   validateNameInput,
   validateAddressInput,
   validateMobileInput,
+  maxDate,
+  minDate,
 } from "../../../util/validationUtil";
+import { generateAge } from "../../../util/generateAgeUtil";
 
 interface IStudentEntry {
   id: number;
@@ -35,8 +40,7 @@ interface IStudentEntry {
   gender: string;
   address: string;
   mobileNumber: string;
-  dateOfBirth: string;
-  age: number;
+  dob: string;
 }
 
 const StudentDataGrid = () => {
@@ -56,19 +60,17 @@ const StudentDataGrid = () => {
 
   function EditToolbar() {
     const handleAddNew = () => {
-      const id = studentList.length + 1;
       const newStudent: IStudentEntry = {
-        id: id,
+        id: -1,
         name: "",
-        gender: "",
         address: "",
         mobileNumber: "",
-        dateOfBirth: "",
-        age: 0,
+        dob: "",
+        gender: "",
       };
       dispatch(studentActions.addStudentEntry(newStudent));
       setRowModesModel(oldModel => ({
-        [id]: { mode: GridRowModes.Edit, fieldToFocus: "name" },
+        [newStudent.id]: { mode: GridRowModes.Edit, fieldToFocus: "name" },
         ...oldModel,
       }));
     };
@@ -123,7 +125,7 @@ const StudentDataGrid = () => {
   };
 
   const processRowUpdate = (newRow: GridRowModel, oldRow: GridRowModel) => {
-    const { id, name, gender, address, mobileNumber, dateOfBirth, age } = newRow;
+    const { id, name, gender, address, mobileNumber, dob } = newRow;
 
     const validationData = [
       { value: name, type: "name" },
@@ -144,11 +146,10 @@ const StudentDataGrid = () => {
     const updatedStudent: IStudentEntry = {
       id: id,
       name: name,
-      gender: gender,
       address: address,
       mobileNumber: mobileNumber,
-      dateOfBirth: dateOfBirth,
-      age: age,
+      dob: dob.toISOString(),
+      gender: gender,
     };
     dispatch(studentActions.updateStudentEntry(updatedStudent));
     return Promise.resolve({ ...oldRow, ...newRow });
@@ -222,7 +223,7 @@ const StudentDataGrid = () => {
       },
     },
     {
-      field: "dateOfBirth",
+      field: "dob",
       headerName: "Date Of Birth",
       type: "date",
       editable: true,
@@ -231,25 +232,8 @@ const StudentDataGrid = () => {
       maxWidth: 200,
       minWidth: 150,
       headerClassName: "header-cell",
-      valueGetter: params => {
-        return new Date(params.row.dateOfBirth);
-      },
-      valueParser: (newValue, field) => {
-        const params = field?.row;
-        const newDateOfBirth = new Date(newValue);
-        const currentDate = new Date();
-        const eighteenYearsAgo = new Date(
-          currentDate.getFullYear() - 18,
-          currentDate.getMonth(),
-          currentDate.getDate(),
-        );
-
-        if (newDateOfBirth > eighteenYearsAgo) {
-          alert("Date of birth must be at least 18 years ago");
-          return params.value;
-        }
-
-        return newDateOfBirth;
+      renderEditCell: (params: GridRenderEditCellParams) => {
+        return <GridEditDateCell {...params} inputProps={{ max: maxDate(), min: minDate() }} />;
       },
     },
     {
@@ -372,7 +356,8 @@ const StudentDataGrid = () => {
           }}
           rows={studentList.map(student => ({
             ...student,
-            dateOfBirth: new Date(student.dateOfBirth),
+            dob: new Date(student.dob),
+            age: generateAge(student.dob),
           }))}
           columns={columns}
           editMode="row"

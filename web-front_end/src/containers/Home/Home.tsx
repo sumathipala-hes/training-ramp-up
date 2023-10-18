@@ -1,5 +1,5 @@
 import React from "react";
-import StudentDataGrid from "../Home/TableGrid/StudentDataGrid";
+import StudentDataGrid from "./StudentDataGrid/StudentDataGrid";
 
 const Home = () => {
   return (
