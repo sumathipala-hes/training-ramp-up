@@ -6,13 +6,12 @@ import { tableDataActions } from "../../../redux/tableSlice/tableSlice";
 import { maxDate } from "../../../util/validateTable";
 
 interface ITableData {
-  id: number;
-  name: string;
-  address: string;
-  mobile: string;
-  dob: string;
-  gender: string;
-  age: number;
+    studentId: number;
+    studentName: string;
+    studentAddress: string;
+    studentMobile: string;
+    studentDob: string;
+    studentGender: string;
 }
 
 describe("TableDataGrid", () => {
@@ -27,13 +26,13 @@ describe("TableDataGrid", () => {
       const addButton = screen.getByRole("button", { name: "Add Student" });
       fireEvent.click(addButton);
       expect({
-        id: expect.any(Number),
-        name: "",
-        address: "",
-        mobile: "",
-        dob: maxDate(),
+        studentId: expect.any(Number),
+        studentName: "",
+        studentAddress: "",
+        studentMobile: "",
+        studentDob: maxDate(),
         age: 0,
-        gender: "",
+        studentGender: "",
       }).toEqual(store.getState().tableDataList.tableDataEntries[0]);
     });
     it("Add Table Data Fail", () => {
@@ -56,13 +55,12 @@ describe("TableDataGrid", () => {
   describe("updateTableData", () => {
     it("Update Table Data Success", async () => {
       const data: ITableData = {
-        id: 1,
-        name: "Pahasara",
-        address: "Galle",
-        mobile: "0717133879",
-        dob: new Date("2001-08-04").toDateString(),
-        age: 22,
-        gender: "Male",
+        studentId: 1,
+        studentName: "Pahasara",
+        studentAddress: "Galle",
+        studentMobile: "0717133879",
+        studentDob: new Date("2001-08-04").toDateString(),
+        studentGender: "Male",
       };
 
       store.dispatch(tableDataActions.addTableData(data));
@@ -71,13 +69,12 @@ describe("TableDataGrid", () => {
 
     it("Update Table Data Fail", async () => {
       const data: ITableData = {
-        id: 1,
-        name: "Dasun",
-        address: "Galle",
-        mobile: "1234567890",
-        dob: new Date().toISOString(),
-        gender: "Male",
-        age: 25,
+        studentId: 1,
+        studentName: "Dasun",
+        studentAddress: "Galle",
+        studentMobile: "1234567890",
+        studentDob: new Date().toISOString(),
+        studentGender: "Male",
       };
 
       try {
@@ -100,7 +97,7 @@ describe("TableDataGrid", () => {
 
       expect(store.getState().tableDataList.tableDataEntries[
         store.getState().tableDataList.tableDataEntries.length - 1
-      ].id).not.toEqual(1);
+      ].studentId).not.toEqual(1);
     });
     it("Remove Table Data Fail", () => {
       render(
