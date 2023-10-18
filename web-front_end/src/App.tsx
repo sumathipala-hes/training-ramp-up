@@ -16,7 +16,7 @@ export default function App() {
         }}
       >
         <RootRouter />
-        <Notification />
+        {/* <Notification /> */}
       </Box>
     </Provider>
   );

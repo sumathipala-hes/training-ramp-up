@@ -9,6 +9,7 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { SIGN_UP } from "../../util/routesUtil";
 
 const defaultTheme = createTheme();
 
@@ -71,7 +72,7 @@ const SignIn = () => {
                 </Link>
               </Grid>
               <Grid item>
-                <Link href="#" variant="body2">
+                <Link href={SIGN_UP} variant="body2">
                   {"Don't have an account? Sign Up"}
                 </Link>
               </Grid>
