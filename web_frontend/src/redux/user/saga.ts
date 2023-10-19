@@ -71,12 +71,15 @@ function* deleteUser(action: PayloadAction<string>) {
 
 function* signIn(action: PayloadAction<ISignInData>) {
   try {
-    yield call(api.post, "/user/signIn", action.payload, {
+    const res: AxiosResponse = yield call(api.post, "/user/signIn", action.payload, {
       headers: { "Content-Type": "application/json" },
       withCredentials: true,
     });
+    if (res.status === 200) {
+      yield put(userActions.setAuthenticated(true));
+    }
   } catch (error) {
-    alert("error");
+    alert(error);
   }
 }
 

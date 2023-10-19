@@ -1,4 +1,5 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
+import Cookies from "js-cookie";
 
 interface IUser {
   email: string;
@@ -22,10 +23,12 @@ interface ISignInData {
 
 interface IUserState {
   userList: IUser[];
+  isAuthenticated: boolean;
 }
 
 const initialState: IUserState = {
   userList: [],
+  isAuthenticated: Cookies.get("accessToken") ? true : false,
 };
 
 export const userSlice = createSlice({
@@ -40,11 +43,20 @@ export const userSlice = createSlice({
       state.userList = state.userList.filter(user => user.email != action.payload);
     },
     fetchUser: () => {},
-    saveAndUpdateUser: (state, action: PayloadAction<IUserData>) => {},
+    saveAndUpdateUser: (state, action: PayloadAction<IUserData>) => {
+      console.log(action.payload);
+      console.log(state);
+    },
     setUser: (state, action: PayloadAction<IUser[]>) => {
       state.userList = action.payload;
     },
-    signIn: (state, action: PayloadAction<ISignInData>) => {},
+    signIn: (state, action: PayloadAction<ISignInData>) => {
+      console.log(action.payload);
+      console.log(state);
+    },
+    setAuthenticated: (state, action: PayloadAction<boolean>) => {
+      state.isAuthenticated = action.payload;
+    },
   },
 });
 
