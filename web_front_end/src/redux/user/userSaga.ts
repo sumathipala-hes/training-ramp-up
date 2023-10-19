@@ -55,7 +55,7 @@ function* updateUserDataRow(action: PayloadAction<IUserData>) {
     try {
         yield call(
             isUpdate ? api.put : api.post,
-            `/student/${isUpdate ? data.userEmail : ""}`,
+            `/user/${isUpdate ? data.userEmail : ""}`,
             userData,
         );
         yield call(getAllUserDataRows);
@@ -67,7 +67,7 @@ function* updateUserDataRow(action: PayloadAction<IUserData>) {
 function* deleteUserDataRow(action: PayloadAction<string>) {
     const userEmail = action.payload;
     try {
-        yield call(api.delete, `/student/${userEmail}`);
+        yield call(api.delete, `/user/${userEmail}`);
         yield call(getAllUserDataRows);
     } catch (e) {
         alert("Deleting data failed. Please try again." + e + userEmail);

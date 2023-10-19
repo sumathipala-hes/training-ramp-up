@@ -1,14 +1,32 @@
-import React from "react";
+import React, { useState } from "react";
 import { Button, Card, Container, TextField, Typography } from "@mui/material";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+import { useAppDispatch } from "../../redux/store";
+import { userDataActions } from "../../redux/user/userSlice";
 
 export default function SignUp() {
-    const [username, setUsername] = React.useState("");
-    const [email, setEmail] = React.useState("");
-    const [password, setPassword] = React.useState("");
+    const [username, setUsername] = useState("");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const dispatch = useAppDispatch();
+
+    interface IUserData {
+        userId: number;
+        userName: string;
+        userEmail: string;
+        userPassword: string;
+        role: string;
+    }
 
     const handleSignUp = () => {
-        console.log("Sign Up");
+        const userData: IUserData = {
+            userId: 0,
+            userName: username,
+            userEmail: email,
+            userPassword: password,
+            role: "user",
+        };
+        dispatch(userDataActions.updateUserData(userData));
     };
     
     return (
@@ -62,6 +80,7 @@ export default function SignUp() {
                         label="User Email"
                         id="outlined-basic"
                         variant="outlined"
+                        type="email"
                         fullWidth
                         required
                         value={email}
