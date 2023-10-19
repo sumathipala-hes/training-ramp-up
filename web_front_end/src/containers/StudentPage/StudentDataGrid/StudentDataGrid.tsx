@@ -42,7 +42,7 @@ interface ITableData {
     age: number;
 }
 
-function TableDataGrid() {
+function StudentDataGrid() {
     const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({});
     const dispatch = useAppDispatch();
     const studentDataList = useSelector(
@@ -333,4 +333,4 @@ function TableDataGrid() {
     );
 }
 
-export default TableDataGrid;
+export default StudentDataGrid;
