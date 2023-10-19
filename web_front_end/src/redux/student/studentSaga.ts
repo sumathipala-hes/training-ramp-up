@@ -1,7 +1,7 @@
 import { all, call, put, takeEvery } from "redux-saga/effects";
 import { PayloadAction } from "@reduxjs/toolkit";
 import { api } from "../../api/api";
-import { tableDataActions } from "../tableSlice/tableSlice";
+import { tableDataActions } from "./studentSlice";
 
 // Define data types
 interface ITableData {

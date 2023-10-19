@@ -18,7 +18,7 @@ import {
     GridPreProcessEditCellProps,
 } from "@mui/x-data-grid";
 import { RootState, useAppDispatch } from "../../../redux/store";
-import { tableDataActions } from "../../../redux/tableSlice/tableSlice";
+import { tableDataActions } from "../../../redux/student/studentSlice";
 import { useSelector } from "react-redux";
 import {
     addressRegex,

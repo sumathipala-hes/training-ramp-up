@@ -1,8 +1,8 @@
 import { configureStore } from "@reduxjs/toolkit";
-import { tableDataReducer } from "./tableSlice/tableSlice";
+import { tableDataReducer } from "./student/studentSlice";
 import { useDispatch } from "react-redux";
 import createSagaMiddleware from "redux-saga";
-import mySaga from "./tableSaga/tableSaga";
+import mySaga from "./student/studentSaga";
 
 const sagaMiddleware = createSagaMiddleware();
 
