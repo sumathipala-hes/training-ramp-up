@@ -1,8 +1,17 @@
-import { WebSocketGateway, OnGatewayConnection, WebSocketServer } from '@nestjs/websockets';
+import {
+  WebSocketGateway,
+  OnGatewayConnection,
+  WebSocketServer,
+} from '@nestjs/websockets';
 import { Socket } from 'socket.io';
 import { SocketService } from './socket.service';
 
-@WebSocketGateway()
+@WebSocketGateway({
+  cors: {
+    origin: '*',
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  },
+})
 export class SocketGateway implements OnGatewayConnection {
   @WebSocketServer()
   private server: Socket;
@@ -12,6 +21,4 @@ export class SocketGateway implements OnGatewayConnection {
   handleConnection(socket: Socket): void {
     this.socketService.handleConnection(socket);
   }
-
-  // Implement other Socket.IO event handlers and message handlers
 }
