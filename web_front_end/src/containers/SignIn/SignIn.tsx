@@ -9,6 +9,10 @@ import {
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 
 export default function SignIn() {
+    const [email, setEmail] = React.useState("");
+    const [password, setPassword] = React.useState("");
+
+    
     return (
         <Container
             maxWidth="sm"
@@ -50,6 +54,8 @@ export default function SignIn() {
                         variant="outlined"
                         fullWidth
                         required
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
                     />
                     <TextField
                         size="small"
@@ -59,6 +65,9 @@ export default function SignIn() {
                         fullWidth
                         required
                         margin="normal"
+                        type="password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
                     />
                     <Button
                         size="small"
