@@ -4,7 +4,15 @@ import { api } from "../../api/api";
 import { userDataActions } from "./userSlice";
 
 // Define data types
+interface IUser {
+    userName: string;
+    userEmail: string;
+    userPassword: string;
+    role: string;
+}
+
 interface IUserData {
+    userId: number;
     userName: string;
     userEmail: string;
     userPassword: string;
@@ -14,7 +22,7 @@ interface IUserData {
 // Define response types
 interface IResponseData {
     data: {
-        data: IUserData[];
+        data: IUser[];
     };
 }
 
@@ -37,7 +45,7 @@ function* updateUserDataRow(action: PayloadAction<IUserData>) {
     const data = action.payload;
     const isUpdate: boolean = data.userEmail !== '';
 
-    const userData: IUserData = {
+    const userData: IUser = {
         userName: data.userName,
         userEmail: data.userEmail,
         userPassword: data.userPassword,

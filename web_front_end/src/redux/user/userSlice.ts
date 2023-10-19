@@ -7,6 +7,14 @@ interface IUser {
     role: string;
 }
 
+interface IUserData {
+    userId: number;
+    userName: string;
+    userEmail: string;
+    userPassword: string;
+    role: string;
+}
+
 interface IUserState {
     userEntries: IUser[];
 }
@@ -23,7 +31,7 @@ export const userSlice = createSlice({
             state.userEntries.unshift(action.payload);
         },
         fetchUsersData() {},
-        updateUserData(state, action: PayloadAction<IUser>) {
+        updateUserData(state, action: PayloadAction<IUserData>) {
             console.log(action.payload);
         },
         removeUserData(state, action: PayloadAction<string>) {
