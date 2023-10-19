@@ -1,5 +1,6 @@
 import React from "react";
 import { Box } from "@mui/material";
+import UserDataGrid from "./UserDataGrid/UserDataGrid";
 
 export default function UserPage() {
     return (
@@ -12,7 +13,7 @@ export default function UserPage() {
                 padding: "0 50px 0 50px",
             }}
         >
-            <div>User Page</div>
+            <UserDataGrid />
         </Box>
     );
 }

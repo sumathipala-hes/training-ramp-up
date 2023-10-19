@@ -33,7 +33,7 @@ const { fetchUsersData, removeUserData, updateUserData, setUserData } =
 // Define saga functions
 function* getAllUserDataRows() {
     try {
-        const response: IResponseData = yield call(api.get, "/user");
+        const response: IResponseData = yield call(api.get,"/user");
         console.log(response.data.data);
         yield put(setUserData(response.data.data));
     } catch (e) {
