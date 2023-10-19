@@ -7,6 +7,10 @@ export default function SignUp() {
     const [email, setEmail] = React.useState("");
     const [password, setPassword] = React.useState("");
 
+    const handleSignUp = () => {
+        console.log("Sign Up");
+    };
+    
     return (
         <Container
             maxWidth="sm"
@@ -88,6 +92,7 @@ export default function SignUp() {
                             gap: "10px",
                             fontFamily: "Ubuntu, sans-serif",
                         }}
+                        onClick={handleSignUp}
                     >
                         Sign Up
                         <ArrowForwardIcon />

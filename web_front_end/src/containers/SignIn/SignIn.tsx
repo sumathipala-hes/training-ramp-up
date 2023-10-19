@@ -12,7 +12,10 @@ export default function SignIn() {
     const [email, setEmail] = React.useState("");
     const [password, setPassword] = React.useState("");
 
-    
+    const handleSignIn = () => {
+        console.log("Sign In");
+    };
+
     return (
         <Container
             maxWidth="sm"
@@ -82,6 +85,7 @@ export default function SignIn() {
                             gap: "10px",
                             fontFamily: "Ubuntu, sans-serif",
                         }}
+                        onClick={handleSignIn}
                     >
                         Sign In
                         <ArrowForwardIcon />
