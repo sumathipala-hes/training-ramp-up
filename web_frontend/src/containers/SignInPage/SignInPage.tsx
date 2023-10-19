@@ -1,28 +1,17 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Button, Card, Container, Grid, TextField } from "@mui/material";
-import { RootState, useAppDispatch } from "../../redux/store";
+import { useAppDispatch } from "../../redux/store";
 import { userActions } from "../../redux/user/slice";
-import { useSelector } from "react-redux";
-import { STUDENT_ROUTE } from "../../util/routeUtil";
-import { useNavigate } from "react-router-dom";
 
 interface ISignInData {
   email: string;
   password: string;
 }
 
-const SignIn = () => {
+const SignInPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const dispatch = useAppDispatch();
-  const isAuthenticated = useSelector((state: RootState) => state.userList.isAuthenticated);
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    if (isAuthenticated) {
-      navigate(STUDENT_ROUTE);
-    }
-  }, [isAuthenticated]);
 
   const handleSignIn = () => {
     const signInData: ISignInData = {
@@ -69,4 +58,4 @@ const SignIn = () => {
   );
 };
 
-export default SignIn;
+export default SignInPage;

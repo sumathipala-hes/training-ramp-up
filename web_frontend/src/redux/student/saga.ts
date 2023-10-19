@@ -53,7 +53,9 @@ function* deleteStudent(action: PayloadAction<number>) {
   const id = action.payload;
 
   try {
-    yield call(api.delete, `/student/${id}`);
+    if (id != -1) {
+      yield call(api.delete, `/student/${id}`);
+    }
   } catch (error) {
     alert(error);
   }
