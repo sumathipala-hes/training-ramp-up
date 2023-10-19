@@ -35,6 +35,8 @@ export const userSlice = createSlice({
     fetchUser: () => {},
     setUserEntries: (state, action: PayloadAction<IUserEntry[]>) => {
       state.userEntries = action.payload;
+      console.log(state.userEntries);
+      console.log(action.payload);
     },
     deleteUserEntry: (state, action: PayloadAction<string>) => {
       const email = action.payload;

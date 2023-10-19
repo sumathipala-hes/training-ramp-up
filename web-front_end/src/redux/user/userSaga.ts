@@ -36,6 +36,7 @@ interface IUserResponse {
 function* fetchUser() {
   try {
     const response: IUserResponse = yield call(api.get, "/users");
+    console.log(response.data.data);
     yield put(userActions.setUserEntries(response.data.data));
   } catch (e) {
     alert("Error fetching user data " + e);
@@ -73,7 +74,7 @@ function* addAndUpdateUser(action: PayloadAction<IData>) {
 function* deleteUser(action: PayloadAction<string>) {
   try {
     const email = action.payload;
-    yield call(api.delete, `/users/ ${email}`);
+    yield call(api.delete, `/users/${email}`);
     yield put(userActions.fetchUser());
   } catch (e) {
     alert("Error deleting user data " + e);
