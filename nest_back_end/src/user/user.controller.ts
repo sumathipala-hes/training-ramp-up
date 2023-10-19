@@ -30,7 +30,7 @@ export class UserController {
   }
 
   @Put(':userEmail')
-  @Roles(Role.Admin)
+  // @Roles(Role.Admin)
   async update(
     @Param('userEmail') userEmail: string,
     @Body() updateUserDto: UpdateUserDto,
@@ -39,7 +39,7 @@ export class UserController {
   }
 
   @Delete(':userEmail')
-  @Roles(Role.Admin)
+  // @Roles(Role.Admin)
   async remove(@Param('userEmail') userEmail: string) {
     return this.userService.deleteUser(userEmail);
   }
