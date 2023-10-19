@@ -13,11 +13,28 @@ import { SIGN_IN } from "../../util/routesUtil";
 import RowRadioButtonsGroup from "../../components/RowRadioButtonsGroup/RowRadioButtonsGroup";
 import { useState } from "react";
 import { genderEnum } from "../../enum/genderEnum";
+import { useAppDispatch } from "../../redux/store";
+import { userActions } from "../../redux/user/userSlice";
+import { useNavigate } from "react-router-dom";
 
 const defaultTheme = createTheme();
 
+interface IUserEntry {
+  id: number;
+  roleType: string;
+  name: string;
+  address: string;
+  email: string;
+  mobileNumber: string;
+  dob: string;
+  password: string;
+  gender: string;
+}
+
 const SignUp = () => {
   const [selectedGender, setSelectedGender] = useState(genderEnum.MALE);
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   const handleGenderChange = (newValue: React.SetStateAction<genderEnum>) => {
     setSelectedGender(newValue);
@@ -26,16 +43,22 @@ const SignUp = () => {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
+    const newUser: IUserEntry = {
+      id: -1,
       roleType: "USER",
-      name: data.get("name"),
-      address: data.get("address"),
-      email: data.get("email"),
-      mobileNumber: data.get("mobileNumber"),
-      dob: data.get("dob"),
-      password: data.get("conPassword"),
-      gender: selectedGender,
-    });
+      name: data.get("name") as string,
+      address: data.get("address") as string,
+      email: data.get("email") as string,
+      mobileNumber: data.get("mobileNumber") as string,
+      dob: data.get("dob") as string,
+      password: data.get("conPassword") as string,
+      gender: selectedGender as string,
+    };
+    dispatch(userActions.saveAndUpdateUserEntry(newUser));
+    event.currentTarget.reset();
+    setTimeout(() => {
+      navigate(SIGN_IN);
+    }, 1000);
   };
 
   return (

@@ -36,7 +36,6 @@ interface IUserResponse {
 function* fetchUser() {
   try {
     const response: IUserResponse = yield call(api.get, "/users");
-    console.log(response.data.data);
     yield put(userActions.setUserEntries(response.data.data));
   } catch (e) {
     alert("Error fetching user data " + e);
@@ -83,6 +82,6 @@ function* deleteUser(action: PayloadAction<string>) {
 
 export function* userSaga() {
   yield takeLatest(userActions.fetchUser.type, fetchUser);
-  yield takeLatest(userActions.updateUserEntry.type, addAndUpdateUser);
+  yield takeLatest(userActions.saveAndUpdateUserEntry.type, addAndUpdateUser);
   yield takeLatest(userActions.deleteUserEntry.type, deleteUser);
 }

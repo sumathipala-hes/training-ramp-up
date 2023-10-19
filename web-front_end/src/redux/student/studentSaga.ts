@@ -66,6 +66,6 @@ function* deleteStudent(action: PayloadAction<number>) {
 
 export function* studentSaga() {
   yield takeLatest(studentActions.fetchStudent.type, fetchStudent);
-  yield takeLatest(studentActions.updateStudentEntry.type, addAndUpdateStudent);
+  yield takeLatest(studentActions.saveAndUpdateStudentEntry.type, addAndUpdateStudent);
   yield takeLatest(studentActions.deleteStudentEntry.type, deleteStudent);
 }

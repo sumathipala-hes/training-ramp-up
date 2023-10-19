@@ -25,13 +25,13 @@ import { useSelector } from "react-redux";
 import { RootState, useAppDispatch } from "../../../redux/store";
 import { studentActions } from "../../../redux/student/studentSlice";
 import {
-  validateInput,
+  validateInputStudent,
   validateNameInput,
   validateAddressInput,
   validateMobileInput,
-  maxDate,
-  minDate,
-} from "../../../util/validationUtil";
+  maxDateStudent,
+  minDateStudent,
+} from "../../../util/validationUtilStudent";
 import { generateAge } from "../../../util/generateAgeUtil";
 
 interface IStudentEntry {
@@ -134,7 +134,10 @@ const StudentDataGrid = () => {
     ];
 
     for (const data of validationData) {
-      const error = validateInput(data.value, data.type as "name" | "address" | "mobileNumber");
+      const error = validateInputStudent(
+        data.value,
+        data.type as "name" | "address" | "mobileNumber",
+      );
       if (error) {
         alert(error);
         if (data.type === "mobileNumber") {
@@ -151,7 +154,7 @@ const StudentDataGrid = () => {
       dob: dob.toISOString(),
       gender: gender,
     };
-    dispatch(studentActions.updateStudentEntry(updatedStudent));
+    dispatch(studentActions.saveAndUpdateStudentEntry(updatedStudent));
     return Promise.resolve({ ...oldRow, ...newRow });
   };
 
@@ -191,7 +194,7 @@ const StudentDataGrid = () => {
       editable: true,
       headerClassName: "header-cell",
       type: "singleSelect",
-      valueOptions: ["Male", "Female", "Other"],
+      valueOptions: ["Male", "Female"],
     },
     {
       field: "address",
@@ -233,7 +236,12 @@ const StudentDataGrid = () => {
       minWidth: 150,
       headerClassName: "header-cell",
       renderEditCell: (params: GridRenderEditCellParams) => {
-        return <GridEditDateCell {...params} inputProps={{ max: maxDate(), min: minDate() }} />;
+        return (
+          <GridEditDateCell
+            {...params}
+            inputProps={{ max: maxDateStudent(), min: minDateStudent() }}
+          />
+        );
       },
     },
     {
@@ -334,7 +342,7 @@ const StudentDataGrid = () => {
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "top",
-        marginTop: "4em",
+        marginTop: "1em",
         height: "100vh",
       }}
     >

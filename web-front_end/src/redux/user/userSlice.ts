@@ -27,7 +27,7 @@ export const userSlice = createSlice({
       const data = action.payload;
       state.userEntries.unshift(data);
     },
-    updateUserEntry: (state, action: PayloadAction<IUserEntry>) => {
+    saveAndUpdateUserEntry: (state, action: PayloadAction<IUserEntry>) => {
       const data = action.payload;
       const index = state.userEntries.findIndex(userEntry => userEntry.email === data.email);
       state.userEntries[index] = data;
@@ -35,8 +35,6 @@ export const userSlice = createSlice({
     fetchUser: () => {},
     setUserEntries: (state, action: PayloadAction<IUserEntry[]>) => {
       state.userEntries = action.payload;
-      console.log(state.userEntries);
-      console.log(action.payload);
     },
     deleteUserEntry: (state, action: PayloadAction<string>) => {
       const email = action.payload;

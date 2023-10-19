@@ -24,13 +24,15 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState, useAppDispatch } from "../../../redux/store";
 import {
-  validateInput,
+  validateInputUser,
   validateNameInput,
   validateAddressInput,
   validateMobileInput,
-  maxDate,
-  minDate,
-} from "../../../util/validationUtil";
+  maxDateUser,
+  minDateUser,
+  validateEmailInput,
+  validatePasswordInput,
+} from "../../../util/validationUtilUser";
 import { generateAge } from "../../../util/generateAgeUtil";
 import { userActions } from "../../../redux/user/userSlice";
 
@@ -115,19 +117,18 @@ const UserDataGrid = () => {
 
   const handleDeleteClick = (row: GridRowModel) => () => {
     if (window.confirm("Are you sure you want to delete this record?")) {
-      console.log(row.email);
       dispatch(userActions.deleteUserEntry(row.row.email));
     }
   };
 
   const handleCancelClick = (row: GridRowModel) => () => {
     if (row.name == "" || row.mobileNumber == "" || row.address == "" || row.age == 0) {
-      dispatch(userActions.deleteUserEntry(row.id));
+      dispatch(userActions.deleteUserEntry(row.row.email));
       return;
     }
     setRowModesModel({
       ...rowModesModel,
-      [row.id]: { mode: GridRowModes.View, ignoreModifications: true },
+      [row.email]: { mode: GridRowModes.View, ignoreModifications: true },
     });
   };
 
@@ -138,13 +139,18 @@ const UserDataGrid = () => {
       { value: name, type: "name" },
       { value: address, type: "address" },
       { value: mobileNumber, type: "mobileNumber" },
+      { value: email, type: "email" },
+      { value: password, type: "password" },
     ];
 
     for (const data of validationData) {
-      const error = validateInput(data.value, data.type as "name" | "address" | "mobileNumber");
+      const error = validateInputUser(
+        data.value,
+        data.type as "name" | "address" | "mobileNumber" | "email" | "password",
+      );
       if (error) {
         alert(error);
-        if (data.type === "mobileNumber") {
+        if (data.type === "password") {
           console.log(data.value);
         }
         return Promise.resolve();
@@ -161,32 +167,22 @@ const UserDataGrid = () => {
       password: password,
       gender: gender,
     };
-    dispatch(userActions.updateUserEntry(updatedUser));
+    dispatch(userActions.saveAndUpdateUserEntry(updatedUser));
     return Promise.resolve({ ...oldRow, ...newRow });
   };
 
   const columns: GridColDef[] = [
     {
-      field: "id",
-      headerName: "ID",
-      type: "number",
-      editable: false,
-      align: "center",
-      headerAlign: "center",
-      maxWidth: 100,
-      minWidth: 60,
-      headerClassName: "header-cell",
-    },
-    {
       field: "roleType",
       headerName: "RoleType",
-      type: "string",
       editable: true,
       align: "center",
       headerAlign: "center",
-      maxWidth: 100,
-      minWidth: 60,
+      maxWidth: 150,
+      minWidth: 120,
       headerClassName: "header-cell",
+      type: "singleSelect",
+      valueOptions: ["ADMIN", "USER"],
     },
     {
       field: "name",
@@ -223,9 +219,13 @@ const UserDataGrid = () => {
       editable: true,
       align: "center",
       headerAlign: "center",
-      maxWidth: 100,
-      minWidth: 60,
+      maxWidth: 200,
+      minWidth: 150,
       headerClassName: "header-cell",
+      preProcessEditCellProps: (params: GridPreProcessEditCellProps) => {
+        const hasError = !validateEmailInput(params.props.value);
+        return { ...params.props, style: { color: hasError ? "red" : "green" } };
+      },
     },
     {
       field: "mobileNumber",
@@ -253,7 +253,9 @@ const UserDataGrid = () => {
       minWidth: 150,
       headerClassName: "header-cell",
       renderEditCell: (params: GridRenderEditCellParams) => {
-        return <GridEditDateCell {...params} inputProps={{ max: maxDate(), min: minDate() }} />;
+        return (
+          <GridEditDateCell {...params} inputProps={{ max: maxDateUser(), min: minDateUser() }} />
+        );
       },
     },
     {
@@ -266,6 +268,10 @@ const UserDataGrid = () => {
       editable: true,
       headerClassName: "header-cell",
       type: "string",
+      preProcessEditCellProps: (params: GridPreProcessEditCellProps) => {
+        const hasError = !validatePasswordInput(params.props.value);
+        return { ...params.props, style: { color: hasError ? "red" : "green" } };
+      },
     },
     {
       field: "gender",
@@ -277,7 +283,7 @@ const UserDataGrid = () => {
       editable: true,
       headerClassName: "header-cell",
       type: "singleSelect",
-      valueOptions: ["Male", "Female", "Other"],
+      valueOptions: ["Male", "Female"],
     },
     {
       field: "age",
@@ -286,8 +292,8 @@ const UserDataGrid = () => {
       editable: false,
       align: "center",
       headerAlign: "center",
-      maxWidth: 130,
-      minWidth: 100,
+      maxWidth: 60,
+      minWidth: 40,
       headerClassName: "header-cell",
     },
     {
@@ -296,8 +302,8 @@ const UserDataGrid = () => {
       headerName: "Actions",
       align: "center",
       headerAlign: "center",
-      maxWidth: 250,
-      minWidth: 200,
+      maxWidth: 180,
+      minWidth: 150,
       headerClassName: "header-cell",
       cellClassName: "actions",
       getActions: row => {
@@ -377,14 +383,14 @@ const UserDataGrid = () => {
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "top",
-        marginTop: "4em",
+        marginTop: "1em",
         height: "100vh",
       }}
     >
       <Box
         sx={{
           margin: "1em",
-          width: "80%",
+          width: "90%",
           "& .actions": {
             color: "text.secondary",
           },
