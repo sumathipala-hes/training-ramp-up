@@ -24,11 +24,13 @@ interface ISignInData {
 interface IUserState {
   userList: IUser[];
   isAuthenticated: boolean;
+  currentUserRole: string;
 }
 
 const initialState: IUserState = {
   userList: [],
   isAuthenticated: Cookies.get("accessToken") ? true : false,
+  currentUserRole: "admin",
 };
 
 export const userSlice = createSlice({
