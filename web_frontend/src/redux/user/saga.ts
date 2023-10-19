@@ -2,6 +2,7 @@ import { call, put, takeEvery } from "redux-saga/effects";
 import { PayloadAction } from "@reduxjs/toolkit";
 import { api } from "../../api/api";
 import { userActions } from "./slice";
+import { AxiosResponse } from "axios";
 
 interface IUserData {
   id: number;
@@ -41,6 +42,7 @@ function* saveAndUpdateUser(action: PayloadAction<IUserData>) {
   try {
     yield call(isUpdate ? api.put : api.post, `/user/${isUpdate ? email : "add"}`, user, {
       headers: { "Content-Type": "application/json" },
+      withCredentials: true,
     });
     yield put(userActions.fetchUser());
   } catch (error) {
@@ -71,10 +73,10 @@ function* signIn(action: PayloadAction<ISignInData>) {
   try {
     yield call(api.post, "/user/signIn", action.payload, {
       headers: { "Content-Type": "application/json" },
+      withCredentials: true,
     });
-    alert("response");
   } catch (error) {
-    alert(error);
+    alert("error");
   }
 }
 

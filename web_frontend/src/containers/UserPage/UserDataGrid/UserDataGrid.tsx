@@ -84,11 +84,6 @@ const UserDataGrid = () => {
       role: role,
     };
 
-    // const validations = validateFields(name, address, mobile);
-    // if (validations) {
-    //   return Promise.reject(alert(validations));
-    // }
-
     dispatch(userActions.saveAndUpdateUser(data));
     return Promise.resolve({ ...newRow, ...oldRow });
   };
@@ -104,10 +99,6 @@ const UserDataGrid = () => {
       align: "left",
       headerAlign: "left",
       editable: true,
-      //   preProcessEditCellProps: (params: GridPreProcessEditCellProps) => {
-      //     const hasError = !validateName(params.props.value);
-      //     return { ...params.props, style: { color: hasError ? "red" : "black" } };
-      //   },
     },
     {
       field: "password",
@@ -115,10 +106,6 @@ const UserDataGrid = () => {
       type: "string",
       width: 180,
       editable: true,
-      //   preProcessEditCellProps: (params: GridPreProcessEditCellProps) => {
-      //     const hasError = !validateAddress(params.props.value);
-      //     return { ...params.props, style: { color: hasError ? "red" : "black" } };
-      //   },
     },
     {
       field: "role",
