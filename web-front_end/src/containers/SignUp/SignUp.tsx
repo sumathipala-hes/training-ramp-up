@@ -16,7 +16,6 @@ import { genderEnum } from "../../enum/genderEnum";
 import { useAppDispatch } from "../../redux/store";
 import { userActions } from "../../redux/user/userSlice";
 import { useNavigate } from "react-router-dom";
-
 const defaultTheme = createTheme();
 
 interface IUserEntry {
@@ -36,29 +35,88 @@ const SignUp = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
+  const [nameError, setNameError] = useState("");
+  const [addressError, setAddressError] = useState("");
+  const [mobileNumberError, setMobileNumberError] = useState("");
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+
+  const _nameRegExp = /^[a-zA-Z ]+$/;
+  const _addressRegExp = /^[a-zA-Z0-9 ]+$/;
+  const _telNoRegExp = /^(07(0|1|2|4|5|6|7|8)[0-9]{7})$/;
+  const _emailRegExp = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+  const _passwordRegExp = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{8,}$/;
+
   const handleGenderChange = (newValue: React.SetStateAction<genderEnum>) => {
     setSelectedGender(newValue);
+  };
+
+  const validateField = (field: string, value: string) => {
+    switch (field) {
+      case "name":
+        if (!_nameRegExp.test(value)) {
+          setNameError("Invalid Name");
+        } else {
+          setNameError("");
+        }
+        break;
+      case "address":
+        if (!_addressRegExp.test(value)) {
+          setAddressError("Invalid Address");
+        } else {
+          setAddressError("");
+        }
+        break;
+      case "mobileNumber":
+        if (!_telNoRegExp.test(value)) {
+          setMobileNumberError("Invalid Mobile Number");
+        } else {
+          setMobileNumberError("");
+        }
+        break;
+      case "email":
+        if (!_emailRegExp.test(value)) {
+          setEmailError("Invalid Email");
+        } else {
+          setEmailError("");
+        }
+        break;
+      case "password":
+        if (!_passwordRegExp.test(value)) {
+          setPasswordError("Invalid Password");
+        } else {
+          setPasswordError("");
+        }
+        break;
+
+      default:
+        break;
+    }
   };
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    const newUser: IUserEntry = {
-      id: -1,
-      roleType: "USER",
-      name: data.get("name") as string,
-      address: data.get("address") as string,
-      email: data.get("email") as string,
-      mobileNumber: data.get("mobileNumber") as string,
-      dob: data.get("dob") as string,
-      password: data.get("conPassword") as string,
-      gender: selectedGender as string,
-    };
-    dispatch(userActions.saveAndUpdateUserEntry(newUser));
-    event.currentTarget.reset();
-    setTimeout(() => {
-      navigate(SIGN_IN);
-    }, 1000);
+    if (!nameError && !addressError && !mobileNumberError && !emailError && !passwordError) {
+      const newUser: IUserEntry = {
+        id: -1,
+        roleType: "USER",
+        name: data.get("name") as string,
+        address: data.get("address") as string,
+        email: data.get("email") as string,
+        mobileNumber: data.get("mobileNumber") as string,
+        dob: data.get("dob") as string,
+        password: data.get("password") as string,
+        gender: selectedGender as string,
+      };
+      dispatch(userActions.saveAndUpdateUserEntry(newUser));
+      event.currentTarget.reset();
+      setTimeout(() => {
+        navigate(SIGN_IN);
+      }, 1000);
+    } else {
+      alert("Please fill all the fields correctly");
+    }
   };
 
   return (
@@ -89,6 +147,9 @@ const SignUp = () => {
                   id="name"
                   label="Name"
                   autoFocus
+                  error={!!nameError}
+                  helperText={nameError}
+                  onChange={e => validateField("name", e.target.value)}
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
@@ -99,6 +160,9 @@ const SignUp = () => {
                   label="Address"
                   name="address"
                   autoComplete="family-name"
+                  error={!!addressError}
+                  helperText={addressError}
+                  onChange={e => validateField("address", e.target.value)}
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
@@ -109,7 +173,9 @@ const SignUp = () => {
                   fullWidth
                   id="mobileNumber"
                   label="Mobile Number"
-                  autoFocus
+                  error={!!mobileNumberError}
+                  helperText={mobileNumberError}
+                  onChange={e => validateField("mobileNumber", e.target.value)}
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
@@ -135,6 +201,9 @@ const SignUp = () => {
                   label="Email Address"
                   name="email"
                   autoComplete="email"
+                  error={!!emailError}
+                  helperText={emailError}
+                  onChange={e => validateField("email", e.target.value)}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -146,17 +215,9 @@ const SignUp = () => {
                   type="password"
                   id="password"
                   autoComplete="new-password"
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  required
-                  fullWidth
-                  name="conPassword"
-                  label="Confirm Password"
-                  type="password"
-                  id="conPassword"
-                  autoComplete="con-password"
+                  error={!!passwordError}
+                  helperText={passwordError}
+                  onChange={e => validateField("password", e.target.value)}
                 />
               </Grid>
             </Grid>
