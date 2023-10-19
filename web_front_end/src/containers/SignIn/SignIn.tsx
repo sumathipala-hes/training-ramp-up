@@ -1,8 +1,8 @@
 import React from "react";
 import {
-    Box,
     Button,
     Card,
+    Container,
     TextField,
     Typography,
 } from "@mui/material";
@@ -10,7 +10,8 @@ import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 
 export default function SignIn() {
     return (
-        <Box
+        <Container
+            maxWidth="sm"
             sx={{
                 display: "flex",
                 justifyContent: "center",
@@ -26,6 +27,7 @@ export default function SignIn() {
                     backgroundColor: "#ECF0F1",
                     boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)",
                     padding: "1rem",
+                    width: "60%",
                 }}
             >
                 <Typography
@@ -40,40 +42,43 @@ export default function SignIn() {
                 >
                     Sign In
                 </Typography>
-                <TextField
-                    size="small"
-                    label="User Email"
-                    id="outlined-basic"
-                    variant="outlined"
-                    fullWidth
-                    required
-                />
-                <TextField
-                    size="small"
-                    label="User Password"
-                    id="outlined-basic"
-                    variant="outlined"
-                    fullWidth
-                    required
-                    margin="normal"
-                />
-                <Button
-                    size="small"
-                    variant="contained"
-                    fullWidth
-                    sx={{
-                        borderRadius: "10px",
-                        mt: 1,
-                        backgroundColor: "#01ACDC",
-                        color: "#fff",
-                        "&:hover": { backgroundColor: "#01ACDC" },
-                        gap: "10px",
-                    }}
-                >
-                    Sign In
-                    <ArrowForwardIcon />
-                </Button>
+                <form>
+                    <TextField
+                        size="small"
+                        label="User Email"
+                        id="outlined-basic"
+                        variant="outlined"
+                        fullWidth
+                        required
+                    />
+                    <TextField
+                        size="small"
+                        label="User Password"
+                        id="outlined-basic"
+                        variant="outlined"
+                        fullWidth
+                        required
+                        margin="normal"
+                    />
+                    <Button
+                        size="small"
+                        variant="contained"
+                        fullWidth
+                        sx={{
+                            borderRadius: "10px",
+                            mt: 1,
+                            backgroundColor: "#01ACDC",
+                            color: "#fff",
+                            "&:hover": { backgroundColor: "#01ACDC" },
+                            gap: "10px",
+                            fontFamily: "Ubuntu, sans-serif",
+                        }}
+                    >
+                        Sign In
+                        <ArrowForwardIcon />
+                    </Button>
+                </form>
             </Card>
-        </Box>
+        </Container>
     );
 }
