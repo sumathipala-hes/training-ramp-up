@@ -197,6 +197,15 @@ const UserDataGrid = () => {
         Add User
       </Button>
       <DataGrid
+        sx={{
+          boxShadow: 4,
+          border: 2,
+          borderColor: "primary.light",
+          "& .MuiDataGrid-cell:hover": {
+            color: "primary.main",
+          },
+          cursor: "pointer",
+        }}
         rows={userList.map((user, index) => ({
           id: index + 1,
           email: user.email,

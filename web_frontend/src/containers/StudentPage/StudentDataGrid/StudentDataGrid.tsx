@@ -251,6 +251,15 @@ const StudentDataGrid = () => {
         Add Student
       </Button>
       <DataGrid
+        sx={{
+          boxShadow: 4,
+          border: 2,
+          borderColor: "primary.light",
+          "& .MuiDataGrid-cell:hover": {
+            color: "primary.main",
+          },
+          cursor: "pointer",
+        }}
         rows={studentList.map(student => ({
           ...student,
           dob: new Date(student.dob),
@@ -258,6 +267,7 @@ const StudentDataGrid = () => {
         }))}
         columns={columns}
         editMode="row"
+        columnHeaderHeight={80}
         rowModesModel={rowModesModel}
         onRowModesModelChange={newRowModesModel => {
           setRowModesModel(newRowModesModel);
