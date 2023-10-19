@@ -3,6 +3,10 @@ import { Button, Card, Container, TextField, Typography } from "@mui/material";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 
 export default function SignUp() {
+    const [username, setUsername] = React.useState("");
+    const [email, setEmail] = React.useState("");
+    const [password, setPassword] = React.useState("");
+
     return (
         <Container
             maxWidth="sm"
@@ -46,6 +50,8 @@ export default function SignUp() {
                         fullWidth
                         required
                         sx={{ mb: 2 }}
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
                     />
                     <TextField
                         size="small"
@@ -54,7 +60,8 @@ export default function SignUp() {
                         variant="outlined"
                         fullWidth
                         required
-                        // margin="normal"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
                     />
                     <TextField
                         size="small"
@@ -65,6 +72,8 @@ export default function SignUp() {
                         fullWidth
                         required
                         margin="normal"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
                     />
                     <Button
                         size="small"
