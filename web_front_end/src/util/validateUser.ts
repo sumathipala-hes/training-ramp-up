@@ -2,7 +2,7 @@ const nameRegExp = /^[a-zA-Z ]+$/;
 const emailRegExp = /^([a-zA-Z0-9_.-]+)@([a-zA-Z0-9-]+)(\.[a-zA-Z]{2,5}){1,2}$/;
 const passwordRegExp = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{8,}$/;
 
-export const validateUser = (
+const validateUser = (
     input: string,
     type: "userName" | "userEmail" | "userPassword",
 ): string | null => {
@@ -25,9 +25,9 @@ export const validateUser = (
         : "Invalid input type";
 };
 
-export const validateName = (userName: string) =>
-    nameRegExp.test(userName);
-export const validateEmail = (userEmail: string) =>
-    emailRegExp.test(userEmail);
-export const validatePassword = (userPassword: string) =>
+const validateName = (userName: string) => nameRegExp.test(userName);
+const validateEmail = (userEmail: string) => emailRegExp.test(userEmail);
+const validatePassword = (userPassword: string) =>
     passwordRegExp.test(userPassword);
+
+export { validateUser, validateName, validateEmail, validatePassword };

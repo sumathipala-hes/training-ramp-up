@@ -220,9 +220,6 @@ function UserDataGrid() {
             );
             if (error) {
                 alert(error);
-                if (data.type === "userPassword") {
-                    console.log(data.value);
-                }
                 return Promise.resolve();
             }
         }
