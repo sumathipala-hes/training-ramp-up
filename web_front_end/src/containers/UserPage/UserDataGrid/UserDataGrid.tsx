@@ -17,6 +17,7 @@ import {
 import { RootState, useAppDispatch } from "../../../redux/store";
 import { userDataActions } from "../../../redux/user/userSlice";
 import { useSelector } from "react-redux";
+import { validateUser } from "../../../util/validateUser";
 
 interface IUserData {
     userId: number;
@@ -183,6 +184,27 @@ function UserDataGrid() {
         oldRow: GridRowModel,
     ) {
         const { userId, ...updatedFields } = newRow;
+
+        const validationData = [
+            { value: updatedFields.userName, type: "userName" },
+            { value: updatedFields.userEmail, type: "userEmail" },
+            { value: updatedFields.userPassword, type: "userPassword" },
+        ];
+
+        for (const data of validationData) {
+            const error = validateUser(
+                data.value,
+                data.type as "userName" | "userEmail" | "userPassword",
+            );
+            if (error) {
+                alert(error);
+                if (data.type === "userPassword") {
+                    console.log(data.value);
+                }
+                return Promise.resolve();
+            }
+        }
+
         const data: IUserData = {
             userId: userId,
             userName: updatedFields.userName as string,
@@ -190,15 +212,6 @@ function UserDataGrid() {
             userPassword: updatedFields.userPassword as string,
             role: updatedFields.role as string,
         };
-        // const validations = validateFieldAlerts(
-        //     data.studentName,
-        //     data.studentAddress,
-        //     data.studentMobile,
-        // );
-        // if (validations) {
-        //     return Promise.reject(alert(validations));
-        // }
-
         dispatch(userDataActions.updateUserData(data));
         return { ...oldRow, ...newRow };
     }
