@@ -41,7 +41,7 @@ interface IUserResponse {
 
 function* fetchUser() {
   try {
-    const response: IUserResponse = yield call(api.get, "/users");
+    const response: IUserResponse = yield call(api.get, "/users",{ withCredentials: true });
     yield put(userActions.setUserEntries(response.data.data));
   } catch (e) {
     alert("Error fetching user data " + e);
@@ -66,9 +66,9 @@ function* addAndUpdateUser(action: PayloadAction<IData>) {
 
   try {
     if (isUpdate) {
-      yield call(api.put, `/users/${data.email}`, userData);
+      yield call(api.put, `/users/${data.email}`, userData, { withCredentials: true });
     } else {
-      yield call(api.post, "/users", userData);
+      yield call(api.post, "/users", userData, { withCredentials: true });
     }
     yield put(userActions.fetchUser());
   } catch (e) {
@@ -79,7 +79,7 @@ function* addAndUpdateUser(action: PayloadAction<IData>) {
 function* deleteUser(action: PayloadAction<string>) {
   try {
     const email = action.payload;
-    yield call(api.delete, `/users/${email}`);
+    yield call(api.delete, `/users/${email}`, { withCredentials: true });
     yield put(userActions.fetchUser());
   } catch (e) {
     alert("Error deleting user data " + e);
