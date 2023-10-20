@@ -160,7 +160,7 @@ function UserDataGrid() {
 
     function handleAddRow() {
         const newRow: IUserData = {
-            userId: 0,
+            userId: -1,
             userName: "",
             userEmail: "",
             userPassword: "",
@@ -168,7 +168,7 @@ function UserDataGrid() {
         };
         dispatch(userDataActions.addUserData(newRow));
         setRowModesModel((oldModel) => ({
-            [newRow.userId]: {
+            [newRow.userEmail]: {
                 mode: GridRowModes.Edit,
                 fieldToFocus: "studentName",
             },
@@ -187,13 +187,18 @@ function UserDataGrid() {
         newRow: GridRowModel,
         oldRow: GridRowModel,
     ) {
-        const { userId, ...updatedFields } = newRow;
+        // const { userId, ...updatedFields } = newRow;
+        const { userId, userName, userEmail, userPassword, role } = newRow;
         const data: IUserData = {
             userId: userId,
-            userName: updatedFields.userName as string,
-            userEmail: updatedFields.userEmail as string,
-            userPassword: updatedFields.userPassword as string,
-            role: updatedFields.role as string,
+            // userName: updatedFields.userName as string,
+            // userEmail: updatedFields.userEmail as string,
+            // userPassword: updatedFields.userPassword as string,
+            // role: updatedFields.role as string,
+            userName: userName,
+            userEmail: userEmail,
+            userPassword: userPassword,
+            role: role,
         };
         // const validations = validateFieldAlerts(
         //     data.studentName,
