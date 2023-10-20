@@ -33,6 +33,7 @@ function* saveAndUpdateStudent(action: PayloadAction<IStudentData>) {
   try {
     yield call(isUpdate ? api.put : api.post, `/student/${isUpdate ? id : ""}`, student, {
       headers: { "Content-Type": "application/json" },
+      withCredentials: true,
     });
     yield put(studentActions.fetchStudent());
   } catch (error) {
@@ -42,7 +43,10 @@ function* saveAndUpdateStudent(action: PayloadAction<IStudentData>) {
 
 function* getAllStudents() {
   try {
-    const response: IResponse = yield call(api.get, "/student");
+    const response: IResponse = yield call(api.get, "/student", {
+      headers: { "Content-Type": "application/json" },
+      withCredentials: true,
+    });
     yield put(studentActions.setStudent(response.data));
   } catch (error) {
     alert(error);
@@ -54,7 +58,7 @@ function* deleteStudent(action: PayloadAction<number>) {
 
   try {
     if (id != -1) {
-      yield call(api.delete, `/student/${id}`);
+      yield call(api.delete, `/student/${id}`, { withCredentials: true });
     }
   } catch (error) {
     alert(error);

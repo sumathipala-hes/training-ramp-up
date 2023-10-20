@@ -63,7 +63,9 @@ function* deleteUser(action: PayloadAction<string>) {
   const email = action.payload;
 
   try {
-    yield call(api.delete, `/user/del/${email}`);
+    yield call(api.delete, `/user/del/${email}`, {
+      withCredentials: true,
+    });
   } catch (error) {
     alert(error);
   }
@@ -78,6 +80,7 @@ function* signIn(action: PayloadAction<ISignInData>) {
     if (res.data.message == "Login Success") {
       yield put(userActions.setCurrentUserData(action.payload.email));
       yield put(userActions.setAuthenticated(true));
+      console.log(res.headers["set-cookie"]);
     }
   } catch (error) {
     alert(error);
