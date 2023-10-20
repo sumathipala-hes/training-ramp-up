@@ -1,19 +1,27 @@
 import React from "react";
-import {
-    Button,
-    Card,
-    Container,
-    TextField,
-    Typography,
-} from "@mui/material";
+import { Button, Card, Container, TextField, Typography } from "@mui/material";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+import { useAppDispatch } from "../../redux/store";
+import { userDataActions } from "../../redux/user/userSlice";
+import { useNavigate } from "react-router-dom";
 
 export default function SignInPage() {
     const [email, setEmail] = React.useState("");
     const [password, setPassword] = React.useState("");
+    const dispatch = useAppDispatch();
+    const navigate = useNavigate();
+
+    interface ISignInData {
+        userEmail: string;
+        userPassword: string;
+    }
 
     const handleSignIn = () => {
-        console.log("Sign In");
+        const signIn: ISignInData = {
+            userEmail: email,
+            userPassword: password,
+        };
+        dispatch(userDataActions.signInUserData(signIn));
     };
 
     return (
@@ -90,6 +98,31 @@ export default function SignInPage() {
                         Sign In
                         <ArrowForwardIcon />
                     </Button>
+                    <Typography
+                        align="center"
+                        sx={{
+                            fontFamily: "Ubuntu, sans-serif",
+                            mt: "1rem",
+                            fontWeight: "600",
+                            color: "gray",
+                        }}
+                    >
+                        Don&apos;t have an account?
+                    </Typography>
+                    <Typography
+                        align="center"
+                        sx={{
+                            color: "#01ACDC",
+                            fontFamily: "Ubuntu, sans-serif",
+                            fontWeight: "600",
+                            cursor: "pointer",
+                        }}
+                        onClick={() => {
+                            navigate("/signup");
+                        }}
+                    >
+                        Sign Up
+                    </Typography>
                 </form>
             </Card>
         </Container>

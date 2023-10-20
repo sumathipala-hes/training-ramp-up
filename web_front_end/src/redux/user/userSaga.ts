@@ -19,6 +19,11 @@ interface IUserData {
     role: string;
 }
 
+interface ISignInData {
+    userEmail: string;
+    userPassword: string;
+}
+
 // Define response types
 interface IResponseData {
     data: {
@@ -28,7 +33,7 @@ interface IResponseData {
 }
 
 // Define action types
-const { fetchUsersData, removeUserData, updateUserData, setUserData } =
+const { fetchUsersData, removeUserData, updateUserData, setUserData, signInUserData } =
     userDataActions;
 
 // Define saga functions
@@ -68,10 +73,26 @@ function* updateUserDataRow(action: PayloadAction<IUserData>) {
 function* deleteUserDataRow(action: PayloadAction<string>) {
     const userEmail = action.payload;
     try {
-        yield call(api.delete, `/user/${userEmail}`);
-        yield call(getAllUserDataRows);
+        if (userEmail) {
+            yield call(api.delete, `/user/${userEmail}`);
+            yield call(getAllUserDataRows);
+        }
     } catch (e) {
-        alert("Deleting data failed. Please try again." + e + userEmail);
+        alert("Deleting data failed. Please try again." + e );
+    }
+}
+
+function* signInUserDataRow(action: PayloadAction<ISignInData>) {
+    const data = action.payload;
+    const signInData: ISignInData = {
+        userEmail: data.userEmail,
+        userPassword: data.userPassword,
+    };
+
+    try {
+        yield call(api.post, "/user/signIn", signInData);
+    } catch (e) {
+        alert("Signing in failed. Please try again.");
     }
 }
 
@@ -79,6 +100,7 @@ function* tableUserSaga() {
     yield takeEvery(fetchUsersData, getAllUserDataRows);
     yield takeEvery(updateUserData, updateUserDataRow);
     yield takeEvery(removeUserData, deleteUserDataRow);
+    yield takeEvery(signInUserData, signInUserDataRow);
 }
 
 function* userSaga() {

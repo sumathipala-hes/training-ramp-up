@@ -3,12 +3,14 @@ import { Button, Card, Container, TextField, Typography } from "@mui/material";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import { useAppDispatch } from "../../redux/store";
 import { userDataActions } from "../../redux/user/userSlice";
+import { useNavigate } from "react-router-dom";
 
 export default function SignUpPage() {
     const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const dispatch = useAppDispatch();
+    const navigate = useNavigate();
 
     interface IUserData {
         userId: number;
@@ -116,6 +118,31 @@ export default function SignUpPage() {
                         Sign Up
                         <ArrowForwardIcon />
                     </Button>
+                    <Typography
+                        align="center"
+                        sx={{
+                            fontFamily: "Ubuntu, sans-serif",
+                            mt: "1rem",
+                            fontWeight: "600",
+                            color: "gray",
+                        }}
+                    >
+                        Have an account?
+                    </Typography>
+                    <Typography
+                        align="center"
+                        sx={{
+                            color: "#01ACDC",
+                            fontFamily: "Ubuntu, sans-serif",
+                            fontWeight: "600",
+                            cursor: "pointer",
+                        }}
+                        onClick={() => {
+                            navigate("/signIn");
+                        }}
+                    >
+                        Sign In
+                    </Typography>
                 </form>
             </Card>
         </Container>
