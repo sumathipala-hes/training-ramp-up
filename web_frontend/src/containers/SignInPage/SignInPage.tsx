@@ -18,6 +18,7 @@ const SignInPage = () => {
       email: email,
       password: password,
     };
+    dispatch(userActions.setCurrentEmail(email));
     dispatch(userActions.signIn(signInData));
   };
 

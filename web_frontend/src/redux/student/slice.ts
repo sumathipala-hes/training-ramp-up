@@ -38,7 +38,10 @@ export const studentSlice = createSlice({
       state.studentList = state.studentList.filter(student => student.id != action.payload);
     },
     fetchStudent: () => {},
-    updateStudent: (state, action: PayloadAction<IStudent>) => {},
+    updateStudent: (state, action: PayloadAction<IStudent>) => {
+      console.log(action.payload);
+      console.log(state.studentList);
+    },
     setStudent: (state, action: PayloadAction<IStudent[]>) => {
       state.studentList = action.payload;
     },

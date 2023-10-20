@@ -75,9 +75,24 @@ function* signIn(action: PayloadAction<ISignInData>) {
       headers: { "Content-Type": "application/json" },
       withCredentials: true,
     });
-    if (res.status === 200) {
+    if (res.data.message == "Login Success") {
+      yield put(userActions.setCurrentUserData(action.payload.email));
       yield put(userActions.setAuthenticated(true));
     }
+  } catch (error) {
+    alert(error);
+  }
+}
+
+function* setCurrentUserData(action: PayloadAction<string>) {
+  try {
+    const res: AxiosResponse = yield call(api.get, "/user/" + action.payload, {
+      headers: { "Content-Type": "application/json" },
+      withCredentials: true,
+    });
+    console.log(res.data);
+    yield put(userActions.setCurrentUserRole(res.data.role));
+    yield put(userActions.setCurrentUsername(res.data.name));
   } catch (error) {
     alert(error);
   }
@@ -88,4 +103,5 @@ export function* userSaga() {
   yield takeEvery(userActions.saveAndUpdateUser, saveAndUpdateUser);
   yield takeEvery(userActions.removeUser, deleteUser);
   yield takeEvery(userActions.signIn, signIn);
+  yield takeEvery(userActions.setCurrentUserData, setCurrentUserData);
 }

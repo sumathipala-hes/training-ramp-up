@@ -73,4 +73,9 @@ export class UsersController {
     res.clearCookie('refreshToken');
     res.status(200).json({ message: 'Logout Success' });
   }
+
+  @Get(':email')
+  async getUserByEmail(@Param('email') email: string): Promise<CreateUserDto> {
+    return this.usersService.findOne(email);
+  }
 }

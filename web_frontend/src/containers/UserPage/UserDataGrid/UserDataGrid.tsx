@@ -32,6 +32,7 @@ const UserDataGrid = () => {
   const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({});
   const dispatch = useAppDispatch();
   const userList = useSelector((state: RootState) => state.userList.userList);
+  // const currentRole = useSelector((state: RootState) => state.userList.currentUserRole);
 
   useEffect(() => {
     dispatch(userActions.fetchUser());
@@ -89,8 +90,8 @@ const UserDataGrid = () => {
   };
 
   const columns: GridColDef[] = [
-    { field: "id", type: "number", headerName: "ID", width: 80, editable: true },
-    { field: "email", type: "string", headerName: "Email", width: 200, editable: true },
+    { field: "id", headerName: "ID", width: 80, editable: true },
+    { field: "email", type: "string", headerName: "Email", width: 250, editable: true },
     {
       field: "name",
       headerName: "Name",

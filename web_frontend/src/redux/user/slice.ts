@@ -25,12 +25,16 @@ interface IUserState {
   userList: IUser[];
   isAuthenticated: boolean;
   currentUserRole: string;
+  currentUsername: string;
+  currentEmail: string;
 }
 
 const initialState: IUserState = {
   userList: [],
   isAuthenticated: Cookies.get("accessToken") ? true : false,
-  currentUserRole: "admin",
+  currentUserRole: "user",
+  currentUsername: "",
+  currentEmail: "",
 };
 
 export const userSlice = createSlice({
@@ -58,6 +62,19 @@ export const userSlice = createSlice({
     },
     setAuthenticated: (state, action: PayloadAction<boolean>) => {
       state.isAuthenticated = action.payload;
+    },
+    setCurrentUserRole: (state, action: PayloadAction<string>) => {
+      state.currentUserRole = action.payload;
+    },
+    setCurrentUsername: (state, action: PayloadAction<string>) => {
+      state.currentUsername = action.payload;
+    },
+    setCurrentUserData: (state, action: PayloadAction<string>) => {
+      console.log(action.payload);
+      console.log(state);
+    },
+    setCurrentEmail: (state, action: PayloadAction<string>) => {
+      state.currentEmail = action.payload;
     },
   },
 });

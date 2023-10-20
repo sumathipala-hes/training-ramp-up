@@ -12,15 +12,19 @@ import StudentPage from "../../containers/StudentPage/StudentPage";
 import UserPage from "../../containers/UserPage/UserPage";
 import SignInPage from "../../containers/SignInPage/SignInPage";
 import { useSelector } from "react-redux";
-import { RootState } from "../../redux/store";
+import { RootState, useAppDispatch } from "../../redux/store";
 import HomePage from "../../containers/HomePage/HomePage";
+import { userActions } from "../../redux/user/slice";
 
 const RootRoutes = () => {
   const isAuthenticated = useSelector((state: RootState) => state.userList.isAuthenticated);
+  const email = useSelector((state: RootState) => state.userList.currentEmail);
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     if (isAuthenticated) {
+      dispatch(userActions.setCurrentUserData(email));
       navigate(HOME_ROUTE);
     }
   }, [isAuthenticated]);

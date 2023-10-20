@@ -36,7 +36,7 @@ const HomePage = () => {
           </CardContent>
         </Card>
       </Grid>
-      {currentRole === "admin" && (
+      {currentRole === "admin" ? (
         <Grid item xs={12} sm={8} md={6} lg={4}>
           <Card
             sx={{ maxWidth: 800, cursor: "pointer" }}
@@ -55,6 +55,8 @@ const HomePage = () => {
             </CardContent>
           </Card>
         </Grid>
+      ) : (
+        <></>
       )}
     </Grid>
   );
