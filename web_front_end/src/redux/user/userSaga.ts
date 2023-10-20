@@ -44,7 +44,6 @@ function* getAllUserDataRows() {
 
 function* updateUserDataRow(action: PayloadAction<IUserData>) {
     const data = action.payload;
-    // const isUpdate: boolean = data.userEmail !== '';
     const isUpdate: boolean = data.userId !== -1;
 
     const userData: IUser = {
@@ -60,7 +59,6 @@ function* updateUserDataRow(action: PayloadAction<IUserData>) {
             `/user/${isUpdate ? data.userEmail : ""}`,
             userData,
         );
-        // yield call(api.post,`/user`,userData);
         yield call(getAllUserDataRows);
     } catch (e) {
         alert("Saving or Updating data failed. Please try again." + e);
