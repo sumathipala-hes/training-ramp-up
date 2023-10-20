@@ -49,10 +49,7 @@ export const userSlice = createSlice({
       state.userList = state.userList.filter(user => user.email != action.payload);
     },
     fetchUser: () => {},
-    saveAndUpdateUser: (state, action: PayloadAction<IUserData>) => {
-      console.log(action.payload);
-      console.log(state);
-    },
+    saveAndUpdateUser: (state, action: PayloadAction<IUserData>) => {},
     setUser: (state, action: PayloadAction<IUser[]>) => {
       state.userList = action.payload;
     },
@@ -69,10 +66,7 @@ export const userSlice = createSlice({
     setCurrentUsername: (state, action: PayloadAction<string>) => {
       state.currentUsername = action.payload;
     },
-    setCurrentUserData: (state, action: PayloadAction<string>) => {
-      console.log(action.payload);
-      console.log(state);
-    },
+    setCurrentUserData: (state, action: PayloadAction<string>) => {},
     setCurrentEmail: (state, action: PayloadAction<string>) => {
       state.currentEmail = action.payload;
     },
