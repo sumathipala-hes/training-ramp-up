@@ -1,21 +1,34 @@
-import React from "react";
-import {
-    Button,
-    Card,
-    Container,
-    TextField,
-    Typography,
-} from "@mui/material";
+import React, { useState } from "react";
+import { Button, Card, Container, TextField, Typography } from "@mui/material";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+import { useAppDispatch } from "../../redux/store";
+import { userDataActions } from "../../redux/user/userSlice";
 
-export default function SignIn() {
-    const [email, setEmail] = React.useState("");
-    const [password, setPassword] = React.useState("");
+export default function SignUpPage() {
+    const [username, setUsername] = useState("");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const dispatch = useAppDispatch();
 
-    const handleSignIn = () => {
-        console.log("Sign In");
+    interface IUserData {
+        userId: number;
+        userName: string;
+        userEmail: string;
+        userPassword: string;
+        role: string;
+    }
+
+    const handleSignUp = () => {
+        const userData: IUserData = {
+            userId: 0,
+            userName: username,
+            userEmail: email,
+            userPassword: password,
+            role: "user",
+        };
+        dispatch(userDataActions.updateUserData(userData));
     };
-
+    
     return (
         <Container
             maxWidth="sm"
@@ -47,14 +60,27 @@ export default function SignIn() {
                         fontWeight: "600",
                     }}
                 >
-                    Sign In
+                    Sign Up
                 </Typography>
+
                 <form>
+                    <TextField
+                        size="small"
+                        label="User Name"
+                        id="outlined-basic"
+                        variant="outlined"
+                        fullWidth
+                        required
+                        sx={{ mb: 2 }}
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
+                    />
                     <TextField
                         size="small"
                         label="User Email"
                         id="outlined-basic"
                         variant="outlined"
+                        type="email"
                         fullWidth
                         required
                         value={email}
@@ -65,10 +91,10 @@ export default function SignIn() {
                         label="User Password"
                         id="outlined-basic"
                         variant="outlined"
+                        type="password"
                         fullWidth
                         required
                         margin="normal"
-                        type="password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                     />
@@ -85,9 +111,9 @@ export default function SignIn() {
                             gap: "10px",
                             fontFamily: "Ubuntu, sans-serif",
                         }}
-                        onClick={handleSignIn}
+                        onClick={handleSignUp}
                     >
-                        Sign In
+                        Sign Up
                         <ArrowForwardIcon />
                     </Button>
                 </form>

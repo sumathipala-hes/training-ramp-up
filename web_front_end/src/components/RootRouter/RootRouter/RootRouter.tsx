@@ -7,16 +7,16 @@ import {
     ROUTE_USER,
 } from "../../../util/routes";
 import StudentPage from "../../../containers/StudentPage/StudentPage";
-import SignIn from "../../../containers/SignIn/SignIn";
-import SignUp from "../../../containers/SignUp/SignUp";
+import SignInPage from "../../../containers/SignInPage/SignInPage";
+import SignUpPage from "../../../containers/SignUpPage/SignUpPage";
 import UserPage from "../../../containers/UserPage/UserPage";
 
 export default function Content() {
     return (
         <Routes>
             <Route path={ROUTE_STUDENT} element={<StudentPage />} />
-            <Route path={ROUTE_SIGNIN} element={<SignIn />} />
-            <Route path={ROUTE_SIGNUP} element={<SignUp />} />
+            <Route path={ROUTE_SIGNIN} element={<SignInPage />} />
+            <Route path={ROUTE_SIGNUP} element={<SignUpPage />} />
             <Route path={ROUTE_USER} element={<UserPage />} />
         </Routes>
     );
