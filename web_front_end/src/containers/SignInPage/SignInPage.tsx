@@ -4,6 +4,7 @@ import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import { useAppDispatch } from "../../redux/store";
 import { userDataActions } from "../../redux/user/userSlice";
 import { useNavigate } from "react-router-dom";
+import { ROUTE_SIGNUP } from "../../util/routes";
 
 export default function SignInPage() {
     const [email, setEmail] = React.useState("");
@@ -94,6 +95,7 @@ export default function SignInPage() {
                             fontFamily: "Ubuntu, sans-serif",
                         }}
                         onClick={handleSignIn}
+                        disabled={email === "" || password === ""}
                     >
                         Sign In
                         <ArrowForwardIcon />
@@ -118,7 +120,7 @@ export default function SignInPage() {
                             cursor: "pointer",
                         }}
                         onClick={() => {
-                            navigate("/signup");
+                            navigate(ROUTE_SIGNUP);
                         }}
                     >
                         Sign Up

@@ -24,6 +24,7 @@ import {
     validatePassword,
     validateUser,
 } from "../../../util/validateUser";
+import roleEnum from "../../../enum/roleEnum";
 
 interface IUserData {
     userId: number;
@@ -35,6 +36,7 @@ interface IUserData {
 
 function UserDataGrid() {
     const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({});
+    const [isAddUserButtonDisabled, setAddUserButtonDisabled] = useState(false); // Add this state variable
     const dispatch = useAppDispatch();
     const userDataLists = useSelector(
         (state: RootState) => state.userDataList.userEntries,
@@ -188,7 +190,7 @@ function UserDataGrid() {
             userName: "",
             userEmail: "",
             userPassword: "",
-            role: "",
+            role: roleEnum.USER,
         };
         dispatch(userDataActions.addUserData(newRow));
         setRowModesModel((oldModel) => ({
@@ -198,6 +200,7 @@ function UserDataGrid() {
             },
             ...oldModel,
         }));
+        setAddUserButtonDisabled(true);
     }
 
     const handleSaveRowClick = (row: GridRowModel) => () => {
@@ -205,6 +208,7 @@ function UserDataGrid() {
             ...rowModesModel,
             [row.id]: { mode: GridRowModes.View },
         });
+        setAddUserButtonDisabled(false); 
     };
 
     function handleProcessRowUpdate(
@@ -252,6 +256,7 @@ function UserDataGrid() {
         if (window.confirm("Are you sure you want to delete this record?")) {
             dispatch(userDataActions.removeUserData(row.id));
         }
+        setAddUserButtonDisabled(false); 
     };
 
     const handleCancelRowClick = (row: GridRowModel) => () => {
@@ -264,6 +269,7 @@ function UserDataGrid() {
             ...oldModel,
             [row.id]: { mode: GridRowModes.View, ignoreModifications: true },
         }));
+        setAddUserButtonDisabled(false); 
     };
 
     return (
@@ -287,6 +293,7 @@ function UserDataGrid() {
                     backgroundColor: "#0984e3",
                     boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)",
                 }}
+                disabled={isAddUserButtonDisabled}
             >
                 Add User
             </Button>

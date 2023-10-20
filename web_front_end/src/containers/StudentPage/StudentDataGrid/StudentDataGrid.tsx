@@ -29,6 +29,7 @@ import {
     validateStudentName,
 } from "../../../util/validateStudent";
 import { generateAge } from "../../../util/generateAge";
+import genderEnum from "../../../enum/genderEnum";
 
 interface ITableData {
     studentId: number;
@@ -42,6 +43,7 @@ interface ITableData {
 
 function StudentDataGrid() {
     const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({});
+    const [isAddUserButtonDisabled, setAddUserButtonDisabled] = useState(false); // Add this state variable
     const dispatch = useAppDispatch();
     const studentDataList = useSelector(
         (state: RootState) => state.tableDataList.tableDataEntries,
@@ -84,7 +86,7 @@ function StudentDataGrid() {
             width: 150,
             headerClassName: "headerCellStyles",
             type: "singleSelect",
-            valueOptions: ["Male", "Female"],
+            valueOptions: ["male", "female"],
         },
         {
             field: "studentAddress",
@@ -236,7 +238,7 @@ function StudentDataGrid() {
             studentMobile: "",
             studentDob: maxDate(),
             age: 0,
-            studentGender: "Male",
+            studentGender: genderEnum.MALE,
         };
         dispatch(tableDataActions.addTableData(newRow));
         setRowModesModel((oldModel) => ({
@@ -246,6 +248,7 @@ function StudentDataGrid() {
             },
             ...oldModel,
         }));
+        setAddUserButtonDisabled(true);
     }
 
     const handleSaveRowClick = (row: GridRowModel) => () => {
@@ -253,6 +256,7 @@ function StudentDataGrid() {
             ...rowModesModel,
             [row.id]: { mode: GridRowModes.View },
         });
+        setAddUserButtonDisabled(false);
     };
 
     function handleProcessRowUpdate(
@@ -303,6 +307,7 @@ function StudentDataGrid() {
         if (window.confirm("Are you sure you want to delete this record?")) {
             dispatch(tableDataActions.removeTableData(row.id));
         }
+        setAddUserButtonDisabled(false);
     };
 
     const handleCancelRowClick = (row: GridRowModel) => () => {
@@ -315,6 +320,7 @@ function StudentDataGrid() {
             ...oldModel,
             [row.id]: { mode: GridRowModes.View },
         }));
+        setAddUserButtonDisabled(false);
     };
 
     return (
@@ -338,6 +344,7 @@ function StudentDataGrid() {
                     backgroundColor: "#0984e3",
                     boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)",
                 }}
+                disabled={isAddUserButtonDisabled}
             >
                 Add Student
             </Button>
