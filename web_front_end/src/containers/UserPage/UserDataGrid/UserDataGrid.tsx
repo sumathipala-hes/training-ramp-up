@@ -39,12 +39,6 @@ function UserDataGrid() {
 
     const columns: GridColDef[] = [
         {
-            field: "userId",
-            headerName: "ID",
-            width: 90,
-            headerClassName: "headerCellStyles",
-        },
-        {
             field: "userName",
             headerName: "User Name",
             type: "string",
@@ -73,12 +67,13 @@ function UserDataGrid() {
         {
             field: "role",
             headerName: "Role",
-            type: "string",
             editable: true,
             headerAlign: "left",
             align: "left",
             width: 150,
             headerClassName: "headerCellStyles",
+            type: "singleSelect",
+            valueOptions: ["admin", "user"],
         },
         {
             field: "actions",
@@ -170,7 +165,7 @@ function UserDataGrid() {
         setRowModesModel((oldModel) => ({
             [newRow.userEmail]: {
                 mode: GridRowModes.Edit,
-                fieldToFocus: "studentName",
+                fieldToFocus: "userName",
             },
             ...oldModel,
         }));
@@ -187,18 +182,13 @@ function UserDataGrid() {
         newRow: GridRowModel,
         oldRow: GridRowModel,
     ) {
-        // const { userId, ...updatedFields } = newRow;
-        const { userId, userName, userEmail, userPassword, role } = newRow;
+        const { userId, ...updatedFields } = newRow;
         const data: IUserData = {
             userId: userId,
-            // userName: updatedFields.userName as string,
-            // userEmail: updatedFields.userEmail as string,
-            // userPassword: updatedFields.userPassword as string,
-            // role: updatedFields.role as string,
-            userName: userName,
-            userEmail: userEmail,
-            userPassword: userPassword,
-            role: role,
+            userName: updatedFields.userName as string,
+            userEmail: updatedFields.userEmail as string,
+            userPassword: updatedFields.userPassword as string,
+            role: updatedFields.role as string,
         };
         // const validations = validateFieldAlerts(
         //     data.studentName,
