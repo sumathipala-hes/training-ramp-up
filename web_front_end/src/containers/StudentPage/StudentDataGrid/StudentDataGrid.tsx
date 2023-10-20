@@ -21,15 +21,13 @@ import { RootState, useAppDispatch } from "../../../redux/store";
 import { tableDataActions } from "../../../redux/student/studentSlice";
 import { useSelector } from "react-redux";
 import {
-    addressRegex,
-    alerts,
     maxDate,
     minDate,
-    mobileRegex,
-    nameRegex,
-    validateField,
-    validateFieldAlerts,
-} from "../../../util/validateTable";
+    validateStudent,
+    validateStudentAddress,
+    validateStudentMobile,
+    validateStudentName,
+} from "../../../util/validateStudent";
 import { generateAge } from "../../../util/generateAge";
 
 interface ITableData {
@@ -70,7 +68,11 @@ function StudentDataGrid() {
             width: 150,
             headerClassName: "headerCellStyles",
             preProcessEditCellProps: (params: GridPreProcessEditCellProps) => {
-                return validateField(params, nameRegex, alerts.nameRegex);
+                const hasError = !validateStudentName(params.props.value);
+                return {
+                    ...params.props,
+                    style: { color: hasError ? "red" : "green" },
+                };
             },
         },
         {
@@ -94,7 +96,11 @@ function StudentDataGrid() {
             width: 150,
             headerClassName: "headerCellStyles",
             preProcessEditCellProps: (params: GridPreProcessEditCellProps) => {
-                return validateField(params, addressRegex, alerts.addressRegex);
+                const hasError = !validateStudentAddress(params.props.value);
+                return {
+                    ...params.props,
+                    style: { color: hasError ? "red" : "green" },
+                };
             },
         },
         {
@@ -107,7 +113,11 @@ function StudentDataGrid() {
             width: 150,
             headerClassName: "headerCellStyles",
             preProcessEditCellProps: (params: GridPreProcessEditCellProps) => {
-                return validateField(params, mobileRegex, alerts.mobileRegex);
+                const hasError = !validateStudentMobile(params.props.value);
+                return {
+                    ...params.props,
+                    style: { color: hasError ? "red" : "green" },
+                };
             },
         },
         {
@@ -212,7 +222,7 @@ function StudentDataGrid() {
         },
     ];
 
-    const transformedStudentData = studentDataList.map(row => ({
+    const transformedStudentData = studentDataList.map((row) => ({
         ...row,
         studentDob: new Date(row.studentDob),
         age: generateAge(row.studentDob),
@@ -226,11 +236,14 @@ function StudentDataGrid() {
             studentMobile: "",
             studentDob: maxDate(),
             age: 0,
-            studentGender: "",
+            studentGender: "Male",
         };
         dispatch(tableDataActions.addTableData(newRow));
         setRowModesModel((oldModel) => ({
-            [newRow.studentId]: { mode: GridRowModes.Edit, fieldToFocus: "studentName" },
+            [newRow.studentId]: {
+                mode: GridRowModes.Edit,
+                fieldToFocus: "studentName",
+            },
             ...oldModel,
         }));
     }
@@ -247,6 +260,24 @@ function StudentDataGrid() {
         oldRow: GridRowModel,
     ) {
         const { studentId, ...updatedFields } = newRow;
+
+        const validationData = [
+            { value: updatedFields.studentName, type: "studentName" },
+            { value: updatedFields.studentAddress, type: "studentAddress" },
+            { value: updatedFields.studentMobile, type: "studentMobile" },
+        ];
+
+        for (const data of validationData) {
+            const error = validateStudent(
+                data.value,
+                data.type as "studentName" | "studentAddress" | "studentMobile",
+            );
+            if (error) {
+                alert(error);
+                return Promise.resolve();
+            }
+        }
+
         const data: ITableData = {
             studentId: studentId,
             studentName: updatedFields.studentName as string,
@@ -256,11 +287,7 @@ function StudentDataGrid() {
             studentGender: updatedFields.studentGender as string,
             age: updatedFields.age as number,
         };
-        const validations = validateFieldAlerts(data.studentName, data.studentAddress, data.studentMobile);
-        if (validations) {
-          return Promise.reject(alert(validations));
-        }
-        
+
         dispatch(tableDataActions.updateTableData(data));
         return { ...oldRow, ...newRow };
     }

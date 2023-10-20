@@ -3,7 +3,7 @@ import { Provider } from "react-redux";
 import store from "../../../redux/store";
 import StudentDataGrid from "./StudentDataGrid";
 import { tableDataActions } from "../../../redux/student/studentSlice";
-import { maxDate } from "../../../util/validateTable";
+import { maxDate } from "../../../util/validateStudent";
 
 interface ITableData {
     studentId: number;
