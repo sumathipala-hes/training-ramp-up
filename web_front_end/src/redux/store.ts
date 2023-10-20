@@ -2,8 +2,8 @@ import { configureStore } from "@reduxjs/toolkit";
 import { tableDataReducer } from "./student/studentSlice";
 import { useDispatch } from "react-redux";
 import createSagaMiddleware from "redux-saga";
-import mySaga from "./student/studentSaga";
 import { userDataReducer } from "./user/userSlice";
+import rootSaga from "./rootSaga";
 
 const sagaMiddleware = createSagaMiddleware();
 
@@ -16,7 +16,7 @@ export const store = configureStore({
   getDefaultMiddleware().concat(sagaMiddleware),
 });
 
-sagaMiddleware.run(mySaga);
+sagaMiddleware.run(rootSaga);
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;

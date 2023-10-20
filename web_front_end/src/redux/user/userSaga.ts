@@ -24,6 +24,7 @@ interface IResponseData {
     data: {
         data: IUser[];
     };
+
 }
 
 // Define action types
@@ -80,8 +81,8 @@ function* tableUserSaga() {
     yield takeEvery(removeUserData, deleteUserDataRow);
 }
 
-function* mySaga() {
+function* userSaga() {
     yield all([tableUserSaga()]);
 }
 
-export default mySaga;
+export default userSaga;

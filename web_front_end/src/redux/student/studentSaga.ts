@@ -76,8 +76,8 @@ function* tableDataSaga() {
     yield takeEvery(removeTableData, deleteTableDataRow);
 }
 
-function* mySaga() {
+function* studentSaga() {
     yield all([tableDataSaga()]);
 }
 
-export default mySaga;
+export default studentSaga;

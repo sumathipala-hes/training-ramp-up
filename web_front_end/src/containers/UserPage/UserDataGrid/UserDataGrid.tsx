@@ -265,7 +265,7 @@ function UserDataGrid() {
                     boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)",
                 }}
                 rows={transformedUserData}
-                getRowId={(row) => row.userId}
+                getRowId={(row) => row.userEmail}
                 columns={columns}
                 editMode="row"
                 rowModesModel={rowModesModel}
