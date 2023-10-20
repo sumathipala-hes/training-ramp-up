@@ -25,9 +25,9 @@ export const validateUser = (
         : "Invalid input type";
 };
 
-export const validateNameInput = (userName: string) =>
+export const validateName = (userName: string) =>
     nameRegExp.test(userName);
-export const validateEmailInput = (userEmail: string) =>
+export const validateEmail = (userEmail: string) =>
     emailRegExp.test(userEmail);
-export const validatePasswordInput = (userPassword: string) =>
+export const validatePassword = (userPassword: string) =>
     passwordRegExp.test(userPassword);

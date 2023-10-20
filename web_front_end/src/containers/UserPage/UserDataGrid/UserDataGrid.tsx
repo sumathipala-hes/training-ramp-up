@@ -13,11 +13,12 @@ import {
     GridActionsCellItem,
     GridRowModesModel,
     GridRowModel,
+    GridPreProcessEditCellProps,
 } from "@mui/x-data-grid";
 import { RootState, useAppDispatch } from "../../../redux/store";
 import { userDataActions } from "../../../redux/user/userSlice";
 import { useSelector } from "react-redux";
-import { validateUser } from "../../../util/validateUser";
+import { validateEmail, validateName, validatePassword, validateUser } from "../../../util/validateUser";
 
 interface IUserData {
     userId: number;
@@ -48,6 +49,13 @@ function UserDataGrid() {
             align: "left",
             width: 150,
             headerClassName: "headerCellStyles",
+            preProcessEditCellProps: (params: GridPreProcessEditCellProps) => {
+                const hasError = !validateName(params.props.value);
+                return {
+                    ...params.props,
+                    style: { color: hasError ? "red" : "green" },
+                };
+            },
         },
         {
             field: "userEmail",
@@ -56,6 +64,13 @@ function UserDataGrid() {
             headerAlign: "left",
             align: "left",
             width: 150,
+            preProcessEditCellProps: (params: GridPreProcessEditCellProps) => {
+                const hasError = !validateEmail(params.props.value);
+                return {
+                    ...params.props,
+                    style: { color: hasError ? "red" : "green" },
+                };
+            },
         },
         {
             field: "userPassword",
@@ -64,6 +79,13 @@ function UserDataGrid() {
             headerAlign: "left",
             align: "left",
             width: 150,
+            preProcessEditCellProps: (params: GridPreProcessEditCellProps) => {
+                const hasError = !validatePassword(params.props.value);
+                return {
+                    ...params.props,
+                    style: { color: hasError ? "red" : "green" },
+                };
+            },
         },
         {
             field: "role",
@@ -237,7 +259,7 @@ function UserDataGrid() {
 
         setRowModesModel((oldModel) => ({
             ...oldModel,
-            [row.id]: { mode: GridRowModes.View },
+            [row.id]: { mode: GridRowModes.View, ignoreModifications: true },
         }));
     };
 
