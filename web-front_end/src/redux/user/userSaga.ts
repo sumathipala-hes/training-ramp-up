@@ -2,6 +2,7 @@ import { call, put, takeLatest } from "redux-saga/effects";
 import { userActions } from "./userSlice";
 import { api } from "../../api/api";
 import { PayloadAction } from "@reduxjs/toolkit";
+import { Axios, AxiosResponse } from "axios";
 
 interface IData {
   id: number;
@@ -24,6 +25,11 @@ interface IUserData {
   dob: string;
   password: string;
   gender: string;
+}
+
+interface ISignIn {
+  email: string;
+  password: string;
 }
 
 interface IUserResponse {
@@ -80,8 +86,59 @@ function* deleteUser(action: PayloadAction<string>) {
   }
 }
 
+function* signIn(action: PayloadAction<ISignIn>) {
+  const { email, password } = action.payload;
+  const userData = {
+    email: email,
+    password: password,
+  };
+  try {
+    const response: AxiosResponse = yield call(api.post, `/users/signIn`, userData, {
+      withCredentials: true,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    if (response.status === 200 || response.status === 201) {
+      alert("Signed in successfully");
+      yield put(userActions.setAuthenticated(true));
+      yield put(userActions.setEmail(email));
+    }
+  } catch (e) {
+    alert("Error signing in " + e);
+  }
+}
+
+function* signOut() {
+  try {
+    yield call(api.post, "/users/signOut", {}, { withCredentials: true });
+    yield put(userActions.setAuthenticated(false));
+    yield put(userActions.setEmail(""));
+  } catch (e) {
+    alert("Error signing out " + e);
+  }
+}
+
+function* setCurrentUser(action: PayloadAction<IUserData>) {
+  const email = action.payload;
+  try {
+    const response: IUserResponse = yield call(api.get, `/users/${email}`, {
+      withCredentials: true,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    yield put(userActions.setRoleType(response.data.data[0].roleType));
+  } catch (e) {
+    alert("Error setting current user " + e);
+  }
+}
+
 export function* userSaga() {
   yield takeLatest(userActions.fetchUser.type, fetchUser);
   yield takeLatest(userActions.saveAndUpdateUserEntry.type, addAndUpdateUser);
   yield takeLatest(userActions.deleteUserEntry.type, deleteUser);
+  yield takeLatest(userActions.signIn.type, signIn);
+  yield takeLatest(userActions.signOut.type, signOut);
+  yield takeLatest(userActions.setCurrentUser.type, setCurrentUser);
 }

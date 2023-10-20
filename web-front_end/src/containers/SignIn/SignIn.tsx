@@ -10,17 +10,28 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { SIGN_UP } from "../../util/routesUtil";
+import { useAppDispatch } from "../../redux/store";
+import { userActions } from "../../redux/user/userSlice";
 
 const defaultTheme = createTheme();
 
+interface ISignInData {
+  email: string;
+  password: string;
+}
+
 const SignIn = () => {
+  const dispatch = useAppDispatch();
+
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
-    });
+
+    const signInData: ISignInData = {
+      email: data.get("email") as string,
+      password: data.get("password") as string,
+    };
+    dispatch(userActions.signIn(signInData));
   };
 
   return (

@@ -47,6 +47,7 @@ const StudentDataGrid = () => {
   const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({});
   const dispatch = useAppDispatch();
   const studentList = useSelector((state: RootState) => state.studentEntries.studentEntries);
+  const currentRoleType = useSelector((state: RootState) => state.userEntries.currentRoleType);
 
   useEffect(() => {
     dispatch(studentActions.fetchStudent());
@@ -81,20 +82,22 @@ const StudentDataGrid = () => {
           backgroundColor: "#ecf0f1",
         }}
       >
-        <Button
-          color="primary"
-          startIcon={<AddIcon />}
-          onClick={handleAddNew}
-          variant="contained"
-          sx={{
-            "& .MuiButton-label": {
-              textTransform: "none",
-            },
-            margin: "1em",
-          }}
-        >
-          Add Student
-        </Button>
+        {currentRoleType === "ADMIN" && (
+          <Button
+            color="primary"
+            startIcon={<AddIcon />}
+            onClick={handleAddNew}
+            variant="contained"
+            sx={{
+              "& .MuiButton-label": {
+                textTransform: "none",
+              },
+              margin: "1em",
+            }}
+          >
+            Add Student
+          </Button>
+        )}
       </GridToolbarContainer>
     );
   }
@@ -255,7 +258,10 @@ const StudentDataGrid = () => {
       minWidth: 100,
       headerClassName: "header-cell",
     },
-    {
+  ];
+
+  if (currentRoleType === "ADMIN") {
+    columns.push({
       field: "actions",
       type: "actions",
       headerName: "Actions",
@@ -332,8 +338,8 @@ const StudentDataGrid = () => {
           />,
         ];
       },
-    },
-  ];
+    });
+  }
 
   return (
     <Box
@@ -377,7 +383,7 @@ const StudentDataGrid = () => {
           processRowUpdate={processRowUpdate}
           autoHeight
           slots={{
-            toolbar: EditToolbar,
+            toolbar: currentRoleType === "ADMIN" ? EditToolbar : undefined,
           }}
         />
       </Box>

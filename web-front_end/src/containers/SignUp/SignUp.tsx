@@ -16,6 +16,7 @@ import { genderEnum } from "../../enum/genderEnum";
 import { useAppDispatch } from "../../redux/store";
 import { userActions } from "../../redux/user/userSlice";
 import { useNavigate } from "react-router-dom";
+import { maxDateUser, minDateUser } from "../../util/validationUtilUser";
 const defaultTheme = createTheme();
 
 interface IUserEntry {
@@ -179,7 +180,17 @@ const SignUp = () => {
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
-                <TextField required fullWidth id="dob" name="dob" type="date" />
+                <TextField
+                  required
+                  fullWidth
+                  id="dob"
+                  name="dob"
+                  type="date"
+                  inputProps={{
+                    min: minDateUser(),
+                    max: maxDateUser(),
+                  }}
+                />
               </Grid>
               <Grid container sx={{ paddingTop: "1em" }}>
                 <Grid

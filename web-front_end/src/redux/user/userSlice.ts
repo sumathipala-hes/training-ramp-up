@@ -13,10 +13,21 @@ interface IUserEntry {
 
 interface IUserState {
   userEntries: IUserEntry[];
+  isAuthenticated: boolean;
+  currentEmail: string;
+  currentRoleType: string;
+}
+
+interface ISignInData {
+  email: string;
+  password: string;
 }
 
 const initialState: IUserState = {
   userEntries: [],
+  isAuthenticated: false,
+  currentEmail: "",
+  currentRoleType: "",
 };
 
 export const userSlice = createSlice({
@@ -40,6 +51,20 @@ export const userSlice = createSlice({
       const email = action.payload;
       state.userEntries = state.userEntries.filter(userEntry => userEntry.email !== email);
     },
+    setAuthenticated: (state, action: PayloadAction<boolean>) => {
+      state.isAuthenticated = action.payload;
+    },
+
+    signIn(state, action: PayloadAction<ISignInData>) {},
+    signOut: () => {},
+
+    setEmail: (state, action: PayloadAction<string>) => {
+      state.currentEmail = action.payload;
+    },
+    setRoleType: (state, action: PayloadAction<string>) => {
+      state.currentRoleType = action.payload;
+    },
+    setCurrentUser: (state, action: PayloadAction<string>) => {},
   },
 });
 
