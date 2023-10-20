@@ -18,7 +18,12 @@ import {
 import { RootState, useAppDispatch } from "../../../redux/store";
 import { userDataActions } from "../../../redux/user/userSlice";
 import { useSelector } from "react-redux";
-import { validateEmail, validateName, validatePassword, validateUser } from "../../../util/validateUser";
+import {
+    validateEmail,
+    validateName,
+    validatePassword,
+    validateUser,
+} from "../../../util/validateUser";
 
 interface IUserData {
     userId: number;
