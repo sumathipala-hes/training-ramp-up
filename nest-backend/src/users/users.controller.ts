@@ -57,7 +57,7 @@ export class UsersController {
     const tokens = await this.authService.signIn(createUserDto);
     console.log(tokens);
     res.cookie('accessToken', tokens.accessToken, {
-      maxAge: 1000 * 60 * 5,
+      maxAge: 1000 * 60,
       httpOnly: true,
     });
     res.cookie('refreshToken', tokens.refreshToken, {

@@ -1,5 +1,4 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import Cookies from "js-cookie";
 
 interface IUser {
   email: string;
@@ -31,7 +30,7 @@ interface IUserState {
 
 const initialState: IUserState = {
   userList: [],
-  isAuthenticated: Cookies.get("accessToken") ? true : false,
+  isAuthenticated: false,
   currentUserRole: "user",
   currentUsername: "",
   currentEmail: "",
@@ -70,6 +69,7 @@ export const userSlice = createSlice({
     setCurrentEmail: (state, action: PayloadAction<string>) => {
       state.currentEmail = action.payload;
     },
+    authorizeUser: () => {},
   },
 });
 

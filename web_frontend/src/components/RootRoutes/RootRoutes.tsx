@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Route, Routes, useNavigate } from "react-router-dom";
+import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
 import {
   DEFAULT_ROUTE,
   HOME_ROUTE,
@@ -26,17 +26,22 @@ const RootRoutes = () => {
     if (isAuthenticated) {
       dispatch(userActions.setCurrentUserData(email));
       navigate(HOME_ROUTE);
+    } else {
+      dispatch(userActions.authorizeUser());
     }
   }, [isAuthenticated]);
 
   return (
-    <Routes>
-      <Route path={DEFAULT_ROUTE} element={<SignInPage />} />
-      <Route path={HOME_ROUTE} element={<HomePage />} />
-      <Route path={STUDENT_ROUTE} element={<StudentPage />} />
-      <Route path={USER_ROUTE} element={<UserPage />} />
-      <Route path={REGISTER_ROUTE} element={<Registration />} />
-    </Routes>
+    <>
+      <Routes>
+        <Route path={DEFAULT_ROUTE} element={<SignInPage />} />
+        <Route path={REGISTER_ROUTE} element={<Registration />} />
+        <Route path={HOME_ROUTE} element={<HomePage />} />
+        <Route path={STUDENT_ROUTE} element={<StudentPage />} />
+        <Route path={USER_ROUTE} element={<UserPage />} />
+      </Routes>
+      {isAuthenticated ? <Navigate to={HOME_ROUTE} /> : <Navigate to={DEFAULT_ROUTE} />}
+    </>
   );
 };
 

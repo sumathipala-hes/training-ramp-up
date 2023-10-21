@@ -101,10 +101,40 @@ function* setCurrentUserData(action: PayloadAction<string>) {
   }
 }
 
+// function* logout() {
+//   try {
+//     yield call(api.delete, "/user/signOut", {
+//       withCredentials: true,
+//     });
+//     yield put(userActions.setAuthenticated(false));
+//     yield put(userActions.setCurrentUserRole(""));
+//     yield put(userActions.setCurrentUsername(""));
+//   } catch (error) {
+//     alert(error);
+//   }
+// }
+
+function* authorizeUser() {
+  try {
+    const res: AxiosResponse = yield call(api.post, "/auth/authorize", {
+      headers: { "Content-Type": "application/json" },
+      withCredentials: true,
+    });
+    if (res.data.message == "Login Success") {
+      yield put(userActions.setAuthenticated(true));
+      yield put(userActions.setCurrentUserData(res.data.email));
+      yield put(userActions.setCurrentUserRole(res.data.role));
+    }
+  } catch (error) {
+    alert(error);
+  }
+}
+
 export function* userSaga() {
   yield takeEvery(userActions.fetchUser.type, getAllUsers);
   yield takeEvery(userActions.saveAndUpdateUser, saveAndUpdateUser);
   yield takeEvery(userActions.removeUser, deleteUser);
   yield takeEvery(userActions.signIn, signIn);
   yield takeEvery(userActions.setCurrentUserData, setCurrentUserData);
+  yield takeEvery(userActions.authorizeUser, authorizeUser);
 }

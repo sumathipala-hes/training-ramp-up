@@ -70,4 +70,22 @@ export class AuthService {
       );
     }
   }
+
+  async authorizeUser(refreshToken: string): Promise<any> {
+    try {
+      const decoded = (await this.jwtService.verify(refreshToken, {
+        secret: jwtConstants.secretKey,
+      })) as { email: string; role: Role };
+      if (decoded) {
+        return { email: decoded.email, role: decoded.role };
+      } else {
+        throw new HttpException('Invalid Token', HttpStatus.BAD_REQUEST);
+      }
+    } catch (error) {
+      throw new HttpException(
+        'Internal Server Error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
 }

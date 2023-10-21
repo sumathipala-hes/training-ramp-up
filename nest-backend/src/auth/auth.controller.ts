@@ -11,9 +11,25 @@ export class AuthController {
     const newAccessToken =
       await this.authService.generateNewAccessToken(refreshToken);
     res.cookie('accessToken', newAccessToken, {
-      maxAge: 1000 * 60 * 5,
+      maxAge: 1000 * 60,
       httpOnly: true,
     });
     res.status(200).json({ message: 'Refresh Token Success' });
+  }
+
+  @Post('authorize')
+  async authorize(@Req() req: Request, @Res() res: Response): Promise<void> {
+    const tokenParts = req.headers.cookie?.split('; ');
+
+    let refreshToken = null;
+
+    for (const part of tokenParts) {
+      if (part.startsWith('accessToken=')) {
+        refreshToken = part.substring('refreshToken='.length);
+        break;
+      }
+    }
+    const data = this.authService.authorizeUser(refreshToken);
+    res.status(200).json({ message: 'Authorized', data: { data } });
   }
 }
