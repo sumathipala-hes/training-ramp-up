@@ -78,41 +78,25 @@ function* signIn(action: PayloadAction<ISignInData>) {
       withCredentials: true,
     });
     if (res.data.message == "Login Success") {
-      yield put(userActions.setCurrentUserData(action.payload.email));
-      yield put(userActions.setAuthenticated(true));
-      console.log(res.headers["set-cookie"]);
+      yield authorizeUser();
     }
   } catch (error) {
     alert(error);
   }
 }
 
-function* setCurrentUserData(action: PayloadAction<string>) {
+function* signOut() {
   try {
-    const res: AxiosResponse = yield call(api.get, "/user/" + action.payload, {
-      headers: { "Content-Type": "application/json" },
+    yield call(api.delete, "/user/signOut", {
       withCredentials: true,
     });
-    console.log(res.data);
-    yield put(userActions.setCurrentUserRole(res.data.role));
-    yield put(userActions.setCurrentUsername(res.data.name));
+    yield put(userActions.setAuthenticated(false));
+    yield put(userActions.setCurrentUserRole(""));
+    yield put(userActions.setCurrentUsername(""));
   } catch (error) {
     alert(error);
   }
 }
-
-// function* logout() {
-//   try {
-//     yield call(api.delete, "/user/signOut", {
-//       withCredentials: true,
-//     });
-//     yield put(userActions.setAuthenticated(false));
-//     yield put(userActions.setCurrentUserRole(""));
-//     yield put(userActions.setCurrentUsername(""));
-//   } catch (error) {
-//     alert(error);
-//   }
-// }
 
 function* authorizeUser() {
   try {
@@ -120,13 +104,13 @@ function* authorizeUser() {
       headers: { "Content-Type": "application/json" },
       withCredentials: true,
     });
-    if (res.data.message == "Login Success") {
+    if (res.data.message == "Authorized") {
       yield put(userActions.setAuthenticated(true));
-      yield put(userActions.setCurrentUserData(res.data.email));
-      yield put(userActions.setCurrentUserRole(res.data.role));
+      yield put(userActions.setCurrentEmail(res.data.data.data.email));
+      yield put(userActions.setCurrentUserRole(res.data.data.data.role));
     }
   } catch (error) {
-    alert(error);
+    alert("You must sign in first..!");
   }
 }
 
@@ -135,6 +119,6 @@ export function* userSaga() {
   yield takeEvery(userActions.saveAndUpdateUser, saveAndUpdateUser);
   yield takeEvery(userActions.removeUser, deleteUser);
   yield takeEvery(userActions.signIn, signIn);
-  yield takeEvery(userActions.setCurrentUserData, setCurrentUserData);
+  yield takeEvery(userActions.signOut, signOut);
   yield takeEvery(userActions.authorizeUser, authorizeUser);
 }

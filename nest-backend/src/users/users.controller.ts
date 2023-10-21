@@ -71,6 +71,8 @@ export class UsersController {
   async logout(@Res() res: Response): Promise<void> {
     res.clearCookie('accessToken');
     res.clearCookie('refreshToken');
+    res.cookie('accessToken', '', { maxAge: 0 });
+    res.cookie('refreshToken', '', { maxAge: 0 });
     res.status(200).json({ message: 'Logout Success' });
   }
 

@@ -72,16 +72,20 @@ export class AuthService {
   }
 
   async authorizeUser(refreshToken: string): Promise<any> {
+    console.log('authorizeUser' + refreshToken);
     try {
+      if (refreshToken == null) return;
       const decoded = (await this.jwtService.verify(refreshToken, {
         secret: jwtConstants.secretKey,
       })) as { email: string; role: Role };
       if (decoded) {
+        console.log(decoded.email, decoded.role);
         return { email: decoded.email, role: decoded.role };
       } else {
         throw new HttpException('Invalid Token', HttpStatus.BAD_REQUEST);
       }
     } catch (error) {
+      console.log(error);
       throw new HttpException(
         'Internal Server Error',
         HttpStatus.INTERNAL_SERVER_ERROR,

@@ -65,11 +65,11 @@ export const userSlice = createSlice({
     setCurrentUsername: (state, action: PayloadAction<string>) => {
       state.currentUsername = action.payload;
     },
-    setCurrentUserData: (state, action: PayloadAction<string>) => {},
     setCurrentEmail: (state, action: PayloadAction<string>) => {
       state.currentEmail = action.payload;
     },
     authorizeUser: () => {},
+    signOut: () => {},
   },
 });
 

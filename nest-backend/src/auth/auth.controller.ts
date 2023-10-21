@@ -24,12 +24,12 @@ export class AuthController {
     let refreshToken = null;
 
     for (const part of tokenParts) {
-      if (part.startsWith('accessToken=')) {
+      if (part.startsWith('refreshToken=')) {
         refreshToken = part.substring('refreshToken='.length);
         break;
       }
     }
-    const data = this.authService.authorizeUser(refreshToken);
+    const data = await this.authService.authorizeUser(refreshToken);
     res.status(200).json({ message: 'Authorized', data: { data } });
   }
 }
