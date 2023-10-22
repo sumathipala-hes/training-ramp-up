@@ -2,7 +2,7 @@ import { call, put, takeLatest } from "redux-saga/effects";
 import { userActions } from "./userSlice";
 import { api } from "../../api/api";
 import { PayloadAction } from "@reduxjs/toolkit";
-import { Axios, AxiosResponse } from "axios";
+import { AxiosResponse } from "axios";
 
 interface IData {
   id: number;
