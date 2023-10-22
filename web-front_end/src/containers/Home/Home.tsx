@@ -28,15 +28,7 @@ const Home = () => {
 
   return (
     <>
-      <Grid container spacing={3} justifyContent="center" alignItems="center">
-        <Button
-          onClick={() => {
-            dispatch(userActions.signOut());
-            navigator(SIGN_IN);
-          }}
-        >
-          Logout
-        </Button>
+      <Grid container spacing={3} justifyContent="space-between" alignItems="center">
         <Grid item xs={6}>
           <Box display="flex" justifyContent="center" paddingTop="2em">
             {currentRoleType === "ADMIN" && (
@@ -54,6 +46,19 @@ const Home = () => {
               </>
             )}
           </Box>
+        </Grid>
+        <Grid item xs={6} style={{ display: "flex", justifyContent: "flex-end" }}>
+          <Button
+            onClick={() => {
+              dispatch(userActions.signOut());
+              navigator(SIGN_IN);
+            }}
+            sx={{ margin: "1em" }}
+            variant="contained"
+            color="error"
+          >
+            Logout
+          </Button>
         </Grid>
       </Grid>
 
