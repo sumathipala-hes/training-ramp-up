@@ -22,10 +22,12 @@ interface ISignInData {
 
 interface IUserState {
     userEntries: IUser[];
+    currentUserRole: string;
 }
 
 const initialState: IUserState = {
     userEntries: [],
+    currentUserRole: "admin",
 };
 
 export const userSlice = createSlice({
@@ -49,6 +51,9 @@ export const userSlice = createSlice({
         },
         signInUserData(state, action: PayloadAction<ISignInData>) {
             console.log(action.payload);
+        },
+        setCurrentUserRole: (state, action: PayloadAction<string>) => {
+            state.currentUserRole = action.payload;
         },
     },
 });
