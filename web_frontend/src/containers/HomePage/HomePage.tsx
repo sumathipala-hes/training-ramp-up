@@ -30,7 +30,7 @@ const HomePage = () => {
         </Grid>
         <Grid item xs={12} sm={8} md={6} lg={4}>
           <Card
-            sx={{ maxWidth: 800, cursor: "pointer" }}
+            sx={{ maxWidth: 800, cursor: "pointer", ":hover": { boxShadow: "0 0 10px 0" } }}
             onClick={() => {
               navigate(STUDENT_ROUTE);
             }}
@@ -49,7 +49,7 @@ const HomePage = () => {
         {currentRole === "admin" ? (
           <Grid item xs={12} sm={8} md={6} lg={4}>
             <Card
-              sx={{ maxWidth: 800, cursor: "pointer" }}
+              sx={{ maxWidth: 800, cursor: "pointer", ":hover": { boxShadow: "0 0 10px 0" } }}
               onClick={() => {
                 navigate(USER_ROUTE);
               }}

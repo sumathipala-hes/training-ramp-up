@@ -30,6 +30,7 @@ import {
   validateName,
 } from "../../../util/validationUtil";
 import { generateAge } from "../../../util/generateAgeUtil";
+import { Typography } from "@mui/material";
 
 interface IStudentData {
   id: number;
@@ -45,6 +46,7 @@ const StudentDataGrid = () => {
   const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({});
   const dispatch = useAppDispatch();
   const studentList = useSelector((state: RootState) => state.studentList.studentList);
+  const role = useSelector((state: RootState) => state.userList.currentUserRole);
 
   useEffect(() => {
     dispatch(studentActions.fetchStudent());
@@ -228,6 +230,10 @@ const StudentDataGrid = () => {
     },
   ];
 
+  if (role !== "admin") {
+    columns.splice(columns.length - 1, 1);
+  }
+
   return (
     <Box
       sx={{
@@ -250,6 +256,9 @@ const StudentDataGrid = () => {
       >
         Add Student
       </Button>
+      <Typography variant="h5" align="center" color={"gray"} sx={{ mb: 2 }}>
+        Manage Students
+      </Typography>
       <DataGrid
         sx={{
           boxShadow: 4,
