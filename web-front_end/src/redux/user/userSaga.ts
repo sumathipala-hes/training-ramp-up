@@ -41,7 +41,7 @@ interface IUserResponse {
 
 function* fetchUser() {
   try {
-    const response: IUserResponse = yield call(api.get, "/users",{ withCredentials: true });
+    const response: IUserResponse = yield call(api.get, "/users", { withCredentials: true });
     yield put(userActions.setUserEntries(response.data.data));
   } catch (e) {
     alert("Error fetching user data " + e);
@@ -111,8 +111,9 @@ function* signIn(action: PayloadAction<ISignIn>) {
 
 function* signOut() {
   try {
-    yield call(api.post, "/users/signOut", {}, { withCredentials: true });
+    yield call(api.delete, `/users/signOut/user`, { withCredentials: true });
     yield put(userActions.setAuthenticated(false));
+    yield put(userActions.setRoleType(""));
     yield put(userActions.setEmail(""));
   } catch (e) {
     alert("Error signing out " + e);
