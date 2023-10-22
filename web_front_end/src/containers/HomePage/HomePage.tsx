@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import StudentDataGrid from "./StudentDataGrid/StudentDataGrid";
 import UserDataGrid from "./UserDataGrid/UserDataGrid";
+import Header from "../../components/Header/Header";
 
 export default function HomePage() {
     const currentUserRole = useSelector(
@@ -20,7 +21,8 @@ export default function HomePage() {
 
     return (
         <>
-            <Box display="flex" justifyContent="start" paddingTop="2em">
+        <Header />
+            <Box display="flex" justifyContent="start" paddingTop="5em">
                 {currentUserRole === "admin" && (
                     <>
                         <Box
