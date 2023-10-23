@@ -21,14 +21,12 @@ api.interceptors.response.use(
   async error => {
     if ((error.response && error.response.status === 401) || error.response.status === 403) {
       try {
-        const refreshedTokenResponse = await api.post("/users/refreshToken", {
+        await api.post("/users/refreshToken", {
           headers: { "Content-Type": "application/json" },
           withCredentials: true,
         });
-        console.log("Token refreshed:", refreshedTokenResponse);
-        return refreshedTokenResponse;
+        return api.request(error.config);
       } catch (refreshError) {
-        console.error("Token refresh failed:", refreshError);
         return Promise.reject(refreshError);
       }
     } else {
