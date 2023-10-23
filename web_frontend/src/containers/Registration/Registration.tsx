@@ -1,7 +1,9 @@
 import React, { useState } from "react";
-import { Button, Card, Container, Grid, TextField } from "@mui/material";
+import { Button, Card, Container, Grid, TextField, Typography } from "@mui/material";
 import { useAppDispatch } from "../../redux/store";
 import { userActions } from "../../redux/user/slice";
+import { DEFAULT_ROUTE } from "../../util/routeUtil";
+import { useNavigate } from "react-router-dom";
 
 interface IUserData {
   id: number;
@@ -16,6 +18,7 @@ const Registration = () => {
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
   const handleRegister = () => {
     const user: IUserData = {
@@ -68,6 +71,18 @@ const Registration = () => {
             <Button variant="contained" fullWidth sx={{ mt: 2 }} onClick={handleRegister}>
               Register
             </Button>
+            <Typography align="center" variant="body1" sx={{ mt: 4, cursor: "pointer" }}>
+              Already have an account?{" "}
+              <Typography
+                onClick={() => {
+                  navigate(DEFAULT_ROUTE);
+                }}
+                component="span"
+                color="primary"
+              >
+                Sign In
+              </Typography>
+            </Typography>
           </Card>
         </Grid>
       </Grid>

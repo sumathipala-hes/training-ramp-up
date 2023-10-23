@@ -1,8 +1,10 @@
 import React, { useState } from "react";
-import { Button, Card, Container, Grid, TextField } from "@mui/material";
+import { Button, Card, Container, Grid, TextField, Typography } from "@mui/material";
 import { useAppDispatch } from "../../redux/store";
 import { userActions } from "../../redux/user/slice";
 import signInImage from "../../assets/sign-in.jpg";
+import { useNavigate } from "react-router-dom";
+import { REGISTER_ROUTE } from "../../util/routeUtil";
 
 interface ISignInData {
   email: string;
@@ -13,6 +15,7 @@ const SignInPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   const handleSignIn = () => {
     const signInData: ISignInData = {
@@ -77,6 +80,18 @@ const SignInPage = () => {
             <Button variant="contained" fullWidth sx={{ mt: 2 }} onClick={handleSignIn}>
               Sign In
             </Button>
+            <Typography align="center" variant="body1" sx={{ mt: 4, cursor: "pointer" }}>
+              Don&apos; t have an account?{" "}
+              <Typography
+                onClick={() => {
+                  navigate(REGISTER_ROUTE);
+                }}
+                component="span"
+                color="primary"
+              >
+                Register
+              </Typography>
+            </Typography>
           </Card>
         </Grid>
       </Grid>
