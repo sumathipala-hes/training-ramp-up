@@ -56,8 +56,15 @@ describe('AuthController', () => {
       authService.signIn = jest.fn().mockResolvedValue(signInResult);
       const res = createMockResponse(); // Create the custom response object
       await controller.signIn(result, res);
+
+      const expectedResponse = {
+        accessToken: 'your-access-token',
+        "message": "Sign in Successfully",
+        refreshToken: 'your-refresh-token',
+      };
+
       expect(res.status).toHaveBeenCalledWith(200); // Check status method usage
-      expect(res.json).toHaveBeenCalledWith(signInResult); // Check json method usage
+      expect(res.json).toHaveBeenCalledWith(expectedResponse); // Check json method usage
     });
 
     it('Sign In User Fail', async () => {

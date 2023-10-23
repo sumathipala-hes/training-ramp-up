@@ -7,7 +7,7 @@ import { User } from './entities/user.entity';
 import { Repository } from 'typeorm/repository/Repository';
 import { DeleteResult, UpdateResult } from 'typeorm';
 import { decryptPassword, encryptPassword } from '../util/password.util';
-import { SocketService } from 'src/socket/socket.service';
+import { SocketService } from '../socket/socket.service';
 
 @Injectable()
 export class UserService {

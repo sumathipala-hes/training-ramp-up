@@ -7,15 +7,18 @@ import { User } from './entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { encryptPassword } from '../util/password.util';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { SocketService } from '../socket/socket.service';
 
 describe('UserService', () => {
   let service: UserService;
   let repository: Repository<User>;
+  let socketService: SocketService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         UserService,
+        SocketService,
         {
           provide: getRepositoryToken(User),
           useValue: {
@@ -30,6 +33,7 @@ describe('UserService', () => {
 
     service = module.get<UserService>(UserService);
     repository = module.get<Repository<User>>(getRepositoryToken(User));
+    socketService = module.get<SocketService>(SocketService);
   });
 
   it('should be defined', () => {
