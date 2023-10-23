@@ -7,7 +7,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../users/entities/user.entity';
 import { encrypt } from '../utils/password.util';
 import { TokenDto } from './dto/token.dto';
-import { Role } from 'src/enum/role.enum';
+import { Role } from '../enum/role.enum';
 
 @Injectable()
 export class AuthService {

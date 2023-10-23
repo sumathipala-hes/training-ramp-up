@@ -1,9 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UsersService } from './users.service';
-import { Any, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { HttpException, HttpStatus } from '@nestjs/common';
+import { SocketService } from '../socket/socket.service';
 
 jest.mock('../utils/password.util', () => ({
   encrypt: jest.fn().mockReturnValue('encrypted'),
@@ -14,11 +15,13 @@ describe('UsersService', () => {
   let service: UsersService;
   let repo: Repository<User>;
   const USER_REPOSITORY_TOKEN = getRepositoryToken(User);
+  let socketService = new SocketService();
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         UsersService,
+        SocketService,
         {
           provide: USER_REPOSITORY_TOKEN,
           useValue: {
@@ -42,6 +45,7 @@ describe('UsersService', () => {
 
     service = module.get<UsersService>(UsersService);
     repo = module.get<Repository<User>>(USER_REPOSITORY_TOKEN);
+    socketService = module.get<SocketService>(SocketService);
   });
 
   it('should be defined', () => {

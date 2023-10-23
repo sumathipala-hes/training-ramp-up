@@ -4,16 +4,19 @@ import { Repository } from 'typeorm';
 import { Student } from './entities/student.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { HttpException, HttpStatus } from '@nestjs/common';
+import { SocketService } from '../socket/socket.service';
 
 describe('StudentsService', () => {
   let service: StudentsService;
   let repo: Repository<Student>;
   const STUDENT_REPOSITORY_TOKEN = getRepositoryToken(Student);
+  let socketService: SocketService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         StudentsService,
+        SocketService,
         {
           provide: STUDENT_REPOSITORY_TOKEN,
           useValue: {
@@ -28,6 +31,7 @@ describe('StudentsService', () => {
 
     service = module.get<StudentsService>(StudentsService);
     repo = module.get<Repository<Student>>(STUDENT_REPOSITORY_TOKEN);
+    socketService = module.get<SocketService>(SocketService);
   });
 
   it('should be defined', () => {

@@ -6,7 +6,7 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { Role } from 'src/enum/role.enum';
+import { Role } from '../enum/role.enum';
 import { JwtService } from '@nestjs/jwt';
 import { ROLES_KEY } from './roles.decorator';
 import { jwtConstants } from './auth.constants';

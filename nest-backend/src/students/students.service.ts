@@ -4,8 +4,7 @@ import { UpdateStudentDto } from './dto/update-student.dto';
 import { DeleteResult, InsertResult, Repository, UpdateResult } from 'typeorm';
 import { Student } from './entities/student.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { sendNotification } from 'src/utils/notification.util';
-import { SocketService } from 'src/socket/socket.service';
+import { SocketService } from '../socket/socket.service';
 
 @Injectable()
 export class StudentsService {
@@ -23,7 +22,7 @@ export class StudentsService {
       this.socketService.sendNotification('A new student has been created..!');
       return savedStudent;
     } catch (error) {
-      sendNotification('Error', 'Student creation failed..!');
+      this.socketService.sendNotification('Student creation failed..!');
       throw new HttpException(
         'Internal Server Error',
         HttpStatus.INTERNAL_SERVER_ERROR,

@@ -5,7 +5,7 @@ import { User } from '../users/entities/user.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { JwtService } from '@nestjs/jwt';
 import { HttpException, HttpStatus } from '@nestjs/common';
-import { CreateUserDto } from 'src/users/dto/create-user.dto';
+import { CreateUserDto } from '../users/dto/create-user.dto';
 import { encrypt } from '../utils/password.util';
 
 describe('AuthService', () => {

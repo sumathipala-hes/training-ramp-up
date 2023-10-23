@@ -5,8 +5,7 @@ import { User } from './entities/user.entity';
 import { DeleteResult, InsertResult, Repository, UpdateResult } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { decrypt, encrypt } from '../utils/password.util';
-import { sendNotification } from '../utils/notification.util';
-import { SocketService } from 'src/socket/socket.service';
+import { SocketService } from '../socket/socket.service';
 
 @Injectable()
 export class UsersService {
@@ -25,7 +24,7 @@ export class UsersService {
       this.socketService.sendNotification('A new user has been created..!');
       return savedUser;
     } catch (error) {
-      sendNotification('Error', error.message);
+      this.socketService.sendNotification('User creation failed..!');
       throw new HttpException(
         'Internal Server Error',
         HttpStatus.INTERNAL_SERVER_ERROR,
@@ -69,7 +68,7 @@ export class UsersService {
       this.socketService.sendNotification('A user has been updated..!');
       return updatedUser;
     } catch (error) {
-      sendNotification('Error', 'User update failed..!');
+      this.socketService.sendNotification('User updation failed..!');
       throw new HttpException(
         'Internal Server Error',
         HttpStatus.INTERNAL_SERVER_ERROR,
@@ -111,7 +110,7 @@ export class UsersService {
       this.socketService.sendNotification('A user has been deleted..!');
       return deletedUser;
     } catch (error) {
-      sendNotification('Error', 'User deletion failed..!');
+      this.socketService.sendNotification('User deletion failed..!');
       throw new HttpException(
         'Internal Server Error',
         HttpStatus.INTERNAL_SERVER_ERROR,
