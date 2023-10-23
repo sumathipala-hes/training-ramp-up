@@ -20,7 +20,6 @@ export default function Content() {
 
     useEffect(() => {
         if (isAuthenticated) {
-            alert("Current user email: " + currentUserEmail);
             dispatch(userDataActions.setCurrentUser(currentUserEmail));
             dispatch(userDataActions.setCurrentUserRoleData(currentUserRole));
             navigate(ROUTE_HOME);

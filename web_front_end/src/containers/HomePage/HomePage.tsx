@@ -12,7 +12,6 @@ export default function HomePage() {
         (state: RootState) => state.userDataList.currentUserRole,
     );
 
-    alert("Current user role: " + currentUserRole);
     const [showStudentDataGrid, setShowStudentDataGrid] = useState(
         currentUserRole == roleEnum.USER ? false : true,
     );
@@ -24,7 +23,7 @@ export default function HomePage() {
 
     return (
         <>
-        <Header />
+            <Header />
             <Box display="flex" justifyContent="start" paddingTop="5em">
                 {currentUserRole == roleEnum.ADMIN && (
                     <>
@@ -32,12 +31,12 @@ export default function HomePage() {
                             sx={{
                                 display: "flex",
                                 flexDirection: "row",
-                                justifyContent: "start", // Align the buttons to the left
+                                justifyContent: "start",
                                 m: 2,
                                 borderRadius: "30px",
                                 backgroundColor: "#ECF0F1",
                                 boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)",
-                              }}
+                            }}
                         >
                             <Button
                                 sx={{
