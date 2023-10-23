@@ -1,8 +1,15 @@
 import React from "react";
 import { Box, IconButton, Typography } from "@mui/material";
 import LogoutIcon from "@mui/icons-material/Logout";
+import { useAppDispatch } from "../../redux/store";
+import { useNavigate } from "react-router-dom";
+import { userDataActions } from "../../redux/user/userSlice";
+import { ROUTE_SIGNIN } from "../../util/routes";
 
 export default function Header() {
+    const dispatch = useAppDispatch();
+    const navigate = useNavigate();
+    
     return (
         <Box
             sx={{
@@ -35,6 +42,8 @@ export default function Header() {
             <IconButton
                 onClick={() => {
                     alert("You have been logged out");
+                    dispatch(userDataActions.signOutData());
+                    navigate(ROUTE_SIGNIN);
                 }}
             >
                 <LogoutIcon sx={{ fontSize: 25, color: "white" }} />

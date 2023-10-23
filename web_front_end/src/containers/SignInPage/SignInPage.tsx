@@ -23,6 +23,7 @@ export default function SignInPage() {
             userPassword: password,
         };
         dispatch(userDataActions.signInUserData(signIn));
+        dispatch(userDataActions.setCurrentUser(email));
     };
 
     return (

@@ -7,6 +7,7 @@ import { encryptPassword } from '../util/password.util';
 import { Repository } from 'typeorm';
 import { jwtConstants } from './auth.constants';
 import { TokenDto } from './dto/token.dto';
+import { Role } from 'src/enums/role.enum';
 
 @Injectable()
 export class AuthService {

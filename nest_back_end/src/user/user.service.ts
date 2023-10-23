@@ -6,10 +6,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { Repository } from 'typeorm/repository/Repository';
 import { DeleteResult, UpdateResult } from 'typeorm';
-import {
-  decryptPassword,
-  encryptPassword,
-} from '../util/password.util';
+import { decryptPassword, encryptPassword } from '../util/password.util';
 import { SocketService } from 'src/socket/socket.service';
 
 @Injectable()
@@ -110,6 +107,25 @@ export class UserService {
       }
       this.socketService.sendNotification('User Deleted..!');
       return deletedUser;
+    } catch (error) {
+      throw new HttpException(
+        error.message,
+        error?.status ?? HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+
+  async getRole(userEmail: string): Promise<{ data: User }> {
+    try {
+      // Retrieve the user from the database
+      const user: User = await this.userRepository.findOne({
+        where: [{ userEmail: userEmail }],
+      });
+
+      if (!user) {
+        throw new HttpException('No user found.', HttpStatus.NOT_FOUND);
+      }
+      return { data: user };
     } catch (error) {
       throw new HttpException(
         error.message,
