@@ -26,12 +26,21 @@ export class RolesGuard implements CanActivate {
     if (!requiredRoles) {
       return true;
     }
-    console.log('requiredRoles :' + requiredRoles);
-
     const request = context.switchToHttp().getRequest();
-    const accessToken = request.headers.cookie?.split('=')[1];
+    const cookies = request.headers.cookie; // The entire cookie string
 
-    console.log('accessToken :' + accessToken);
+    // Split the cookie string by semicolon
+    const cookieArray = cookies.split(';');
+
+    // Search for the token named 'accessToken'
+    let accessToken = '';
+    for (const cookie of cookieArray) {
+      const [name, value] = cookie.split('=');
+      if (name.trim() === 'accessToken') {
+        accessToken = value;
+        break;
+      }
+    }
 
     if (!accessToken) {
       console.log('Access Token Not Found');
@@ -64,39 +73,3 @@ export class RolesGuard implements CanActivate {
     }
   }
 }
-
-// export class RolesGuard implements CanActivate {
-//   constructor(private reflector: Reflector) {}
-
-//   async canActivate(context: ExecutionContext): Promise<boolean> {
-//     const requiredRoles = this.reflector.getAllAndOverride<Role[]>(ROLES_KEY, [
-//       context.getHandler(),
-//       context.getClass(),
-//     ]);
-//     if (!requiredRoles) {
-//       return true;
-//     }
-//     console.log('requiredRoles :' + requiredRoles);
-
-//     const request = context.switchToHttp().getRequest();
-//     const accessRole = request.headers.cookie?.split('=')[1];
-
-//     console.log('accessRole :' + accessRole);
-
-//     if (!accessRole) {
-//       throw new HttpException('Role not found', HttpStatus.UNAUTHORIZED);
-//     }
-
-//     try {
-//       if (requiredRoles.includes(accessRole)) {
-//         return true;
-//       }
-//       throw new HttpException('Invalid role', HttpStatus.FORBIDDEN);
-//     } catch (error) {
-//       throw new HttpException(
-//         error.message,
-//         error?.status ?? HttpStatus.BAD_REQUEST,
-//       );
-//     }
-//   }
-// }

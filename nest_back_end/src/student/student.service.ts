@@ -4,8 +4,7 @@ import { Repository, DeleteResult, UpdateResult, InsertResult } from 'typeorm';
 import { Student } from './entities/student.entity';
 import { UpdateStudentDto } from './dto/update-student.dto';
 import { CreateStudentDto } from './dto/create-student.dto';
-import { sendNotification } from 'src/util/notification.util';
-import { SocketService } from 'src/socket/socket.service';
+import { SocketService } from '../socket/socket.service';
 
 @Injectable()
 export class StudentService {

@@ -4,6 +4,7 @@ import {
   HttpCode,
   HttpStatus,
   Post,
+  Delete,
   Req,
   Res,
 } from '@nestjs/common';
@@ -26,12 +27,12 @@ export class AuthController {
     const user = await this.authService.signIn(createUserDto);
 
     res.cookie('refreshToken', user.refreshToken, {
-      maxAge: 1000 * 60 * 5,
+      maxAge: 1000 * 60,
       httpOnly: true,
       secure: true,
     });
     res.cookie('accessToken', user.accessToken, {
-      maxAge: 1000 * 60 * 5,
+      maxAge: 60 * 60 * 24 * 1000,
       httpOnly: true,
       secure: true,
     });
@@ -51,7 +52,7 @@ export class AuthController {
       req.headers.cookie.split('=')[1],
     );
     res.cookie('refreshToken', user.refreshToken, {
-      maxAge: 1000 * 60 * 5,
+      maxAge: 1000 * 60,
       httpOnly: true,
       secure: true,
     });
@@ -62,11 +63,20 @@ export class AuthController {
   }
 
   @HttpCode(HttpStatus.OK)
-  @Post('signOut')
+  @Delete('signOut/email')
   async signOut(@Res() res: Response): Promise<void> {
     res.clearCookie('refreshToken');
     res.clearCookie('accessToken');
-    res.removeHeader('Set-Cookie');
+    res.cookie('refreshToken', '', {
+      maxAge: 0,
+      httpOnly: true,
+      secure: true,
+    });
+    res.cookie('accessToken', '', {
+      maxAge: 0,
+      httpOnly: true,
+      secure: true,
+    });
     res.status(200).json({ message: 'Sign out successfully' });
   }
 }

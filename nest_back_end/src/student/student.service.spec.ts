@@ -6,15 +6,18 @@ import { UpdateStudentDto } from './dto/update-student.dto';
 import { Student } from './entities/student.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { HttpException, HttpStatus } from '@nestjs/common';
+import { SocketService } from '../socket/socket.service';
 
 describe('StudentService', () => {
   let service: StudentService;
   let repository: Repository<Student>;
+  let socketService: SocketService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         StudentService,
+        SocketService,
         {
           provide: getRepositoryToken(Student),
           useValue: {
@@ -29,6 +32,7 @@ describe('StudentService', () => {
 
     service = module.get<StudentService>(StudentService);
     repository = module.get<Repository<Student>>(getRepositoryToken(Student));
+    socketService = module.get<SocketService>(SocketService);
   });
 
   it('should be defined', () => {

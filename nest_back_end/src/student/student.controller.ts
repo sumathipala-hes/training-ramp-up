@@ -18,7 +18,7 @@ export class StudentController {
   constructor(private readonly studentService: StudentService) {}
 
   @Post()
-  // @Roles(Role.Admin)
+  @Roles(Role.Admin)
   async create(@Body() createStudentDto: CreateStudentDto) {
     return this.studentService.saveStudent(createStudentDto);
   }
@@ -31,7 +31,7 @@ export class StudentController {
   }
 
   @Put(':id')
-  // @Roles(Role.Admin)
+  @Roles(Role.Admin)
   async update(
     @Param('id') id: string,
     @Body() updateStudentDto: UpdateStudentDto,
@@ -40,7 +40,7 @@ export class StudentController {
   }
 
   @Delete(':id')
-  // @Roles(Role.Admin)
+  @Roles(Role.Admin)
   async remove(@Param('id') id: string) {
     return this.studentService.deleteStudent(+id);
   }

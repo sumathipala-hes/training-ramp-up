@@ -4,6 +4,8 @@ import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import { useAppDispatch } from "../../redux/store";
 import { userDataActions } from "../../redux/user/userSlice";
 import { useNavigate } from "react-router-dom";
+import roleEnum from "../../enum/roleEnum";
+import { ROUTE_SIGNIN } from "../../util/routes";
 
 export default function SignUpPage() {
     const [username, setUsername] = useState("");
@@ -26,7 +28,7 @@ export default function SignUpPage() {
             userName: username,
             userEmail: email,
             userPassword: password,
-            role: "user",
+            role: roleEnum.USER,
         };
         dispatch(userDataActions.updateUserData(userData));
     };
@@ -114,6 +116,7 @@ export default function SignUpPage() {
                             fontFamily: "Ubuntu, sans-serif",
                         }}
                         onClick={handleSignUp}
+                        disabled={username === "" || email === "" || password === ""}
                     >
                         Sign Up
                         <ArrowForwardIcon />
@@ -138,7 +141,7 @@ export default function SignUpPage() {
                             cursor: "pointer",
                         }}
                         onClick={() => {
-                            navigate("/signIn");
+                            navigate(ROUTE_SIGNIN);
                         }}
                     >
                         Sign In
