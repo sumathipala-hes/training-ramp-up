@@ -1,10 +1,17 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 import React, { useState } from "react";
 import StudentDataGrid from "./StudentDataGrid/StudentDataGrid";
 import UserDataGrid from "./UserDataGrid/UserDataGrid";
 import { Button, Grid, Box } from "@mui/material";
 =======
 import React from "react";
+=======
+import React from "react";
+<<<<<<< HEAD
+import StudentDataGrid from "./StudentDataGrid/StudentDataGrid";
+=======
+>>>>>>> 0e0d31c5377a874afb6daee5eeb80edb20c04117
 import StudentDataGrid from "./TableGrid/StudentDataGrid";
 >>>>>>> 093921abfadb77a12d4976083084e82ae5ca29db
 
