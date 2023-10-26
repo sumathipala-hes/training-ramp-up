@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import React, { useState } from "react";
 import StudentDataGrid from "./StudentDataGrid/StudentDataGrid";
 import UserDataGrid from "./UserDataGrid/UserDataGrid";
@@ -7,6 +8,10 @@ import { RootState, useAppDispatch } from "../../redux/store";
 import { userActions } from "../../redux/user/userSlice";
 import { useNavigate } from "react-router-dom";
 import { SIGN_IN } from "../../util/routesUtil";
+=======
+import React from "react";
+import StudentDataGrid from "./TableGrid/StudentDataGrid";
+>>>>>>> 093921abfadb77a12d4976083084e82ae5ca29db
 
 const Home = () => {
   const currentRoleType = useSelector((state: RootState) => state.userEntries.currentRoleType);
