@@ -22,10 +22,18 @@ interface ISignInData {
 
 interface IUserState {
   userList: IUser[];
+  isAuthenticated: boolean;
+  currentUserRole: string;
+  currentUsername: string;
+  currentEmail: string;
 }
 
 const initialState: IUserState = {
   userList: [],
+  isAuthenticated: false,
+  currentUserRole: "user",
+  currentUsername: "",
+  currentEmail: "",
 };
 
 export const userSlice = createSlice({
@@ -44,7 +52,24 @@ export const userSlice = createSlice({
     setUser: (state, action: PayloadAction<IUser[]>) => {
       state.userList = action.payload;
     },
-    signIn: (state, action: PayloadAction<ISignInData>) => {},
+    signIn: (state, action: PayloadAction<ISignInData>) => {
+      console.log(action.payload);
+      console.log(state);
+    },
+    setAuthenticated: (state, action: PayloadAction<boolean>) => {
+      state.isAuthenticated = action.payload;
+    },
+    setCurrentUserRole: (state, action: PayloadAction<string>) => {
+      state.currentUserRole = action.payload;
+    },
+    setCurrentUsername: (state, action: PayloadAction<string>) => {
+      state.currentUsername = action.payload;
+    },
+    setCurrentEmail: (state, action: PayloadAction<string>) => {
+      state.currentEmail = action.payload;
+    },
+    authorizeUser: () => {},
+    signOut: () => {},
   },
 });
 

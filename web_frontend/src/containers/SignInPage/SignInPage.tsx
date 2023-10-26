@@ -2,56 +2,65 @@ import React, { useState } from "react";
 import { Button, Card, Container, Grid, TextField, Typography } from "@mui/material";
 import { useAppDispatch } from "../../redux/store";
 import { userActions } from "../../redux/user/slice";
-import { DEFAULT_ROUTE } from "../../util/routeUtil";
+import signInImage from "../../assets/sign-in.jpg";
 import { useNavigate } from "react-router-dom";
+import { REGISTER_ROUTE } from "../../util/routeUtil";
 
-interface IUserData {
-  id: number;
+interface ISignInData {
   email: string;
-  name: string;
   password: string;
-  role: string;
 }
 
-const Registration = () => {
-  const dispatch = useAppDispatch();
+const SignInPage = () => {
   const [email, setEmail] = useState("");
-  const [name, setName] = useState("");
   const [password, setPassword] = useState("");
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  const handleRegister = () => {
-    const user: IUserData = {
-      id: 0,
+  const handleSignIn = () => {
+    const signInData: ISignInData = {
       email: email,
-      name: name,
       password: password,
-      role: "user",
     };
-    dispatch(userActions.saveAndUpdateUser(user));
+    dispatch(userActions.setCurrentEmail(email));
+    dispatch(userActions.signIn(signInData));
   };
+
   return (
     <Container>
-      <Grid container justifyContent="center" alignItems="center" sx={{ height: "100vh" }}>
+      <Grid container justifyContent="center" alignItems="center" height={"100vh"}>
+        <Grid
+          item
+          xs={12}
+          sm={8}
+          md={6}
+          lg={4}
+          sx={{
+            height: 400,
+            backgroundImage: `url(${signInImage})`,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            boxShadow: "0 0 10px 0 rgba(0, 0, 0, 0.2)",
+            borderTopLeftRadius: 10,
+            borderBottomLeftRadius: 10,
+          }}
+        ></Grid>
         <Grid item xs={12} sm={8} md={6} lg={4}>
-          <Card sx={{ padding: "1rem" }}>
-            <h1>Register</h1>
+          <Card
+            sx={{
+              px: 2,
+              height: 400,
+              borderTopRightRadius: 10,
+              borderBottomRightRadius: 10,
+              boxShadow: "0 0 10px 0 rgba(0, 0, 0, 0.2)",
+            }}
+          >
+            <h1>Sign In</h1>
             <TextField
-              label="Email"
-              type="email"
+              label="Username"
               value={email}
               onChange={e => {
                 setEmail(e.target.value);
-              }}
-              variant="outlined"
-              fullWidth
-              margin="normal"
-            />
-            <TextField
-              label="Full Name"
-              value={name}
-              onChange={e => {
-                setName(e.target.value);
               }}
               variant="outlined"
               fullWidth
@@ -68,19 +77,19 @@ const Registration = () => {
               fullWidth
               margin="normal"
             />
-            <Button variant="contained" fullWidth sx={{ mt: 2 }} onClick={handleRegister}>
-              Register
+            <Button variant="contained" fullWidth sx={{ mt: 2 }} onClick={handleSignIn}>
+              Sign In
             </Button>
             <Typography align="center" variant="body1" sx={{ mt: 4, cursor: "pointer" }}>
-              Already have an account?{" "}
+              Don&apos; t have an account?{" "}
               <Typography
                 onClick={() => {
-                  navigate(DEFAULT_ROUTE);
+                  navigate(REGISTER_ROUTE);
                 }}
                 component="span"
                 color="primary"
               >
-                Sign In
+                Register
               </Typography>
             </Typography>
           </Card>
@@ -90,4 +99,4 @@ const Registration = () => {
   );
 };
 
-export default Registration;
+export default SignInPage;

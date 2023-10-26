@@ -19,6 +19,7 @@ import { RootState, useAppDispatch } from "../../../redux/store";
 import { useEffect, useState } from "react";
 import { studentActions } from "../../../redux/student/slice";
 import { userActions } from "../../../redux/user/slice";
+import { Typography } from "@mui/material";
 
 interface IUserData {
   id: number;
@@ -32,6 +33,7 @@ const UserDataGrid = () => {
   const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({});
   const dispatch = useAppDispatch();
   const userList = useSelector((state: RootState) => state.userList.userList);
+  // const currentRole = useSelector((state: RootState) => state.userList.currentUserRole);
 
   useEffect(() => {
     dispatch(userActions.fetchUser());
@@ -89,8 +91,8 @@ const UserDataGrid = () => {
   };
 
   const columns: GridColDef[] = [
-    { field: "id", type: "number", headerName: "ID", width: 80, editable: true },
-    { field: "email", type: "string", headerName: "Email", width: 200, editable: true },
+    { field: "id", headerName: "ID", width: 80, editable: true },
+    { field: "email", type: "string", headerName: "Email", width: 250, editable: true },
     {
       field: "name",
       headerName: "Name",
@@ -196,7 +198,19 @@ const UserDataGrid = () => {
       >
         Add User
       </Button>
+      <Typography variant="h5" align="center" color={"gray"} sx={{ mb: 2 }}>
+        Manage Users
+      </Typography>
       <DataGrid
+        sx={{
+          boxShadow: 4,
+          border: 2,
+          borderColor: "primary.light",
+          "& .MuiDataGrid-cell:hover": {
+            color: "primary.main",
+          },
+          cursor: "pointer",
+        }}
         rows={userList.map((user, index) => ({
           id: index + 1,
           email: user.email,

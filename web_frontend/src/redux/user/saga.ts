@@ -63,7 +63,9 @@ function* deleteUser(action: PayloadAction<string>) {
   const email = action.payload;
 
   try {
-    yield call(api.delete, `/user/del/${email}`);
+    yield call(api.delete, `/user/del/${email}`, {
+      withCredentials: true,
+    });
   } catch (error) {
     alert(error);
   }
@@ -71,12 +73,44 @@ function* deleteUser(action: PayloadAction<string>) {
 
 function* signIn(action: PayloadAction<ISignInData>) {
   try {
-    yield call(api.post, "/user/signIn", action.payload, {
+    const res: AxiosResponse = yield call(api.post, "/user/signIn", action.payload, {
       headers: { "Content-Type": "application/json" },
       withCredentials: true,
     });
+    if (res.data.message == "Login Success") {
+      yield authorizeUser();
+    }
   } catch (error) {
-    alert("error");
+    alert(error);
+  }
+}
+
+function* signOut() {
+  try {
+    yield call(api.delete, "/user/signOut", {
+      withCredentials: true,
+    });
+    yield put(userActions.setAuthenticated(false));
+    yield put(userActions.setCurrentUserRole(""));
+    yield put(userActions.setCurrentUsername(""));
+  } catch (error) {
+    alert(error);
+  }
+}
+
+function* authorizeUser() {
+  try {
+    const res: AxiosResponse = yield call(api.post, "/auth/authorize", {
+      headers: { "Content-Type": "application/json" },
+      withCredentials: true,
+    });
+    if (res.data.message == "Authorized") {
+      yield put(userActions.setAuthenticated(true));
+      yield put(userActions.setCurrentEmail(res.data.data.data.email));
+      yield put(userActions.setCurrentUserRole(res.data.data.data.role));
+    }
+  } catch (error) {
+    alert("You must sign in first..!");
   }
 }
 
@@ -85,4 +119,6 @@ export function* userSaga() {
   yield takeEvery(userActions.saveAndUpdateUser, saveAndUpdateUser);
   yield takeEvery(userActions.removeUser, deleteUser);
   yield takeEvery(userActions.signIn, signIn);
+  yield takeEvery(userActions.signOut, signOut);
+  yield takeEvery(userActions.authorizeUser, authorizeUser);
 }

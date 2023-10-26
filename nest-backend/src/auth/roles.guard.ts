@@ -6,7 +6,7 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { Role } from 'src/enum/role.enum';
+import { Role } from '../enum/role.enum';
 import { JwtService } from '@nestjs/jwt';
 import { ROLES_KEY } from './roles.decorator';
 import { jwtConstants } from './auth.constants';
@@ -27,7 +27,16 @@ export class RolesGuard implements CanActivate {
     }
 
     const req = context.switchToHttp().getRequest();
-    const accessToken = req.headers.cookie?.split('=')[1];
+    const tokenParts = req.headers.cookie?.split('; ');
+
+    let accessToken = null;
+
+    for (const part of tokenParts) {
+      if (part.startsWith('accessToken=')) {
+        accessToken = part.substring('accessToken='.length);
+        break;
+      }
+    }
 
     try {
       if (accessToken) {

@@ -34,7 +34,7 @@ export class UsersController {
     return await this.usersService.findAll();
   }
 
-  // @Roles(Role.ADMIN)
+  @Roles(Role.ADMIN)
   @Put(':email')
   async update(
     @Param('email') email: string,
@@ -43,7 +43,7 @@ export class UsersController {
     return await this.usersService.update(email, updateUserDto);
   }
 
-  // @Roles(Role.ADMIN)
+  @Roles(Role.ADMIN)
   @Delete('del/:id')
   async remove(@Param('id') email: string): Promise<DeleteResult> {
     return await this.usersService.remove(email);
@@ -57,7 +57,7 @@ export class UsersController {
     const tokens = await this.authService.signIn(createUserDto);
     console.log(tokens);
     res.cookie('accessToken', tokens.accessToken, {
-      maxAge: 1000 * 60 * 5,
+      maxAge: 1000 * 60,
       httpOnly: true,
     });
     res.cookie('refreshToken', tokens.refreshToken, {
@@ -71,6 +71,13 @@ export class UsersController {
   async logout(@Res() res: Response): Promise<void> {
     res.clearCookie('accessToken');
     res.clearCookie('refreshToken');
+    res.cookie('accessToken', '', { maxAge: 0 });
+    res.cookie('refreshToken', '', { maxAge: 0 });
     res.status(200).json({ message: 'Logout Success' });
+  }
+
+  @Get(':email')
+  async getUserByEmail(@Param('email') email: string): Promise<CreateUserDto> {
+    return this.usersService.findOne(email);
   }
 }

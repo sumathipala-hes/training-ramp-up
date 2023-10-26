@@ -7,7 +7,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../users/entities/user.entity';
 import { encrypt } from '../utils/password.util';
 import { TokenDto } from './dto/token.dto';
-import { Role } from 'src/enum/role.enum';
+import { Role } from '../enum/role.enum';
 
 @Injectable()
 export class AuthService {
@@ -64,6 +64,28 @@ export class AuthService {
         throw new HttpException('Invalid Token', HttpStatus.BAD_REQUEST);
       }
     } catch (error) {
+      throw new HttpException(
+        'Internal Server Error',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  async authorizeUser(refreshToken: string): Promise<any> {
+    console.log('authorizeUser' + refreshToken);
+    try {
+      if (refreshToken == null) return;
+      const decoded = (await this.jwtService.verify(refreshToken, {
+        secret: jwtConstants.secretKey,
+      })) as { email: string; role: Role };
+      if (decoded) {
+        console.log(decoded.email, decoded.role);
+        return { email: decoded.email, role: decoded.role };
+      } else {
+        throw new HttpException('Invalid Token', HttpStatus.BAD_REQUEST);
+      }
+    } catch (error) {
+      console.log(error);
       throw new HttpException(
         'Internal Server Error',
         HttpStatus.INTERNAL_SERVER_ERROR,
