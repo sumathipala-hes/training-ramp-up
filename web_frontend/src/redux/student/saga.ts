@@ -34,6 +34,7 @@ function* saveAndUpdateStudent(action: PayloadAction<IStudentData>) {
     yield call(isUpdate ? api.put : api.post, `/student/${isUpdate ? id : ""}`, student, {
       headers: { "Content-Type": "application/json" },
     });
+    yield put(studentActions.fetchStudent());
   } catch (error) {
     alert(error);
   }

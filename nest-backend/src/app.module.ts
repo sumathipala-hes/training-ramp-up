@@ -5,6 +5,7 @@ import { StudentsModule } from './students/students.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
+import { SocketModule } from './socket/socket.module';
 import typeOrmConfig from './config/typeorm.config';
 
 @Module({
@@ -13,6 +14,7 @@ import typeOrmConfig from './config/typeorm.config';
     TypeOrmModule.forRoot(typeOrmConfig),
     UsersModule,
     AuthModule,
+    SocketModule,
   ],
   controllers: [AppController],
   providers: [AppService],
