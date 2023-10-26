@@ -5,8 +5,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Student } from './entities/student.entity';
 import { DeleteResult, InsertResult, Repository, UpdateResult } from 'typeorm';
 import { StudentResponseData } from './dto/response-data';
-import { sendNotification } from 'src/util/notification.util';
-import { SocketService } from 'src/socket/socket.service';
+import { sendNotification } from '../util/notification.util';
+import { SocketService } from '../socket/socket.service';
 
 @Injectable()
 export class StudentsService {

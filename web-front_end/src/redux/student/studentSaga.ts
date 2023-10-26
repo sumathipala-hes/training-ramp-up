@@ -21,7 +21,7 @@ interface IStudentResponse {
 
 function* fetchStudent() {
   try {
-    const response: IStudentResponse = yield call(api.get, "/students");
+    const response: IStudentResponse = yield call(api.get, "/students", { withCredentials: true });
     yield put(studentActions.setStudentEntries(response.data.data));
   } catch (e) {
     alert("Error fetching student data " + e);
@@ -44,9 +44,9 @@ function* addAndUpdateStudent(action: PayloadAction<IStudentData>) {
 
   try {
     if (isUpdate) {
-      yield call(api.put, `/students/${data.id}`, studentData);
+      yield call(api.put, `/students/${data.id}`, studentData, { withCredentials: true });
     } else {
-      yield call(api.post, "/students", studentData);
+      yield call(api.post, "/students", studentData, { withCredentials: true });
     }
     yield put(studentActions.fetchStudent());
   } catch (e) {
@@ -57,7 +57,7 @@ function* addAndUpdateStudent(action: PayloadAction<IStudentData>) {
 function* deleteStudent(action: PayloadAction<number>) {
   try {
     const id = action.payload;
-    yield call(api.delete, `/students/ ${id}`);
+    yield call(api.delete, `/students/ ${id}`, { withCredentials: true });
     yield put(studentActions.fetchStudent());
   } catch (e) {
     alert("Error deleting student data " + e);

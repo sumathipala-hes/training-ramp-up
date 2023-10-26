@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   HttpCode,
   HttpException,
   HttpStatus,
@@ -28,7 +29,7 @@ export class AuthController {
       );
 
       res.cookie('accessToken', token.accessToken, {
-        maxAge: 1000 * 60 * 5,
+        maxAge: 1000 * 60,
         httpOnly: true,
       });
 
@@ -50,16 +51,38 @@ export class AuthController {
   }
 
   @HttpCode(HttpStatus.OK)
+  @Delete('signOut/user')
+  async signOut(@Res() res: Response) {
+    res.clearCookie('accessToken');
+    res.clearCookie('refreshToken');
+    res.cookie('accessToken', '', { maxAge: 0 });
+    res.cookie('refreshToken', '', { maxAge: 0 });
+    res.status(200).json({
+      message: 'Success Sign Out',
+    });
+  }
+
+  @HttpCode(HttpStatus.OK)
   @Post('refreshToken')
   async getNewAccessToken(
     @Req() req: Request,
     @Res() res: Response,
   ): Promise<void> {
-    const refreshToken = req.headers.cookie.split(':')[1];
+    const tokenParts = req.headers.cookie?.split('; ');
+
+    let refreshToken = null;
+
+    for (const part of tokenParts) {
+      if (part.startsWith('refreshToken=')) {
+        refreshToken = part.substring('refreshToken='.length);
+        break;
+      }
+    }
+
     try {
       const token = await this.authService.getNewAccessToken(refreshToken);
-      res.cookie('newAccessToken', token.accessToken, {
-        maxAge: 1000 * 60 * 5,
+      res.cookie('accessToken', token.accessToken, {
+        maxAge: 1000 * 60,
         httpOnly: true,
       });
       res.status(200).json({

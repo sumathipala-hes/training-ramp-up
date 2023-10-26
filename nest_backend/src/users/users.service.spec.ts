@@ -7,6 +7,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { HttpException, HttpStatus } from '@nestjs/common';
 import { UserResponseData } from './dto/response-data';
+import { SocketService } from '../socket/socket.service';
 
 describe('UsersService', () => {
   let service: UsersService;
@@ -16,6 +17,7 @@ describe('UsersService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         UsersService,
+        SocketService,
         {
           provide: getRepositoryToken(User),
           useValue: {

@@ -4,6 +4,7 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { DeleteResult, Repository, UpdateResult, InsertResult } from 'typeorm';
 import { Student } from './entities/student.entity';
 import { CreateStudentDto } from './dto/create-student.dto';
+import { SocketService } from '../socket/socket.service';
 
 describe('StudentsService', () => {
   let service: StudentsService;
@@ -13,6 +14,7 @@ describe('StudentsService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         StudentsService,
+        SocketService,
         {
           provide: getRepositoryToken(Student),
           useValue: {

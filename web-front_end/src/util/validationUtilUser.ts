@@ -74,7 +74,7 @@ export const maxDateUser = () => {
   const date = new Date();
   const day = date.getDate().toString().padStart(2, "0");
   const month = (date.getMonth() + 1).toString().padStart(2, "0");
-  const year = (date.getFullYear() - 22).toString();
+  const year = (date.getFullYear() - 21).toString();
   return `${year}-${month}-${day}`;
 };
 
