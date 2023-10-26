@@ -52,7 +52,7 @@ function TableDataGrid() {
         {
             field: "id",
             headerName: "ID",
-            width: 50,
+            width: 90,
             headerClassName: "headerCellStyles",
         },
         {
@@ -246,7 +246,7 @@ function TableDataGrid() {
             age: updatedFields.age as number,
         };
         dispatch(tableDataActions.updateTableData(data));
-        return Promise.resolve({ ...oldRow, ...newRow });
+        return { ...oldRow, ...newRow };
     }
 
     const handleEditRowClick = (row: GridRowModel) => () => {
@@ -280,6 +280,7 @@ function TableDataGrid() {
                 backgroundColor: "#ecf0f1",
                 padding: "10px",
                 borderRadius: "18px",
+                overflowX: "auto",
             }}
         >
             <Button
