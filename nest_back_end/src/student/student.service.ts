@@ -5,12 +5,14 @@ import { Student } from './entities/student.entity';
 import { UpdateStudentDto } from './dto/update-student.dto';
 import { CreateStudentDto } from './dto/create-student.dto';
 import { sendNotification } from 'src/util/notification.util';
+import { SocketService } from 'src/socket/socket.service';
 
 @Injectable()
 export class StudentService {
   constructor(
     @InjectRepository(Student)
     private readonly studentRepository: Repository<Student>,
+    private readonly socketService: SocketService,
   ) {}
 
   async saveStudent(createStudentDto: CreateStudentDto): Promise<InsertResult> {
@@ -19,7 +21,7 @@ export class StudentService {
       const newStudent: InsertResult = await this.studentRepository.insert(
         createStudentDto as Student,
       );
-      sendNotification('Success', 'Student Registered..!');
+      this.socketService.sendNotification('Student Registered..!');
       return newStudent;
     } catch (error) {
       throw new HttpException(
@@ -63,7 +65,7 @@ export class StudentService {
       } else {
         throw new HttpException('No student found.', HttpStatus.NOT_FOUND);
       }
-      sendNotification('Success', 'Student Updated..!');
+      this.socketService.sendNotification('Student Updated..!');
       return updatedStudent;
     } catch (error) {
       throw new HttpException(
@@ -80,7 +82,7 @@ export class StudentService {
       if (deletedStudent.affected !== 1) {
         throw new HttpException('No student found.', HttpStatus.NOT_FOUND);
       }
-      sendNotification('', 'Student Deleted..!');
+      this.socketService.sendNotification('Student Deleted..!');
       return deletedStudent;
     } catch (error) {
       throw new HttpException(
