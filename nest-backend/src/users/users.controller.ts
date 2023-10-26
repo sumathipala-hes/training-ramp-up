@@ -24,7 +24,6 @@ export class UsersController {
     private readonly authService: AuthService,
   ) {}
 
-  @Roles(Role.ADMIN)
   @Post('/add')
   async create(@Body() createUserDto: CreateUserDto): Promise<InsertResult> {
     return await this.usersService.create(createUserDto);
@@ -35,7 +34,7 @@ export class UsersController {
     return await this.usersService.findAll();
   }
 
-  @Roles(Role.ADMIN)
+  // @Roles(Role.ADMIN)
   @Put(':email')
   async update(
     @Param('email') email: string,
@@ -44,7 +43,7 @@ export class UsersController {
     return await this.usersService.update(email, updateUserDto);
   }
 
-  @Roles(Role.ADMIN)
+  // @Roles(Role.ADMIN)
   @Delete('del/:id')
   async remove(@Param('id') email: string): Promise<DeleteResult> {
     return await this.usersService.remove(email);
