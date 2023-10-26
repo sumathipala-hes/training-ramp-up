@@ -2,7 +2,7 @@ const _nameRegExp = /^[a-zA-Z ]+$/;
 const _addressRegExp = /^[a-zA-Z0-9 ]+$/;
 const _telNoRegExp = /^(07(0|1|2|4|5|6|7|8)[0-9]{7})$/;
 
-export const validateInput = (input: string, type: "name" | "address" | "mobileNumber"): string | null => {
+export const validateInputStudent = (input: string, type: "name" | "address" | "mobileNumber"): string | null => {
   switch (type) {
     case "name":
       if (input.trim() === "") {
@@ -45,7 +45,7 @@ export const validateMobileInput = (mobile: string) => {
   return _telNoRegExp.test(mobile);
 };
 
-export const maxDate = () => {
+export const maxDateStudent = () => {
   const date = new Date();
   const day = date.getDate().toString().padStart(2, "0");
   const month = (date.getMonth() + 1).toString().padStart(2, "0");
@@ -53,10 +53,10 @@ export const maxDate = () => {
   return `${year}-${month}-${day}`;
 };
 
-export const minDate = () => {
+export const minDateStudent = () => {
   const date = new Date();
   const day = date.getDate().toString().padStart(2, "0");
   const month = (date.getMonth() + 1).toString().padStart(2, "0");
-  const year = (date.getFullYear() - 50).toString();
+  const year = (date.getFullYear() - 28).toString();
   return `${year}-${month}-${day}`;
 };

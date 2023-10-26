@@ -7,12 +7,14 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { decrypt, encrypt } from '../util/securepassword.util';
 import { UserResponseData } from './dto/response-data';
 import { sendNotification } from 'src/util/notification.util';
+import { SocketService } from 'src/socket/socket.service';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,
+    private socketService: SocketService,
   ) {}
 
   async createUser(createUserDto: CreateUserDto): Promise<InsertResult> {
@@ -21,6 +23,7 @@ export class UsersService {
       const newUser: InsertResult =
         await this.userRepository.insert(createUserDto);
       sendNotification('User', 'User created successfully');
+      this.socketService.sendNotification('User created successfully');
       return newUser;
     } catch (error) {
       throw new HttpException(
@@ -95,6 +98,7 @@ export class UsersService {
         throw new HttpException('User not found', HttpStatus.NOT_FOUND);
       }
       sendNotification('User', 'User updated successfully');
+      this.socketService.sendNotification('User updated successfully');
       return updatedUser;
     } catch (err) {
       throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
@@ -109,6 +113,7 @@ export class UsersService {
         throw new HttpException('User not found', HttpStatus.NOT_FOUND);
       }
       sendNotification('User', 'User deleted successfully');
+      this.socketService.sendNotification('User deleted successfully');
       return deletedUser;
     } catch (err) {
       throw new HttpException(err.message, HttpStatus.BAD_REQUEST);

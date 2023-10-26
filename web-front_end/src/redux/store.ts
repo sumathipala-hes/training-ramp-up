@@ -3,12 +3,14 @@ import { studentReducer } from "./student/studentSlice";
 import { useDispatch } from "react-redux";
 import createSagaMiddleware from "redux-saga";
 import rootSaga from "./saga";
+import { userReducer } from "./user/userSlice";
 
 const sagaMiddleware = createSagaMiddleware();
 
 const store = configureStore({
   reducer: {
     studentEntries: studentReducer,
+    userEntries: userReducer,
   },
   middleware: [sagaMiddleware],
 });

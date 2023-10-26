@@ -25,7 +25,7 @@ export const studentSlice = createSlice({
       const data = action.payload;
       state.studentEntries.unshift(data);
     },
-    updateStudentEntry: (state, action: PayloadAction<IStudentEntry>) => {
+    saveAndUpdateStudentEntry: (state, action: PayloadAction<IStudentEntry>) => {
       const data = action.payload;
       const index = state.studentEntries.findIndex(studentEntry => studentEntry.id === data.id);
       state.studentEntries[index] = data;

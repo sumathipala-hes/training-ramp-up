@@ -23,33 +23,38 @@ import {
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState, useAppDispatch } from "../../../redux/store";
-import { studentActions } from "../../../redux/student/studentSlice";
 import {
-  validateInputStudent,
+  validateInputUser,
   validateNameInput,
   validateAddressInput,
   validateMobileInput,
-  maxDateStudent,
-  minDateStudent,
-} from "../../../util/validationUtilStudent";
+  maxDateUser,
+  minDateUser,
+  validateEmailInput,
+  validatePasswordInput,
+} from "../../../util/validationUtilUser";
 import { generateAge } from "../../../util/generateAgeUtil";
+import { userActions } from "../../../redux/user/userSlice";
 
-interface IStudentEntry {
+interface IUserEntry {
   id: number;
+  roleType: string;
   name: string;
-  gender: string;
   address: string;
+  email: string;
   mobileNumber: string;
   dob: string;
+  password: string;
+  gender: string;
 }
 
-const StudentDataGrid = () => {
+const UserDataGrid = () => {
   const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({});
   const dispatch = useAppDispatch();
-  const studentList = useSelector((state: RootState) => state.studentEntries.studentEntries);
+  const userList = useSelector((state: RootState) => state.userEntries.userEntries);
 
   useEffect(() => {
-    dispatch(studentActions.fetchStudent());
+    dispatch(userActions.fetchUser());
   }, [dispatch]);
 
   const handleRowEditStop: GridEventListener<"rowEditStop"> = (params, event) => {
@@ -60,17 +65,20 @@ const StudentDataGrid = () => {
 
   function EditToolbar() {
     const handleAddNew = () => {
-      const newStudent: IStudentEntry = {
+      const newUser: IUserEntry = {
         id: -1,
+        roleType: "",
         name: "",
         address: "",
+        email: "",
         mobileNumber: "",
         dob: "",
+        password: "",
         gender: "",
       };
-      dispatch(studentActions.addStudentEntry(newStudent));
+      dispatch(userActions.addUserEntry(newUser));
       setRowModesModel(oldModel => ({
-        [newStudent.id]: { mode: GridRowModes.Edit, fieldToFocus: "name" },
+        [newUser.email]: { mode: GridRowModes.Edit, fieldToFocus: "roleType" },
         ...oldModel,
       }));
     };
@@ -93,7 +101,7 @@ const StudentDataGrid = () => {
             margin: "1em",
           }}
         >
-          Add Student
+          Add User
         </Button>
       </GridToolbarContainer>
     );
@@ -109,66 +117,72 @@ const StudentDataGrid = () => {
 
   const handleDeleteClick = (row: GridRowModel) => () => {
     if (window.confirm("Are you sure you want to delete this record?")) {
-      dispatch(studentActions.deleteStudentEntry(row.id));
+      dispatch(userActions.deleteUserEntry(row.row.email));
     }
   };
 
   const handleCancelClick = (row: GridRowModel) => () => {
     if (row.name == "" || row.mobileNumber == "" || row.address == "" || row.age == 0) {
-      dispatch(studentActions.deleteStudentEntry(row.id));
+      dispatch(userActions.deleteUserEntry(row.row.email));
       return;
     }
     setRowModesModel({
       ...rowModesModel,
-      [row.id]: { mode: GridRowModes.View, ignoreModifications: true },
+      [row.email]: { mode: GridRowModes.View, ignoreModifications: true },
     });
   };
 
   const processRowUpdate = (newRow: GridRowModel, oldRow: GridRowModel) => {
-    const { id, name, gender, address, mobileNumber, dob } = newRow;
+    const { id, roleType, name, address, email, mobileNumber, dob, password, gender } = newRow;
 
     const validationData = [
       { value: name, type: "name" },
       { value: address, type: "address" },
       { value: mobileNumber, type: "mobileNumber" },
+      { value: email, type: "email" },
+      { value: password, type: "password" },
     ];
 
     for (const data of validationData) {
-      const error = validateInputStudent(
+      const error = validateInputUser(
         data.value,
-        data.type as "name" | "address" | "mobileNumber",
+        data.type as "name" | "address" | "mobileNumber" | "email" | "password",
       );
       if (error) {
         alert(error);
-        if (data.type === "mobileNumber") {
+        if (data.type === "password") {
           console.log(data.value);
         }
         return Promise.resolve();
       }
     }
-    const updatedStudent: IStudentEntry = {
+    const updatedUser: IUserEntry = {
       id: id,
+      roleType: roleType,
       name: name,
       address: address,
+      email: email,
       mobileNumber: mobileNumber,
-      dob: dob.toISOString(),
+      dob: dob,
+      password: password,
       gender: gender,
     };
-    dispatch(studentActions.saveAndUpdateStudentEntry(updatedStudent));
+    dispatch(userActions.saveAndUpdateUserEntry(updatedUser));
     return Promise.resolve({ ...oldRow, ...newRow });
   };
 
   const columns: GridColDef[] = [
     {
-      field: "id",
-      headerName: "ID",
-      type: "number",
-      editable: false,
+      field: "roleType",
+      headerName: "RoleType",
+      editable: true,
       align: "center",
       headerAlign: "center",
-      maxWidth: 100,
-      minWidth: 60,
+      maxWidth: 150,
+      minWidth: 120,
       headerClassName: "header-cell",
+      type: "singleSelect",
+      valueOptions: ["ADMIN", "USER"],
     },
     {
       field: "name",
@@ -185,18 +199,6 @@ const StudentDataGrid = () => {
       },
     },
     {
-      field: "gender",
-      headerName: "Gender",
-      align: "center",
-      headerAlign: "center",
-      maxWidth: 170,
-      minWidth: 130,
-      editable: true,
-      headerClassName: "header-cell",
-      type: "singleSelect",
-      valueOptions: ["Male", "Female"],
-    },
-    {
       field: "address",
       headerName: "Address",
       align: "center",
@@ -207,6 +209,21 @@ const StudentDataGrid = () => {
       headerClassName: "header-cell",
       preProcessEditCellProps: (params: GridPreProcessEditCellProps) => {
         const hasError = !validateAddressInput(params.props.value);
+        return { ...params.props, style: { color: hasError ? "red" : "green" } };
+      },
+    },
+    {
+      field: "email",
+      headerName: "Email",
+      type: "string",
+      editable: true,
+      align: "center",
+      headerAlign: "center",
+      maxWidth: 200,
+      minWidth: 150,
+      headerClassName: "header-cell",
+      preProcessEditCellProps: (params: GridPreProcessEditCellProps) => {
+        const hasError = !validateEmailInput(params.props.value);
         return { ...params.props, style: { color: hasError ? "red" : "green" } };
       },
     },
@@ -237,12 +254,36 @@ const StudentDataGrid = () => {
       headerClassName: "header-cell",
       renderEditCell: (params: GridRenderEditCellParams) => {
         return (
-          <GridEditDateCell
-            {...params}
-            inputProps={{ max: maxDateStudent(), min: minDateStudent() }}
-          />
+          <GridEditDateCell {...params} inputProps={{ max: maxDateUser(), min: minDateUser() }} />
         );
       },
+    },
+    {
+      field: "password",
+      headerName: "Password",
+      align: "center",
+      headerAlign: "center",
+      maxWidth: 170,
+      minWidth: 130,
+      editable: true,
+      headerClassName: "header-cell",
+      type: "string",
+      preProcessEditCellProps: (params: GridPreProcessEditCellProps) => {
+        const hasError = !validatePasswordInput(params.props.value);
+        return { ...params.props, style: { color: hasError ? "red" : "green" } };
+      },
+    },
+    {
+      field: "gender",
+      headerName: "Gender",
+      align: "center",
+      headerAlign: "center",
+      maxWidth: 170,
+      minWidth: 130,
+      editable: true,
+      headerClassName: "header-cell",
+      type: "singleSelect",
+      valueOptions: ["Male", "Female"],
     },
     {
       field: "age",
@@ -251,8 +292,8 @@ const StudentDataGrid = () => {
       editable: false,
       align: "center",
       headerAlign: "center",
-      maxWidth: 130,
-      minWidth: 100,
+      maxWidth: 60,
+      minWidth: 40,
       headerClassName: "header-cell",
     },
     {
@@ -261,8 +302,8 @@ const StudentDataGrid = () => {
       headerName: "Actions",
       align: "center",
       headerAlign: "center",
-      maxWidth: 250,
-      minWidth: 200,
+      maxWidth: 180,
+      minWidth: 150,
       headerClassName: "header-cell",
       cellClassName: "actions",
       getActions: row => {
@@ -349,7 +390,7 @@ const StudentDataGrid = () => {
       <Box
         sx={{
           margin: "1em",
-          width: "80%",
+          width: "90%",
           "& .actions": {
             color: "text.secondary",
           },
@@ -362,11 +403,12 @@ const StudentDataGrid = () => {
           sx={{
             backgroundColor: "#ecf0f1",
           }}
-          rows={studentList.map(student => ({
-            ...student,
-            dob: new Date(student.dob),
-            age: generateAge(student.dob),
+          rows={userList.map(user => ({
+            ...user,
+            dob: new Date(user.dob),
+            age: generateAge(user.dob),
           }))}
+          getRowId={row => row.email}
           columns={columns}
           editMode="row"
           rowModesModel={rowModesModel}
@@ -385,5 +427,4 @@ const StudentDataGrid = () => {
   );
 };
 
-
-export default StudentDataGrid;
+export default UserDataGrid;
