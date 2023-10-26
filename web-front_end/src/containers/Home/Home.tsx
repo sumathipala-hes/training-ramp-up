@@ -1,15 +1,28 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> aa72d29a4ac51500fa17301bf21521c302ba4c0b
 import React, { useState } from "react";
 import StudentDataGrid from "./StudentDataGrid/StudentDataGrid";
 import UserDataGrid from "./UserDataGrid/UserDataGrid";
 import { Button, Grid, Box } from "@mui/material";
+<<<<<<< HEAD
 import { useSelector } from "react-redux";
 import { RootState, useAppDispatch } from "../../redux/store";
 import { userActions } from "../../redux/user/userSlice";
 import { useNavigate } from "react-router-dom";
 import { SIGN_IN } from "../../util/routesUtil";
 =======
+>>>>>>> aa72d29a4ac51500fa17301bf21521c302ba4c0b
+=======
 import React from "react";
+=======
+import React from "react";
+<<<<<<< HEAD
+import StudentDataGrid from "./StudentDataGrid/StudentDataGrid";
+=======
+>>>>>>> 0e0d31c5377a874afb6daee5eeb80edb20c04117
 import StudentDataGrid from "./TableGrid/StudentDataGrid";
 >>>>>>> 093921abfadb77a12d4976083084e82ae5ca29db
 
