@@ -15,16 +15,20 @@ import {
     GridRowModel,
     GridRenderEditCellParams,
     GridEditDateCell,
+    GridPreProcessEditCellProps,
 } from "@mui/x-data-grid";
 import { RootState, useAppDispatch } from "../../../redux/store";
 import { tableDataActions } from "../../../redux/tableSlice/tableSlice";
 import { useSelector } from "react-redux";
 import {
+    addressRegex,
+    alerts,
     maxDate,
     minDate,
-    validateAddress,
-    validateMobile,
-    validateName,
+    mobileRegex,
+    nameRegex,
+    validateField,
+    validateFieldAlerts,
 } from "../../../util/validateTable";
 
 interface ITableData {
@@ -64,7 +68,9 @@ function TableDataGrid() {
             align: "left",
             width: 150,
             headerClassName: "headerCellStyles",
-            preProcessEditCellProps: validateName,
+            preProcessEditCellProps: (params: GridPreProcessEditCellProps) => {
+                return validateField(params, nameRegex, alerts.nameRegex);
+            },
         },
         {
             field: "gender",
@@ -86,7 +92,9 @@ function TableDataGrid() {
             align: "left",
             width: 150,
             headerClassName: "headerCellStyles",
-            preProcessEditCellProps: validateAddress,
+            preProcessEditCellProps: (params: GridPreProcessEditCellProps) => {
+                return validateField(params, addressRegex, alerts.addressRegex);
+            },
         },
         {
             field: "mobile",
@@ -97,7 +105,9 @@ function TableDataGrid() {
             align: "left",
             width: 150,
             headerClassName: "headerCellStyles",
-            preProcessEditCellProps: validateMobile,
+            preProcessEditCellProps: (params: GridPreProcessEditCellProps) => {
+                return validateField(params, mobileRegex, alerts.mobileRegex);
+            },
         },
         {
             field: "dob",
@@ -207,14 +217,14 @@ function TableDataGrid() {
     }));
 
     function handleAddRow() {
-        const id = studentDataList.length + 1;
+        const id = dispatch.length + 1;
         const newRow: ITableData = {
             id: id,
             name: "",
             address: "",
             mobile: "",
             dob: maxDate(),
-            age: "" as unknown as number,
+            age: 0,
             gender: "",
         };
         dispatch(tableDataActions.addTableData(newRow));
@@ -245,6 +255,11 @@ function TableDataGrid() {
             gender: updatedFields.gender as string,
             age: updatedFields.age as number,
         };
+        const validations = validateFieldAlerts(data.name, data.address, data.mobile);
+        if (validations) {
+          return Promise.reject(alert(validations));
+        }
+        
         dispatch(tableDataActions.updateTableData(data));
         return { ...oldRow, ...newRow };
     }

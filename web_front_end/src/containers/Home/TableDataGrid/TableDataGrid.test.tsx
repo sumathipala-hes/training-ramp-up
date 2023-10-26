@@ -1,9 +1,9 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { Provider } from "react-redux";
-import store from "../../redux/store";
-import TableDataGrid from "../../containers/Home/TableDataGrid/TableDataGrid";
-import { tableDataActions } from "../../redux/tableSlice/tableSlice";
-import { maxDate } from "../../util/validateTable";
+import store from "../../../redux/store";
+import TableDataGrid from "./TableDataGrid";
+import { tableDataActions } from "../../../redux/tableSlice/tableSlice";
+import { maxDate } from "../../../util/validateTable";
 
 interface ITableData {
   id: number;
@@ -32,7 +32,7 @@ describe("TableDataGrid", () => {
         address: "",
         mobile: "",
         dob: maxDate(),
-        age: "" as unknown as number,
+        age: 0,
         gender: "",
       }).toEqual(store.getState().tableDataList.tableDataEntries[0]);
     });
