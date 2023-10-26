@@ -1,10 +1,10 @@
 import React from "react";
 import { Box } from "@mui/material";
-import StudentDataGrid from "./StudentDataGrid";
+import StudentDataGrid from "./StudentDataGrid/StudentDataGrid";
 
 const Home = () => {
   return (
-    <Box sx={{ p: 10 }}>
+    <Box sx={{ py: 20, px: 40 }}>
       <StudentDataGrid />
     </Box>
   );

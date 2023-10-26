@@ -18,16 +18,17 @@ import {
   GridEditDateCell,
 } from "@mui/x-data-grid";
 import { useSelector } from "react-redux";
-import { RootState, useAppDispatch } from "../../redux/store";
+import { RootState, useAppDispatch } from "../../../redux/store";
 import { useEffect, useState } from "react";
-import { studentActions } from "../../redux/student/slice";
+import { studentActions } from "../../../redux/student/slice";
 import {
   maxDate,
   minDate,
   validateAddress,
+  validateFields,
   validateMobile,
   validateName,
-} from "../../util/validationUtil";
+} from "../../../util/validationUtil";
 
 interface IStudentData {
   id: number;
@@ -91,19 +92,20 @@ const StudentDataGrid = () => {
   const handleProcessRowUpdate = (newRow: GridRowModel, oldRow: GridRowModel) => {
     const { id, name, address, mobile, dob, gender, age } = newRow;
     const data: IStudentData = {
-      id: id as number,
-      name: name as string,
-      address: address as string,
-      mobile: mobile as string,
-      dob: (dob as Date).toISOString(),
-      gender: gender as string,
-      age: age as number,
+      id: id,
+      name: name,
+      address: address,
+      mobile: mobile,
+      dob: dob.toISOString(),
+      gender: gender,
+      age: age,
     };
-    if (!validateName(data.name)) return Promise.reject(alert("Invalid Name"));
-    if (!validateAddress(data.address)) return Promise.reject(alert("Invalid Address"));
-    if (!validateMobile(data.mobile)) return Promise.reject(alert("Invalid Mobile"));
+    const validations = validateFields(name, address, mobile);
+    if (validations) {
+      return Promise.reject(alert(validations));
+    }
     dispatch(studentActions.updateStudent(data));
-    return Promise.resolve({ ...oldRow, ...newRow });
+    return Promise.resolve({ ...newRow, ...oldRow });
   };
 
   const columns: GridColDef[] = [
