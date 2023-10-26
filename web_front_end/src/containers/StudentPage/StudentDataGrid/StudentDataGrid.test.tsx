@@ -1,9 +1,9 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { Provider } from "react-redux";
 import store from "../../../redux/store";
-import TableDataGrid from "./TableDataGrid";
-import { tableDataActions } from "../../../redux/tableSlice/tableSlice";
-import { maxDate } from "../../../util/validateTable";
+import StudentDataGrid from "./StudentDataGrid";
+import { tableDataActions } from "../../../redux/student/studentSlice";
+import { maxDate } from "../../../util/validateStudent";
 
 interface ITableData {
     studentId: number;
@@ -14,12 +14,12 @@ interface ITableData {
     studentGender: string;
 }
 
-describe("TableDataGrid", () => {
+describe("StudentDataGrid", () => {
   describe("addTableData", () => {
     it("Add Table Data Success", () => {
       render(
         <Provider store={store}>
-          <TableDataGrid />
+          <StudentDataGrid />
         </Provider>,
       );
 
@@ -38,7 +38,7 @@ describe("TableDataGrid", () => {
     it("Add Table Data Fail", () => {
       render(
         <Provider store={store}>
-          <TableDataGrid />
+          <StudentDataGrid />
         </Provider>,
       );
 
@@ -89,7 +89,7 @@ describe("TableDataGrid", () => {
     it("Remove Table Data Success", () => {
       render(
         <Provider store={store}>
-          <TableDataGrid />
+          <StudentDataGrid />
         </Provider>,
       );
 
@@ -102,7 +102,7 @@ describe("TableDataGrid", () => {
     it("Remove Table Data Fail", () => {
       render(
         <Provider store={store}>
-          <TableDataGrid />
+          <StudentDataGrid />
         </Provider>,
       );
 

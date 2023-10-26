@@ -13,56 +13,41 @@ import {
     GridActionsCellItem,
     GridRowModesModel,
     GridRowModel,
-    GridRenderEditCellParams,
-    GridEditDateCell,
     GridPreProcessEditCellProps,
 } from "@mui/x-data-grid";
 import { RootState, useAppDispatch } from "../../../redux/store";
-import { tableDataActions } from "../../../redux/tableSlice/tableSlice";
+import { userDataActions } from "../../../redux/user/userSlice";
 import { useSelector } from "react-redux";
 import {
-    addressRegex,
-    alerts,
-    maxDate,
-    minDate,
-    mobileRegex,
-    nameRegex,
-    validateField,
-    validateFieldAlerts,
-} from "../../../util/validateTable";
-import { generateAge } from "../../../util/generateAge";
+    validateEmail,
+    validateName,
+    validatePassword,
+    validateUser,
+} from "../../../util/validateUser";
 
-interface ITableData {
-    studentId: number;
-    studentName: string;
-    studentAddress: string;
-    studentMobile: string;
-    studentDob: string;
-    studentGender: string;
-    age: number;
+interface IUserData {
+    userId: number;
+    userName: string;
+    userEmail: string;
+    userPassword: string;
+    role: string;
 }
 
-function TableDataGrid() {
+function UserDataGrid() {
     const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({});
     const dispatch = useAppDispatch();
-    const studentDataList = useSelector(
-        (state: RootState) => state.tableDataList.tableDataEntries,
+    const userDataLists = useSelector(
+        (state: RootState) => state.userDataList.userEntries,
     );
 
     useEffect(() => {
-        dispatch(tableDataActions.fetchTableData());
+        dispatch(userDataActions.fetchUsersData());
     }, [dispatch]);
 
     const columns: GridColDef[] = [
         {
-            field: "studentId",
-            headerName: "ID",
-            width: 90,
-            headerClassName: "headerCellStyles",
-        },
-        {
-            field: "studentName",
-            headerName: "Name",
+            field: "userName",
+            headerName: "User Name",
             type: "string",
             editable: true,
             headerAlign: "left",
@@ -70,73 +55,53 @@ function TableDataGrid() {
             width: 150,
             headerClassName: "headerCellStyles",
             preProcessEditCellProps: (params: GridPreProcessEditCellProps) => {
-                return validateField(params, nameRegex, alerts.nameRegex);
+                const hasError = !validateName(params.props.value);
+                return {
+                    ...params.props,
+                    style: { color: hasError ? "red" : "green" },
+                };
             },
         },
         {
-            field: "studentGender",
-            headerName: "Gender",
+            field: "userEmail",
+            headerName: "User Email",
+            editable: true,
+            headerAlign: "left",
+            align: "left",
+            width: 150,
+            preProcessEditCellProps: (params: GridPreProcessEditCellProps) => {
+                const hasError = !validateEmail(params.props.value);
+                return {
+                    ...params.props,
+                    style: { color: hasError ? "red" : "green" },
+                };
+            },
+        },
+        {
+            field: "userPassword",
+            headerName: "Password",
+            editable: true,
+            headerAlign: "left",
+            align: "left",
+            width: 150,
+            preProcessEditCellProps: (params: GridPreProcessEditCellProps) => {
+                const hasError = !validatePassword(params.props.value);
+                return {
+                    ...params.props,
+                    style: { color: hasError ? "red" : "green" },
+                };
+            },
+        },
+        {
+            field: "role",
+            headerName: "Role",
             editable: true,
             headerAlign: "left",
             align: "left",
             width: 150,
             headerClassName: "headerCellStyles",
             type: "singleSelect",
-            valueOptions: ["Male", "Female"],
-        },
-        {
-            field: "studentAddress",
-            headerName: "Address",
-            type: "string",
-            editable: true,
-            headerAlign: "left",
-            align: "left",
-            width: 150,
-            headerClassName: "headerCellStyles",
-            preProcessEditCellProps: (params: GridPreProcessEditCellProps) => {
-                return validateField(params, addressRegex, alerts.addressRegex);
-            },
-        },
-        {
-            field: "studentMobile",
-            headerName: "Mobile No",
-            type: "string",
-            editable: true,
-            headerAlign: "left",
-            align: "left",
-            width: 150,
-            headerClassName: "headerCellStyles",
-            preProcessEditCellProps: (params: GridPreProcessEditCellProps) => {
-                return validateField(params, mobileRegex, alerts.mobileRegex);
-            },
-        },
-        {
-            field: "studentDob",
-            headerName: "Date of Birth",
-            type: "date",
-            editable: true,
-            headerAlign: "left",
-            align: "left",
-            width: 150,
-            headerClassName: "headerCellStyles",
-            renderEditCell: (params: GridRenderEditCellParams) => {
-                return (
-                    <GridEditDateCell
-                        {...params}
-                        inputProps={{ max: maxDate(), min: minDate() }}
-                    />
-                );
-            },
-        },
-        {
-            field: "age",
-            headerName: "Age",
-            type: "number",
-            editable: false,
-            headerAlign: "left",
-            align: "left",
-            width: 150,
-            headerClassName: "headerCellStyles",
+            valueOptions: ["admin", "user"],
         },
         {
             field: "actions",
@@ -212,25 +177,25 @@ function TableDataGrid() {
         },
     ];
 
-    const transformedStudentData = studentDataList.map(row => ({
+    const transformedUserData = userDataLists.map((row) => ({
         ...row,
-        studentDob: new Date(row.studentDob),
-        age: generateAge(row.studentDob),
+        
     }));
 
     function handleAddRow() {
-        const newRow: ITableData = {
-            studentId: -1,
-            studentName: "",
-            studentAddress: "",
-            studentMobile: "",
-            studentDob: maxDate(),
-            age: 0,
-            studentGender: "",
+        const newRow: IUserData = {
+            userId: -1,
+            userName: "",
+            userEmail: "",
+            userPassword: "",
+            role: "",
         };
-        dispatch(tableDataActions.addTableData(newRow));
+        dispatch(userDataActions.addUserData(newRow));
         setRowModesModel((oldModel) => ({
-            [newRow.studentId]: { mode: GridRowModes.Edit, fieldToFocus: "studentName" },
+            [newRow.userEmail]: {
+                mode: GridRowModes.Edit,
+                fieldToFocus: "userName",
+            },
             ...oldModel,
         }));
     }
@@ -246,47 +211,58 @@ function TableDataGrid() {
         newRow: GridRowModel,
         oldRow: GridRowModel,
     ) {
-        const { studentId, ...updatedFields } = newRow;
-        const data: ITableData = {
-            studentId: studentId,
-            studentName: updatedFields.studentName as string,
-            studentAddress: updatedFields.studentAddress as string,
-            studentMobile: updatedFields.studentMobile as string,
-            studentDob: (updatedFields.studentDob as Date).toISOString(),
-            studentGender: updatedFields.studentGender as string,
-            age: updatedFields.age as number,
-        };
-        const validations = validateFieldAlerts(data.studentName, data.studentAddress, data.studentMobile);
-        if (validations) {
-          return Promise.reject(alert(validations));
+        const { userId, ...updatedFields } = newRow;
+
+        const validationData = [
+            { value: updatedFields.userName, type: "userName" },
+            { value: updatedFields.userEmail, type: "userEmail" },
+            { value: updatedFields.userPassword, type: "userPassword" },
+        ];
+
+        for (const data of validationData) {
+            const error = validateUser(
+                data.value,
+                data.type as "userName" | "userEmail" | "userPassword",
+            );
+            if (error) {
+                alert(error);
+                return Promise.resolve();
+            }
         }
-        
-        dispatch(tableDataActions.updateTableData(data));
+
+        const data: IUserData = {
+            userId: userId,
+            userName: updatedFields.userName as string,
+            userEmail: updatedFields.userEmail as string,
+            userPassword: updatedFields.userPassword as string,
+            role: updatedFields.role as string,
+        };
+        dispatch(userDataActions.updateUserData(data));
         return { ...oldRow, ...newRow };
     }
 
     const handleEditRowClick = (row: GridRowModel) => () => {
         setRowModesModel((oldModel) => ({
             ...oldModel,
-            [row.id]: { mode: GridRowModes.Edit, fieldToFocus: "studentName" },
+            [row.id]: { mode: GridRowModes.Edit, fieldToFocus: "userName" },
         }));
     };
 
     const handleDeleteRowClick = (row: GridRowModel) => () => {
         if (window.confirm("Are you sure you want to delete this record?")) {
-            dispatch(tableDataActions.removeTableData(row.id));
+            dispatch(userDataActions.removeUserData(row.id));
         }
     };
 
     const handleCancelRowClick = (row: GridRowModel) => () => {
         if (!row.someProperty) {
-            dispatch(tableDataActions.removeTableData(row.id));
+            dispatch(userDataActions.removeUserData(row.id));
             return;
         }
 
         setRowModesModel((oldModel) => ({
             ...oldModel,
-            [row.id]: { mode: GridRowModes.View },
+            [row.id]: { mode: GridRowModes.View, ignoreModifications: true },
         }));
     };
 
@@ -312,7 +288,7 @@ function TableDataGrid() {
                     boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)",
                 }}
             >
-                Add Student
+                Add User
             </Button>
             <DataGrid
                 sx={{
@@ -321,8 +297,8 @@ function TableDataGrid() {
                     borderRadius: "8px",
                     boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)",
                 }}
-                rows={transformedStudentData}
-                getRowId={(row) => row.studentId}
+                rows={transformedUserData}
+                getRowId={(row) => row.userEmail}
                 columns={columns}
                 editMode="row"
                 rowModesModel={rowModesModel}
@@ -333,4 +309,4 @@ function TableDataGrid() {
     );
 }
 
-export default TableDataGrid;
+export default UserDataGrid;

@@ -1,8 +1,8 @@
 import React from "react";
 import { Box } from "@mui/material";
-import TableDataGrid from "./TableDataGrid/TableDataGrid";
+import UserDataGrid from "./UserDataGrid/UserDataGrid";
 
-export default function Home() {
+export default function UserPage() {
     return (
         <Box
             sx={{
@@ -13,7 +13,7 @@ export default function Home() {
                 padding: "0 50px 0 50px",
             }}
         >
-            <TableDataGrid />
+            <UserDataGrid />
         </Box>
     );
 }
