@@ -23,7 +23,7 @@ const initialState: IStudentState = {
       address: "Galle",
       mobileNumber: "0777123456",
       dateOfBirth: new Date("1990-01-01").toDateString(),
-      age: 20,
+      age: 33,
       gender: "Male",
     },
   ],
@@ -43,11 +43,11 @@ export const studentSlice = createSlice({
       const index = state.studentEntries.findIndex(studentEntry => studentEntry.id === data.id);
       state.studentEntries[index] = data;
     },
+    fetchStudent: () => {},
     deleteStudentEntry: (state, action: PayloadAction<number>) => {
       const id = action.payload;
       state.studentEntries = state.studentEntries.filter(studentEntry => studentEntry.id !== id);
     },
-    fetchStudent: () => {},
   },
 });
 

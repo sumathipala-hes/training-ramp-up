@@ -2,29 +2,32 @@ const _nameRegExp = /^[a-zA-Z ]+$/;
 const _addressRegExp = /^[a-zA-Z0-9 ]+$/;
 const _telNoRegExp = /^(07(0|1|2|4|5|6|7|8)[0-9]{7})$/;
 
-export const validateName = (name: string): string | null => {
-  if (name.trim() === "") {
-    return "Name cannot be empty";
-  } else if (name.trim().length > 50) {
-    return "Name cannot be longer than 50 characters";
-  } else if (!_nameRegExp.test(name)) {
-    return "Name can only contain letters and spaces";
-  }
+export const validateInput = (input: string, type: "name" | "address" | "mobileNumber"): string | null => {
+  switch (type) {
+    case "name":
+      if (input.trim() === "") {
+        return "Name cannot be empty";
+      } else if (input.trim().length > 50) {
+        return "Name cannot be longer than 50 characters";
+      } else if (!_nameRegExp.test(input)) {
+        return "Name can only contain letters and spaces";
+      }
+      break;
 
-  return null;
-};
+    case "address":
+      if (!_addressRegExp.test(input)) {
+        return "Address can only contain letters, numbers, and spaces";
+      }
+      break;
 
-export const validateAddress = (address: string): string | null => {
-  if (!_addressRegExp.test(address)) {
-    return "Address can only contain letters, numbers, and spaces";
-  }
+    case "mobileNumber":
+      if (!_telNoRegExp.test(input)) {
+        return "Invalid mobile number";
+      }
+      break;
 
-  return null;
-};
-
-export const validateMobileNumber = (mobileNumber: string): string | null => {
-  if (!_telNoRegExp.test(mobileNumber)) {
-    return "Invalid mobile number";
+    default:
+      return "Invalid input type";
   }
 
   return null;

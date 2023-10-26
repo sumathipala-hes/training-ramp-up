@@ -18,19 +18,16 @@ import {
   GridToolbarContainer,
   GridPreProcessEditCellProps,
 } from "@mui/x-data-grid";
-import "./TableGrid.css";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { RootState, useAppDispatch } from "../../redux/store";
-import { studentActions } from "../../redux/studentSlice";
+import { RootState, useAppDispatch } from "../../../redux/store";
+import { studentActions } from "../../../redux/studentSlice";
 import {
-  validateAddress,
-  validateMobileNumber,
-  validateName,
+  validateInput,
   validateNameInput,
   validateAddressInput,
   validateMobileInput,
-} from "../../util/validationUtil";
+} from "../../../util/validationUtil";
 
 interface IStudentEntry {
   id: number;
@@ -94,7 +91,7 @@ const StudentDataGrid = () => {
             margin: "1em",
           }}
         >
-          Add New
+          Add Student
         </Button>
       </GridToolbarContainer>
     );
@@ -128,25 +125,22 @@ const StudentDataGrid = () => {
   const processRowUpdate = (newRow: GridRowModel, oldRow: GridRowModel) => {
     const { id, name, gender, address, mobileNumber, dateOfBirth, age } = newRow;
 
-    const nameError = validateName(name);
-    if (nameError) {
-      alert(nameError);
-      return Promise.resolve();
-    }
+    const validationData = [
+      { value: name, type: "name" },
+      { value: address, type: "address" },
+      { value: mobileNumber, type: "mobileNumber" },
+    ];
 
-    const addressError = validateAddress(address);
-    if (addressError) {
-      alert(addressError);
-      return Promise.resolve();
+    for (const data of validationData) {
+      const error = validateInput(data.value, data.type as "name" | "address" | "mobileNumber");
+      if (error) {
+        alert(error);
+        if (data.type === "mobileNumber") {
+          console.log(data.value);
+        }
+        return Promise.resolve();
+      }
     }
-
-    const mobileNumberError = validateMobileNumber(mobileNumber);
-    if (mobileNumberError) {
-      alert(mobileNumberError);
-      console.log(mobileNumber);
-      return Promise.resolve();
-    }
-
     const updatedStudent: IStudentEntry = {
       id: id,
       name: name,
@@ -397,5 +391,6 @@ const StudentDataGrid = () => {
     </Box>
   );
 };
+
 
 export default StudentDataGrid;
