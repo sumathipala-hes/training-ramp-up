@@ -44,3 +44,19 @@ export const validateAddressInput = (address: string) => {
 export const validateMobileInput = (mobile: string) => {
   return _telNoRegExp.test(mobile);
 };
+
+export const maxDate = () => {
+  const date = new Date();
+  const day = date.getDate().toString().padStart(2, "0");
+  const month = (date.getMonth() + 1).toString().padStart(2, "0");
+  const year = (date.getFullYear() - 18).toString();
+  return `${year}-${month}-${day}`;
+};
+
+export const minDate = () => {
+  const date = new Date();
+  const day = date.getDate().toString().padStart(2, "0");
+  const month = (date.getMonth() + 1).toString().padStart(2, "0");
+  const year = (date.getFullYear() - 50).toString();
+  return `${year}-${month}-${day}`;
+};

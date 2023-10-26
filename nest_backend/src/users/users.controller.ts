@@ -11,8 +11,8 @@ import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { DeleteResult, InsertResult, UpdateResult } from 'typeorm';
-import { Roles } from '../auth/roles.decorator';
-import { Role } from '../enum/role.enum';
+// import { Roles } from '../auth/roles.decorator';
+// import { Role } from '../enum/role.enum';
 import { UserResponseData } from './dto/response-data';
 
 @Controller('users')
@@ -24,19 +24,19 @@ export class UsersController {
     return await this.usersService.createUser(createUserDto);
   }
 
-  @Roles(Role.Admin)
+  // @Roles(Role.Admin)
   @Get()
   async findAll(): Promise<UserResponseData> {
     return await this.usersService.findAllUsers();
   }
 
-  @Roles(Role.Admin)
+  // @Roles(Role.Admin)
   @Get(':id')
   async findOne(@Param('id') id: string) {
     return await this.usersService.findOneUser(id);
   }
 
-  @Roles(Role.Admin)
+  // @Roles(Role.Admin)
   @Put(':id')
   async update(
     @Param('id') id: string,
@@ -45,7 +45,7 @@ export class UsersController {
     return await this.usersService.updateUser(id, updateUserDto);
   }
 
-  @Roles(Role.Admin)
+  // @Roles(Role.Admin)
   @Delete(':id')
   async remove(@Param('id') id: string): Promise<DeleteResult> {
     return await this.usersService.removeUser(id);

@@ -3,7 +3,7 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import { Provider } from "react-redux";
 import StudentDataGrid from "./StudentDataGrid";
 import store from "../../../redux/store";
-import { studentActions } from "../../../redux/studentSlice";
+import { studentActions } from "../../../redux/student/studentSlice";
 
 interface IStudentEntry {
   id: number;
@@ -11,7 +11,7 @@ interface IStudentEntry {
   gender: string;
   address: string;
   mobileNumber: string;
-  dateOfBirth: string;
+  dob: string;
   age: number;
 }
 
@@ -32,7 +32,7 @@ describe("StudentDataGrid Component", () => {
         gender: "",
         address: "",
         mobileNumber: "",
-        dateOfBirth: "",
+        dob: "",
         age: 0,
       }).toEqual(store.getState().studentEntries.studentEntries[0]);
     });
@@ -67,7 +67,7 @@ describe("StudentDataGrid Component", () => {
         gender: "Male",
         address: "Galle",
         mobileNumber: "0777123456",
-        dateOfBirth: new Date("1990-01-01").toDateString(),
+        dob: new Date("1990-01-01").toDateString(),
         age: 33,
       };
       store.dispatch(studentActions.addStudentEntry(student));

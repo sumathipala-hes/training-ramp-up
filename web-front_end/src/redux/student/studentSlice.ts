@@ -1,5 +1,4 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { generateAge } from "../util/generateAgeUtil";
 
 interface IStudentEntry {
   id: number;
@@ -7,8 +6,7 @@ interface IStudentEntry {
   gender: string;
   address: string;
   mobileNumber: string;
-  dateOfBirth: string;
-  age: number;
+  dob: string;
 }
 
 interface IStudentState {
@@ -16,17 +14,7 @@ interface IStudentState {
 }
 
 const initialState: IStudentState = {
-  studentEntries: [
-    {
-      id: 1,
-      name: "John",
-      address: "Galle",
-      mobileNumber: "0777123456",
-      dateOfBirth: new Date("1990-01-01").toDateString(),
-      age: 33,
-      gender: "Male",
-    },
-  ],
+  studentEntries: [],
 };
 
 export const studentSlice = createSlice({
@@ -39,11 +27,13 @@ export const studentSlice = createSlice({
     },
     updateStudentEntry: (state, action: PayloadAction<IStudentEntry>) => {
       const data = action.payload;
-      data.age = generateAge(data.dateOfBirth);
       const index = state.studentEntries.findIndex(studentEntry => studentEntry.id === data.id);
       state.studentEntries[index] = data;
     },
     fetchStudent: () => {},
+    setStudentEntries: (state, action: PayloadAction<IStudentEntry[]>) => {
+      state.studentEntries = action.payload;
+    },
     deleteStudentEntry: (state, action: PayloadAction<number>) => {
       const id = action.payload;
       state.studentEntries = state.studentEntries.filter(studentEntry => studentEntry.id !== id);
