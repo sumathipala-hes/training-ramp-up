@@ -3,6 +3,7 @@ import TopBar from '../components/TopBar/TopBar';
 import DataTable from '../components/DataTable/DataTable';
 import { Card, Box, Typography, Button} from '@mui/material';
 import { styled } from '@mui/system';
+import { useSelector } from 'react-redux';
 
 const StyledCard = styled(Card)(({ theme }) => ({
   width: 'calc(100% - 40px)',
@@ -30,24 +31,23 @@ const AddNewBox = styled(Box)(({ theme }) => ({
   },
 }));
 
-try {
-  var rows = [
-  {id: 1, name:'Sudarshan', gender:'male', address:'Bangalore', mobileNumber:'1234567890', birthday: new Date('2000.04.17'), age:31},
-  {id: 2, name:'Amila', gender:'male', address:'Bangalore', mobileNumber:'1234567890', birthday:new Date('2000-04-17'), age:31},
-  {id: 3, name:'Buddika', gender:'male', address:'Bangalore', mobileNumber:'1234567890', birthday:new Date('2010-04-17'), age:31},
-  {id: 4, name:'Charith', gender:'male', address:'Bangalore', mobileNumber:'1234567890', birthday:new Date('2000-04-17'), age:31},
-  {id: 5, name:'Dasun', gender:'male', address:'Bangalore', mobileNumber:'1234567890', birthday:new Date('2000-04-17'), age:31},
-  {id: 6, name:'Eshan', gender:'male', address:'Bangalore', mobileNumber:'1234567890', birthday:new Date('2000-04-17'), age:31},
-  {id: 7, name:'Fernando', gender:'male', address:'Bangalore', mobileNumber:'1234567890', birthday:new Date('2000-04-17'), age:31},
-  {id: 8, name:'Gandika', gender:'male', address:'Bangalore', mobileNumber:'1234567890', birthday:new Date('2000-04-17'), age:31},
-  {id: 9, name:'Hansaka', gender:'male', address:'Bangalore', mobileNumber:'1234567890', birthday:new Date('2000-04-17'), age:31},
-  {id: 10, name:'Ishan', gender:'male', address:'Bangalore', mobileNumber:'1234567890', birthday:new Date('2000-04-17'), age:31},
-];
-} catch (e) {
-  console.log(e);
+interface IStudent {
+  id: number,
+  name: string;
+  gender: string;
+  address: string;
+  mobileNumber: string;
+  birthday: Date;
+  age: number;
+}
+
+interface RootState {
+  students: IStudent[];
 }
 
 const UserDetails = () => {
+  const students = useSelector((state: RootState) => state.students);
+
   return (
     <div>
       <TopBar />
@@ -58,10 +58,11 @@ const UserDetails = () => {
         <AddNewBox>
           <Button variant='contained'>ADD NEW</Button>
         </AddNewBox>
-        <DataTable rows={rows} />
+        <DataTable rows={students} />
       </StyledCard>
     </div>
   )
 }
 
-export default UserDetails
+export default UserDetails;
+
