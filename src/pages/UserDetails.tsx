@@ -58,7 +58,7 @@ const UserDetails = () => {
         <AddNewBox>
           <Button variant='contained'>ADD NEW</Button>
         </AddNewBox>
-        <DataTable rows={students} />
+        <DataTable />
       </StyledCard>
     </div>
   )
