@@ -1,99 +1,151 @@
-import * as React from 'react';
-import { styled, Button, Box } from '@mui/material';
-// import AddIcon from '@mui/icons-material/Add';
-// import EditIcon from '@mui/icons-material/Edit';
-// import DeleteIcon from '@mui/icons-material/DeleteOutlined';
-// import SaveIcon from '@mui/icons-material/Save';
-// import CancelIcon from '@mui/icons-material/Close';
+import * as React from "react";
+import {
+  styled,
+  Button,
+  Box,
+  TextField,
+  Select,
+  MenuItem,
+  Typography,
+} from "@mui/material";
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import dayjs from "dayjs";
+import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
+import { useSelector, useDispatch } from "react-redux";
+import { RootState } from "../../redux/store";
+import { replaceStudents } from "../../redux/studentsSlice/stdentsSlice";
 import {
   GridRowsProp,
   GridRowModesModel,
   GridRowModes,
   DataGrid,
   GridColDef,
-  GridToolbarContainer,
   GridActionsCellItem,
   GridEventListener,
   GridRowId,
   GridRowModel,
   GridRowEditStopReasons,
   GridRenderCellParams,
-} from '@mui/x-data-grid';
-// import {
-//   randomCreatedDate,
-//   randomTraderName,
-//   randomId,
-//   randomArrayItem,
-// } from '@mui/x-data-grid-generator';
-
-// const roles = ['Market', 'Finance', 'Development'];
-// const randomRole = () => {
-//   return randomArrayItem(roles);
-// };
+} from "@mui/x-data-grid";
+import calculateAge from "../../utility/calculateAge/calculateAge";
+import validateMobileNumber from "../../utility/validateMobilwNumber/validateMobileNumber";
+import OneButtonDialog from "../OneButtonDialog/OneButtonDialog";
+import TwoButtonDialog from "../TwoButtonDialog/TwoButtonDialog";
 
 const StyledDataGrid = styled(DataGrid)(({ theme }) => ({
-  borderRadius:'0',
-  '& .MuiDataGrid-columnHeader': {
-    backgroundColor: 'rgba(33, 150, 243, 0.08)', 
+  borderRadius: "0",
+  "& .MuiDataGrid-columnHeader": {
+    backgroundColor: "rgba(33, 150, 243, 0.08)",
   },
-  '& .MuiDataGrid-cell': {
-    padding: '16px',
+  "& .MuiDataGrid-colomnHeader-Cell":{
+    padding: "6px 16px",
+  },
+  "& .MuiDataGrid-cell": {
+    padding: "6px 16px",
+  },
+  "& .MuiDataGrid-row.Mui-selected": {
+    boxShadow: "none",
+  },
+  "& .MuiDataGrid-coloumnHeaderTitleContainer": {
+    justifyContent: "space-between",
   },
 }));
 
-const StyledButtonBox = styled(Box)(({ theme }) => ({
-  display: 'flex',
-  justifyContent: 'space-between',
-  gap:'32px',
-  padding: '0',
+const AddNewBox = styled(Box)(({ theme }) => ({
+  height: "36px",
+  display: "flex",
+  alignItems: "center",
+  padding: "16px",
+  position: "relative",
+  "& .MuiButton-root": {
+    position: "absolute",
+    right: "0",
+    margin: "16px",
+    backgroundColor: "#2196F3",
+  },
 }));
 
-const initialRows: GridRowsProp = [
-  {id: 1, name:'Sudarshan', gender:'male', address:'Bangalore', mobileNumber:'1234567890', birthday: new Date('2000.04.17'), age:31},
-  {id: 2, name:'Amila', gender:'male', address:'Bangalore', mobileNumber:'1234567890', birthday:new Date('2000-04-17'), age:31},
-  {id: 3, name:'Buddika', gender:'male', address:'Bangalore', mobileNumber:'1234567890', birthday:new Date('2010-04-17'), age:31},
-  {id: 4, name:'Charith', gender:'male', address:'Bangalore', mobileNumber:'1234567890', birthday:new Date('2000-04-17'), age:31},
-  {id: 5, name:'Dasun', gender:'male', address:'Bangalore', mobileNumber:'1234567890', birthday:new Date('2000-04-17'), age:31},
-  {id: 6, name:'Eshan', gender:'male', address:'Bangalore', mobileNumber:'1234567890', birthday:new Date('2000-04-17'), age:31},
-  {id: 7, name:'Fernando', gender:'male', address:'Bangalore', mobileNumber:'1234567890', birthday:new Date('2000-04-17'), age:31},
-  {id: 8, name:'Gandika', gender:'male', address:'Bangalore', mobileNumber:'1234567890', birthday:new Date('2000-04-17'), age:31},
-  {id: 9, name:'Hansaka', gender:'male', address:'Bangalore', mobileNumber:'1234567890', birthday:new Date('2000-04-17'), age:31},
-  {id: 10, name:'Ishan', gender:'male', address:'Bangalore', mobileNumber:'1234567890', birthday:new Date('2000-04-17'), age:31},
-];
+const StyledButton = styled(Button)(({ theme }) => ({
+  borderRadius: "4px",
+  border: "1px solid",
+  padding: "4px 10px",
+}));
+
+const CellTextField = styled(TextField)(({ theme }) => ({
+  border: "1px solid rgba(33, 150, 243, 1)",
+  borderRadius: "5px",
+}));
+
+const CellSelectField = styled(Select)(({ theme }) => ({
+  border: "1px solid rgba(33, 150, 243, 1)",
+  borderRadius: "5px",
+}));
 
 interface EditToolbarProps {
   setRows: (newRows: (oldRows: GridRowsProp) => GridRowsProp) => void;
   setRowModesModel: (
-    newModel: (oldModel: GridRowModesModel) => GridRowModesModel,
+    newModel: (oldModel: GridRowModesModel) => GridRowModesModel
   ) => void;
 }
 
 function EditToolbar(props: EditToolbarProps) {
   const { setRows, setRowModesModel } = props;
+  const currentStudents = useSelector((state: RootState) => state.students);
+  const lastId = currentStudents.length;
+  const [id, setId] = React.useState(lastId + 1);
 
-  const handleClick = () => {
-    const id = initialRows.length + 1;
-    setRows((oldRows) => [...oldRows, { id, name: '', age: '', isNew: true }]);
+  const handleAddNewClick = () => {
+    setId(id + 1);
+    const newRecord = {
+      id,
+      name: "",
+      gender: "",
+      address: "",
+      mobileNumber: "",
+      birthday: "",
+      age: "",
+      isNew: true,
+    };
+    setRows((oldRows) => [newRecord, ...oldRows]);
     setRowModesModel((oldModel) => ({
       ...oldModel,
-      [id]: { mode: GridRowModes.Edit, fieldToFocus: 'name' },
+      [id]: { mode: GridRowModes.Edit, fieldToFocus: "name" },
     }));
   };
 
   return (
-    <GridToolbarContainer>
-      <Button color="primary" onClick={handleClick}>
-        Add record
-      </Button>
-    </GridToolbarContainer>
+    <>
+      <Box>
+        <Typography>User Details</Typography>
+      </Box>
+      <AddNewBox>
+        <Button variant="contained" onClick={handleAddNewClick}>
+          ADD NEW
+        </Button>
+      </AddNewBox>
+    </>
   );
 }
 
 export default function DataTable() {
-  const [rows, setRows] = React.useState(initialRows);
-  const [rowModesModel, setRowModesModel] = React.useState<GridRowModesModel>({});
+  const currentStudents = useSelector((state: RootState) => state.students);
+  const dispatch = useDispatch();
+  const [rows, setRows] = React.useState(currentStudents);
+  const [rowModesModel, setRowModesModel] = React.useState<GridRowModesModel>(
+    {}
+  );
+  const [numbervalidateError, setNumberValidateError] = React.useState(false);
+  const [agevalidateError, setAgeValidateError] = React.useState(false);
+  const [keepEditingIsOpen, setKeepEditingIsOpen] = React.useState(false);
+  const [saveedSuccessIsOpen, setSavedSuccessIsOpen] = React.useState(false);
+  const [discrdChangesIsOpen, setDiscardChangesIsOpen] = React.useState(false);
+  const [currentid, setCurrentId] = React.useState<GridRowId | null>(null);
 
-  const handleRowEditStop: GridEventListener<'rowEditStop'> = (params, event) => {
+  const handleRowEditStop: GridEventListener<"rowEditStop"> = (
+    params,
+    event
+  ) => {
     if (params.reason === GridRowEditStopReasons.rowFocusOut) {
       event.defaultMuiPrevented = true;
     }
@@ -107,7 +159,7 @@ export default function DataTable() {
     setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
   };
 
-  const handleDeleteClick = (id: GridRowId) => () => {
+  const handleRemoveClick = (id: GridRowId) => () => {
     setRows(rows.filter((row) => row.id !== id));
   };
 
@@ -116,16 +168,68 @@ export default function DataTable() {
       ...rowModesModel,
       [id]: { mode: GridRowModes.View, ignoreModifications: true },
     });
-
+    console.log(11);
     const editedRow = rows.find((row) => row.id === id);
     if (editedRow!.isNew) {
       setRows(rows.filter((row) => row.id !== id));
     }
+    setDiscardChangesIsOpen(false);
+  };
+
+  const handleDiscardChangesClick = (id: GridRowId) => () => {
+    setDiscardChangesIsOpen(true);
+    setCurrentId(id);
   };
 
   const processRowUpdate = (newRow: GridRowModel) => {
     const updatedRow = { ...newRow, isNew: false };
+    const name = newRow.name;
+    const gender = newRow.gender;
+    const address = newRow.address;
+    const birthday = newRow.birthday;
+    const mobileNumber = newRow.mobileNumber;
+    const age = newRow.age;
+    const validNumber = validateMobileNumber(mobileNumber);
+    const validAge = age >= 18;
+
+    setKeepEditingIsOpen(false);
+    setNumberValidateError(false);
+    setAgeValidateError(false);
+    if (
+      name === "" ||
+      gender === "" ||
+      address === "" ||
+      birthday === null ||
+      mobileNumber === "" ||
+      age === ""
+    ) {
+      console.log("empty fields error");
+      setKeepEditingIsOpen(true);
+      return {};
+    }
+    if (!validNumber && !validAge) {
+      console.log("invalid number and age error");
+      setNumberValidateError(true);
+      setAgeValidateError(true);
+      return {};
+    }
+    if (!validNumber) {
+      console.log("invalid number error");
+      setNumberValidateError(true);
+      return {};
+    }
+    if (!validAge) {
+      console.log("invalid age error");
+      setAgeValidateError(true);
+      return {};
+    }
     setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)));
+    try {
+      dispatch(replaceStudents(rows));
+      setSavedSuccessIsOpen(true);
+    } catch (err) {
+      console.log(err);
+    }
     return updatedRow;
   };
 
@@ -133,153 +237,379 @@ export default function DataTable() {
     setRowModesModel(newRowModesModel);
   };
 
-  const columns: GridColDef[] =  [
-    { field: 'id', headerName: 'ID',sortable: false, width: 64, disableColumnMenu: true, type: 'number'},
-    { field: 'name', headerName: 'Name', width: 135, disableColumnMenu: true, type: 'string' },
-    { field: 'gender', headerName: 'Gender', width: 137, disableColumnMenu: true , sortable: false, type: 'string' },
-    { field: 'address', headerName: 'Address', width: 137, disableColumnMenu: true, sortable: false, type: 'string' },
-    { field: 'mobileNumber', headerName: 'Mobile No:', width: 135, disableColumnMenu: true, sortable: false, type: 'string' },
-    { field: 'birthday', headerName: 'Date of Birth', width: 175, disableColumnMenu: true, type: 'date',
-    valueFormatter: (params) => {
-      const valueFormatted = params.value instanceof Date ? params.value.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' }) : '';
-      return valueFormatted;
+  const columns: GridColDef[] = [
+    {
+      field: "id",
+      headerName: "ID",
+      width: 64,
+      disableColumnMenu: true,
+      headerAlign: "left",
+      align: "left",
+      type: "number",
+      sortable: false,
     },
-    },
-    { field: 'age',headerName: 'Age',width: 101, disableColumnMenu: true, sortable: false, type: 'number', headerAlign:'left', align:'left',
-    valueGetter(params) {
-      return new Date().getFullYear() - params.row.birthday.getFullYear();
-    },
-    },
-    { field: 'actions',headerName: 'Actions',width: 216, disableColumnMenu: true, sortable: false,
-      renderCell: (params: GridRenderCellParams) => (
-         <StyledButtonBox>
-          <Button
-            variant="outlined"
-            color="primary"
-            size="small"
-            onClick={() => {
-              console.log("Edit button clicked");
-            }}
-          >
-            EDIT
-          </Button>
-          <Button
-            variant="outlined"
-            color="error"
-            size="small"
-            onClick={() => {
-              console.log("Delete button clicked");
-            }}
-          >
-            REMOVE
-          </Button>
-        </StyledButtonBox>    
+    {
+      field: "name",
+      editable: true,
+      headerName: "Name",
+      width: 135,
+      disableColumnMenu: true,
+      headerAlign: "left",
+      align: "left",
+      type: "string",
+      renderEditCell: (params: GridRenderCellParams<any, string>) => (
+        <CellTextField
+          size="small"
+          value={params.value as string}
+          onChange={(e) =>
+            params.api.setEditCellValue({
+              id: params.id,
+              field: params.field,
+              value: e.target.value,
+            })
+          }
+        />
       ),
-    }
+    },
+    {
+      field: "gender",
+      editable: true,
+      headerName: "Gender",
+      width: 132,
+      disableColumnMenu: true,
+      sortable: false,
+      type: "singleSelect",
+      valueOptions: ["Male", "Female", "Other"],
+      renderEditCell: (params: GridRenderCellParams<any, string>) => (
+        <CellSelectField
+          size="small"
+          fullWidth
+          value={params.value as string}
+          onChange={(e) =>
+            params.api.setEditCellValue({
+              id: params.id,
+              field: params.field,
+              value: e.target.value,
+            })
+          }
+        >
+          <MenuItem value={"Male"}>Male</MenuItem>
+          <MenuItem value={"Female"}>Female</MenuItem>
+          <MenuItem value={"Other"}>Other</MenuItem>
+        </CellSelectField>
+      ),
+    },
+    {
+      field: "address",
+      editable: true,
+      headerName: "Address",
+      width: 137,
+      disableColumnMenu: true,
+      sortable: false,
+      type: "string",
+      renderEditCell: (params: GridRenderCellParams<any, string>) => (
+        <CellTextField
+          size="small"
+          value={params.value as string}
+          onChange={(e) =>
+            params.api.setEditCellValue({
+              id: params.id,
+              field: params.field,
+              value: e.target.value,
+            })
+          }
+        />
+      ),
+    },
+    {
+      field: "mobileNumber",
+      editable: true,
+      headerName: "Mobile No:",
+      width: 135,
+      disableColumnMenu: true,
+      sortable: false,
+      type: "string",
+      renderEditCell: (params: GridRenderCellParams<any, string>) => (
+        <TextField
+          size="small"
+          value={params.value as string}
+          onChange={(e) =>
+            params.api.setEditCellValue({
+              id: params.id,
+              field: params.field,
+              value: e.target.value,
+            })
+          }
+          InputProps={{
+            sx: {
+              boxShadow: "0px 3px 1px -2px rgba(0, 0, 0, 0.2)",
+              border: numbervalidateError
+                ? ""
+                : "1px solid rgba(33, 150, 243, 1)",
+            },
+          }}
+          sx={{
+            "& .MuiFormHelperText-root": {
+              fontSize: 10,
+              marginLeft: "0px",
+            },
+            marginTop: numbervalidateError ? "35px" : "0px",
+            boardeRadius: "0",
+          }}
+          error={numbervalidateError}
+          helperText={
+            numbervalidateError ? "Please enter a valid phone number" : null
+          }
+        />
+      ),
+    },
+    {
+      field: "dateofbirth",
+      headerName: "Date of Birth",
+      headerAlign: "left",
+      align: "left",
+      type: "date",
+      valueFormatter: (params) => {
+        const date = dayjs(new Date(params.value));
+        return date.format("ddd MMM DD YYYY");
+      },
+      sortable: true,
+      editable: true,
+      width: 205,
+      renderEditCell: (
+        params: GridRenderCellParams<any, dayjs.Dayjs | null>
+      ) => {
+        const dateValue = params.value ? dayjs(params.value) : null;
+        return (
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <DemoContainer
+              components={["DatePicker"]}
+              sx={{ paddingTop: "0px" }}
+            >
+              <DatePicker
+                value={dateValue}
+                onChange={(newValue) => {
+                  params.api.setEditCellValue({
+                    id: params.id,
+                    field: params.field,
+                    value: newValue,
+                  });
+                  params.api.setEditCellValue({
+                    id: params.id,
+                    field: "age",
+                    value: calculateAge(newValue),
+                  });
+                }}
+                slotProps={{
+                  textField: {
+                    size: "small",
+                    sx: {
+                      border: "1px solid rgba(33, 150, 243, 1)",
+                      borderRadius: "5px",
+                      alignContent: "center",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    },
+                  },
+                }}
+              />
+            </DemoContainer>
+          </LocalizationProvider>
+        );
+      },
+    },
+    {
+      field: "age",
+      headerName: "Age",
+      width: 97,
+      disableColumnMenu: true,
+      sortable: false,
+      type: "number",
+      headerAlign: "left",
+      align: "left",
+      editable: true,
+      renderEditCell: (params: GridRenderCellParams<any, string>) => (
+        <TextField
+          size="small"
+          value={params.value as string}
+          error={agevalidateError}
+          helperText={
+            agevalidateError
+              ? "Individual is below the minimum age allowed"
+              : null
+          }
+          InputProps={{
+            sx: {
+              boxShadow: "0px 3px 1px -2px rgba(0, 0, 0, 0.2)",
+              border: numbervalidateError
+                ? ""
+                : "1px solid rgba(33, 150, 243, 1)",
+            },
+          }}
+          sx={{
+            "& .MuiFormHelperText-root": {
+              fontSize: 9,
+              marginLeft: "0px",
+              width: "100%",
+            },
+            marginTop: agevalidateError ? "35px" : "0px",
+          }}
+        />
+      ),
+    },
+    {
+      field: "actions",
+      type: "actions",
+      headerName: "Actions",
+      width: 195,
+      cellClassName: "actions",
+      getActions: ({ id }) => {
+        const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
+        const editingRow = rows.find((row) => row.id === id);
+        const isEditModeNew = editingRow?.isNew;
+
+        if (isInEditMode) {
+          if (isEditModeNew) {
+            return [
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "flex-start",
+                }}
+              >
+                <GridActionsCellItem
+                  icon={
+                    <StyledButton variant="outlined" size="small">
+                      ADD
+                    </StyledButton>
+                  }
+                  label="Add"
+                  sx={{
+                    color: "primary.main",
+                    width: "auto",
+                  }}
+                  onClick={handleSaveClick(id)}
+                />
+                <GridActionsCellItem
+                  icon={
+                    <StyledButton variant="outlined" size="small" color="error">
+                      DSCARD CHANGES
+                    </StyledButton>
+                  }
+                  label="DSCARD CHANGES"
+                  className="textPrimary"
+                  onClick={handleDiscardChangesClick(id)}
+                  color="inherit"
+                />
+                ,
+              </Box>,
+            ];
+          }
+          return [
+            <Box sx={{ px: 0, py: "25px" }}>
+              <GridActionsCellItem
+                icon={
+                  <StyledButton variant="outlined" size="small">
+                    update
+                  </StyledButton>
+                }
+                label="Update"
+                onClick={handleSaveClick(id)}
+                color="inherit"
+              />
+              <GridActionsCellItem
+                icon={
+                  <StyledButton variant="outlined" size="small" color="error">
+                    Cancel
+                  </StyledButton>
+                }
+                label="Cancel"
+                onClick={handleCancelClick(id)}
+                color="inherit"
+              />
+            </Box>,
+          ];
+        }
+
+        return [
+          <GridActionsCellItem
+            icon={
+              <StyledButton variant="outlined" size="small">
+                Edit
+              </StyledButton>
+            }
+            label="Edit"
+            className="textPrimary"
+            onClick={handleEditClick(id)}
+            color="inherit"
+          />,
+          <GridActionsCellItem
+            icon={
+              <StyledButton variant="outlined" size="small" color="error">
+                Remove
+              </StyledButton>
+            }
+            label="Remove"
+            onClick={handleRemoveClick(id)}
+            color="inherit"
+          />,
+        ];
+      },
+    },
   ];
-  
-  //[
-  //   { field: 'name', headerName: 'Name', width: 180, editable: true },
-  //   {
-  //     field: 'age',
-  //     headerName: 'Age',
-  //     type: 'number',
-  //     width: 80,
-  //     align: 'left',
-  //     headerAlign: 'left',
-  //     editable: true,
-  //   },
-  //   {
-  //     field: 'joinDate',
-  //     headerName: 'Join date',
-  //     type: 'any',
-  //     width: 180,
-  //     editable: true,
-  //   },
-  //   {
-  //     field: 'role',
-  //     headerName: 'Department',
-  //     width: 220,
-  //     editable: true,
-  //     type: 'singleSelect',
-  //     valueOptions: ['Market', 'Finance', 'Development'],
-  //   },
-  //   {
-  //     field: 'actions',
-  //     type: 'actions',
-  //     headerName: 'Actions',
-  //     width: 100,
-  //     cellClassName: 'actions',
-  //     getActions: ({ id }) => {
-  //       const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
-
-  //       if (isInEditMode) {
-  //         return [
-  //           <GridActionsCellItem
-  //             icon={<Button>Save</Button>}
-  //             label="Save"
-  //             sx={{
-  //               color: 'primary.main',
-  //             }}
-  //             onClick={handleSaveClick(id)}
-  //           />,
-  //           <GridActionsCellItem
-  //             icon={<Button>Cancel</Button>}
-  //             label="Cancel"
-  //             className="textPrimary"
-  //             onClick={handleCancelClick(id)}
-  //             color="inherit"
-  //           />,
-  //         ];
-  //       }
-
-  //       return [
-  //         <GridActionsCellItem
-  //           icon={<Button>Edit</Button>}
-  //           label="Edit"
-  //           className="textPrimary"
-  //           onClick={handleEditClick(id)}
-  //           color="inherit"
-  //         />,
-  //         <GridActionsCellItem
-  //           icon={<Button>Delete</Button>}
-  //           label="Delete"
-  //           onClick={handleDeleteClick(id)}
-  //           color="inherit"
-  //         />,
-  //       ];
-  //     },
-  //   },
-  // ];
 
   return (
-    <Box
-      sx={{
-        height: 500,
-        width: '100%',
-        '& .actions': {
-          color: 'text.secondary',
-        },
-        '& .textPrimary': {
-          color: 'text.primary',
-        },
-      }}
-    >
-      <StyledDataGrid
-        rows={rows}
-        columns={columns}
-        editMode="row"
-        rowModesModel={rowModesModel}
-        onRowModesModelChange={handleRowModesModelChange}
-        onRowEditStop={handleRowEditStop}
-        processRowUpdate={processRowUpdate}
-        slots={{
-          toolbar: EditToolbar,
-        }}
-        slotProps={{
-          toolbar: { setRows, setRowModesModel },
-        }}
+    <>
+      <div style={{ height: "auto", width: "100%" }}>
+        <StyledDataGrid
+          rows={rows}
+          columns={columns}
+          initialState={{
+            pagination: {
+              paginationModel: { page: 0, pageSize: 5 },
+            },
+          }}
+          pageSizeOptions={[5, 10]}
+          checkboxSelection
+          disableRowSelectionOnClick={true}
+          editMode="row"
+          getRowHeight={() => "auto"}
+          rowModesModel={rowModesModel}
+          onRowModesModelChange={handleRowModesModelChange}
+          onRowEditStop={handleRowEditStop}
+          processRowUpdate={processRowUpdate}
+          slots={{
+            toolbar: EditToolbar,
+          }}
+          slotProps={{
+            toolbar: { setRows, setRowModesModel },
+          }}
+        />
+      </div>
+
+      <OneButtonDialog
+        title="Mandatory fields missing"
+        buttonText="KEEP EDITING"
+        isOpen={keepEditingIsOpen}
+        setOpen={setKeepEditingIsOpen}
       />
-    </Box>
+
+      <OneButtonDialog
+        title="Saved successfully"
+        buttonText="OK"
+        isOpen={saveedSuccessIsOpen}
+        setOpen={setSavedSuccessIsOpen}
+      />
+
+      <TwoButtonDialog
+        title="Discard changes?"
+        buttonText1="DISMISS"
+        buttonText2="COnfirm"
+        isOpen={discrdChangesIsOpen}
+        handleClickFirstButton={() => setDiscardChangesIsOpen(false)}
+        handleClickSecondButton={handleCancelClick(currentid as GridRowId)}
+      />
+    </>
   );
 }
