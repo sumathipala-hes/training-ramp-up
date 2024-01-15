@@ -38,7 +38,7 @@ const StyledDataGrid = styled(DataGrid)(({ theme }) => ({
   "& .MuiDataGrid-columnHeader": {
     backgroundColor: "rgba(33, 150, 243, 0.08)",
   },
-  "& .MuiDataGrid-colomnHeader-Cell":{
+  "& .MuiDataGrid-colomnHeader-Cell": {
     padding: "6px 16px",
   },
   "& .MuiDataGrid-cell": {
@@ -70,16 +70,6 @@ const StyledButton = styled(Button)(({ theme }) => ({
   borderRadius: "4px",
   border: "1px solid",
   padding: "4px 10px",
-}));
-
-const CellTextField = styled(TextField)(({ theme }) => ({
-  border: "1px solid rgba(33, 150, 243, 1)",
-  borderRadius: "5px",
-}));
-
-const CellSelectField = styled(Select)(({ theme }) => ({
-  border: "1px solid rgba(33, 150, 243, 1)",
-  borderRadius: "5px",
 }));
 
 interface EditToolbarProps {
@@ -141,7 +131,11 @@ export default function DataTable() {
   const [saveedSuccessIsOpen, setSavedSuccessIsOpen] = React.useState(false);
   const [discrdChangesIsOpen, setDiscardChangesIsOpen] = React.useState(false);
   const [currentid, setCurrentId] = React.useState<GridRowId | null>(null);
-
+  const [nameIsEmpty, setNameIsEmpty] = React.useState(false);
+  const [genderIsEmpty, setGenderIsEmpty] = React.useState(false);
+  const [addressIsEmpty, setAddressIsEmpty] = React.useState(false);
+  const [mobileNumberIsEmpty, setMobileNumberIsEmpty] = React.useState(false);
+  const [birthdayIsEmpty, setBirthdayIsEmpty] = React.useState(false);
   const handleRowEditStop: GridEventListener<"rowEditStop"> = (
     params,
     event
@@ -192,9 +186,28 @@ export default function DataTable() {
     const validNumber = validateMobileNumber(mobileNumber);
     const validAge = age >= 18;
 
-    setKeepEditingIsOpen(false);
     setNumberValidateError(false);
     setAgeValidateError(false);
+    setNameIsEmpty(false);
+    setGenderIsEmpty(false);
+    setAddressIsEmpty(false);
+    setMobileNumberIsEmpty(false);
+    setBirthdayIsEmpty(false);
+    if (name === "") {
+      setNameIsEmpty(true);
+    }
+    if (gender === "") {
+      setGenderIsEmpty(true);
+    }
+    if (address === "") {
+      setAddressIsEmpty(true);
+    }
+    if (age === "") {
+      setBirthdayIsEmpty(true);
+    }
+    if (mobileNumber === "") {
+      setMobileNumberIsEmpty(true);
+    }
     if (
       name === "" ||
       gender === "" ||
@@ -258,8 +271,16 @@ export default function DataTable() {
       align: "left",
       type: "string",
       renderEditCell: (params: GridRenderCellParams<any, string>) => (
-        <CellTextField
+        <TextField
           size="small"
+          sx={{
+            border: nameIsEmpty
+              ? "1px solid rgba(211, 47, 47, 1)"
+              : "1px solid rgba(33, 150, 243, 1)",
+            "& .MuiOutlinedInput-root fieldset": {
+              border: "none",
+            },
+          }}
           value={params.value as string}
           onChange={(e) =>
             params.api.setEditCellValue({
@@ -281,8 +302,14 @@ export default function DataTable() {
       type: "singleSelect",
       valueOptions: ["Male", "Female", "Other"],
       renderEditCell: (params: GridRenderCellParams<any, string>) => (
-        <CellSelectField
+        <Select
           size="small"
+          sx={{
+            border: genderIsEmpty
+              ? "1px solid rgba(211, 47, 47, 1)"
+              : "1px solid rgba(33, 150, 243, 1)",
+            borderRadius: "0",
+          }}
           fullWidth
           value={params.value as string}
           onChange={(e) =>
@@ -296,7 +323,7 @@ export default function DataTable() {
           <MenuItem value={"Male"}>Male</MenuItem>
           <MenuItem value={"Female"}>Female</MenuItem>
           <MenuItem value={"Other"}>Other</MenuItem>
-        </CellSelectField>
+        </Select>
       ),
     },
     {
@@ -308,8 +335,17 @@ export default function DataTable() {
       sortable: false,
       type: "string",
       renderEditCell: (params: GridRenderCellParams<any, string>) => (
-        <CellTextField
+        <TextField
           size="small"
+          sx={{
+            border: addressIsEmpty
+              ? "1px solid rgba(211, 47, 47, 1)"
+              : "1px solid rgba(33, 150, 243, 1)",
+            "& .MuiOutlinedInput-root fieldset": {
+              border: "none",
+            },
+          }}
+          InputProps={{ disableUnderline: true }}
           value={params.value as string}
           onChange={(e) =>
             params.api.setEditCellValue({
@@ -342,10 +378,11 @@ export default function DataTable() {
           }
           InputProps={{
             sx: {
-              boxShadow: "0px 3px 1px -2px rgba(0, 0, 0, 0.2)",
-              border: numbervalidateError
-                ? ""
-                : "1px solid rgba(33, 150, 243, 1)",
+              border:
+                numbervalidateError || mobileNumberIsEmpty
+                  ? "1px solid rgba(211, 47, 47, 1)"
+                  : "1px solid rgba(33, 150, 243, 1)",
+              borderRadius: "0",
             },
           }}
           sx={{
@@ -353,8 +390,10 @@ export default function DataTable() {
               fontSize: 10,
               marginLeft: "0px",
             },
-            marginTop: numbervalidateError ? "35px" : "0px",
-            boardeRadius: "0",
+            marginTop: numbervalidateError ? "37px" : "0px",
+            "& .MuiOutlinedInput-root fieldset": {
+              border: "none",
+            },
           }}
           error={numbervalidateError}
           helperText={
@@ -388,6 +427,7 @@ export default function DataTable() {
             >
               <DatePicker
                 value={dateValue}
+                defaultValue={dayjs()}
                 onChange={(newValue) => {
                   params.api.setEditCellValue({
                     id: params.id,
@@ -404,11 +444,15 @@ export default function DataTable() {
                   textField: {
                     size: "small",
                     sx: {
-                      border: "1px solid rgba(33, 150, 243, 1)",
-                      borderRadius: "5px",
+                      border: birthdayIsEmpty
+                        ? "1px solid rgba(211, 47, 47, 1)"
+                        : "1px solid rgba(33, 150, 243, 1)",
                       alignContent: "center",
                       justifyContent: "center",
                       alignItems: "center",
+                      "& .MuiOutlinedInput-root fieldset": {
+                        border: "none",
+                      },
                     },
                   },
                 }}
@@ -440,10 +484,10 @@ export default function DataTable() {
           }
           InputProps={{
             sx: {
-              boxShadow: "0px 3px 1px -2px rgba(0, 0, 0, 0.2)",
-              border: numbervalidateError
-                ? ""
+              border: agevalidateError
+                ? "1px solid rgba(211, 47, 47, 1)"
                 : "1px solid rgba(33, 150, 243, 1)",
+              borderRadius: "0",
             },
           }}
           sx={{
@@ -453,6 +497,9 @@ export default function DataTable() {
               width: "100%",
             },
             marginTop: agevalidateError ? "35px" : "0px",
+            "& .MuiOutlinedInput-root fieldset": {
+              border: "none",
+            },
           }}
         />
       ),
