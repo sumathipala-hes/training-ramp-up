@@ -130,12 +130,16 @@ export default function DataTable() {
   const [keepEditingIsOpen, setKeepEditingIsOpen] = React.useState(false);
   const [saveedSuccessIsOpen, setSavedSuccessIsOpen] = React.useState(false);
   const [discrdChangesIsOpen, setDiscardChangesIsOpen] = React.useState(false);
+  const [updatesuccessIsOpen, setupdatesuccessIsOpen] = React.useState(false);
+  const [removeConfirmIsOpen, setremoveConfirmIsOpen] = React.useState(false);
+  const [removeSuccesIsOpen, setremoveSuccesIsOpen] = React.useState(false);
   const [currentid, setCurrentId] = React.useState<GridRowId | null>(null);
   const [nameIsEmpty, setNameIsEmpty] = React.useState(false);
   const [genderIsEmpty, setGenderIsEmpty] = React.useState(false);
   const [addressIsEmpty, setAddressIsEmpty] = React.useState(false);
   const [mobileNumberIsEmpty, setMobileNumberIsEmpty] = React.useState(false);
   const [birthdayIsEmpty, setBirthdayIsEmpty] = React.useState(false);
+  const [isAdding, setIsading] = React.useState(false);
   const handleRowEditStop: GridEventListener<"rowEditStop"> = (
     params,
     event
@@ -151,10 +155,18 @@ export default function DataTable() {
 
   const handleSaveClick = (id: GridRowId) => () => {
     setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
+    setIsading(true);
+  };
+
+  const handleUpdateClick = (id: GridRowId) => () => {
+    setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
+    setIsading(false);
   };
 
   const handleRemoveClick = (id: GridRowId) => () => {
     setRows(rows.filter((row) => row.id !== id));
+    setremoveConfirmIsOpen(false);
+    setremoveSuccesIsOpen(true);
   };
 
   const handleCancelClick = (id: GridRowId) => () => {
@@ -168,10 +180,22 @@ export default function DataTable() {
       setRows(rows.filter((row) => row.id !== id));
     }
     setDiscardChangesIsOpen(false);
+    setAgeValidateError(false);
+    setNumberValidateError(false);
+    setNameIsEmpty(false);
+    setGenderIsEmpty(false);
+    setAddressIsEmpty(false);
+    setMobileNumberIsEmpty(false);
+    setBirthdayIsEmpty(false);
   };
 
   const handleDiscardChangesClick = (id: GridRowId) => () => {
     setDiscardChangesIsOpen(true);
+    setCurrentId(id);
+  };
+
+  const handleRemoveButtonclick = (id: GridRowId) => () => {
+    setremoveConfirmIsOpen(true);
     setCurrentId(id);
   };
 
@@ -239,7 +263,12 @@ export default function DataTable() {
     setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)));
     try {
       dispatch(replaceStudents(rows));
-      setSavedSuccessIsOpen(true);
+      if (isAdding) {
+        setSavedSuccessIsOpen(true);
+      }
+      if (!isAdding) {
+        setupdatesuccessIsOpen(true);
+      }
     } catch (err) {
       console.log(err);
     }
@@ -279,6 +308,7 @@ export default function DataTable() {
               : "1px solid rgba(33, 150, 243, 1)",
             "& .MuiOutlinedInput-root fieldset": {
               border: "none",
+              margin: "16px",
             },
           }}
           value={params.value as string}
@@ -549,33 +579,31 @@ export default function DataTable() {
                   onClick={handleDiscardChangesClick(id)}
                   color="inherit"
                 />
-                ,
               </Box>,
             ];
           }
           return [
-            <Box sx={{ px: 0, py: "25px" }}>
-              <GridActionsCellItem
-                icon={
-                  <StyledButton variant="outlined" size="small">
-                    update
-                  </StyledButton>
-                }
-                label="Update"
-                onClick={handleSaveClick(id)}
-                color="inherit"
-              />
-              <GridActionsCellItem
-                icon={
-                  <StyledButton variant="outlined" size="small" color="error">
-                    Cancel
-                  </StyledButton>
-                }
-                label="Cancel"
-                onClick={handleCancelClick(id)}
-                color="inherit"
-              />
-            </Box>,
+            <GridActionsCellItem
+              icon={
+                <StyledButton variant="outlined" size="small">
+                  update
+                </StyledButton>
+              }
+              label="Update"
+              onClick={handleUpdateClick(id)}
+              color="inherit"
+              sx={{ padding: "16px" }}
+            />,
+            <GridActionsCellItem
+              icon={
+                <StyledButton variant="outlined" size="small" color="error">
+                  Cancel
+                </StyledButton>
+              }
+              label="Cancel"
+              onClick={handleDiscardChangesClick(id)}
+              color="inherit"
+            />,
           ];
         }
 
@@ -598,7 +626,7 @@ export default function DataTable() {
               </StyledButton>
             }
             label="Remove"
-            onClick={handleRemoveClick(id)}
+            onClick={handleRemoveButtonclick(id)}
             color="inherit"
           />,
         ];
@@ -656,6 +684,29 @@ export default function DataTable() {
         isOpen={discrdChangesIsOpen}
         handleClickFirstButton={() => setDiscardChangesIsOpen(false)}
         handleClickSecondButton={handleCancelClick(currentid as GridRowId)}
+      />
+
+      <OneButtonDialog
+        title="Student details updated successfully"
+        buttonText="OK"
+        isOpen={updatesuccessIsOpen}
+        setOpen={setupdatesuccessIsOpen}
+      />
+
+      <TwoButtonDialog
+        title="Are you sure you want to remove this student?"
+        buttonText1="DISMISS"
+        buttonText2="COnfirm"
+        isOpen={removeConfirmIsOpen}
+        handleClickFirstButton={() => setremoveConfirmIsOpen(false)}
+        handleClickSecondButton={handleRemoveClick(currentid as GridRowId)}
+      />
+
+      <OneButtonDialog
+        title="The student removed successfully"
+        buttonText="OK"
+        isOpen={removeSuccesIsOpen}
+        setOpen={setremoveSuccesIsOpen}
       />
     </>
   );
