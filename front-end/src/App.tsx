@@ -1,13 +1,8 @@
-import { BrowserRouter as Router, Routes } from 'react-router-dom';
-import routes from './routes';
+import UserDetails from './pages/UserDetails';
 
 function App() {
   return (
-    <Router>
-      <Routes>
-        {routes}
-      </Routes>
-    </Router>
+    <UserDetails />
   );
 }
 
