@@ -546,7 +546,7 @@ export default function DataTable() {
     {
       field: "actions",
       type: "actions",
-      headerName: "Actions",
+      headerName: "Action",
       width: 195,
       cellClassName: "actions",
       getActions: ({ id }) => {
