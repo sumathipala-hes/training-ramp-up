@@ -29,10 +29,7 @@ import {
   GridRenderCellParams,
 } from "@mui/x-data-grid";
 import { calculateAge, validateMobileNumber } from "../../utility";
-// import calculateAge from "../../utility/calculateAge/calculateAge";
-// import validateMobileNumber from "../../utility/validateMobilwNumber/validateMobileNumber";
-import OneButtonDialog from "../OneButtonDialog/OneButtonDialog";
-import TwoButtonDialog from "../TwoButtonDialog/TwoButtonDialog";
+import AlertDialog from "../AlertDialog/AlertDialog";
 
 const StyledDataGrid = styled(DataGrid)(({ theme }) => ({
   borderRadius: "0",
@@ -673,21 +670,21 @@ export default function DataTable() {
         />
       </div>
 
-      <OneButtonDialog
+      <AlertDialog
         title="Mandatory fields missing"
-        buttonText="KEEP EDITING"
+        buttonText2="KEEP EDITING"
         isOpen={keepEditingIsOpen}
-        setOpen={setKeepEditingIsOpen}
+        handleClickSecondButton={() => setKeepEditingIsOpen(false)}
       />
 
-      <OneButtonDialog
+      <AlertDialog
         title="Saved successfully"
-        buttonText="OK"
+        buttonText2="OK"
         isOpen={saveedSuccessIsOpen}
-        setOpen={setSavedSuccessIsOpen}
+        handleClickSecondButton={() => setSavedSuccessIsOpen(false)}
       />
 
-      <TwoButtonDialog
+      <AlertDialog
         title="Discard changes?"
         buttonText1="DISMISS"
         buttonText2="COnfirm"
@@ -696,14 +693,14 @@ export default function DataTable() {
         handleClickSecondButton={handleCancelClick(currentid as GridRowId)}
       />
 
-      <OneButtonDialog
+      <AlertDialog
         title="Student details updated successfully"
-        buttonText="OK"
+        buttonText2="OK"
         isOpen={updatesuccessIsOpen}
-        setOpen={setupdatesuccessIsOpen}
+        handleClickSecondButton={() => setupdatesuccessIsOpen(false)}
       />
 
-      <TwoButtonDialog
+      <AlertDialog
         title="Are you sure you want to remove this student?"
         buttonText1="DISMISS"
         buttonText2="COnfirm"
@@ -712,11 +709,11 @@ export default function DataTable() {
         handleClickSecondButton={handleRemoveClick(currentid as GridRowId)}
       />
 
-      <OneButtonDialog
+      <AlertDialog
         title="The student removed successfully"
-        buttonText="OK"
+        buttonText2="OK"
         isOpen={removeSuccesIsOpen}
-        setOpen={setremoveSuccesIsOpen}
+        handleClickSecondButton={() => setremoveSuccesIsOpen(false)}
       />
     </>
   );
