@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useEffect } from "react";
 import {
   styled,
   Button,
@@ -14,7 +15,13 @@ import dayjs from "dayjs";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../redux/store";
-import { replaceStudents } from "../../redux/studentsSlice/stdentsSlice";
+import {
+  replaceStudents,
+  fetchStudents,
+  addStudent,
+  editStudent,
+  removeStudent,
+} from "../../redux/studentsSlice/stdentsSlice";
 import {
   GridRowsProp,
   GridRowModesModel,
@@ -79,6 +86,7 @@ const StyledButton = styled(Button)(({ theme }) => ({
 }));
 
 interface EditToolbarProps {
+  lastId: number;
   setRows: (newRows: (oldRows: GridRowsProp) => GridRowsProp) => void;
   setRowModesModel: (
     newModel: (oldModel: GridRowModesModel) => GridRowModesModel
@@ -86,10 +94,18 @@ interface EditToolbarProps {
 }
 
 function EditToolbar(props: EditToolbarProps) {
-  const { setRows, setRowModesModel } = props;
+  const dispatch = useDispatch();
+  const { setRowModesModel } = props;
   const currentStudents = useSelector((state: RootState) => state.students);
-  const lastId = currentStudents.length;
-  const [id, setId] = React.useState(lastId + 1);
+  const lastId =
+    currentStudents.length > 0
+      ? currentStudents[currentStudents.length - 1].id
+      : 0;
+  const [id, setId] = React.useState(lastId);
+
+  useEffect(() => {
+    setId(lastId + 1);
+  }, [lastId]);
 
   const handleAddNewClick = () => {
     setId(id + 1);
@@ -103,7 +119,9 @@ function EditToolbar(props: EditToolbarProps) {
       age: "",
       isNew: true,
     };
-    setRows((oldRows) => [newRecord, ...oldRows]);
+
+    dispatch(replaceStudents([newRecord, ...currentStudents]));
+
     setRowModesModel((oldModel) => ({
       ...oldModel,
       [id]: { mode: GridRowModes.Edit, fieldToFocus: "name" },
@@ -125,9 +143,11 @@ function EditToolbar(props: EditToolbarProps) {
 }
 
 export default function DataTable() {
-  const currentStudents = useSelector((state: RootState) => state.students);
   const dispatch = useDispatch();
-  const [rows, setRows] = React.useState(currentStudents);
+  React.useEffect(() => {
+    dispatch(fetchStudents());
+  }, [dispatch]);
+  const currentStudents = useSelector((state: RootState) => state.students);
   const [rowModesModel, setRowModesModel] = React.useState<GridRowModesModel>(
     {}
   );
@@ -146,6 +166,7 @@ export default function DataTable() {
   const [mobileNumberIsEmpty, setMobileNumberIsEmpty] = React.useState(false);
   const [birthdayIsEmpty, setBirthdayIsEmpty] = React.useState(false);
   const [isAdding, setIsading] = React.useState(false);
+
   const handleRowEditStop: GridEventListener<"rowEditStop"> = (
     params,
     event
@@ -169,10 +190,9 @@ export default function DataTable() {
     setIsading(false);
   };
 
-  const handleRemoveClick = (id: GridRowId) => () => {
-    setRows(rows.filter((row) => row.id !== id));
-    setremoveConfirmIsOpen(false);
-    setremoveSuccesIsOpen(true);
+  const handleDiscardChangesClick = (id: GridRowId) => () => {
+    setDiscardChangesIsOpen(true);
+    setCurrentId(id);
   };
 
   const handleCancelClick = (id: GridRowId) => () => {
@@ -180,10 +200,14 @@ export default function DataTable() {
       ...rowModesModel,
       [id]: { mode: GridRowModes.View, ignoreModifications: true },
     });
-    console.log(11);
-    const editedRow = rows.find((row) => row.id === id);
+
+    const editedRow = currentStudents.find((row) => row.id === id);
     if (editedRow!.isNew) {
-      setRows(rows.filter((row) => row.id !== id));
+      dispatch(
+        replaceStudents(
+          currentStudents.filter((row: GridRowModel) => row.id !== id)
+        )
+      );
     }
     setDiscardChangesIsOpen(false);
     setAgeValidateError(false);
@@ -195,14 +219,20 @@ export default function DataTable() {
     setBirthdayIsEmpty(false);
   };
 
-  const handleDiscardChangesClick = (id: GridRowId) => () => {
-    setDiscardChangesIsOpen(true);
-    setCurrentId(id);
-  };
-
   const handleRemoveButtonclick = (id: GridRowId) => () => {
     setremoveConfirmIsOpen(true);
     setCurrentId(id);
+  };
+
+  const handleRemoveClick = (id: GridRowId) => () => {
+    dispatch(removeStudent(id));
+    dispatch(
+      replaceStudents(
+        currentStudents.filter((row: GridRowModel) => row.id !== id)
+      )
+    );
+    setremoveConfirmIsOpen(false);
+    setremoveSuccesIsOpen(true);
   };
 
   const processRowUpdate = (newRow: GridRowModel) => {
@@ -266,13 +296,21 @@ export default function DataTable() {
       setAgeValidateError(true);
       return {};
     }
-    setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)));
+
     try {
-      dispatch(replaceStudents(rows));
+      dispatch(
+        replaceStudents(
+          currentStudents.map((row) =>
+            row.id === newRow.id ? updatedRow : row
+          )
+        )
+      );
       if (isAdding) {
+        dispatch(addStudent(updatedRow));
         setSavedSuccessIsOpen(true);
       }
       if (!isAdding) {
+        dispatch(editStudent(updatedRow));
         setupdatesuccessIsOpen(true);
       }
     } catch (err) {
@@ -294,7 +332,6 @@ export default function DataTable() {
       headerAlign: "left",
       align: "left",
       type: "number",
-      sortable: false,
     },
     {
       field: "name",
@@ -549,7 +586,7 @@ export default function DataTable() {
       cellClassName: "actions",
       getActions: ({ id }) => {
         const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
-        const editingRow = rows.find((row) => row.id === id);
+        const editingRow = currentStudents.find((row) => row.id === id);
         const isEditModeNew = editingRow?.isNew;
 
         if (isInEditMode) {
@@ -645,7 +682,7 @@ export default function DataTable() {
     <>
       <div style={{ height: "auto", width: "100%" }}>
         <StyledDataGrid
-          rows={rows}
+          rows={currentStudents}
           columns={columns}
           initialState={{
             pagination: {
@@ -665,7 +702,7 @@ export default function DataTable() {
             toolbar: EditToolbar,
           }}
           slotProps={{
-            toolbar: { setRows, setRowModesModel },
+            toolbar: { setRowModesModel },
           }}
         />
       </div>

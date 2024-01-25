@@ -8,8 +8,10 @@ export class StudentController {
   // Get all students
   async all(request: Request, response: Response, next: NextFunction): Promise<void> {
     try {
+      console.log('Fetching  students');
       const students = await this.studentRepository.find();
       response.status(200).json(students);
+      console.log('Students fetched successfully');
     } catch (error) {
       console.error('Error fetching students:', error);
       response.status(500).send('Error retrieving student data');
@@ -38,7 +40,7 @@ export class StudentController {
 
   // Save new student
   async save(request: Request, response: Response, next: NextFunction): Promise<void> {
-    const { id, name, gender, address, mobileNumber, age, birthday } = request.body;
+    const { id, name, gender, address, mobileNumber, age, dateofbirth } = request.body;
 
     try {
       const existingStudent = await this.studentRepository.findOneBy({ id });
@@ -53,7 +55,7 @@ export class StudentController {
         gender,
         address,
         mobileNumber,
-        birthday,
+        dateofbirth,
         age
       });
       await this.studentRepository.save(newStudent);
@@ -85,7 +87,7 @@ export class StudentController {
 
   // Update student
   async update(request: Request, response: Response, next: NextFunction): Promise<void> {
-    const { id, name, gender, address, mobileNumber, age, birthday } = request.body;
+    const { id, name, gender, address, mobileNumber, age, dateofbirth } = request.body;
 
     try {
       const newStudent = Object.assign(new Student(), {
@@ -94,7 +96,7 @@ export class StudentController {
         gender,
         address,
         mobileNumber,
-        birthday,
+        dateofbirth,
         age
       });
       await this.studentRepository.save(newStudent);
