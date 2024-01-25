@@ -8,10 +8,8 @@ export class StudentController {
   // Get all students
   async all(request: Request, response: Response, next: NextFunction): Promise<void> {
     try {
-      console.log('Fetching  students');
       const students = await this.studentRepository.find();
       response.status(200).json(students);
-      console.log('Students fetched successfully');
     } catch (error) {
       console.error('Error fetching students:', error);
       response.status(500).send('Error retrieving student data');
