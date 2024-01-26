@@ -37,7 +37,9 @@ import {
 } from "@mui/x-data-grid";
 import { calculateAge, validateMobileNumber } from "../../utility";
 import AlertDialog from "../AlertDialog/AlertDialog";
+import { io } from "socket.io-client";
 
+const socket = io("http://localhost:3000", {});
 const StyledDataGrid = styled(DataGrid)(({ theme }) => ({
   borderRadius: "0",
   "& .MuiDataGrid-columnHeader": {
@@ -144,9 +146,19 @@ function EditToolbar(props: EditToolbarProps) {
 
 export default function DataTable() {
   const dispatch = useDispatch();
-  React.useEffect(() => {
+  useEffect(() => {
     dispatch(fetchStudents());
-  }, [dispatch]);
+    socket.on("connect", () => {
+      console.log("connected");
+    });
+    socket.on("disconnect", () => {
+      console.log("disconnected");
+    });
+    socket.on("hello", (message) => {
+      console.log(message);
+    });
+  }, []); 
+
   const currentStudents = useSelector((state: RootState) => state.students);
   const [rowModesModel, setRowModesModel] = React.useState<GridRowModesModel>(
     {}

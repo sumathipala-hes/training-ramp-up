@@ -9,7 +9,10 @@ export class StudentController {
   async all(request: Request, response: Response, next: NextFunction): Promise<void> {
     try {
       const students = await this.studentRepository.find();
+      console.log('students');
+
       response.status(200).json(students);
+      // io.emit('students', students);
     } catch (error) {
       console.error('Error fetching students:', error);
       response.status(500).send('Error retrieving student data');

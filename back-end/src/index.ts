@@ -4,6 +4,8 @@ import dataSource from './config/dataSource';
 import * as bodyParser from 'body-parser';
 import { studentRoutes } from './routes/studentRoutes';
 import cors from 'cors';
+import http from 'http';
+import { Server } from 'socket.io';
 
 dataSource
   .initialize()
@@ -11,6 +13,13 @@ dataSource
     const app = express();
     app.use(cors());
     app.use(bodyParser.json());
+
+    const server = http.createServer(app);
+    const io = new Server(server, {
+      cors: {
+        origin: '*'
+      }
+    });
 
     studentRoutes.forEach((route) => {
       (app as any)[route.method](route.route, async (req: Request, res: Response, next: () => void) => {
@@ -23,7 +32,12 @@ dataSource
       });
     });
 
-    app.listen(3000);
+    io.on('connection', (socket: any) => {
+      console.log('a user connected', socket.id);
+      socket.emit('hello', 'world');
+    });
+
+    server.listen(3000);
 
     console.log('Express server has started on port 3000. Open http://localhost:3000/students to see results');
   })
