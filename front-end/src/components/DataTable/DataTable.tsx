@@ -39,7 +39,7 @@ import { calculateAge, validateMobileNumber } from "../../utility";
 import AlertDialog from "../AlertDialog/AlertDialog";
 import { io } from "socket.io-client";
 
-const socket = io(`${process.env.REACT_APP_API_URL}`, {});
+const socket = io(`${process.env.REACT_APP_API_URL}/`, {});
 
 const StyledDataGrid = styled(DataGrid)(({ theme }) => ({
   borderRadius: "0",
