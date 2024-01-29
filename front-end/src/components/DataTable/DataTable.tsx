@@ -39,7 +39,8 @@ import { calculateAge, validateMobileNumber } from "../../utility";
 import AlertDialog from "../AlertDialog/AlertDialog";
 import { io } from "socket.io-client";
 
-const socket = io("http://localhost:3000", {});
+const socket = io("http://localhost:3000/", {});
+
 const StyledDataGrid = styled(DataGrid)(({ theme }) => ({
   borderRadius: "0",
   "& .MuiDataGrid-columnHeader": {
@@ -148,16 +149,7 @@ export default function DataTable() {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(fetchStudents());
-    socket.on("connect", () => {
-      console.log("connected");
-    });
-    socket.on("disconnect", () => {
-      console.log("disconnected");
-    });
-    socket.on("hello", (message) => {
-      console.log(message);
-    });
-  }, []); 
+  }, [dispatch]);
 
   const currentStudents = useSelector((state: RootState) => state.students);
   const [rowModesModel, setRowModesModel] = React.useState<GridRowModesModel>(
@@ -178,6 +170,44 @@ export default function DataTable() {
   const [mobileNumberIsEmpty, setMobileNumberIsEmpty] = React.useState(false);
   const [birthdayIsEmpty, setBirthdayIsEmpty] = React.useState(false);
   const [isAdding, setIsading] = React.useState(false);
+  const [fetchFailIsOpen, setFetchFailIsOpen] = React.useState(false);
+  const [addFailIsOpen, setAddFailIsOpen] = React.useState(false);
+  const [editFailIsOpen, setEditFailIsOpen] = React.useState(false);
+  const [socketId, setSocketId] = React.useState("");
+
+  useEffect(() => {
+    socket.on("fetchAll", (message) => {
+      if (message === 200 || message === 304) {
+      } else {
+        setFetchFailIsOpen(true);
+      }
+    });
+    socket.on("add", (message) => {
+      if (message === 201) {
+        setSavedSuccessIsOpen(true);
+        dispatch(fetchStudents());
+      } else {
+        setAddFailIsOpen(true);
+      }
+    });
+    socket.on("remove", (message) => {
+      if (message === 200) {
+        setremoveSuccesIsOpen(true);
+        dispatch(fetchStudents());
+      }
+    });
+    socket.on("edit", (message) => {
+      if (message === 201) {
+        setupdatesuccessIsOpen(true);
+        dispatch(fetchStudents());
+      } else {
+        setEditFailIsOpen(true);
+      }
+    });
+    socket.on("newSocket", (message) => {
+      setSocketId(message);
+    });
+  }, []);
 
   const handleRowEditStop: GridEventListener<"rowEditStop"> = (
     params,
@@ -244,7 +274,6 @@ export default function DataTable() {
       )
     );
     setremoveConfirmIsOpen(false);
-    setremoveSuccesIsOpen(true);
   };
 
   const processRowUpdate = (newRow: GridRowModel) => {
@@ -319,11 +348,9 @@ export default function DataTable() {
       );
       if (isAdding) {
         dispatch(addStudent(updatedRow));
-        setSavedSuccessIsOpen(true);
       }
       if (!isAdding) {
         dispatch(editStudent(updatedRow));
-        setupdatesuccessIsOpen(true);
       }
     } catch (err) {
       console.log(err);
@@ -763,6 +790,27 @@ export default function DataTable() {
         buttonText2="OK"
         isOpen={removeSuccesIsOpen}
         handleClickSecondButton={() => setremoveSuccesIsOpen(false)}
+      />
+
+      <AlertDialog
+        title="Unable to retrieve table details. Please try again later"
+        buttonText2="OK"
+        isOpen={fetchFailIsOpen}
+        handleClickSecondButton={() => setFetchFailIsOpen(false)}
+      />
+
+      <AlertDialog
+        title="Unable to add the new student. Please try again later"
+        buttonText2="TRY AGAIN"
+        isOpen={addFailIsOpen}
+        handleClickSecondButton={() => setAddFailIsOpen(false)}
+      />
+
+      <AlertDialog
+        title="Can not update the student details. Please try again later"
+        buttonText2="TRY AGAIN"
+        isOpen={editFailIsOpen}
+        handleClickSecondButton={() => setEditFailIsOpen(false)}
       />
     </>
   );
