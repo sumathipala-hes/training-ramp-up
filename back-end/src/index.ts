@@ -6,7 +6,9 @@ import cors from 'cors';
 import http from 'http';
 import { Server } from 'socket.io';
 import express from 'express';
+import dotenv from 'dotenv';
 
+dotenv.config();
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
@@ -26,4 +28,7 @@ app.use(studentRoutes(io));
 
 export { app };
 
-server.listen(3000);
+const port = process.env.PORT;
+server.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
+});
