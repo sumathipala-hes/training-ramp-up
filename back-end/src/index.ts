@@ -2,6 +2,7 @@
 import 'reflect-metadata';
 import * as bodyParser from 'body-parser';
 import { studentRoutes } from './routes/studentRoutes';
+import { userRoutes } from './routes/userRoutes';
 import cors from 'cors';
 import http from 'http';
 import { Server } from 'socket.io';
@@ -24,7 +25,7 @@ io.on('connection', (socket: any) => {
   socket.emit('newSocket', socket.id);
 });
 
-app.use(studentRoutes(io));
+app.use(studentRoutes(io), userRoutes(io));
 
 export { app };
 
