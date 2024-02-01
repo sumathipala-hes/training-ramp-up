@@ -1,5 +1,5 @@
 import { configureStore } from "@reduxjs/toolkit";
-import studentReducer from "./studentsSlice/stdentsSlice";
+import studentReducer from "./slices/stdentsSlice";
 import createSagaMiddleware from "redux-saga";
 import watchStudentSage from "./sagas/studentSagas";
 

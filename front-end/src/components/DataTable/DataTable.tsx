@@ -25,7 +25,7 @@ import {
   addStudent,
   editStudent,
   removeStudent,
-} from "../../redux/studentsSlice/stdentsSlice";
+} from "../../redux/slices/stdentsSlice";
 import {
   GridRowsProp,
   GridRowModesModel,
