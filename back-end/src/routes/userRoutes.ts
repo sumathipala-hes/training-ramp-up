@@ -1,15 +1,30 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
-import { createUser, allUsers, oneUser, removeUser, updateUser } from '../controllers/userController';
+import {
+  createUser,
+  allUsers,
+  oneUser,
+  removeUser,
+  updateUser,
+  registeredEmailCheck
+} from '../controllers/userController';
 import { Router, type Request, type Response } from 'express';
 
 export const userRoutes = (io: any): Router => {
   const router = Router();
 
-  router.post('/users', async (request: Request, response: Response) => {
+  router.post('/users/adduser', async (request: Request, response: Response) => {
     try {
       await createUser(request, response).then(() => {
         io.emit('addUser', response.statusCode);
       });
+    } catch (error) {
+      console.log(error);
+    }
+  });
+
+  router.get('/users/check/:email', async (request: Request, response: Response) => {
+    try {
+      await registeredEmailCheck(request, response).then(() => {});
     } catch (error) {
       console.log(error);
     }

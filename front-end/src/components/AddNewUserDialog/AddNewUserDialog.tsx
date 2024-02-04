@@ -12,10 +12,32 @@ import {
   InputLabel,
   FormHelperText,
 } from "@mui/material";
-import { validateEmail, registeredEmailCheck } from "../../utility/index";
+import { validateEmail } from "../../utility/index";
 import AlertDialog from "../AlertDialog/AlertDialog";
+import { addUser } from "../../redux/slices/userSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { io } from "socket.io-client";
+import { useEffect } from "react";
+import { registedEmailCheck } from "../../redux/slices/userSlice";
+import { RootState } from "../../redux/store";
+
+export interface User {
+  id: number;
+  name: string;
+  email: string;
+  role: string;
+  active: boolean;
+}
+
+export interface newUser {
+  name: string;
+  email: string;
+  role: string;
+}
 
 export default function AddNewUserDialog() {
+  const dispatch = useDispatch();
+  const socket = io(`${process.env.REACT_APP_API_URL}/`, {});
   const [open, setOpen] = React.useState(false);
   const [nameIsEmpty, setNameIsEmpty] = React.useState(false);
   const [emailIsEmpty, setEmailIsEmpty] = React.useState(false);
@@ -27,6 +49,19 @@ export default function AddNewUserDialog() {
   const [name, setName] = React.useState("");
   const [email, setEmail] = React.useState("");
   const [role, setRole] = React.useState("");
+  const registeredEmail = useSelector(
+    (state: RootState) => state.user.registedEmail
+  );
+
+  useEffect(() => {
+    socket.on("addUser", (message) => {
+      if (message === 201) {
+        setIsPasswordLinkSent(true);
+      } else {
+        setIsPasswordLinkFailed(true);
+      }
+    });
+  }, []);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -43,14 +78,14 @@ export default function AddNewUserDialog() {
     setRole("");
   };
 
-  const handleSubmit = () => {
+  const HandleSubmit = () => {
     setNameIsEmpty(false);
     setEmailIsEmpty(false);
     setRoleIsEmpty(false);
     setIsEmailInvalid(false);
     setIsEmailRegistered(false);
     const invalidEmail = !validateEmail(email);
-    const registeredEmail = registeredEmailCheck(email);
+    dispatch(registedEmailCheck(email));
 
     if (name === "") {
       setNameIsEmpty(true);
@@ -75,12 +110,11 @@ export default function AddNewUserDialog() {
       return;
     } else {
       try {
-        console.log("Submitting data:", name, email, role);
-        setIsPasswordLinkSent(true);
+        const newUser: newUser = { name, email, role };
+        dispatch(addUser(newUser));
         handleClose();
       } catch (error) {
         console.log(error);
-        setIsPasswordLinkFailed(true);
       }
     }
   };
@@ -156,7 +190,7 @@ export default function AddNewUserDialog() {
             </FormHelperText>
           </FormControl>
           <Box sx={{ display: "flex", gap: "16px" }}>
-            <Button variant="contained" onClick={handleSubmit}>
+            <Button variant="contained" onClick={HandleSubmit}>
               SUBMIT
             </Button>
             <Button variant="outlined" onClick={handleClose}>
@@ -167,7 +201,7 @@ export default function AddNewUserDialog() {
       </StyledAddDialog>
 
       <AlertDialog
-        title="A password creation link has been sent to the provide email address."
+        title="A password creation link has been sent to the provided email address."
         buttonText2="OK"
         isOpen={isPasswordLinkSent}
         handleClickSecondButton={() => setIsPasswordLinkSent(false)}
