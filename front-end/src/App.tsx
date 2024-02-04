@@ -1,8 +1,9 @@
-import UserDetails from './pages/UserDetails';
-import PasswordCreation from './pages/PasswordCreation/PasswordCreation';
+import React from "react";
+import { BrowserRouter as Router } from "react-router-dom";
+import routes from "./routes";
 
 function App() {
-  return <PasswordCreation />;
+  return <Router>{routes}</Router>;
 }
 
 export default App;
