@@ -6,10 +6,10 @@ import transporter from '../config/mailer';
 import type nodemailer from 'nodemailer';
 
 export const createUser = async (request: Request, response: Response): Promise<void> => {
+  const email = request.body.email;
   try {
     const userRepository = dataSource.getRepository(User);
     const newUser = userRepository.create(request.body);
-    const email = request.body.email;
     await sendPaasswordCreationEmail(email);
     await userRepository.save(newUser);
     response.status(201).json(newUser);
