@@ -2,12 +2,12 @@
 /* eslint-disable @typescript-eslint/dot-notation */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 import { type Request, type Response } from 'express';
+import * as jwt from 'jsonwebtoken';
+import * as bcrypt from 'bcrypt';
 import dataSource from '../config/dataSource';
 import { User } from '../models/user';
 import transporter from '../config/mailer';
 import type nodemailer from 'nodemailer';
-import * as jwt from 'jsonwebtoken';
-import * as bcrypt from 'bcrypt';
 
 export const createUser = async (request: Request, response: Response): Promise<void> => {
   try {
@@ -117,6 +117,17 @@ export const login = async (req: Request, res: Response): Promise<void> => {
     }
   } catch (error) {
     console.error('Error logging in:', error);
+    res.status(500).json({ userDetails: null });
+  }
+};
+
+export const getVerifiedUser = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const user = req.body.user;
+    const userDetails = { id: user.id, name: user.name, email: user.email, role: user.role, active: user.active };
+    res.status(200).json({ userDetails });
+  } catch (error) {
+    console.error('Error verifying user:', error);
     res.status(500).json({ userDetails: null });
   }
 };
