@@ -7,7 +7,7 @@ export const verifyAdmin = async (req: Request, res: Response, next: NextFunctio
     if (user === null) {
       res.status(401).json({ userDetails: null });
     } else {
-      if (user.role !== 'admin') {
+      if (user.role !== 'Admin') {
         res.status(403).json({ userDetails: null });
       } else {
         next();

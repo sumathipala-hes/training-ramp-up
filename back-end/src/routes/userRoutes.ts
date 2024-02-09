@@ -76,7 +76,7 @@ export const userRoutes = (io: any, sockets: Map<string, string>): Router => {
     }
   });
 
-  router.post('/users/registerUser', verifyToken, verifyAdmin, async (request: Request, response: Response) => {
+  router.post('/users/registerUser', async (request: Request, response: Response) => {
     try {
       await registerUser(request, response).then(() => {
         const email = request.body.email as string;
@@ -108,7 +108,7 @@ export const userRoutes = (io: any, sockets: Map<string, string>): Router => {
     }
   });
 
-  router.delete('/users/:id', verifyToken, async (request: Request, response: Response) => {
+  router.delete('/users/:id', verifyToken, verifyAdmin, async (request: Request, response: Response) => {
     try {
       await removeUser(request, response).then(() => {
         io.emit('removeUser', response.statusCode);
@@ -118,7 +118,7 @@ export const userRoutes = (io: any, sockets: Map<string, string>): Router => {
     }
   });
 
-  router.put('/users/:id', verifyToken, async (request: Request, response: Response) => {
+  router.put('/users/:id', verifyToken, verifyAdmin, async (request: Request, response: Response) => {
     try {
       await updateUser(request, response).then(() => {
         io.emit('editUser', response.statusCode);

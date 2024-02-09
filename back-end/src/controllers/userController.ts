@@ -93,6 +93,10 @@ export const createPassword = async (req: Request, res: Response): Promise<void>
 export const login = async (req: Request, res: Response): Promise<void> => {
   const { email, password } = req.body;
   try {
+    const cookies = req.cookies;
+    for (const name in cookies) {
+      res.clearCookie(name, { path: '/' });
+    }
     const userRepository = dataSource.getRepository(User);
     const user = await userRepository.findOne({ where: { email } });
     if (user === null) {
