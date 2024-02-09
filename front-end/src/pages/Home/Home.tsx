@@ -11,6 +11,8 @@ import { useDispatch } from "react-redux";
 import { verifyToken } from "../../redux/slices/userSlice";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { useIdleTimer } from "react-idle-timer";
+import { logOut } from "../../redux/slices/userSlice";
 
 const Home = () => {
   const dispatch = useDispatch();
@@ -31,19 +33,28 @@ const Home = () => {
     role = user.role;
   }
 
- return (
-   <Box>
-     <TopBar />
-     <StyledCard sx={{ maxWidth: role === "Admin" ? "1152px" : "955px" }}>
-       {role === "Admin" && (
-         <AddNewBox sx={{ backgroundColor: "rgba(33, 150, 243, 0.08)" }}>
-           <AddNewUserDialog />
-         </AddNewBox>
-       )}
-       <DataTable role={role} />
-     </StyledCard>
-   </Box>
- );
+  const onIdle = () => {
+    dispatch(logOut());
+  };
+
+  const {  } = useIdleTimer({
+    onIdle,
+    timeout: 1000 * 60 * 10,
+  });
+
+  return (
+    <Box>
+      <TopBar />
+      <StyledCard sx={{ maxWidth: role === "Admin" ? "1152px" : "955px" }}>
+        {role === "Admin" && (
+          <AddNewBox sx={{ backgroundColor: "rgba(33, 150, 243, 0.08)" }}>
+            <AddNewUserDialog />
+          </AddNewBox>
+        )}
+        <DataTable role={role} />
+      </StyledCard>
+    </Box>
+  );
 };
 
 export default Home;
