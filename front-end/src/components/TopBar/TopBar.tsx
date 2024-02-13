@@ -1,40 +1,17 @@
-import React from 'react';
-import { styled } from '@mui/system';
-import{Box,Typography,AppBar,Toolbar,Button} from '@mui/material';
-
-const StyledTopBar = styled(AppBar)(({ theme }) => ({
-  backgroundColor: '#fff',
-  color: '#000',
-  boxShadow: 'none',
-  backgroundPaper: '#fff',
-  borderBottom: '1px solid #e0e0e0',
-  margin: '0 0 84px 0',
-  height: '52px',
-  '& .MuiToolbar-root': {
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    height: '52px',
-    minHeight: '52px',
-  },
-  '& .MuiButton-root': {
-    borderRadius: '4px',
-    border: '1px solid rgba(33, 150, 243, 0.50)',
-    fontSize: '14px',
-    fontStyle: 'normal',
-    fontWeight: 500,
-    color: '#2196F3',
-    '&:hover': {
-      backgroundColor: '#fff',
-    },
-  },
-  '& .MuiTypography-root': {
-    fontSize:'24px',
-    fontWeight: 600,
-    color: '#1E88E5',
-  },
-}));
+import { Box, Typography, Toolbar, Button } from "@mui/material";
+import { StyledTopBar } from "../StyledComponents/StyledComponents";
+import { useState } from "react";
+import AlertDialog from "../AlertDialog/AlertDialog";
+import { logOut } from "../../redux/slices/userSlice";
+import { useDispatch } from "react-redux";
 
 const TopBar = () => {
+  const dispatch = useDispatch();
+  const [logOutConfirmOpen, setLogOutConfirmOpen] = useState(false);
+
+  const handleLogoutclick = () => {
+    setLogOutConfirmOpen(true);
+  };
   return (
     <Box sx={{ flexGrow: 1 }}>
       <StyledTopBar position="static">
@@ -42,11 +19,31 @@ const TopBar = () => {
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             Ramp Up Project
           </Typography>
-          <Button variant='outlined' color="inherit">Login</Button>
+          <Button
+            variant="outlined"
+            color="inherit"
+            onClick={handleLogoutclick}
+          >
+            LOG OUT
+          </Button>
         </Toolbar>
       </StyledTopBar>
+      <AlertDialog
+        title="Are you sure you want to log out?"
+        buttonText1="Dismiss"
+        buttonText2="Confirm"
+        isOpen={logOutConfirmOpen}
+        handleClickFirstButton={() => {
+          setLogOutConfirmOpen(false);
+        }}
+        handleClickSecondButton={() => {
+          dispatch(logOut());
+          setLogOutConfirmOpen(false);
+        }}
+        handleClose={() => setLogOutConfirmOpen(false)}
+      />
     </Box>
-  )
-}
+  );
+};
 
-export default TopBar
+export default TopBar;
