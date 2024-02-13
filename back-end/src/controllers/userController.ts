@@ -201,6 +201,8 @@ export const registerUser = async (req: Request, res: Response): Promise<void> =
     const existingUser = await userRepository.findOne({ where: { email } });
     if (existingUser !== null) {
       res.status(400).json({ message: 'Email already registered' });
+    } else if (email === '' || password === '' || name === '' || role !== 'Observer' || active !== '') {
+      res.status(400).json({ message: 'Invalid input' });
     } else {
       console.log(email, password, name, role, active);
       const hashedPassword = await bcrypt.hash(password, 10);
