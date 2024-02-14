@@ -12,7 +12,7 @@ const routes = (
       <Home />
     </ProtectedRoute>} />
     <Route path="/login" element={<Login />} />
-    <Route path="/passwordcreation" element={<PasswordCreation />} />
+    <Route path="/password-creation" element={<PasswordCreation />} />
     <Route path="/register" element={<Register />} />
   </Routes>
 );
