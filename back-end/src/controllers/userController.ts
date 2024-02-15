@@ -14,8 +14,16 @@ export const createUser = async (request: Request, response: Response): Promise<
     const { name, email, role } = request.body;
     const userRepository = dataSource.getRepository(User);
     const existingUser = await userRepository.findOne({ where: { email } });
-    if (existingUser !== null) {
+    if (existingUser !== null && existingUser.active) {
       response.status(400).json({ message: 'Email already registered' });
+    } else if (existingUser !== null && !existingUser.active) {
+      const token = jwt.sign({ email, role }, process.env.JWT_SECRET ?? '', { expiresIn: '1h' });
+      existingUser.name = name;
+      existingUser.role = role;
+      existingUser.token = token;
+      await sendPaasswordCreationEmail(email, token);
+      await userRepository.save(existingUser);
+      response.status(201).json(existingUser);
     } else {
       const token = jwt.sign({ email, role }, process.env.JWT_SECRET ?? '', { expiresIn: '1h' });
       const newUser = userRepository.create({ name, email, role, token });
@@ -35,6 +43,8 @@ export async function registeredEmailCheck(req: Request, res: Response): Promise
     const email = req.params.email;
     const existingUser = await userRepository.findOne({ where: { email } });
     if (existingUser === null) {
+      res.status(200).json({ registeredEmail: false });
+    } else if (!existingUser.active) {
       res.status(200).json({ registeredEmail: false });
     } else {
       res.status(200).json({ registeredEmail: true });
@@ -105,7 +115,6 @@ export const login = async (req: Request, res: Response): Promise<void> => {
       const validPassword = await bcrypt.compare(password, user.password);
       if (validPassword && user.active) {
         const token = jwt.sign({ email, role: user.role }, process.env.JWT_SECRET ?? '', { expiresIn: '61m' });
-        console.log('in login controller token:', token);
         res.cookie(user.email, token, {
           path: '/',
           expires: new Date(Date.now() + 1000 * 60 * 60),
@@ -113,7 +122,6 @@ export const login = async (req: Request, res: Response): Promise<void> => {
           sameSite: 'lax'
         });
         const userDetails = { id: user.id, name: user.name, email: user.email, role: user.role, active: user.active };
-        console.log('in login controller User logged in:', userDetails);
         res.status(200).json({ userDetails });
       } else {
         res.status(401).json({ userDetails: null });
@@ -133,31 +141,6 @@ export const getVerifiedUser = async (req: Request, res: Response): Promise<void
   } catch (error) {
     console.error('Error verifying user:', error);
     res.status(500).json({ userDetails: null });
-  }
-};
-
-export const verifyToken = async (req: Request, res: Response): Promise<void> => {
-  try {
-    const cookie = req.headers.cookie as string;
-    const token = cookie.split('=')[1];
-    console.log('in verifyToken controller token:', token);
-    if (token === null) {
-      res.status(401).json({ userDetails: null });
-    } else {
-      let email = '';
-      const decodedToken: any = jwt.verify(token, process.env.JWT_SECRET ?? '');
-      email = decodedToken.email;
-      const userRepository = dataSource.getRepository(User);
-      const user = await userRepository.findOne({ where: { email } });
-      if (user === null) {
-        res.status(404).json({ userDetails: null });
-      } else {
-        const { password, token, ...userDetails } = user;
-        res.status(200).json({ userDetails });
-      }
-    }
-  } catch (error) {
-    res.status(401).json({ userDetails: null });
   }
 };
 
@@ -226,78 +209,5 @@ export const logout = async (req: Request, res: Response): Promise<void> => {
   } catch (error) {
     console.error('Error logging out:', error);
     res.status(500).json({ message: 'Error logging out' });
-  }
-};
-
-export const oneUser = async (request: Request, response: Response): Promise<void> => {
-  const id = parseInt(request.params.id);
-  try {
-    const userRepository = dataSource.getRepository(User);
-    const user = await userRepository.findOneBy({ id });
-    if (user === null) {
-      response.status(404).json({ message: 'User not found' });
-    } else {
-      response.status(200).json(user);
-    }
-  } catch (error) {
-    console.log('Error fetching user:', error);
-    response.status(500).json({ message: 'Error retrieving user dtails' });
-  }
-};
-
-export const allUsers = async (request: Request, response: Response): Promise<void> => {
-  try {
-    const userRepository = dataSource.getRepository(User);
-    const users = await userRepository.find();
-    response.status(200).json(users);
-  } catch (error) {
-    console.log('Error fetching users:', error);
-    response.status(500).json({ message: 'Error retrieving user data' });
-  }
-};
-
-export const removeUser = async (request: Request, response: Response): Promise<void> => {
-  const id = parseInt(request.params.id);
-
-  try {
-    const userRepository = dataSource.getRepository(User);
-    const userToRemove = await userRepository.findOneBy({ id });
-
-    if (userToRemove === null) {
-      response.status(404).json({ message: 'user not found' });
-    } else {
-      await userRepository.remove(userToRemove);
-      response.status(200).json(userToRemove);
-    }
-  } catch (error) {
-    console.log('Error removing user:', error);
-    response.status(500).json({ message: 'Error removing user' });
-  }
-};
-
-export const updateUser = async (request: Request, response: Response): Promise<void> => {
-  const id = parseInt(request.params.id);
-  const { name, email, role, password, active } = request.body;
-
-  try {
-    const userRepository = dataSource.getRepository(User);
-    const userToUpdate = await userRepository.findOneBy({ id });
-    if (userToUpdate === null) {
-      response.status(404).json({ message: 'User not found' });
-    } else {
-      const updatedUser = Object.assign(new User(), {
-        id,
-        name,
-        email,
-        role,
-        password,
-        active
-      });
-      await userRepository.save(updatedUser);
-      response.status(201).json(updatedUser);
-    }
-  } catch (error) {
-    console.log('Error updating user:', error);
-    response.status(500).json({ message: 'Error updating user details' });
   }
 };

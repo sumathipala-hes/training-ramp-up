@@ -1,10 +1,6 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 import {
   createUser,
-  allUsers,
-  oneUser,
-  removeUser,
-  updateUser,
   registeredEmailCheck,
   createPassword,
   login,
@@ -91,46 +87,6 @@ export const userRoutes = (io: any, sockets: Map<string, string>): Router => {
   router.post('/users/logout', async (request: Request, response: Response) => {
     try {
       await logout(request, response).then(() => {});
-    } catch (error) {
-      console.log(error);
-    }
-  });
-
-  router.get('/users', verifyToken, async (request: Request, response: Response) => {
-    try {
-      await allUsers(request, response).then(() => {
-        io.emit('getUsers', response.statusCode);
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  });
-
-  router.get('/users/:id', verifyToken, async (request: Request, response: Response) => {
-    try {
-      await oneUser(request, response).then(() => {
-        io.emit('getOneUser', response.statusCode);
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  });
-
-  router.delete('/users/:id', verifyToken, verifyAdmin, async (request: Request, response: Response) => {
-    try {
-      await removeUser(request, response).then(() => {
-        io.emit('removeUser', response.statusCode);
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  });
-
-  router.put('/users/:id', verifyToken, verifyAdmin, async (request: Request, response: Response) => {
-    try {
-      await updateUser(request, response).then(() => {
-        io.emit('editUser', response.statusCode);
-      });
     } catch (error) {
       console.log(error);
     }
