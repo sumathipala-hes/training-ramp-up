@@ -6,12 +6,6 @@ dotenv.config();
 const AppDataSource: DataSourceOptions = {
   type: 'postgres',
   ssl: { rejectUnauthorized: false },
-  // migrations: [],
-  // host: process.env.TYPEORM_HOST,
-  // port: parseInt(process.env.TYPEORM_PORT ?? '0'),
-  // username: process.env.TYPEORM_USERNAME,
-  // password: process.env.TYPEORM_PASSWORD,
-  // database: process.env.TYPEORM_DATABASE,
   url: process.env.DATABASE_URL,
   synchronize: true,
   logging: false,
