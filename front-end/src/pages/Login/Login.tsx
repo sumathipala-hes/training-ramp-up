@@ -27,6 +27,7 @@ const Login = () => {
   const [emailHelperText, setEmailHelperText] = useState("");
   const navigate = useNavigate();
   const user = useSelector((state: any) => state.user.user);
+  const logingError = useSelector((state: any) => state.user.logingError);
 
   const handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setPasswordError(false);
@@ -48,16 +49,15 @@ const Login = () => {
       setEmailHelperText("Mandotary fields missing");
     } else {
       socket.emit("login", email);
-      dispatch(login({ email, password }));
-      
+      dispatch(login({ email, password })); 
     }
   };
 
   useEffect(() => {
-    if (user !== null) {
+    if (user !== null && logingError === false) {
       navigate("/");
     }
-  }, [user, navigate]);
+  }, [user, logingError, navigate]);
 
   useEffect(() => {
     socket.on("loginStatus", (data: any) => {

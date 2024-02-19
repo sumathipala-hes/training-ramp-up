@@ -4,9 +4,11 @@ import { useState } from "react";
 import AlertDialog from "../AlertDialog/AlertDialog";
 import { logOut } from "../../redux/slices/userSlice";
 import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 const TopBar = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [logOutConfirmOpen, setLogOutConfirmOpen] = useState(false);
 
   const handleLogoutclick = () => {

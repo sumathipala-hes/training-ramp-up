@@ -13,6 +13,7 @@ import {
   registerUser,
   IregisterUser,
   logOut,
+  setLoginError,
 } from "../slices/userSlice";
 axios.defaults.withCredentials = true;
 
@@ -63,26 +64,38 @@ function* loginSaga(
   action: PayloadAction<{ email: string; password: string }>
 ): Generator<any, any, any> {
   try {
-    const { data: response } = yield call(
+    const response = yield call(
       axios.post<any>,
       `${process.env.REACT_APP_API_URL}/users/login`,
       action.payload
     );
-    yield put(setUserDetails(response.userDetails));
+    if (response.status === 200) {
+      yield put(setLoginError(false));
+      yield put(verifyToken());
+    } else {
+      yield put(setLoginError(true));
+    }
   } catch (error) {
+    yield put(setLoginError(true));
     console.log(error);
   }
 }
 
 function* verifyTokenSaga(): Generator<any, any, any> {
   try {
-    const { data: response } = yield call(
+    const response = yield call(
       axios.get<any>,
       `${process.env.REACT_APP_API_URL}/users/verify`
     );
-    console.log(response.userDetails, "verifyTokenSaga");
-    yield put(setUserDetails(response.userDetails));
+    if (response.status === 200) {
+      yield put(setUserDetails(response.data.userDetails));
+      yield put(setLoginError(false));
+    } else {
+      yield put(setUserDetails(null));
+      yield put(setLoginError(true));
+    }
   } catch (error) {
+    yield put(setLoginError(true));
     console.log(error);
   }
 }
@@ -103,9 +116,13 @@ function* registerUserSaga(
 
 function* logOutSaga(): Generator<any, any, any> {
   try {
-    const response = yield call(axios.post<any>, `${process.env.REACT_APP_API_URL}/users/logout`);
+    const response = yield call(
+      axios.post<any>,
+      `${process.env.REACT_APP_API_URL}/users/logout`
+    );
     if (response.status === 200) {
       yield put(setUserDetails(null));
+      yield put(setLoginError(true));
     }
   } catch (error) {
     console.log(error);

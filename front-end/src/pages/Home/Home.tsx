@@ -22,12 +22,6 @@ const Home = () => {
     dispatch(verifyToken());
   }, []);
 
-  useEffect(() => {
-    if (user === null) {
-      navigate("/");
-    }
-  }, [user]);
-
   let role = "";
   if (user !== null) {
     role = user.role;
@@ -37,9 +31,9 @@ const Home = () => {
     dispatch(logOut());
   };
 
-  const {  } = useIdleTimer({
+  const { } = useIdleTimer({
     onIdle,
-    timeout: 1000 * 60 * 10,
+    timeout: 1000 * 60 * 1,
   });
 
   return (

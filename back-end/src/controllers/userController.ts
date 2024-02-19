@@ -8,10 +8,15 @@ import dataSource from '../config/dataSource';
 import { User } from '../models/user';
 import transporter from '../config/mailer';
 import type nodemailer from 'nodemailer';
+import { validateEmail, validatePassword } from '../utility';
 
 export const createUser = async (request: Request, response: Response): Promise<void> => {
   try {
     const { name, email, role } = request.body;
+    if (!validateEmail(email) || name === '' || role === '') {
+      response.status(400).json({ message: 'Invalid details' });
+      return;
+    }
     const userRepository = dataSource.getRepository(User);
     const existingUser = await userRepository.findOne({ where: { email } });
     if (existingUser !== null) {
@@ -24,7 +29,7 @@ export const createUser = async (request: Request, response: Response): Promise<
       response.status(201).json(newUser);
     }
   } catch (error) {
-    console.log('Error saving user:', error);
+    console.error('Error saving user:', error);
     response.status(500).json({ message: 'Error saving user' });
   }
 };
@@ -100,7 +105,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
     const userRepository = dataSource.getRepository(User);
     const user = await userRepository.findOne({ where: { email } });
     if (user === null) {
-      res.status(404).json({ userDetails: null });
+      res.status(404).json();
     } else {
       const validPassword = await bcrypt.compare(password, user.password);
       if (validPassword && user.active) {
@@ -111,15 +116,14 @@ export const login = async (req: Request, res: Response): Promise<void> => {
           httpOnly: true,
           sameSite: 'lax'
         });
-        const userDetails = { id: user.id, name: user.name, email: user.email, role: user.role, active: user.active };
-        res.status(200).json({ userDetails });
+        res.status(200).json();
       } else {
-        res.status(401).json({ userDetails: null });
+        res.status(401).json();
       }
     }
   } catch (error) {
-    console.log('Error logging in:', error);
-    res.status(500).json({ userDetails: null });
+    console.error('Error logging in:', error);
+    res.status(500).json();
   }
 };
 
@@ -129,13 +133,17 @@ export const getVerifiedUser = async (req: Request, res: Response): Promise<void
     const userDetails = { id: user.id, name: user.name, email: user.email, role: user.role, active: user.active };
     res.status(200).json({ userDetails });
   } catch (error) {
-    console.log('Error verifying user:', error);
+    console.error('Error verifying user:', error);
     res.status(500).json({ userDetails: null });
   }
 };
 
 export const registerUser = async (req: Request, res: Response): Promise<void> => {
   const { email, password, name, role, active } = req.body;
+  if (!validateEmail(email) || !validatePassword(password) || name === '' || role !== 'Observer') {
+    res.status(400).json({ message: 'Invalid details' });
+    return;
+  }
   try {
     const userRepository = dataSource.getRepository(User);
     const existingUser = await userRepository.findOne({ where: { email } });
@@ -148,7 +156,7 @@ export const registerUser = async (req: Request, res: Response): Promise<void> =
       res.status(201).json(newUser);
     }
   } catch (error) {
-    console.log('Error registering user:', error);
+    console.error('Error registering user:', error);
     res.status(500).json({ message: 'Error registering user' });
   }
 };
@@ -161,7 +169,7 @@ export const logout = async (req: Request, res: Response): Promise<void> => {
     }
     res.status(200).json({ message: 'Logged out' });
   } catch (error) {
-    console.log('Error logging out:', error);
+    console.error('Error logging out:', error);
     res.status(500).json({ message: 'Error logging out' });
   }
 };

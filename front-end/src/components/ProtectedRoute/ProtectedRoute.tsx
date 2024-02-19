@@ -1,32 +1,26 @@
-import { useNavigate } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { verifyToken } from "../../redux/slices/userSlice";
+import Loading from "../Loading/Loading";
 
 const ProtectedRoute = ({ children }: any) => {
-  const navigate = useNavigate();
   const dispatch = useDispatch();
   const user = useSelector((state: any) => state.user.user);
-  let isAuthenticated = false;
-
-  if (user !== null) {
-    isAuthenticated = user.role === "Admin" || user.role === "Observer" ? true : false;
-  }
-
-  useEffect(() => {
-    if (!isAuthenticated) {
-      navigate("/login");
-    }
-  }, [isAuthenticated, navigate]);
+  const logingError = useSelector((state: any) => state.user.logingError);
 
   useEffect(() => {
     dispatch(verifyToken());
   }, [dispatch]);
 
-  if (isAuthenticated) {
+  if (user !== null) {
     return children;
   } else {
-    navigate("/login");
+    if (logingError) {
+      return <Navigate to="/login" replace />;
+    } else {
+      return <Loading />;
+    }
   }
 };
 

@@ -1,6 +1,8 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 import { type Request, type Response } from 'express';
 import dataSource from '../config/dataSource';
 import { Student } from '../models/student';
+import { validateMobileNumber } from '../utility';
 
 export const all = async (request: Request, response: Response): Promise<void> => {
   try {
@@ -33,6 +35,19 @@ export const one = async (request: Request, response: Response): Promise<void> =
 
 export const save = async (request: Request, response: Response): Promise<void> => {
   const { id, name, gender, address, mobileNumber, age, dateofbirth } = request.body;
+  const validMobileNumber = validateMobileNumber(mobileNumber);
+  if (
+    !validMobileNumber ||
+    id === '' ||
+    name === '' ||
+    gender === '' ||
+    address === '' ||
+    age < 18 ||
+    dateofbirth === ''
+  ) {
+    response.status(400).json({ message: 'Invalid details' });
+    return;
+  }
 
   try {
     const studentRepository = dataSource.getRepository(Student);
@@ -80,7 +95,19 @@ export const remove = async (request: Request, response: Response): Promise<void
 
 export const update = async (request: Request, response: Response): Promise<void> => {
   const { id, name, gender, address, mobileNumber, age, dateofbirth } = request.body;
-
+  const validMobileNumber = validateMobileNumber(mobileNumber);
+  if (
+    !validMobileNumber ||
+    id === '' ||
+    name === '' ||
+    gender === '' ||
+    address === '' ||
+    age < 18 ||
+    dateofbirth === ''
+  ) {
+    response.status(400).json({ message: 'Invalid details' });
+    return;
+  }
   try {
     const studentRepository = dataSource.getRepository(Student);
     const updatedStudent = Object.assign(new Student(), {

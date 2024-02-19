@@ -7,6 +7,7 @@ import {
 interface UserState {
   user: User | null;
   registedEmail: boolean;
+  logingError: boolean;
 }
 
 export interface IregisterUser {
@@ -22,6 +23,7 @@ const userSlice = createSlice({
   initialState: {
     user: null,
     registedEmail: false,
+    logingError: false,
   } as UserState,
   reducers: {
     addUser: (state, action: PayloadAction<newUser>) => {
@@ -56,6 +58,9 @@ const userSlice = createSlice({
       // register user
     },
     logOut: (state) => {},
+    setLoginError: (state, action: PayloadAction<boolean>) => {
+      state.logingError = action.payload;
+    },
   },
 });
 
@@ -69,5 +74,6 @@ export const {
   verifyToken,
   registerUser,
   logOut,
+  setLoginError,
 } = userSlice.actions;
 export default userSlice.reducer;

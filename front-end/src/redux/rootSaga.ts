@@ -1,6 +1,6 @@
 import { all, fork } from "redux-saga/effects";
-import watchUserSaga from "./userSagas";
-import watchStudentSage from "./studentSagas";
+import watchUserSaga from "./sagas/userSagas";
+import watchStudentSage from "./sagas/studentSagas";
 
 export default function* rootSaga() {
   try {
